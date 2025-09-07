@@ -1,0 +1,61 @@
+project:
+  type: website
+  output-dir: "."
+
+website:
+  navbar:
+    left:
+      - text: "About"
+        href: index.qmd
+    tools:
+      - icon: linkedin
+        href: https://www.linkedin.com/school/fae-centro-universitario/
+      - icon: github
+        href: 
+      - icon: whatsapp
+        href: 
+  page-footer:
+    right: "Built with [Quarto](https://quarto.org/)"
+    left: "&copy; Copyright 2025, Commodities IA PAIC/FAE Business School"
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "Intro"
+        href: introduction.qmd
+        contents: 
+          - index.qmd
+          - mindmap.qmd
+          - resmindmap.qmd
+          - revsyslit.qmd
+          - publplan.qmd
+      - section: "Commodities (grains) news"
+        href: news.qmd
+        contents:
+          - openAi_agent.qmd
+      - section: "Predictive Models"
+        href: models_ablation_NN.qmd
+        contents:
+          - time_series_portfolio.qmd
+          - garch_hawkes_simmodel.qmd
+          - markovian_bayesian_timeseries.qmd
+          - machine_learning_models.qmd
+          - econometrics_model_sel.qmd
+      - section: "MultiObjective Multiperiod Optimization"
+        href: optimization.qmd
+        contents:
+          - portfolio_multiobj_opt_algos.qmd
+          - scenario_simulation_fuzzy_multicriteria.qmd
+          - layout-jupyter.qmd
+      - section: "Reinforcement Learning Strategies"
+        contents:
+          - pareto_front_reinforcement.qmd
+          - reinforcement_algos_decision_making.qmd
+      - href: acknowlegment.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+
