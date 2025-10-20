@@ -3,59 +3,113 @@ project:
   output-dir: "."
 
 website:
+  title: "PAIC Econometrics | FAE"
+  favicon: favicon.png
+  
   navbar:
+    background: white
     left:
-      - text: "About"
+      - text: "Home"
         href: index.qmd
+      - text: "About"
+        href: about.qmd
+      - text: "Research"
+        href: research.qmd
+      - text: "Publications"
+        href: publications.qmd
+    
     tools:
       - icon: linkedin
         href: https://www.linkedin.com/school/fae-centro-universitario/
       - icon: github
-        href: 
-      - icon: whatsapp
-        href: 
+        href: https://github.com/PAICEconometrics
+      - icon: envelope
+        href: mailto:rodrigo.ozon@fae.edu
+  
   page-footer:
-    right: "Built with [Quarto](https://quarto.org/)"
-    left: "&copy; Copyright 2025, Commodities IA PAIC/FAE Business School"
+    left: |
+      <span class="fae-brand-bar">
+      &copy; 2025 PAIC Econometrics | FAE Business School | Curitiba, PR
+      </span>
+    right: |
+      Built with [Quarto](https://quarto.org/) | 
+      [FAE Centro Universitário](https://fae.edu)
+  
   sidebar:
     style: "docked"
+    background: light
     search: true
     contents:
-      - section: "Intro"
-        href: introduction.qmd
+      - section: "📘 Introduction"
         contents: 
-          - index.qmd
-          - mindmap.qmd
-          - resmindmap.qmd
-          - revsyslit.qmd
-          - publplan.qmd
-      - section: "Commodities (grains) news"
-        href: news.qmd
+          - text: "Project Overview"
+            href: index.qmd
+          - text: "About the Team"
+            href: about.qmd
+          - text: "Research Mindmap"
+            href: mindmap.qmd
+          - text: "Theoretical Framework"
+            href: resmindmap.qmd
+          - text: "Literature Review"
+            href: revsyslit.qmd
+          - text: "Publication Plan"
+            href: publplan.qmd
+      
+      - section: "📰 Market Intelligence"
         contents:
-          - openAi_agent.qmd
-      - section: "Predictive Models"
-        href: models_ablation_NN.qmd
+          - text: "Commodities News"
+            href: news.qmd
+          - text: "AI News Agent"
+            href: openAi_agent.qmd
+      
+      - section: "📊 Predictive Modeling"
         contents:
-          - time_series_portfolio.qmd
-          - garch_hawkes_simmodel.qmd
-          - markovian_bayesian_timeseries.qmd
-          - machine_learning_models.qmd
-          - econometrics_model_sel.qmd
-      - section: "MultiObjective Multiperiod Optimization"
-        href: optimization.qmd
+          - text: "Time Series Portfolio"
+            href: time_series_portfolio.qmd
+          - text: "GARCH-Hawkes Models"
+            href: garch_hawkes_simmodel.qmd
+          - text: "Bayesian Time Series"
+            href: markovian_bayesian_timeseries.qmd
+          - text: "Machine Learning"
+            href: machine_learning_models.qmd
+          - text: "Neural Networks"
+            href: models_ablation_NN.qmd
+          - text: "Model Selection"
+            href: econometrics_model_sel.qmd
+      
+      - section: "🎯 Optimization"
         contents:
-          - portfolio_multiobj_opt_algos.qmd
-          - scenario_simulation_fuzzy_multicriteria.qmd
-          - layout-jupyter.qmd
-      - section: "Reinforcement Learning Strategies"
+          - text: "Multi-Objective Framework"
+            href: optimization.qmd
+          - text: "Portfolio Algorithms"
+            href: portfolio_multiobj_opt_algos.qmd
+          - text: "Scenario Simulation"
+            href: scenario_simulation_fuzzy_multicriteria.qmd
+          - text: "Jupyter Integration"
+            href: layout-jupyter.qmd
+      
+      - section: "🤖 Reinforcement Learning"
         contents:
-          - pareto_front_reinforcement.qmd
-          - reinforcement_algos_decision_making.qmd
-      - href: acknowlegment.qmd
+          - text: "Pareto Front Strategy"
+            href: pareto_front_reinforcement.qmd
+          - text: "RL Decision Algorithms"
+            href: reinforcement_algos_decision_making.qmd
+      
+      - section: "📚 Resources"
+        contents:
+          - text: "Acknowledgments"
+            href: acknowlegment.qmd
 
 format:
   html:
     theme: cosmo
     css: styles.css
-
-
+    toc: true
+    toc-depth: 3
+    number-sections: false
+    code-fold: true
+    code-tools: true
+    link-external-newwindow: true
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />

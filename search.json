@@ -1,21 +1,266 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Site",
+    "title": "PAIC Econometrics Research",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
+    "text": "Integrating Time Series Forecasting, Multi-Objective Decision Making & Reinforcement Learning\nAn innovative research initiative at FAE Business School developing patent-ready methodologies for agricultural commodities portfolio optimization through advanced econometric and machine learning techniques.\n\nExplore Our Research → View Publications →",
     "crumbs": [
-      "About",
-      "Intro",
-      "Site"
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#research-vision",
+    "href": "index.html#research-vision",
+    "title": "PAIC Econometrics Research",
+    "section": "🎯 Research Vision",
+    "text": "🎯 Research Vision\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) represents the continuation and evolution of pioneering work initiated at PUCPR, now advancing at FAE Business School with enhanced scope and objectives.\n\n🎓 Academic Goals\nPrimary Objectives:\n\nPatent Development: Create innovative methodologies for multi-period portfolio optimization\nScientific Publications: Contribute to academic literature on agricultural finance\nDoctoral Research Integration: Support ongoing PhD thesis development\nUndergraduate Excellence: Train students in cutting-edge quantitative finance\n\nInstitutional Context:\nThis project builds upon the foundation established at PUCPR (visit the previous project site) while expanding into new frontiers of agricultural commodity portfolio management.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#core-research-framework",
+    "href": "index.html#core-research-framework",
+    "title": "PAIC Econometrics Research",
+    "section": "🔬 Core Research Framework",
+    "text": "🔬 Core Research Framework\nOur methodology integrates three fundamental pillars:\n\n\n📈 Time Series Forecasting\nAdvanced predictive modeling for commodity prices using:\n\nARIMA/GARCH family models\nBayesian structural time series\nLSTM and GRU neural networks\nEnsemble forecasting methods\nHawkes processes for news impact\n\nEconometrics Deep Learning Bayesian Methods\n\n\n🎯 Multi-Objective Optimization\nPortfolio optimization considering multiple conflicting objectives:\n\nReturn maximization\nRisk minimization\nLiquidity management\nSustainability criteria\nDynamic rebalancing strategies\n\nEvolutionary Algorithms Pareto Optimization Fuzzy Logic\n\n\n🤖 Reinforcement Learning\nAdaptive decision-making strategies:\n\nQ-Learning for portfolio selection\nDeep Q-Networks (DQN)\nPolicy gradient methods\nMulti-agent systems\nDynamic strategy adaptation\n\nRL Algorithms Adaptive Systems Decision Theory",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#key-commodities-focus",
+    "href": "index.html#key-commodities-focus",
+    "title": "PAIC Econometrics Research",
+    "section": "📊 Key Commodities Focus",
+    "text": "📊 Key Commodities Focus\nOur research concentrates on Brazilian agricultural grain commodities:",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#technical-stack",
+    "href": "index.html#technical-stack",
+    "title": "PAIC Econometrics Research",
+    "section": "🛠️ Technical Stack",
+    "text": "🛠️ Technical Stack\n\nDevelopment Environment\nProgramming & Analysis:\n\nR Ecosystem: tidyverse, forecast, rugarch, quantmod, PerformanceAnalytics\nPython Ecosystem: pandas, numpy, scikit-learn, tensorflow, pytorch, stable-baselines3\nIntegration: Quarto for reproducible research combining R and Python\n\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ price indices\nUSDA agricultural reports\nNews APIs for sentiment analysis\n\nInfrastructure:\n\nVersion control: Git/GitHub\nCollaboration: RStudio/Positron IDE\nDeployment: GitHub Pages\nDocumentation: Quarto publishing system",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#research-methodology-workflow",
+    "href": "index.html#research-methodology-workflow",
+    "title": "PAIC Econometrics Research",
+    "section": "📈 Research Methodology Workflow",
+    "text": "📈 Research Methodology Workflow\n\n\n\n\n\nflowchart TD\n    A[Data Collection] --&gt; B[Data Preprocessing]\n    B --&gt; C[Exploratory Analysis]\n    C --&gt; D[Feature Engineering]\n    D --&gt; E[Model Development]\n    E --&gt; F{Model Type}\n    F --&gt;|Time Series| G[ARIMA/GARCH/LSTM]\n    F --&gt;|Optimization| H[Multi-Objective Algorithms]\n    F --&gt;|RL| I[Agent Training]\n    G --&gt; J[Model Validation]\n    H --&gt; J\n    I --&gt; J\n    J --&gt; K[Backtesting]\n    K --&gt; L[Performance Evaluation]\n    L --&gt; M{Satisfactory?}\n    M --&gt;|No| E\n    M --&gt;|Yes| N[Documentation & Publication]\n    N --&gt; O[Patent Application]\n    \n    style A fill:#003d7a,color:#fff\n    style N fill:#28a745,color:#fff\n    style O fill:#ff6b35,color:#fff",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#educational-impact",
+    "href": "index.html#educational-impact",
+    "title": "PAIC Econometrics Research",
+    "section": "🎓 Educational Impact",
+    "text": "🎓 Educational Impact\n\n\n\n\n\n\nStudent Development\n\n\n\nThis project provides undergraduate students with:\n\nPractical Experience: Real-world application of econometric and ML techniques\nResearch Skills: Scientific methodology and academic writing\nTechnical Proficiency: Advanced programming in R and Python\nCareer Preparation: Skills highly valued in quantitative finance and data science\nPublication Opportunities: Co-authorship in scientific papers",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#expected-deliverables",
+    "href": "index.html#expected-deliverables",
+    "title": "PAIC Econometrics Research",
+    "section": "📚 Expected Deliverables",
+    "text": "📚 Expected Deliverables\n\nPhase 1 (Current - 6 months)\n\n✅ Project website and documentation\n📊 Literature review and theoretical framework\n🔧 Data infrastructure setup\n📈 Initial predictive models\n\n\n\nPhase 2 (6-12 months)\n\n🎯 Multi-objective optimization framework\n🤖 Reinforcement learning agent development\n📄 First scientific paper draft\n🔬 Patent methodology documentation\n\n\n\nPhase 3 (12-18 months)\n\n📖 Scientific publications submission\n🏆 Patent application filing\n🎤 Conference presentations\n📊 Final comprehensive report",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#collaboration-partnerships",
+    "href": "index.html#collaboration-partnerships",
+    "title": "PAIC Econometrics Research",
+    "section": "🤝 Collaboration & Partnerships",
+    "text": "🤝 Collaboration & Partnerships\nWe actively seek collaboration with:\n\nAcademic institutions researching quantitative finance\nFinancial industry professionals\nAgricultural cooperatives and traders\nTechnology companies developing FinTech solutions\nGovernment agencies interested in agricultural market intelligence\n\n\n\n\n\n\n\n📞 Get Involved\n\n\n\nInterested in collaborating or learning more?\n\nPrincipal Investigator: Prof. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution: FAE Business School, Curitiba, PR\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#quick-links",
+    "href": "index.html#quick-links",
+    "title": "PAIC Econometrics Research",
+    "section": "🔗 Quick Links",
+    "text": "🔗 Quick Links\n\n\n🎓 About Us\nMeet the team →\n\n\n📊 Research\nView our work →\n\n\n📰 News\nMarket updates →\n\n\n🏫 FAE\nVisit FAE.edu →\n\n\n\n\nPAIC - Programa de Apoio à Iniciação Científica | FAE Business School | Curitiba, Paraná, Brazil\n\nLast updated:\noutubro 20, 2025",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About the Project",
+    "section": "",
+    "text": "Advancing Agricultural Finance Through Innovation\nA multidisciplinary team combining expertise in Economics, Data Science, and Quantitative Finance to develop cutting-edge solutions for commodity portfolio management.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#project-mission",
+    "href": "about.html#project-mission",
+    "title": "About the Project",
+    "section": "🎯 Project Mission",
+    "text": "🎯 Project Mission\n\nOur Purpose\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) at FAE Business School represents a strategic evolution of research initiated at PUCPR, now with enhanced objectives:\nCore Mission:\n\nDevelop patentable methodologies for multi-period commodity portfolio optimization\nPublish high-impact scientific research in agricultural finance\nSupport doctoral research on multi-objective optimization\nTrain undergraduate students in advanced quantitative methods\nBridge the gap between academic research and industry applications\n\nResearch Philosophy:\nWe believe in combining rigorous econometric theory with practical machine learning applications, creating solutions that are both academically sound and industrially relevant.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#meet-the-team",
+    "href": "about.html#meet-the-team",
+    "title": "About the Project",
+    "section": "👥 Meet the Team",
+    "text": "👥 Meet the Team\n\n\n\n\nProf. Rodrigo Hermont Ozon\nPrincipal Investigator & Research Advisor\nEconomist (UFPR, 2008) and MSc in Economic Development (UFPR, 2010), currently pursuing a PhD in Production and Systems Engineering (PPGEPS/PUCPR, 2022-2026). His doctoral thesis focuses on multi-objective multi-period optimization of agricultural commodity portfolios using time series forecasting, multi-criteria decision-making, and reinforcement learning.\nResearch Expertise:\n\nEconometric modeling and time series analysis\nMulti-objective optimization algorithms\nAgricultural commodity markets\nQuantitative finance and risk management\nIntegration of R and Python for financial modeling\n\nAcademic Background:\n\n15+ years of experience in econometric research\nPublished research in agricultural economics and quantitative methods\nExtensive experience with Quarto, R, and Python ecosystems\nIndustry consulting in commodity markets\n\nTime Series Forecasting Multi-Objective Optimization R & Python Agricultural Finance\nContact:\n\n              \n\n\n\n\n\n\nJhonatan [Sobrenome]\nResearch Student | Data Science for Business\nUndergraduate student in Data Science for Business at FAE Business School, specializing in machine learning applications for financial forecasting.\nResearch Focus:\n\nMachine learning model development\nPython programming and data analysis\nNeural network architectures (LSTM, GRU)\nFeature engineering for time series\nModel validation and backtesting\n\nProject Contributions:\n\nDevelopment of predictive ML models for commodity prices\nImplementation of ensemble forecasting techniques\nPython-based data pipeline automation\nModel performance benchmarking\n\nPython Machine Learning Deep Learning Time Series\nAreas of Interest: Quantitative trading, algorithmic finance, artificial intelligence\nContact:\n\n           \n\n\n\n\n\n\nEduardo [Sobrenome]\nResearch Student | Data Science for Business\nUndergraduate student in Data Science for Business at FAE Business School, focusing on data visualization and web application development.\nResearch Focus:\n\nInteractive dashboard development\nStreamLit application deployment\nData visualization best practices\nWeb-based analytics platforms\nUser interface design for financial tools\n\nProject Contributions:\n\nDevelopment of interactive dashboards for model results\nStreamLit deployment for research demonstrations\nData visualization using Plotly and other libraries\nUser experience optimization for research outputs\n\nPython StreamLit Data Visualization Web Development\nAreas of Interest: FinTech applications, data storytelling, interactive analytics\nContact:\n\n           \n\n\n\n\n\n\nVanessa Monn\nResearch Student | Economics\nUndergraduate student in Economics at FAE Business School, bringing strong foundations in economic theory and market analysis.\nResearch Focus:\n\nAgricultural commodity market dynamics\nEconomic theory applications in portfolio management\nMarket microstructure analysis\nEconometric modeling\nLiterature review and theoretical frameworks\n\nProject Contributions:\n\nEconomic analysis of commodity markets\nLiterature review on portfolio optimization\nMarket research and data collection\nEconometric model specification\nIntegration of economic theory with quantitative methods\n\nEconomic Theory Econometrics Market Analysis R Programming\nAreas of Interest: Agricultural economics, financial markets, applied econometrics\nContact:",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#academic-context",
+    "href": "about.html#academic-context",
+    "title": "About the Project",
+    "section": "🎓 Academic Context",
+    "text": "🎓 Academic Context\n\nFAE Business School\n\nFounded in 1957, FAE Centro Universitário is one of Brazil’s most prestigious business schools, located in Curitiba, Paraná. FAE is recognized for:\n\nExcellence in business and economics education\nStrong industry partnerships\nCommitment to scientific research\nModern facilities and technology infrastructure\nStrategic location in one of Brazil’s economic hubs\n\nPAIC Program:\nThe PAIC (Programa de Apoio à Iniciação Científica) is FAE’s scientific initiation program that supports undergraduate research projects, fostering academic excellence and preparing students for graduate studies and professional careers in research.\n\n\n\nProject Lineage\n\n\n\n\n\n\n🔗 Connection to Previous Research\n\n\n\nThis project builds upon and extends research initiated at PUCPR (Pontifícia Universidade Católica do Paraná) under the PIBIC and PIBITI Jr. programs.\nPrevious Project:\nPIBIC AgroFinance - PUCPR\nThe FAE project expands the scope with: - Enhanced multi-objective optimization framework - Integration of reinforcement learning strategies - Focus on patent-ready methodologies - Expanded team with diverse expertise - Broader publication strategy",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#research-methodology",
+    "href": "about.html#research-methodology",
+    "title": "About the Project",
+    "section": "🔬 Research Methodology",
+    "text": "🔬 Research Methodology\nOur interdisciplinary approach combines:\n\n📊 Econometric Foundations\n\nClassical time series analysis (ARIMA, VAR)\nVolatility modeling (GARCH family)\nBayesian econometrics\nCointegration and causality testing\n\n\n\n🤖 Machine Learning Integration\n\nSupervised learning for prediction\nDeep learning for complex patterns\nEnsemble methods for robustness\nFeature importance analysis\n\n\n\n🎯 Optimization Techniques\n\nMulti-objective evolutionary algorithms\nPareto frontier exploration\nFuzzy multi-criteria decision making\nDynamic programming approaches\n\n\n\n🧠 Reinforcement Learning\n\nQ-Learning and DQN for portfolio selection\nPolicy gradient methods\nMulti-agent systems\nAdaptive strategy development",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#technical-infrastructure",
+    "href": "about.html#technical-infrastructure",
+    "title": "About the Project",
+    "section": "🛠️ Technical Infrastructure",
+    "text": "🛠️ Technical Infrastructure\n\nTools & Technologies\nDevelopment Environment:\n\nIDEs: RStudio, Positron, VS Code, Jupyter\nLanguages: R (primary), Python (secondary), SQL\nDocumentation: Quarto publishing system\nVersion Control: Git/GitHub\nDeployment: GitHub Pages\n\nKey R Packages:\ntidyverse • forecast • rugarch • quantmod • PerformanceAnalytics • portfolioAnalytics • DEoptim • mco • bayesforecast\nKey Python Libraries:\npandas • numpy • scikit-learn • tensorflow • pytorch • stable-baselines3 • gym • plotly • streamlit\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ commodity indices\nUSDA agricultural reports\nNews APIs (for sentiment analysis)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#research-timeline",
+    "href": "about.html#research-timeline",
+    "title": "About the Project",
+    "section": "📚 Research Timeline",
+    "text": "📚 Research Timeline\n\n\n\n\n\ngantt\n    title PAIC 2025/26 - Official Timeline\n    dateFormat YYYY-MM-DD\n    axisFormat %b/%y\n    \n    section Phase 1 Setup\n    Opening PAIC 2025-26           :milestone, m1, 2025-08-13, 1d\n    Term Signing                   :active, 2025-08-05, 9d\n    Work Plan Preparation          :2025-08-13, 34d\n    Data Infrastructure            :2025-08-20, 41d\n    \n    section Phase 2 Data Models\n    Data Collection Curation       :2025-09-01, 60d\n    GARCH MSGARCH Modeling         :2025-10-01, 60d\n    ML DL Prototypes LSTM          :2025-10-15, 46d\n    Partial Report 1               :milestone, m2, 2025-11-24, 1d\n    \n    section Phase 3 Optimization\n    Multi-Objective Framework      :2025-11-01, 119d\n    NSGA-II DE Implementation      :2025-11-15, 77d\n    Backtesting Validation         :2026-01-01, 58d\n    Partial Report 2               :milestone, m3, 2026-03-01, 1d\n    \n    section Phase 4 RL Strategy\n    RL Environment Setup           :2026-02-01, 58d\n    Agent Training PPO             :2026-02-15, 59d\n    Qualification Seminar          :milestone, m4, 2026-03-15, 1d\n    Strategy Evaluation            :2026-03-01, 60d\n    \n    section Phase 5 Publication\n    Scientific Paper Writing       :2026-04-01, 96d\n    Article Submission             :milestone, m5, 2026-07-06, 1d\n    Peer Review Period             :2026-07-06, 22d\n    Article Corrections            :2026-07-08, 20d\n    Poster Preparation             :2026-07-01, 40d\n    \n    section Deliverables\n    13th SPPAIC Symposium          :milestone, m6, 2025-10-24, 1d\n    14th SPPAIC Symposium          :milestone, m7, 2026-08-10, 1d\n    Final Article Delivery         :milestone, m8, 2026-07-06, 1d",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#expected-outcomes",
+    "href": "about.html#expected-outcomes",
+    "title": "About the Project",
+    "section": "🎯 Expected Outcomes",
+    "text": "🎯 Expected Outcomes\n\nAcademic Deliverables\nPartial Report 1 (November 24, 2025)\n\nCurated datasets and data infrastructure\nInitial GARCH/MSGARCH volatility models\nPreliminary ML/DL forecasting results\nValidation metrics and benchmarks\n\nPartial Report 2 (March 2026)\n\nComplete Pareto frontier analysis\nMulti-objective optimization results\nRL agent implementation and training\nComprehensive backtesting results\n\nQualification Seminar (March-April 2026)\n\nProject methodology presentation\nPreliminary findings discussion\nPeer feedback integration\nRefinement of research direction\n\nScientific Article (July 6, 2026)\n\nFull methodology documentation\nComprehensive results and analysis\nReproducible code repository\nSubmission to peer-reviewed journal\n\nConference Presentations\n\n13th SPPAIC Symposium (October 24-25, 2025): Project proposal and initial results\n14th SPPAIC Symposium (August 10, 2026): Final results and poster presentation\n\n\n\nTechnical Deliverables\n\nReproducible Research Repository\n\nComplete R/Python codebase\nDocumentation and tutorials\nJupyter/Quarto notebooks\nData processing pipelines\n\nEducational Materials\n\nTutorial notebooks for students\nBest practices documentation\nReplication guides\nOpen-source contributions\n\nPractical Applications\n\nPortfolio optimization framework\nRisk management dashboards\nTrading strategy backtests\nIndustry-ready tools\n\n\n\n\nStudent Development\n\nAdvanced technical skills in R and Python\nExperience with scientific research methodology\nPortfolio of demonstrable projects\nPublication track record\nProfessional networking opportunities",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#collaboration-opportunities",
+    "href": "about.html#collaboration-opportunities",
+    "title": "About the Project",
+    "section": "🤝 Collaboration Opportunities",
+    "text": "🤝 Collaboration Opportunities\nWe welcome collaboration from:\n\n\n🎓 Academic Partners\nUniversities and research centers interested in joint research projects, student exchanges, or co-authored publications.\n\n\n💼 Industry Partners\nFinancial institutions, trading companies, and agricultural cooperatives seeking innovative solutions.\n\n\n🏛️ Government Agencies\nPublic institutions interested in agricultural market intelligence and policy analysis.\n\n\n🚀 Technology Companies\nFinTech and AgTech companies developing data-driven solutions for commodity markets.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#contact-information",
+    "href": "about.html#contact-information",
+    "title": "About the Project",
+    "section": "📞 Contact Information",
+    "text": "📞 Contact Information\n\n\n\n\n\n\nGet in Touch\n\n\n\nPrincipal Investigator:\nProf. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution:\nFAE Business School\nCuritiba, Paraná, Brazil\nWebsite: fae.edu\nProject Links:\n\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário\nPrevious Project: PIBIC AgroFinance (PUCPR)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#acknowledgments",
+    "href": "about.html#acknowledgments",
+    "title": "About the Project",
+    "section": "🙏 Acknowledgments",
+    "text": "🙏 Acknowledgments\nWe thank:\n\nFAE Business School for supporting this research through the PAIC program\nDepartment of Economics for institutional support and resources\nDepartment of Data Science for technical infrastructure\nPUCPR for the foundation laid in previous research phases\nResearch community for valuable feedback and collaboration\n\n\n\nPAIC Econometrics Research Project | FAE Business School | Est. 2024\n\nLast updated:\n\n\nCode\nformat(Sys.Date(), '%B %d, %Y')\n\n\n[1] \"outubro 20, 2025\"",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#expected-outcomes-1",
+    "href": "about.html#expected-outcomes-1",
+    "title": "About the Project",
+    "section": "🎯 Expected Outcomes",
+    "text": "🎯 Expected Outcomes\n\nAcademic Deliverables\n\nScientific Publications:\n\nPeer-reviewed journal articles\nConference papers and presentations\nTechnical reports and working papers\n\nIntellectual Property:\n\nPatent application for optimization methodology\nOpen-source software packages\nDocumented algorithms and frameworks\n\nEducational Materials:\n\nTutorial notebooks and guides\nDataset compilation\nReproducible research examples\n\n\n\n\nStudent Development\n\nAdvanced technical skills in R and Python\nExperience with scientific research methodology\nPortfolio of demonstrable projects\nPublication track record\nProfessional networking opportunities",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
     ]
   }
 ]

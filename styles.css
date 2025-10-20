@@ -1,1 +1,818 @@
-/* css styles */
+/* PAIC Econometrics - FAE Business School Visual Identity */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600;700&display=swap');
+
+:root {
+  /* FAE Business School Official Colors */
+  --fae-blue: #003d7a;         /* Azul FAE Principal */
+  --fae-blue-dark: #002855;    /* Azul Escuro FAE */
+  --fae-blue-light: #0056b3;   /* Azul Médio */
+  --fae-blue-accent: #4a90e2;  /* Azul Claro */
+  --fae-gray: #6c757d;         /* Cinza Institucional */
+  --fae-gray-light: #f8f9fa;   /* Cinza Claro Background */
+  --fae-green: #28a745;        /* Verde Sucesso */
+  --fae-orange: #ff6b35;       /* Laranja Destaque */
+  --fae-yellow: #ffc107;       /* Amarelo Alerta */
+  --text-primary: #212529;     /* Texto Principal */
+  --text-secondary: #495057;   /* Texto Secundário */
+  --white: #ffffff;
+  --border-light: #dee2e6;
+}
+
+/* Base Typography */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
+  line-height: 1.6;
+  background-color: var(--white);
+  font-size: 13px;
+}
+
+/* Headings - TAMANHOS AJUSTADOS */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  color: var(--fae-blue);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+/* Ajuste global de títulos - versão final */
+h1 {
+  font-size: 1.2rem !important;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  color: var(--fae-blue-dark);
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.1rem !important;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 0.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--fae-blue), var(--fae-blue-accent));
+  border-radius: 2px;
+}
+
+h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--fae-blue);
+}
+
+h4 {
+  font-size: 1.01rem;
+  font-weight: 600;
+}
+
+/* Apenas o H1 do hero mantém tamanho maior */
+.hero-section h1,
+.about-header h1 {
+  font-size: 1.28rem !important;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Navigation - FAE Style */
+.navbar {
+  background: var(--white) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  padding: 0;
+  border-bottom: 3px solid var(--fae-blue);
+}
+
+.navbar-brand {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--fae-blue) !important;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  padding: 1rem 0;
+}
+
+.navbar-brand::before {
+  content: "FAE | ";
+  color: var(--fae-blue-dark);
+  font-weight: 900;
+}
+
+.navbar-nav {
+  align-items: center;
+}
+
+.navbar-nav .nav-link {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin: 0 0.5rem;
+  padding: 1.2rem 1rem !important;
+  transition: all 0.3s ease;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--fae-blue) !important;
+  background-color: var(--fae-gray-light);
+}
+
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background: var(--fae-blue);
+  transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+  width: 80%;
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--fae-blue) !important;
+  font-weight: 600;
+}
+
+/* Hero Section - FAE Style */
+.hero-section,
+.about-header {
+  background: linear-gradient(135deg, var(--fae-blue-dark) 0%, var(--fae-blue) 100%);
+  color: var(--white);
+  padding: 4rem 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before,
+.about-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -20%;
+  width: 40%;
+  height: 100%;
+  background: rgba(255,255,255,0.05);
+  transform: skewX(-20deg);
+}
+
+.hero-section p,
+.about-header p {
+  font-size: 1.05rem;
+  font-weight: 300;
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0.95;
+}
+
+/* Team Cards - FAE Style */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.team-member {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: visible;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 2rem;
+  text-align: center;
+}
+
+.team-member::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--fae-blue), var(--fae-blue-accent));
+  border-radius: 8px 8px 0 0;
+}
+
+.team-member:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,61,122,0.15);
+}
+
+.team-member h3 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--fae-blue-dark);
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.team-role {
+  color: var(--fae-blue-accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.team-member p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.team-member .badge {
+  background-color: var(--fae-blue);
+  color: var(--white);
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  display: inline-block;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ============================================
+   TEAM MEMBER PHOTOS - ESTILO PROFISSIONAL
+   ============================================ */
+
+.team-member-photo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1.5rem auto;
+  display: block;
+  border: 5px solid var(--fae-blue);
+  background-color: var(--fae-gray-light);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 61, 122, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.team-member-photo:hover {
+  transform: scale(1.15);
+  border-color: var(--fae-blue-accent);
+  box-shadow: 0 10px 30px rgba(0, 61, 122, 0.4);
+  cursor: pointer;
+}
+
+/* Animação de entrada suave */
+@keyframes fadeInPhoto {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.team-member-photo {
+  animation: fadeInPhoto 0.8s ease-out;
+}
+
+/* ============================================
+   SOCIAL/ACADEMIC ICONS - VERSÃO COMPLETA
+   ============================================ */
+
+.team-social-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--border-light);
+  flex-wrap: wrap;
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: var(--fae-gray-light);
+  color: var(--fae-blue);
+  text-decoration: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.1rem;
+  border: 2px solid var(--border-light);
+  position: relative;
+  overflow: visible;
+}
+
+.social-icon:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  text-decoration: none !important;
+}
+
+/* Cores específicas para cada ícone no hover */
+.social-icon.email:hover {
+  background-color: #ea4335;
+  border-color: #ea4335;
+  color: var(--white);
+}
+
+.social-icon.orcid:hover {
+  background-color: #a6ce39;
+  border-color: #a6ce39;
+  color: var(--white);
+}
+
+.social-icon.lattes:hover {
+  background-color: #003d7a;
+  border-color: #003d7a;
+  color: var(--white);
+}
+
+.social-icon.linkedin:hover {
+  background-color: #0077b5;
+  border-color: #0077b5;
+  color: var(--white);
+}
+
+.social-icon.github:hover {
+  background-color: #24292e;
+  border-color: #24292e;
+  color: var(--white);
+}
+
+/* Tamanho dos ícones Font Awesome */
+.social-icon i,
+.social-icon .fas,
+.social-icon .fab {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Tooltip nos ícones */
+.social-icon::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-5px);
+  background-color: var(--fae-blue-dark);
+  color: var(--white);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  z-index: 1000;
+}
+
+/* Seta do tooltip */
+.social-icon::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--fae-blue-dark);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.social-icon:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px);
+}
+
+.social-icon:hover::before {
+  opacity: 1;
+}
+
+/* Info Boxes - FAE Style */
+.project-info,
+.info-box {
+  background: var(--fae-gray-light);
+  border-left: 5px solid var(--fae-blue);
+  padding: 2rem;
+  margin: 2rem 0;
+  border-radius: 0 8px 8px 0;
+  position: relative;
+}
+
+.project-info h3,
+.info-box h3 {
+  color: var(--fae-blue-dark);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.project-info ul,
+.info-box ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.project-info ul li,
+.info-box ul li {
+  padding: 0.75rem 0;
+  padding-left: 2rem;
+  position: relative;
+  border-bottom: 1px solid rgba(0,61,122,0.1);
+}
+
+.project-info ul li:last-child,
+.info-box ul li:last-child {
+  border-bottom: none;
+}
+
+.project-info ul li::before,
+.info-box ul li::before {
+  content: "►";
+  color: var(--fae-blue);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+}
+
+/* Buttons - FAE Style */
+.btn,
+.btn-primary {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--fae-blue);
+  color: var(--white);
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.btn:hover,
+.btn-primary:hover {
+  background: var(--fae-blue-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,61,122,0.3);
+  color: var(--white);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--fae-blue);
+  border: 2px solid var(--fae-blue);
+}
+
+.btn-secondary:hover {
+  background: var(--fae-blue);
+  color: var(--white);
+}
+
+/* Footer - FAE Style */
+.footer,
+footer {
+  background: var(--fae-blue-dark);
+  color: var(--white);
+  padding: 3rem 0;
+  margin-top: 4rem;
+  font-size: 0.9rem;
+}
+
+.footer a,
+footer a {
+  color: var(--fae-blue-accent);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover,
+footer a:hover {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+/* Content Area */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Tables - FAE Style */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 2rem 0;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table thead {
+  background: var(--fae-blue);
+  color: var(--white);
+}
+
+table thead th {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  padding: 1rem;
+}
+
+table tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.9rem;
+}
+
+table tbody tr:hover {
+  background-color: var(--fae-gray-light);
+}
+
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Code Blocks */
+pre {
+  background-color: #f4f7fa;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-size: 0.85rem;
+}
+
+code {
+  background-color: rgba(0,61,122,0.05);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: var(--fae-blue);
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* Callout Boxes - FAE Style */
+.callout {
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-radius: 8px;
+  border-left: 5px solid;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+}
+
+.callout-note {
+  border-left-color: var(--fae-blue);
+  background-color: rgba(0,61,122,0.05);
+}
+
+.callout-warning {
+  border-left-color: var(--fae-yellow);
+  background-color: rgba(255,193,7,0.1);
+}
+
+.callout-important {
+  border-left-color: var(--fae-orange);
+  background-color: rgba(255,107,53,0.1);
+}
+
+.callout-tip {
+  border-left-color: var(--fae-green);
+  background-color: rgba(40,167,69,0.1);
+}
+
+/* Links */
+a {
+  color: var(--fae-blue);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--fae-blue-dark);
+  text-decoration: underline;
+}
+
+/* SIDEBAR / TABLE OF CONTENTS */
+.sidebar,
+.toc,
+nav ul,
+.nav-sidebar {
+  font-size: 0.85rem;
+}
+
+.sidebar li,
+.toc li,
+nav ul li,
+.nav-sidebar li {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.sidebar a,
+.toc a,
+nav ul a,
+.nav-sidebar a {
+  font-size: 0.85rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 { 
+    font-size: 1.4rem !important;
+    text-align: center;
+  }
+  
+  h2 { font-size: 1.2rem !important; }
+  h3 { font-size: 1.1rem; }
+  
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-section,
+  .about-header {
+    padding: 2.5rem 1.5rem;
+  }
+  
+  .hero-section h1,
+  .about-header h1 {
+    font-size: 1.6rem !important;
+  }
+  
+  .hero-section p,
+  .about-header p {
+    font-size: 0.95rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1rem;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.8rem;
+  }
+  
+  .team-member-photo {
+    width: 120px;
+    height: 120px;
+    border-width: 4px;
+  }
+  
+  .team-social-links {
+    gap: 0.6rem;
+  }
+  
+  .social-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+  
+  /* Desabilita tooltip em mobile */
+  .social-icon::after,
+  .social-icon::before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-member-photo {
+    width: 100px;
+    height: 100px;
+    border-width: 3px;
+  }
+  
+  .social-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* Utility Classes */
+.text-fae-blue { color: var(--fae-blue); }
+.bg-fae-blue { background-color: var(--fae-blue); }
+.text-center { text-align: center; }
+.mt-3 { margin-top: 3rem; }
+.mb-3 { margin-bottom: 3rem; }
+.py-3 { padding-top: 3rem; padding-bottom: 3rem; }
+
+/* Page Specific - About */
+.about-page .team-member {
+  background: var(--white);
+  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+.about-page .project-info {
+  background: var(--white);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* FAE Brand Bar */
+.fae-brand-bar {
+  background: var(--fae-blue-dark);
+  color: var(--white);
+  padding: 0.5rem 0;
+  font-size: 0.8rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.fae-brand-bar a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+/* Selection Color */
+::selection {
+  background: var(--fae-blue-accent);
+  color: var(--white);
+}
+
+::-moz-selection {
+  background: var(--fae-blue-accent);
+  color: var(--white);
+}

@@ -1,8 +1,283 @@
 ---
-title: "Site"
+title: "PAIC Econometrics Research"
+subtitle: "Multi-Objective Multi-Period Optimization of Agricultural Commodities Portfolio"
+page-layout: full
 ---
 
-This is a Quarto website.
+::: {.hero-section}
+# Commodities Portfolio Intelligence
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+**Integrating Time Series Forecasting, Multi-Objective Decision Making & Reinforcement Learning**
+
+An innovative research initiative at FAE Business School developing patent-ready methodologies for agricultural commodities portfolio optimization through advanced econometric and machine learning techniques.
+
+<div style="margin-top: 2rem;">
+[Explore Our Research →](about.qmd){.btn .btn-primary style="margin-right: 1rem;"}
+[View Publications →](publplan.qmd){.btn .btn-secondary}
+</div>
+:::
+
+## 🎯 Research Vision
+
+This Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) represents the continuation and evolution of pioneering work initiated at PUCPR, now advancing at FAE Business School with enhanced scope and objectives.
+
+::: {.project-info}
+### 🎓 Academic Goals
+
+**Primary Objectives:**
+
+- **Patent Development**: Create innovative methodologies for multi-period portfolio optimization
+- **Scientific Publications**: Contribute to academic literature on agricultural finance
+- **Doctoral Research Integration**: Support ongoing PhD thesis development
+- **Undergraduate Excellence**: Train students in cutting-edge quantitative finance
+
+**Institutional Context:**
+
+This project builds upon the foundation established at PUCPR (visit the [previous project site](https://pibicagrofinance.github.io/site/)) while expanding into new frontiers of agricultural commodity portfolio management.
+:::
+
+## 🔬 Core Research Framework
+
+Our methodology integrates three fundamental pillars:
+
+::: {.team-grid}
+
+::: {.team-member}
+### 📈 Time Series Forecasting
+
+Advanced predictive modeling for commodity prices using:
+
+- ARIMA/GARCH family models
+- Bayesian structural time series
+- LSTM and GRU neural networks
+- Ensemble forecasting methods
+- Hawkes processes for news impact
+
+<span class="badge">Econometrics</span>
+<span class="badge">Deep Learning</span>
+<span class="badge">Bayesian Methods</span>
+:::
+
+::: {.team-member}
+### 🎯 Multi-Objective Optimization
+
+Portfolio optimization considering multiple conflicting objectives:
+
+- Return maximization
+- Risk minimization
+- Liquidity management
+- Sustainability criteria
+- Dynamic rebalancing strategies
+
+<span class="badge">Evolutionary Algorithms</span>
+<span class="badge">Pareto Optimization</span>
+<span class="badge">Fuzzy Logic</span>
+:::
+
+::: {.team-member}
+### 🤖 Reinforcement Learning
+
+Adaptive decision-making strategies:
+
+- Q-Learning for portfolio selection
+- Deep Q-Networks (DQN)
+- Policy gradient methods
+- Multi-agent systems
+- Dynamic strategy adaptation
+
+<span class="badge">RL Algorithms</span>
+<span class="badge">Adaptive Systems</span>
+<span class="badge">Decision Theory</span>
+:::
+
+:::
+
+## 📊 Key Commodities Focus
+
+Our research concentrates on Brazilian agricultural grain commodities:
+
+```{r commodity-focus}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-height: 4
+
+library(tidyverse)
+library(plotly)
+
+# Commodities data
+commodities <- data.frame(
+  Commodity = c("Soybeans", "Corn", "Wheat", "Coffee", "Sugar"),
+  Market_Importance = c(95, 88, 75, 82, 85),
+  Volatility = c(72, 78, 65, 88, 80),
+  Liquidity = c(90, 85, 70, 75, 82)
+) %>%
+  pivot_longer(cols = -Commodity, names_to = "Metric", values_to = "Score")
+
+p <- ggplot(commodities, aes(x = Commodity, y = Score, fill = Metric)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  scale_fill_manual(values = c("#003d7a", "#4a90e2", "#ff6b35")) +
+  labs(title = "Key Commodities Analysis",
+       subtitle = "Market Importance, Volatility & Liquidity Scores",
+       y = "Index Score (0-100)",
+       x = "") +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 11),
+    legend.position = "top"
+  ) +
+  coord_flip()
+
+ggplotly(p) %>%
+  layout(legend = list(orientation = "h", x = 0.3, y = 1.1))
+
+```
+
+## 🛠️ Technical Stack
+
+::: {.info-box}
+### Development Environment
+
+**Programming & Analysis:**
+
+- **R Ecosystem**: `tidyverse`, `forecast`, `rugarch`, `quantmod`, `PerformanceAnalytics`
+- **Python Ecosystem**: `pandas`, `numpy`, `scikit-learn`, `tensorflow`, `pytorch`, `stable-baselines3`
+- **Integration**: Quarto for reproducible research combining R and Python
+
+**Data Sources:**
+
+- Bloomberg Terminal
+- B3 (Brasil, Bolsa, Balcão)
+- CEPEA/ESALQ price indices
+- USDA agricultural reports
+- News APIs for sentiment analysis
+
+**Infrastructure:**
+
+- Version control: Git/GitHub
+- Collaboration: RStudio/Positron IDE
+- Deployment: GitHub Pages
+- Documentation: Quarto publishing system
+:::
+
+## 📈 Research Methodology Workflow
+
+```{mermaid}
+%%| echo: false
+flowchart TD
+    A[Data Collection] --> B[Data Preprocessing]
+    B --> C[Exploratory Analysis]
+    C --> D[Feature Engineering]
+    D --> E[Model Development]
+    E --> F{Model Type}
+    F -->|Time Series| G[ARIMA/GARCH/LSTM]
+    F -->|Optimization| H[Multi-Objective Algorithms]
+    F -->|RL| I[Agent Training]
+    G --> J[Model Validation]
+    H --> J
+    I --> J
+    J --> K[Backtesting]
+    K --> L[Performance Evaluation]
+    L --> M{Satisfactory?}
+    M -->|No| E
+    M -->|Yes| N[Documentation & Publication]
+    N --> O[Patent Application]
+    
+    style A fill:#003d7a,color:#fff
+    style N fill:#28a745,color:#fff
+    style O fill:#ff6b35,color:#fff
+```
+
+## 🎓 Educational Impact
+
+::: {.callout-tip}
+### Student Development
+
+This project provides undergraduate students with:
+
+- **Practical Experience**: Real-world application of econometric and ML techniques
+- **Research Skills**: Scientific methodology and academic writing
+- **Technical Proficiency**: Advanced programming in R and Python
+- **Career Preparation**: Skills highly valued in quantitative finance and data science
+- **Publication Opportunities**: Co-authorship in scientific papers
+:::
+
+## 📚 Expected Deliverables
+
+### Phase 1 (Current - 6 months)
+- ✅ Project website and documentation
+- 📊 Literature review and theoretical framework
+- 🔧 Data infrastructure setup
+- 📈 Initial predictive models
+
+### Phase 2 (6-12 months)
+- 🎯 Multi-objective optimization framework
+- 🤖 Reinforcement learning agent development
+- 📄 First scientific paper draft
+- 🔬 Patent methodology documentation
+
+### Phase 3 (12-18 months)
+- 📖 Scientific publications submission
+- 🏆 Patent application filing
+- 🎤 Conference presentations
+- 📊 Final comprehensive report
+
+## 🤝 Collaboration & Partnerships
+
+We actively seek collaboration with:
+
+- Academic institutions researching quantitative finance
+- Financial industry professionals
+- Agricultural cooperatives and traders
+- Technology companies developing FinTech solutions
+- Government agencies interested in agricultural market intelligence
+
+::: {.callout-note}
+### 📞 Get Involved
+
+Interested in collaborating or learning more?
+
+- **Principal Investigator**: Prof. Rodrigo Hermont Ozon
+- **Email**: [rodrigo.ozon@fae.edu](mailto:rodrigo.ozon@fae.edu)
+- **Institution**: FAE Business School, Curitiba, PR
+- **GitHub**: [@PAICEconometrics](https://github.com/PAICEconometrics)
+- **LinkedIn**: [FAE Centro Universitário](https://www.linkedin.com/school/fae-centro-universitario/)
+:::
+
+## 🔗 Quick Links
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+
+<div style="padding: 1rem; background: var(--fae-gray-light); border-radius: 8px; border-left: 4px solid var(--fae-blue);">
+**🎓 About Us**  
+[Meet the team →](about.qmd)
+</div>
+
+<div style="padding: 1rem; background: var(--fae-gray-light); border-radius: 8px; border-left: 4px solid var(--fae-blue);">
+**📊 Research**  
+[View our work →](research.qmd)
+</div>
+
+<div style="padding: 1rem; background: var(--fae-gray-light); border-radius: 8px; border-left: 4px solid var(--fae-blue);">
+**📰 News**  
+[Market updates →](news.qmd)
+</div>
+
+<div style="padding: 1rem; background: var(--fae-gray-light); border-radius: 8px; border-left: 4px solid var(--fae-blue);">
+**🏫 FAE**  
+[Visit FAE.edu →](https://fae.edu)
+</div>
+
+</div>
+
+---
+
+::: {.fae-brand-bar}
+**PAIC - Programa de Apoio à Iniciação Científica** | FAE Business School | Curitiba, Paraná, Brazil
+:::
+
+*Last updated:* 
+
+`r format(Sys.Date(), '%B %d, %Y')`
 
