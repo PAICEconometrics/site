@@ -70,16 +70,16 @@ Economist (UFPR, 2008) and MSc in Economic Development (UFPR, 2010), currently p
   <a href="mailto:rodrigo.ozon@fae.edu" class="social-icon email" aria-label="Email" target="_blank">
     <i class="fas fa-envelope"></i>
   </a>
-  <a href="https://orcid.org/0000-0000-0000-0000" class="social-icon orcid" aria-label="ORCID" target="_blank">
+  <a href="https://orcid.org/0000-0001-8003-4849" class="social-icon orcid" aria-label="ORCID" target="_blank">
     <i class="fab fa-orcid"></i>
   </a>
-  <a href="http://lattes.cnpq.br/seu-id-lattes" class="social-icon lattes" aria-label="Lattes" target="_blank">
+  <a href="https://lattes.cnpq.br/3532649625879285" class="social-icon lattes" aria-label="Lattes" target="_blank">
     <i class="fas fa-graduation-cap"></i>
   </a>
-  <a href="https://www.linkedin.com/in/rodrigo-ozon" class="social-icon linkedin" aria-label="LinkedIn" target="_blank">
+  <a href="https://www.linkedin.com/in/rodrigohermontozon" class="social-icon linkedin" aria-label="LinkedIn" target="_blank">
     <i class="fab fa-linkedin-in"></i>
   </a>
-  <a href="https://github.com/rodrigo-ozon" class="social-icon github" aria-label="GitHub" target="_blank">
+  <a href="https://github.com/rhozon" class="social-icon github" aria-label="GitHub" target="_blank">
     <i class="fab fa-github"></i>
   </a>
 </div>
