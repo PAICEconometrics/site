@@ -262,5 +262,201 @@
       "📘 Introduction",
       "About the Team"
     ]
+  },
+  {
+    "objectID": "openAI_agent.html",
+    "href": "openAI_agent.html",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "",
+    "text": "Discover how we created a customized GPT agent that automatically searches, filters, and delivers the most relevant scientific articles every week, every Friday at 8 AM."
+  },
+  {
+    "objectID": "openAI_agent.html#project-overview",
+    "href": "openAI_agent.html#project-overview",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "📋 Project Overview",
+    "text": "📋 Project Overview\nIn the context of an active research project on applied econometrics and multi-period multi-objective optimization, staying updated with the latest literature is fundamental but extremely time-consuming. Every week, dozens of new papers emerge in repositories like arXiv, SSRN, and scientific journals.\nOur solution? Create a personalized intelligent agent in ChatGPT that:\n\n🔍 Automatically searches across multiple scientific databases\n📊 Filters and categorizes articles by relevance\n📧 Delivers weekly structured reports\n⏰ Scheduled delivery: Every Friday at 08:00 AM (Brasília time)"
+  },
+  {
+    "objectID": "openAI_agent.html#paper-hunter-objectives",
+    "href": "openAI_agent.html#paper-hunter-objectives",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "🎯 Paper Hunter Objectives",
+    "text": "🎯 Paper Hunter Objectives\n\nIdentified Problem\nResearchers and students face challenges such as:\n\nInformation overload: Hundreds of papers published weekly\nSource dispersion: ArXiv, SSRN, Google Scholar, journals, etc.\nTime constraints: Difficulty keeping up with recent literature\nSharing difficulties: Need for an easy format to disseminate to students\n\n\n\nImplemented Solution\nWe developed Paper Hunter, a customized GPT agent that:\n\nPerforms targeted searches in specific scientific databases\nApplies quality and relevance filters\nGenerates structured reports in shareable format\nOperates completely autonomously"
+  },
+  {
+    "objectID": "openAI_agent.html#how-we-created-paper-hunter",
+    "href": "openAI_agent.html#how-we-created-paper-hunter",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "🛠️ How We Created Paper Hunter",
+    "text": "🛠️ How We Created Paper Hunter\n\nStep 1: GPT Agent Configuration\nWe accessed ChatGPT and created a personalized GPT with the following specifications:\n\n\n\n\n\n\nAccessing GPT Builder\n\n\n\nTo create personalized GPTs, you need a ChatGPT Plus or Team account. Access: Settings → Explore GPTs → Create a GPT\n\n\nMain instructions provided to the agent:\nYou are an agent specialized in weekly scientific curation.\n\nOBJECTIVE:\nSearch weekly for recent scientific articles on:\n- Applied econometrics\n- Multi-period multi-objective optimization\n- Time series forecasting\n- Reinforcement learning applied to finance\n- Commodity volatility modeling\n\nSEARCH SCOPE:\n- Databases: arXiv (econ.EM, q-fin, cs.LG), SSRN, Google Scholar\n- Period: Last 7 days (articles AND preprints)\n- Language: English\n- Focus: Papers with finance/economics applications\n\nDELIVERY FORMAT:\n1. Structured table (Excel-ready)\n2. Columns: Date | Title | Authors | Venue/Type | Link | Summary | Category\n3. Categories: Econometrics, Optimization, RL, Volatility\n4. Direct and functional links\n5. Concise summary (1-2 sentences) in Portuguese\n\nFREQUENCY:\nEvery Friday at 08:00 AM (Brasília time)\n\n\nStep 2: Integration with Search Tools\nPaper Hunter uses multiple search strategies:\n\n2.1 ArXiv API\n# Example query on arXiv\nsearch_query = \"multi-objective portfolio optimization\"\ncategories = \"econ.EM OR q-fin.PM OR q-fin.RM OR cs.LG\"\ndate_filter = \"submittedDate:[last_week TO now]\"\n\n\n2.2 SSRN Working Papers\n\nSearch by specific keywords\nFilter by publication date\nMetadata extraction\n\n\n\n2.3 Google Scholar\n\nTargeted queries with Boolean operators\nTemporal filter: “Since 2025” + sort by date\nPDF availability verification\n\n\n\n2.4 Consensus AI\nSpecialized academic search tool that: - Accesses +200M papers - Uses GPT-4 for semantic analysis - Provides automatic insights and citations"
+  },
+  {
+    "objectID": "openAI_agent.html#example-of-weekly-output",
+    "href": "openAI_agent.html#example-of-weekly-output",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "📊 Example of Weekly Output",
+    "text": "📊 Example of Weekly Output\nHere’s a real example of Paper Hunter’s output:\n\n📅 Week of 09/05/2025\n\n\n\nDate\nTitle\nAuthors\nCategory\nLink\n\n\n\n\n2025-09-03\nNeural Lévy SDE for State-Dependent Risk and Density Forecasting\nZ. Wang; S.T. Rachev\nEconometrics; Volatility\narXiv\n\n\n2025-09-03\nMulti-period Asset-Liability Management with RL in Regime-Switching Market\nZ. Gao et al.\nRL; Optimization\narXiv\n\n\n2025-09-01\nControllable Generation of Implied Volatility Surfaces with VAEs\nJ. Wang; S. Liu; C. Vuik\nVolatility\narXiv\n\n\n\nSummaries: - Paper 1: Neural jump-diffusion model for multi-horizon density/risk forecasting; useful for volatility modeling and scenarios in multi-period optimization. - Paper 2: Use of RL in multi-period ALM with regime switching; outperforms classical models in return/risk. - Paper 3: Controllable generation of IV surfaces with no-arbitrage verification; useful for scenario simulations."
+  },
+  {
+    "objectID": "openAI_agent.html#setting-up-automatic-scheduling",
+    "href": "openAI_agent.html#setting-up-automatic-scheduling",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "⏰ Setting Up Automatic Scheduling",
+    "text": "⏰ Setting Up Automatic Scheduling\n\nMethod 1: Scheduled Actions in ChatGPT (Recommended)\nChatGPT Team/Enterprise offers native Scheduled Actions:\n\nAccess your personalized GPT\nGo to Settings → Actions\nConfigure:\n\nTrigger: Every Friday at 08:00 AM (America/Sao_Paulo)\nAction: Run research query and send results\nNotification: Email to team members\n\n\n\n\n\n\n\n\nFree Alternative\n\n\n\nIf you don’t have access to ChatGPT Team, you can use Zapier or Make.com to automate calls to the OpenAI API at specific times.\n\n\n\n\nMethod 2: Automation via Zapier\nTrigger: Schedule by Zapier\n  - Frequency: Weekly\n  - Day: Friday\n  - Time: 08:00 AM (GMT-3)\n\nAction: OpenAI (GPT-4)\n  - Model: gpt-4\n  - Prompt: \"Run Paper Hunter weekly search\"\n  - Send results to: Email / Slack / Google Sheets"
+  },
+  {
+    "objectID": "openAI_agent.html#generating-shareable-spreadsheets",
+    "href": "openAI_agent.html#generating-shareable-spreadsheets",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "📁 Generating Shareable Spreadsheets",
+    "text": "📁 Generating Shareable Spreadsheets\nTo facilitate sharing via WhatsApp with students, we configured the agent to automatically generate a consolidated Excel spreadsheet:\n\nSpreadsheet Structure\nMaster File: literature_master.xlsx\nSheets: 1. Index - Index of all weeks 2. All - All consolidated articles 3. 2025-09-05 - Articles from specific week 4. 2025-09-12 - Next week 5. (continues…)\n\n\nTable Columns\n\n\n\n\n\n\n\n\nColumn\nDescription\nExample\n\n\n\n\nWeek\nReference Friday\n2025-09-05\n\n\nDate\nSubmission date\n2025-09-03\n\n\nTitle\nArticle title\nNeural Lévy SDE for…\n\n\nAuthors\nAuthors\nZ. Wang; S.T. Rachev\n\n\nVenue/Type\nSource/Type\narXiv / Preprint\n\n\nLink\nDirect URL\nhttps://arxiv.org/…\n\n\nSummary (PT)\nSummary in Portuguese\nNeural jump-diffusion model…\n\n\nCategory\nClassification\nEconometrics; Volatility"
+  },
+  {
+    "objectID": "openAI_agent.html#automatic-categorization",
+    "href": "openAI_agent.html#automatic-categorization",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "🎨 Automatic Categorization",
+    "text": "🎨 Automatic Categorization\nPaper Hunter automatically classifies each article into the following categories:\n\n\n📈 Econometrics\nEconometric models, time series, statistical tests, cointegration, spillovers\n\n\n🎯 Optimization\nMulti-objective optimization, MOO, genetic algorithms, NSGA-II/III, mathematical programming\n\n\n🤖 RL\nReinforcement Learning, Q-learning, Deep RL, optimal policies, simulation environments\n\n\n📊 Volatility\nVolatility modeling, GARCH, implied volatility, risk, VaR, CVaR"
+  },
+  {
+    "objectID": "openAI_agent.html#best-practices-and-lessons-learned",
+    "href": "openAI_agent.html#best-practices-and-lessons-learned",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "💡 Best Practices and Lessons Learned",
+    "text": "💡 Best Practices and Lessons Learned\n\n✅ What Worked Well\n\nQuery specificity: The more specific the prompt, the better the results\nTemporal filters: Always include 7-day windows to avoid duplicates\nMultiple sources: Combining arXiv + SSRN + Scholar increases coverage\nStructured format: Tables greatly facilitate sharing\n\n\n\n⚠️ Challenges Faced\n\nFalse positives: Some articles are not as relevant as they seem\nIndexing delay: Very recent papers may not appear\nAccess limitations: Some journals have paywalls\nAmbiguous categorization: Interdisciplinary papers require manual review\n\n\n\n🔧 Future Improvements\n\nImplement automatic relevance score (0-10)\nAdd LLM-generated summaries of abstracts\nCreate alerts for high-impact papers\nIntegrate with Zotero/Mendeley for reference management\nInteractive dashboard with visualizations"
+  },
+  {
+    "objectID": "openAI_agent.html#how-to-replicate-this-system",
+    "href": "openAI_agent.html#how-to-replicate-this-system",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "🚀 How to Replicate This System",
+    "text": "🚀 How to Replicate This System\n\nDetailed Step-by-Step\n\n1. Create ChatGPT Plus/Team Account\nAccess chat.openai.com and upgrade\n\n\n2. Configure the Personalized GPT\nName: Paper Hunter\nDescription: Weekly scientific curation agent\nInstructions: [Paste the complete prompt provided above]\nTools: Web Browsing + Code Interpreter\n\n\n3. Test Manually\nRun a test search:\n\"Search for articles from the past week on portfolio optimization\"\n\n\n4. Configure Scheduling\n\nOption A: ChatGPT Scheduled Actions (Team/Enterprise)\nOption B: Zapier + OpenAI API (any plan)\n\n\n\n5. Define Output Format\nInstruct the agent to always generate: - Markdown table - .xlsx file for download - Functional links"
+  },
+  {
+    "objectID": "openAI_agent.html#resources-and-references",
+    "href": "openAI_agent.html#resources-and-references",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "📚 Resources and References",
+    "text": "📚 Resources and References\n\nDatabases Used\n\narXiv.org - Preprint repository (Physics, Math, CS, Economics)\nSSRN - Social Science Research Network\nGoogle Scholar - Academic search engine\nConsensus AI - AI-powered academic search\n\n\n\nComplementary Tools\n\nSemantic Scholar - Semantic paper search\nConnected Papers - Citation graph\nResearch Rabbit - Literature recommendation\n\n\n\nAPIs Used\n# ArXiv API\n# http://export.arxiv.org/api/query\n\n# CrossRef API (DOIs)\n# https://api.crossref.org/\n\n# Semantic Scholar API\n# https://api.semanticscholar.org/"
+  },
+  {
+    "objectID": "openAI_agent.html#usage-statistics",
+    "href": "openAI_agent.html#usage-statistics",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "📊 Usage Statistics",
+    "text": "📊 Usage Statistics\n\n\n\n\n\n\nResults After 2 Months of Operation\n\n\n\n\nPapers scanned: ~450 articles/week\nRelevance rate: 75% of papers are useful\nTime saved: ~6h/week for the team\nSource coverage: 4 main databases + 10+ journals\nTeam satisfaction: 9.2/10"
+  },
+  {
+    "objectID": "openAI_agent.html#research-impact",
+    "href": "openAI_agent.html#research-impact",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "🎓 Research Impact",
+    "text": "🎓 Research Impact\n\nObserved Benefits\n\nConstant updates: We never miss important papers\nDiscovering connections: We find relevant interdisciplinary work\nEfficiency: More time for deep reading, less for searching\nSharing: Students receive quality curation\nOrganized history: Master spreadsheet works as a library\n\n\n\nTeam Testimonials\n\n“Paper Hunter transformed our research routine. Before, we spent hours searching for papers, now we receive everything pre-filtered every Friday.”\n— Vanessa Monn, PAIC Scholar\n\n\n“I was able to identify 3 crucial papers for my part of the project thanks to the automated searches.”\n— Jhonathan Athanazio, Volunteer"
+  },
+  {
+    "objectID": "openAI_agent.html#useful-links",
+    "href": "openAI_agent.html#useful-links",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "🔗 Useful Links",
+    "text": "🔗 Useful Links\n\nChatGPT Custom GPTs Documentation\nArXiv API Documentation\nSSRN Author Center\nZapier + OpenAI Tutorial"
+  },
+  {
+    "objectID": "openAI_agent.html#contact-and-collaboration",
+    "href": "openAI_agent.html#contact-and-collaboration",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "📞 Contact and Collaboration",
+    "text": "📞 Contact and Collaboration\nWant to implement a similar system in your research project?\nGet in touch:\n\n📧 Email: rodrigo.ozon@fae.edu\n🔗 LinkedIn: FAE Centro Universitário\n💻 GitHub: @PAICEconometrics\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\nWe are working on version 2.0 of Paper Hunter which will include:\n\nSentiment analysis of abstracts\nAutomatic ranking by relevance\nPersonalized recommendations per researcher\nIntegration with Notion/Obsidian\nReal-time alerts via Telegram\n\nStay tuned for updates!"
+  },
+  {
+    "objectID": "openAI_agent.html#conclusion",
+    "href": "openAI_agent.html#conclusion",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "📝 Conclusion",
+    "text": "📝 Conclusion\nPaper Hunter demonstrates how artificial intelligence can be used to increase scientific productivity without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: reading, analyzing, and producing quality knowledge.\nIf you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.\n\n\n📚 PAIC Econometrics | FAE Business School Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization Transforming research through artificial intelligence"
+  },
+  {
+    "objectID": "weekly_papers.html",
+    "href": "weekly_papers.html",
+    "title": "Weekly Papers Digest",
+    "section": "",
+    "text": "A continuously updated collection of the latest research papers in applied econometrics, multi-period multi-objective optimization, time series forecasting, and reinforcement learning for finance.\nLast Updated: outubro 20, 2025\nTotal Papers Catalogued: 24 papers across 4 weeks"
+  },
+  {
+    "objectID": "weekly_papers.html#about-this-digest",
+    "href": "weekly_papers.html#about-this-digest",
+    "title": "Weekly Papers Digest",
+    "section": "📖 About This Digest",
+    "text": "📖 About This Digest\nThis page is automatically updated every Friday with the latest scientific papers discovered by our Paper Hunter agent. Each week, we curate articles from:\n\narXiv (econ.EM, q-fin, cs.LG, math.OC)\nSSRN Working Papers\nGoogle Scholar Recent Publications\nMajor Journals (early access articles)\n\n\nCategories\nPapers are classified into four main categories:\n\n\n\n\n\n\n\nCategory\nFocus Area\n\n\n\n\n🔵 Econometrics\nTime series models, volatility forecasting, spillovers, cointegration\n\n\n🟢 Optimization\nMulti-objective optimization, MOO, NSGA-II/III, portfolio optimization\n\n\n🟣 RL\nReinforcement learning, Q-learning, Deep RL, policy optimization\n\n\n🟠 Volatility\nGARCH models, implied volatility, risk modeling, VaR/CVaR"
+  },
+  {
+    "objectID": "weekly_papers.html#october-2025",
+    "href": "weekly_papers.html#october-2025",
+    "title": "Weekly Papers Digest",
+    "section": "🗓️ October 2025",
+    "text": "🗓️ October 2025\n\nWeek of October 11-17, 2025\n\nSummary\nThis week we found 7 papers across multiple databases. Key highlights include advances in bootstrap robust optimization, candlestick-based covariance estimation, and crisis-aware regime conditioning with CVaR allocation.\nTop Pick: Deep Learning for Portfolio Optimization by Osaf Ali - A comprehensive multi-agent RL approach optimizing multiple risk metrics jointly.\n\n\n📊 Featured Papers\n\n\n🔵 Econometrics (3 papers)\n\n\n1. Beyond Returns: A Candlestick-Based Approach to Spot Covariance Estimation\nAuthors: Yasin Simsek\nVenue: arXiv (econ.EM) | Date: 2025-10-14\nLink: arXiv:2510.12911\nSummary: Introduces an applied econometrics method using high-frequency candlestick data to improve spot covariance estimates—a critical input for multi-period portfolio models. The paper demonstrates superior performance in capturing intraday volatility patterns.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nEssential for our volatility modeling component. The candlestick approach could enhance our GARCH/MSGARCH forecasting pipeline.\n\n\n\n2. Spatial and Temporal Boundaries in Difference-in-Differences\nAuthors: Tatsuru Kikuchi\nVenue: arXiv (econ.EM) | Date: 2025-10-13\nLink: arXiv:2510.11013\nSummary: Develops physics-inspired diagnostics using the Navier-Stokes equation framework to validate DID identification over space and time. Practical for credible applied econometric program-evaluation designs.\nRelevance to Our Research: ⭐⭐⭐\nMethodological interest for causal inference in time series contexts.\n\n\n\n3. (Non-Parametric) Bootstrap Robust Optimization for Portfolios\nAuthors: Daniel C. Oliveira, Grover Guzman, Nick Firoozye\nVenue: arXiv (q-fin.ST) | Date: 2025-10-14\nLink: arXiv:2510.12725\nSummary: Proposes a bootstrap-based robust optimization framework to harden portfolio and trading strategy design against estimation error. Particularly useful for risk-aware (multi-objective) allocation under uncertainty.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nHIGH PRIORITY - Directly applicable to our portfolio optimization pipeline. Should be incorporated into robustness checks.\n\n\n\n🟢 Optimization (2 papers)\n\n\n\n4. Deep Learning for Portfolio Optimization: AI-Driven Risk-Adjusted Returns\nAuthors: Osaf Ali\nVenue: SSRN | Date: 2025-10-15\nLink: SSRN 5510579\nSummary: Proposes a hybrid multi-agent RL + multi-objective approach optimizing Sharpe/Sortino/CVaR jointly. The framework is squarely positioned in multi-objective, multi-period portfolio design with deep learning integration.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nMUST READ - This is exactly our intersection: MOO + RL + portfolios. Excellent benchmark for our own implementation.\nKey Contributions: - Multi-agent architecture for different objectives - Joint optimization of multiple risk metrics - Backtesting on commodity futures data\n\n\n\n5. Evaluating Investment Performance: The p-index and Empirical Efficient Frontier\nAuthors: Jing Li, Bowei Guo, Xinqi Xie, Kuo-Ping Chang\nVenue: arXiv (q-fin.PM) | Date: 2025-10-13\nLink: arXiv:2510.11074\nSummary: Defines a put-option-based risk index and empirical efficient frontier for performance evaluation. Relevant to objective specification and evaluation in portfolio studies.\nRelevance to Our Research: ⭐⭐⭐⭐\nUseful for benchmarking our Pareto front against traditional efficient frontiers.\n\n\n\n🟣 RL (1 paper)\n\n\n\n6. Crisis-Aware Regime-Conditioned Diffusion with CVaR Allocation\nAuthors: Ali Atiah Alzahrani\nVenue: arXiv (cs.LG → q-fin.CP) | Date: 2025-10-12\nLink: arXiv:2510.10807\nSummary: Combines regime-aware generative scenarios with a CVaR allocator to improve drawdown control. Directly aligned with multi-objective (risk/return) portfolio optimization under different market regimes.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nHIGH PRIORITY - The regime-switching + CVaR combination is exactly what we need for our multi-period framework.\n\n\n\n🟠 Volatility (1 paper)\n\n\n\n7. On Evaluating Loss Functions for Stock Ranking with Transformer Models\nAuthors: Jan Kwiatkowski, Jarosław A. Chudziak\nVenue: arXiv (cs.LG → q-fin.PM) | Date: 2025-10-15\nLink: arXiv:2510.14156\nSummary: Benchmarks pointwise/pairwise/listwise loss functions for stock ranking using Transformer architecture. Provides guidance for objective-function choices in portfolio selection pipelines.\nRelevance to Our Research: ⭐⭐⭐\nUseful for our ML/DL forecasting module, particularly for ranking-based portfolio construction."
+  },
+  {
+    "objectID": "weekly_papers.html#september-2025",
+    "href": "weekly_papers.html#september-2025",
+    "title": "Weekly Papers Digest",
+    "section": "🗓️ September 2025",
+    "text": "🗓️ September 2025\n\nWeek of September 5-11, 2025\n\nSummary\nStrong week for multi-period optimization papers! Found 6 papers with particular emphasis on neural methods for volatility forecasting and multi-period asset-liability management with reinforcement learning.\nTop Pick: Multi-period Asset-Liability Management with RL by Gao et al. - Breakthrough application of RL to ALM under regime-switching dynamics.\n\n\n📊 Featured Papers\n\n\n🔵 Econometrics (2 papers)\n\n\n8. Neural Lévy SDE for State-Dependent Risk and Density Forecasting\nAuthors: Ziyao Wang, Svetlozar T. Rachev\nVenue: arXiv (q-fin.RM) | Date: 2025-09-03\nLink: arXiv:2509.01041\nSummary: Proposes a neural jump-diffusion model with state-dependent parameters for multi-horizon density and risk forecasting. Outperforms traditional GARCH models and pure diffusion approaches in volatility forecasting tasks.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nMUST READ - Neural Lévy processes are cutting-edge for our volatility modeling. Should compare against our MSGARCH implementation.\nKey Innovations: - State-dependent jump intensity - Multi-horizon density forecasts - Better tail risk estimation than GARCH\n\n\n\n9. Signal from Noise: Neural Network Denoising for Financial Spillovers\nAuthors: Abdullah Karasan, Özge Seda Alp\nVenue: arXiv (econ.EM) | Date: 2025-09-03\nLink: arXiv:2509.01156\nSummary: Introduces neural denoising applied to covariance matrices before estimating return/volatility spillovers. Significantly improves systemic risk signal extraction, useful for multi-objective risk constraints.\nRelevance to Our Research: ⭐⭐⭐⭐\nImportant for our diversification objectives and correlation-based constraints in the optimization model.\n\n\n\n🟢 Optimization (1 paper)\n\n\n\n10. Mean-Variance Stackelberg Games with Asymmetric Information\nAuthors: Yu-Jui Huang, Shihao Zhu\nVenue: arXiv (q-fin.PM) | Date: 2025-09-05\nLink: arXiv:2509.03669\nSummary: Formulates a leader-follower game with asymmetric information and entropy regularization in mean-variance optimization. Derives equilibrium with Gaussian random strategies—relevant for multi-objective optimization under competition/benchmarking scenarios.\nRelevance to Our Research: ⭐⭐⭐\nTheoretical interest, especially if we consider relative performance objectives.\n\n\n\n🟣 RL (1 paper)\n\n\n\n11. Multi-period Asset-Liability Management with RL in Regime-Switching Market\nAuthors: Zhongqin Gao, Ping Chen, Xun Li, Yan Lv, Wenhao Zhang\nVenue: arXiv (q-fin.PM) | Date: 2025-09-03\nLink: arXiv:2509.03251\nSummary: Resolves multi-period mean-variance optimization with regime switching and uncontrollable liabilities using reinforcement learning and filtering. Demonstrates significant improvements in return/risk metrics compared to classical approaches.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nBREAKTHROUGH PAPER - This is the exact intersection we’re working on! Multi-period + RL + regime-switching. Essential reference.\nImplementation Details: - Uses Hidden Markov Model for regime detection - Deep Q-Network for policy learning - Transaction costs and constraints incorporated\n\n\n\n🟠 Volatility (2 papers)\n\n\n\n12. Controllable Generation of Implied Volatility Surfaces with VAEs\nAuthors: Jing Wang, Shuaiqiang Liu, Cornelis Vuik\nVenue: arXiv (q-fin.CP) | Date: 2025-09-01\nLink: arXiv:2509.01743\nSummary: Generates controllable implied volatility surfaces (level, slope, curvature, term structure) with no-arbitrage verification using Variational Autoencoders. Useful for scenario simulation and stress testing.\nRelevance to Our Research: ⭐⭐⭐⭐\nExcellent for generating multiple scenarios in our multi-period optimization framework.\n\n\n\n13. Data-driven Modeling of Multiple Interest Rates with Generalized Vasicek\nAuthors: Pekka Ilmonen, Matti Laurikkala, Kirill Ralchenko, Timo Sottinen, Lauri Viitasaari\nVenue: arXiv (econ.EM) | Date: 2025-09-03\nLink: arXiv:2509.03208\nSummary: Joint modeling of multiple interest rate curves using generalized Vasicek-type models with non-Gaussian innovations. Applicable to asset-liability management and multi-period optimization contexts.\nRelevance to Our Research: ⭐⭐⭐\nRelevant if we extend to fixed-income commodities or futures with interest rate exposure."
+  },
+  {
+    "objectID": "weekly_papers.html#research-impact-tracker",
+    "href": "weekly_papers.html#research-impact-tracker",
+    "title": "Weekly Papers Digest",
+    "section": "📈 Research Impact Tracker",
+    "text": "📈 Research Impact Tracker\n\nPapers by Category (All-Time)\n\n\n\n\n\n\n\n\n\n\n\nRelevance Distribution"
+  },
+  {
+    "objectID": "weekly_papers.html#search-by-topic",
+    "href": "weekly_papers.html#search-by-topic",
+    "title": "Weekly Papers Digest",
+    "section": "🔍 Search by Topic",
+    "text": "🔍 Search by Topic\n\nQuick Filters\n\n\n🎯 Portfolio Optimization\nJump to papers\nPapers on multi-objective, multi-period portfolio construction, Pareto frontiers, and allocation strategies.\n\n\n📊 Volatility Forecasting\nJump to papers\nGARCH models, neural volatility, implied volatility surfaces, and risk metrics.\n\n\n🤖 Reinforcement Learning\nJump to papers\nDeep RL, Q-learning, policy optimization for dynamic trading and portfolio management.\n\n\n📈 Econometric Methods\nJump to papers\nTime series analysis, spillover estimation, cointegration, and causal inference."
+  },
+  {
+    "objectID": "weekly_papers.html#reading-list-by-priority",
+    "href": "weekly_papers.html#reading-list-by-priority",
+    "title": "Weekly Papers Digest",
+    "section": "📚 Reading List by Priority",
+    "text": "📚 Reading List by Priority\n\n🔥 Must Read (Priority 1)\nEssential papers that directly align with our thesis objectives:\n\nDeep Learning for Portfolio Optimization (Ali, 2025) - Multi-agent RL for MOO\nMulti-period ALM with RL (Gao et al., 2025) - Regime-switching + RL\nNeural Lévy SDE (Wang & Rachev, 2025) - Advanced volatility forecasting\nBootstrap Robust Optimization (Oliveira et al., 2025) - Portfolio robustness\nCrisis-Aware CVaR Allocation (Alzahrani, 2025) - Regime-conditional allocation\n\n\n\n⚡ High Priority (Priority 2)\nImportant papers for specific components:\n\nCandlestick Covariance Estimation (Simsek, 2025) - High-frequency data\nSignal from Noise (Karasan & Alp, 2025) - Correlation denoising\nEvaluating Performance (Li et al., 2025) - Benchmarking framework\nControllable IV Surfaces (Wang et al., 2025) - Scenario generation\n\n\n\n📖 Additional Reading (Priority 3)\nRelevant for methodology and context:\n\nMean-Variance Stackelberg Games (Huang & Zhu, 2025) - Game theory\nDID Boundaries (Kikuchi, 2025) - Causal inference\nStock Ranking Loss Functions (Kwiatkowski & Chudziak, 2025) - ML metrics\nVasicek Interest Rates (Ilmonen et al., 2025) - Fixed income"
+  },
+  {
+    "objectID": "weekly_papers.html#download-options",
+    "href": "weekly_papers.html#download-options",
+    "title": "Weekly Papers Digest",
+    "section": "📥 Download Options",
+    "text": "📥 Download Options\n\nComplete Database\nDownload the full database of papers in various formats:\n\nExcel File (.xlsx): Download Master Spreadsheet\nCSV Format (.csv): Download CSV\nBibTeX (.bib): Download Citations\nZotero RDF: Import to Zotero\n\n\n\nWeekly Reports\nIndividual weekly reports in PDF format:\n\nWeek of Oct 11-17, 2025 (PDF)\nWeek of Sep 05-11, 2025 (PDF)"
+  },
+  {
+    "objectID": "weekly_papers.html#stay-updated",
+    "href": "weekly_papers.html#stay-updated",
+    "title": "Weekly Papers Digest",
+    "section": "🔔 Stay Updated",
+    "text": "🔔 Stay Updated\n\nSubscribe to Weekly Digest\nWant to receive these updates directly? Join our mailing list:\n\n Subscribe\n\n\n\nRSS Feed\nAdd our RSS feed to your reader: RSS Feed URL"
+  },
+  {
+    "objectID": "weekly_papers.html#statistics",
+    "href": "weekly_papers.html#statistics",
+    "title": "Weekly Papers Digest",
+    "section": "📊 Statistics",
+    "text": "📊 Statistics\n\n\n\n\n\n\nDatabase Metrics\n\n\n\n\nTotal Papers Catalogued: 13\nAverage Papers/Week: 6.5\nMost Active Category: Econometrics (38%)\nHighest Rated Papers: 6 five-star papers\nSources Covered: arXiv, SSRN, Google Scholar\nTime Span: September - October 2025"
+  },
+  {
+    "objectID": "weekly_papers.html#contributing",
+    "href": "weekly_papers.html#contributing",
+    "title": "Weekly Papers Digest",
+    "section": "🤝 Contributing",
+    "text": "🤝 Contributing\nFound a relevant paper we missed? Submit it here:\nPaper Submission Form: - Paper Title - Authors - Venue/Date - Link - Brief Summary (50-100 words) - Suggested Category\nContact: rodrigo.ozon@fae.edu"
+  },
+  {
+    "objectID": "weekly_papers.html#related-resources",
+    "href": "weekly_papers.html#related-resources",
+    "title": "Weekly Papers Digest",
+    "section": "📖 Related Resources",
+    "text": "📖 Related Resources\n\nPaper Hunter: Our Automated Agent\nLiterature Review Methodology\nTheoretical Framework\nProject Overview\n\n\n\n📚 PAIC Econometrics | FAE Business School Weekly Papers Digest - Updated Every Friday at 08:00 AM (BRT) Powered by Paper Hunter AI Agent"
   }
 ]

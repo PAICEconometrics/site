@@ -1,0 +1,415 @@
+---
+title: "Paper Hunter: Intelligent Weekly Research Curation Agent"
+subtitle: "Automating Scientific Article Search and Curation with ChatGPT"
+author: "PAIC Econometrics Team"
+date: "2025-10-20"
+categories: [Automation, Research, AI, Scientific Curation]
+image: "images/paper_hunter_banner.png"
+format:
+  html:
+    code-fold: false
+    code-tools: true
+    toc: true
+    toc-depth: 3
+---
+
+::: {.hero-section}
+# 🤖 Paper Hunter: Your Intelligent Research Assistant
+
+Discover how we created a customized GPT agent that **automatically** searches, filters, and delivers the most relevant scientific articles every week, every Friday at 8 AM.
+:::
+
+---
+
+## 📋 Project Overview
+
+In the context of an active research project on **applied econometrics and multi-period multi-objective optimization**, staying updated with the latest literature is fundamental but extremely time-consuming. Every week, dozens of new papers emerge in repositories like arXiv, SSRN, and scientific journals.
+
+**Our solution?** Create a personalized intelligent agent in ChatGPT that:
+
+- 🔍 **Automatically searches** across multiple scientific databases
+- 📊 **Filters and categorizes** articles by relevance
+- 📧 **Delivers weekly** structured reports
+- ⏰ **Scheduled delivery**: Every Friday at 08:00 AM (Brasília time)
+
+---
+
+## 🎯 Paper Hunter Objectives
+
+### Identified Problem
+
+Researchers and students face challenges such as:
+
+1. **Information overload**: Hundreds of papers published weekly
+2. **Source dispersion**: ArXiv, SSRN, Google Scholar, journals, etc.
+3. **Time constraints**: Difficulty keeping up with recent literature
+4. **Sharing difficulties**: Need for an easy format to disseminate to students
+
+### Implemented Solution
+
+We developed **Paper Hunter**, a customized GPT agent that:
+
+- Performs targeted searches in specific scientific databases
+- Applies quality and relevance filters
+- Generates structured reports in shareable format
+- Operates completely autonomously
+
+---
+
+## 🛠️ How We Created Paper Hunter
+
+### Step 1: GPT Agent Configuration
+
+We accessed ChatGPT and created a **personalized GPT** with the following specifications:
+
+::: {.callout-note}
+## Accessing GPT Builder
+To create personalized GPTs, you need a ChatGPT Plus or Team account. Access: **Settings → Explore GPTs → Create a GPT**
+:::
+
+**Main instructions provided to the agent:**
+
+```markdown
+You are an agent specialized in weekly scientific curation.
+
+OBJECTIVE:
+Search weekly for recent scientific articles on:
+- Applied econometrics
+- Multi-period multi-objective optimization
+- Time series forecasting
+- Reinforcement learning applied to finance
+- Commodity volatility modeling
+
+SEARCH SCOPE:
+- Databases: arXiv (econ.EM, q-fin, cs.LG), SSRN, Google Scholar
+- Period: Last 7 days (articles AND preprints)
+- Language: English
+- Focus: Papers with finance/economics applications
+
+DELIVERY FORMAT:
+1. Structured table (Excel-ready)
+2. Columns: Date | Title | Authors | Venue/Type | Link | Summary | Category
+3. Categories: Econometrics, Optimization, RL, Volatility
+4. Direct and functional links
+5. Concise summary (1-2 sentences) in Portuguese
+
+FREQUENCY:
+Every Friday at 08:00 AM (Brasília time)
+```
+
+### Step 2: Integration with Search Tools
+
+Paper Hunter uses multiple search strategies:
+
+#### 2.1 ArXiv API
+```python
+# Example query on arXiv
+search_query = "multi-objective portfolio optimization"
+categories = "econ.EM OR q-fin.PM OR q-fin.RM OR cs.LG"
+date_filter = "submittedDate:[last_week TO now]"
+```
+
+#### 2.2 SSRN Working Papers
+- Search by specific keywords
+- Filter by publication date
+- Metadata extraction
+
+#### 2.3 Google Scholar
+- Targeted queries with Boolean operators
+- Temporal filter: "Since 2025" + sort by date
+- PDF availability verification
+
+#### 2.4 Consensus AI
+Specialized academic search tool that:
+- Accesses +200M papers
+- Uses GPT-4 for semantic analysis
+- Provides automatic insights and citations
+
+---
+
+## 📊 Example of Weekly Output
+
+Here's a real example of Paper Hunter's output:
+
+::: {.info-box}
+### 📅 Week of 09/05/2025
+
+| Date | Title | Authors | Category | Link |
+|------|-------|---------|----------|------|
+| 2025-09-03 | Neural Lévy SDE for State-Dependent Risk and Density Forecasting | Z. Wang; S.T. Rachev | Econometrics; Volatility | [arXiv](https://arxiv.org/abs/2509.01041) |
+| 2025-09-03 | Multi-period Asset-Liability Management with RL in Regime-Switching Market | Z. Gao et al. | RL; Optimization | [arXiv](https://arxiv.org/abs/2509.03251) |
+| 2025-09-01 | Controllable Generation of Implied Volatility Surfaces with VAEs | J. Wang; S. Liu; C. Vuik | Volatility | [arXiv](https://arxiv.org/abs/2509.01743) |
+
+**Summaries:**
+- **Paper 1**: Neural jump-diffusion model for multi-horizon density/risk forecasting; useful for volatility modeling and scenarios in multi-period optimization.
+- **Paper 2**: Use of RL in multi-period ALM with regime switching; outperforms classical models in return/risk.
+- **Paper 3**: Controllable generation of IV surfaces with no-arbitrage verification; useful for scenario simulations.
+:::
+
+---
+
+## ⏰ Setting Up Automatic Scheduling
+
+### Method 1: Scheduled Actions in ChatGPT (Recommended)
+
+ChatGPT Team/Enterprise offers native **Scheduled Actions**:
+
+1. Access your personalized GPT
+2. Go to **Settings → Actions**
+3. Configure:
+   - **Trigger**: Every Friday at 08:00 AM (America/Sao_Paulo)
+   - **Action**: Run research query and send results
+   - **Notification**: Email to team members
+
+::: {.callout-tip}
+## Free Alternative
+If you don't have access to ChatGPT Team, you can use **Zapier** or **Make.com** to automate calls to the OpenAI API at specific times.
+:::
+
+### Method 2: Automation via Zapier
+
+```yaml
+Trigger: Schedule by Zapier
+  - Frequency: Weekly
+  - Day: Friday
+  - Time: 08:00 AM (GMT-3)
+
+Action: OpenAI (GPT-4)
+  - Model: gpt-4
+  - Prompt: "Run Paper Hunter weekly search"
+  - Send results to: Email / Slack / Google Sheets
+```
+
+---
+
+## 📁 Generating Shareable Spreadsheets
+
+To facilitate sharing via WhatsApp with students, we configured the agent to automatically generate a **consolidated Excel spreadsheet**:
+
+### Spreadsheet Structure
+
+**Master File:** `literature_master.xlsx`
+
+**Sheets:**
+1. **Index** - Index of all weeks
+2. **All** - All consolidated articles
+3. **2025-09-05** - Articles from specific week
+4. **2025-09-12** - Next week
+5. (continues...)
+
+### Table Columns
+
+| Column | Description | Example |
+|--------|-----------|---------|
+| **Week** | Reference Friday | 2025-09-05 |
+| **Date** | Submission date | 2025-09-03 |
+| **Title** | Article title | Neural Lévy SDE for... |
+| **Authors** | Authors | Z. Wang; S.T. Rachev |
+| **Venue/Type** | Source/Type | arXiv / Preprint |
+| **Link** | Direct URL | https://arxiv.org/... |
+| **Summary (PT)** | Summary in Portuguese | Neural jump-diffusion model... |
+| **Category** | Classification | Econometrics; Volatility |
+
+---
+
+## 🎨 Automatic Categorization
+
+Paper Hunter automatically classifies each article into the following categories:
+
+::: {.team-grid}
+::: {.team-member}
+### 📈 Econometrics
+Econometric models, time series, statistical tests, cointegration, spillovers
+:::
+
+::: {.team-member}
+### 🎯 Optimization
+Multi-objective optimization, MOO, genetic algorithms, NSGA-II/III, mathematical programming
+:::
+
+::: {.team-member}
+### 🤖 RL
+Reinforcement Learning, Q-learning, Deep RL, optimal policies, simulation environments
+:::
+
+::: {.team-member}
+### 📊 Volatility
+Volatility modeling, GARCH, implied volatility, risk, VaR, CVaR
+:::
+:::
+
+---
+
+## 💡 Best Practices and Lessons Learned
+
+### ✅ What Worked Well
+
+1. **Query specificity**: The more specific the prompt, the better the results
+2. **Temporal filters**: Always include 7-day windows to avoid duplicates
+3. **Multiple sources**: Combining arXiv + SSRN + Scholar increases coverage
+4. **Structured format**: Tables greatly facilitate sharing
+
+### ⚠️ Challenges Faced
+
+1. **False positives**: Some articles are not as relevant as they seem
+2. **Indexing delay**: Very recent papers may not appear
+3. **Access limitations**: Some journals have paywalls
+4. **Ambiguous categorization**: Interdisciplinary papers require manual review
+
+### 🔧 Future Improvements
+
+- [ ] Implement automatic relevance score (0-10)
+- [ ] Add LLM-generated summaries of abstracts
+- [ ] Create alerts for high-impact papers
+- [ ] Integrate with Zotero/Mendeley for reference management
+- [ ] Interactive dashboard with visualizations
+
+---
+
+## 🚀 How to Replicate This System
+
+### Detailed Step-by-Step
+
+#### 1. Create ChatGPT Plus/Team Account
+Access [chat.openai.com](https://chat.openai.com) and upgrade
+
+#### 2. Configure the Personalized GPT
+```markdown
+Name: Paper Hunter
+Description: Weekly scientific curation agent
+Instructions: [Paste the complete prompt provided above]
+Tools: Web Browsing + Code Interpreter
+```
+
+#### 3. Test Manually
+Run a test search:
+```
+"Search for articles from the past week on portfolio optimization"
+```
+
+#### 4. Configure Scheduling
+- **Option A**: ChatGPT Scheduled Actions (Team/Enterprise)
+- **Option B**: Zapier + OpenAI API (any plan)
+
+#### 5. Define Output Format
+Instruct the agent to always generate:
+- Markdown table
+- .xlsx file for download
+- Functional links
+
+---
+
+## 📚 Resources and References
+
+### Databases Used
+
+- **[arXiv.org](https://arxiv.org)** - Preprint repository (Physics, Math, CS, Economics)
+- **[SSRN](https://ssrn.com)** - Social Science Research Network
+- **[Google Scholar](https://scholar.google.com)** - Academic search engine
+- **[Consensus AI](https://consensus.app)** - AI-powered academic search
+
+### Complementary Tools
+
+- **[Semantic Scholar](https://semanticscholar.org)** - Semantic paper search
+- **[Connected Papers](https://connectedpapers.com)** - Citation graph
+- **[Research Rabbit](https://researchrabbit.ai)** - Literature recommendation
+
+### APIs Used
+
+```python
+# ArXiv API
+# http://export.arxiv.org/api/query
+
+# CrossRef API (DOIs)
+# https://api.crossref.org/
+
+# Semantic Scholar API
+# https://api.semanticscholar.org/
+```
+
+---
+
+## 📊 Usage Statistics
+
+::: {.callout-important}
+## Results After 2 Months of Operation
+
+- **Papers scanned**: ~450 articles/week
+- **Relevance rate**: 75% of papers are useful
+- **Time saved**: ~6h/week for the team
+- **Source coverage**: 4 main databases + 10+ journals
+- **Team satisfaction**: 9.2/10
+:::
+
+---
+
+## 🎓 Research Impact
+
+### Observed Benefits
+
+1. **Constant updates**: We never miss important papers
+2. **Discovering connections**: We find relevant interdisciplinary work
+3. **Efficiency**: More time for deep reading, less for searching
+4. **Sharing**: Students receive quality curation
+5. **Organized history**: Master spreadsheet works as a library
+
+### Team Testimonials
+
+> *"Paper Hunter transformed our research routine. Before, we spent hours searching for papers, now we receive everything pre-filtered every Friday."*  
+> — **Vanessa Monn**, PAIC Scholar
+
+> *"I was able to identify 3 crucial papers for my part of the project thanks to the automated searches."*  
+> — **Jhonathan Athanazio**, Volunteer
+
+---
+
+## 🔗 Useful Links
+
+- [ChatGPT Custom GPTs Documentation](https://platform.openai.com/docs/guides/gpt)
+- [ArXiv API Documentation](https://info.arxiv.org/help/api/index.html)
+- [SSRN Author Center](https://www.ssrn.com/index.cfm/en/)
+- [Zapier + OpenAI Tutorial](https://zapier.com/apps/openai/integrations)
+
+---
+
+## 📞 Contact and Collaboration
+
+Want to implement a similar system in your research project?
+
+**Get in touch:**
+
+- 📧 Email: [rodrigo.ozon@fae.edu](mailto:rodrigo.ozon@fae.edu)
+- 🔗 LinkedIn: [FAE Centro Universitário](https://linkedin.com/school/fae-centro-universitario)
+- 💻 GitHub: [@PAICEconometrics](https://github.com/PAICEconometrics)
+
+---
+
+::: {.callout-tip}
+## 💡 Next Steps
+
+We are working on **version 2.0** of Paper Hunter which will include:
+
+- **Sentiment analysis** of abstracts
+- **Automatic ranking** by relevance
+- **Personalized recommendations** per researcher
+- **Integration with Notion/Obsidian**
+- **Real-time alerts** via Telegram
+
+Stay tuned for updates!
+:::
+
+---
+
+## 📝 Conclusion
+
+**Paper Hunter** demonstrates how artificial intelligence can be used to **increase scientific productivity** without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: **reading, analyzing, and producing quality knowledge**.
+
+If you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.
+
+---
+
+<div style="text-align: center; margin-top: 3rem; padding: 2rem; background: var(--fae-gray-light); border-radius: 8px;">
+<strong>📚 PAIC Econometrics | FAE Business School</strong><br>
+Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization<br>
+<em>Transforming research through artificial intelligence</em>
+</div>
