@@ -1,6 +1,224 @@
+# ============================================
+# .GITIGNORE - PAIC ECONOMETRICS PROJECT
+# Projeto Quarto + R + renv para múltiplos laptops
+# ============================================
+
+# --- R / RStudio / Positron ---
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+.Rapp.history
+
+# Session Data files
+.RData
+.RDataTmp
+
+# User-specific files
+.Ruserdata
+
+# Example code in package build process
+*-Ex.R
+
+# Output files from R CMD build
+/*.tar.gz
+
+# Output files from R CMD check
+/*.Rcheck/
+
+# RStudio files
+.Rproj.user/
+*.Rproj
+
+# produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+
+# knitr and R markdown default cache directories
+*_cache/
+/cache/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# R Environment Variables
+.Renviron
+.Rprofile.local
+
+# ============================================
+# --- renv: CRITICAL FOR MULTI-LAPTOP WORK ---
+# ============================================
+
+# renv - NÃO versionar bibliotecas instaladas (muito grandes)
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/sandbox/
+renv/staging/
+
+# renv - VERSIONAR estes (são pequenos e necessários)
+# !renv.lock           # <- MANTER no Git (lista de pacotes)
+# !renv/activate.R     # <- MANTER no Git (script de ativação)
+# !renv/settings.json  # <- MANTER no Git (configurações)
+# !.Rprofile           # <- MANTER no Git (se tiver comandos de projeto)
+
+# ============================================
+# --- Quarto ---
+# ============================================
 
 /.quarto/
+_site/
+_book/
+_freeze/
+*.html                    # Arquivos HTML gerados (não versionamos output)
+*_files/
+*_cache/
+
+# Quarto publish credentials
+_publish.yml
+
+# ============================================
+# --- Sistema Operacional ---
+# ============================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+~$*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# --- OneDrive / Google Drive / Dropbox ---
+# ============================================
+
+# OneDrive
+*~$*
+*.tmp
+~*.docx
+~*.xlsx
+~*.pptx
+*_conflict_*
+*.conflict
+
+# Google Drive
+*conflicted copy*
+
+# Dropbox
+.dropbox
+.dropbox.attr
+.dropbox.cache
+
+# ============================================
+# --- Dados e Arquivos Grandes ---
+# ============================================
+
+# Data files (se forem grandes, não versionar)
+# data/raw/*.csv         # Descomente se tiver CSVs grandes
+# data/raw/*.xlsx
+# data/raw/*.zip
+# *.rds                  # Objetos R salvos
+# *.rda
+# *.RData
+
+# Arquivos grandes em geral
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# ============================================
+# --- Arquivos Sensíveis ---
+# ============================================
+
+# Credenciais e configurações sensíveis
+.env
+.env.local
+credentials.json
+secrets.yml
+config.local.yml
+*.key
+*.pem
+*.pfx
+
+# API keys
+*_api_key*
+*_secret*
+
+# ============================================
+# --- IDEs e Editores ---
+# ============================================
+
+# VS Code / Positron
+.vscode/
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ============================================
+# --- Logs e Outputs Temporários ---
+# ============================================
+
+# Log files
+*.log
+logs/
+*.out
+
+# Temporary files
+tmp/
+temp/
+*.swp
+*.swo
+*~
+
+# ============================================
+# --- Específico do Projeto (Adicionar conforme necessário) ---
+# ============================================
+
+# Outputs específicos que não devem ser versionados
+# drafts/
+# private_notes/
+# exploratory_analysis/
+
+# Arquivos de teste
+test_output/
+scratch/
+
+# ============================================
+# FIM DO .GITIGNORE
+# ============================================
