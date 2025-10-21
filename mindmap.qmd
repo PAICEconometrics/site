@@ -1,0 +1,898 @@
+---
+title: "Research Mindmap"
+subtitle: "Visual Structure of PAIC Project 2025/26 - FAE Business School"
+author: "PAIC Econometrics | FAE"
+date: last-modified
+format:
+  html:
+    page-layout: full
+    code-fold: false
+---
+
+<div class="hero-section">
+  <h1>🗺️ Research Mindmap PAIC 2025/26</h1>
+  <p>
+    Interactive visualization of the methodological structure, official timeline and connections of the project "Innovations in Financial Modeling: AI & Econometrics for Agricultural Commodity Portfolio Optimization"
+  </p>
+</div>
+
+## Project Overview
+
+This conceptual map presents the complete architecture of the PAIC 2025/26 research project, visually organizing the **three methodological pillars**, the **six execution stages according to the official schedule** and the **expected results** aligned with the program guidelines.
+
+::: {.callout-note}
+## 💡 How to Use This Mindmap
+
+- **Explore interactive nodes** to understand each methodological component
+- **Follow colored connections** to comprehend relationships between techniques
+- **Identify temporal stages** in the PAIC 2025/26 timeline flow
+- **Hover over elements** to see detailed descriptions
+:::
+
+::: {.callout-important}
+## 🎯 Project's Central Objective
+
+Develop an **integrated model** for analysis and optimization of agricultural commodity portfolios, combining:
+
+1. **Advanced Forecasting** (GARCH/MSGARCH + ML/DL)
+2. **Multi-Objective Optimization** (NSGA-II, Differential Evolution)
+3. **Reinforcement Learning** (PPO, adaptive strategies)
+
+**Goal**: Create tools for risk management and dynamic allocation in commodity markets, with potential for **patent** and **scientific publications**.
+:::
+
+## Interactive Mindmap
+
+```{=html}
+<div id="mindmap-container" style="width: 100%; height: 900px; border: 2px solid #003d7a; border-radius: 8px; background: #f8f9fa; margin: 2rem 0;">
+  <svg id="mindmap" width="100%" height="100%"></svg>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// Mindmap data based on PAIC FAE 2025/26 project
+const mindmapData = {
+  name: "Agricultural\nCommodity\nPortfolio\nOptimization",
+  value: 120,
+  type: "root",
+  description: "PAIC Project 2025/26 - FAE Business School",
+  children: [
+    {
+      name: "PILLAR 1:\nForecasting",
+      type: "pillar",
+      value: 90,
+      description: "Prediction of returns and volatilities with advanced models",
+      children: [
+        {
+          name: "GARCH/MSGARCH",
+          type: "method",
+          value: 45,
+          description: "Conditional volatility modeling with regime changes (Markov-Switching)"
+        },
+        {
+          name: "Machine Learning",
+          type: "method",
+          value: 45,
+          description: "LSTM, MLP, XGBoost, LightGBM - Ensemble of predictive models"
+        },
+        {
+          name: "Deep Learning",
+          type: "method",
+          value: 40,
+          description: "Deep neural networks for complex temporal pattern capture"
+        },
+        {
+          name: "Return Forecasts",
+          type: "output",
+          value: 35,
+          description: "Expected log-returns for multiple horizons"
+        },
+        {
+          name: "Risk Estimation",
+          type: "output",
+          value: 35,
+          description: "VaR, ES (Expected Shortfall), maximum drawdown"
+        }
+      ]
+    },
+    {
+      name: "PILLAR 2:\nMulti-Objective\nOptimization",
+      type: "pillar",
+      value: 90,
+      description: "Determination of efficient portfolio compositions",
+      children: [
+        {
+          name: "NSGA-II",
+          type: "method",
+          value: 40,
+          description: "Non-dominated Sorting Genetic Algorithm II - Evolutionary genetic algorithm"
+        },
+        {
+          name: "Differential Evolution",
+          type: "method",
+          value: 40,
+          description: "DE algorithm for global search in high-dimensional spaces"
+        },
+        {
+          name: "SPEA2",
+          type: "method",
+          value: 35,
+          description: "Strength Pareto Evolutionary Algorithm 2"
+        },
+        {
+          name: "Pareto Frontier",
+          type: "output",
+          value: 45,
+          description: "Set of non-dominated solutions (optimal trade-offs)"
+        },
+        {
+          name: "Risk-Return Trade-off",
+          type: "output",
+          value: 40,
+          description: "Balance between return maximization and risk minimization"
+        },
+        {
+          name: "Diversification",
+          type: "output",
+          value: 35,
+          description: "Compositions that optimize asset correlations"
+        }
+      ]
+    },
+    {
+      name: "PILLAR 3:\nReinforcement\nLearning (RL)",
+      type: "pillar",
+      value: 90,
+      description: "Dynamic and adaptive trading strategies",
+      children: [
+        {
+          name: "PPO (Proximal Policy)",
+          type: "method",
+          value: 45,
+          description: "Proximal Policy Optimization - Gradient policy algorithm"
+        },
+        {
+          name: "Gym Environment",
+          type: "method",
+          value: 40,
+          description: "Trading environment simulation for agent training"
+        },
+        {
+          name: "Adaptive Strategies",
+          type: "output",
+          value: 45,
+          description: "Dynamic reallocation, hedging, momentum, trigger-based rebalancing"
+        },
+        {
+          name: "Tactical Decisions",
+          type: "output",
+          value: 40,
+          description: "Buy, sell, and hold actions based on market states"
+        },
+        {
+          name: "Backtesting",
+          type: "output",
+          value: 38,
+          description: "Temporal validation with rolling windows and walk-forward"
+        }
+      ]
+    },
+    {
+      name: "PAIC 2025/26\nTIMELINE",
+      type: "timeline",
+      value: 100,
+      description: "Six stages according to official program calendar",
+      children: [
+        {
+          name: "Stage 1:\nSetup &\nGovernance",
+          type: "phase",
+          value: 30,
+          period: "Aug-Sep/2025",
+          description: "• Scope review and research questions\n• Computational environment (R/Python + Git)\n• Data source mapping (YahooQuery, Quandl, FAO, B3, CME)"
+        },
+        {
+          name: "Stage 2:\nData Collection\n& Curation",
+          type: "phase",
+          value: 30,
+          period: "Sep-Oct/2025",
+          description: "• Historical series collection (corn, soybeans, derivatives)\n• Data cleaning and normalization\n• Financial feature engineering (log-return, volatility, technical indicators)"
+        },
+        {
+          name: "Stage 3:\nVolatility\nModeling",
+          type: "phase",
+          value: 30,
+          period: "Oct-Nov/2025",
+          description: "• GARCH/MSGARCH estimation\n• ML/DL prototypes (LSTM/MLP)\n• Partial Report 1 (Nov 24, 2025)"
+        },
+        {
+          name: "Stage 4:\nOptimization &\nFrontiers",
+          type: "phase",
+          value: 30,
+          period: "Nov/2025-Jan/2026",
+          description: "• NSGA-II/DE implementation\n• Pareto frontier generation\n• Sensitivity analysis"
+        },
+        {
+          name: "Stage 5:\nRL & Backtesting",
+          type: "phase",
+          value: 30,
+          period: "Jan-Mar/2026",
+          description: "• PPO agent training\n• Backtests with benchmarks\n• Partial Report 2 (Mar 1, 2026)\n• Qualification Seminar (Mar 15, 2026)"
+        },
+        {
+          name: "Stage 6:\nConsolidation &\nDissemination",
+          type: "phase",
+          value: 30,
+          period: "Mar-Jul/2026",
+          description: "• Scientific paper writing (Apr-Jun)\n• Article submission (Jul 6, 2026)\n• Poster preparation for 14th SPPAIC (Aug 10, 2026)"
+        }
+      ]
+    },
+    {
+      name: "EXPECTED\nRESULTS",
+      type: "outcomes",
+      value: 85,
+      description: "Academic, practical, and technological innovation deliverables",
+      children: [
+        {
+          name: "Scientific Papers",
+          type: "deliverable",
+          value: 50,
+          description: "Publication in peer-reviewed journal (Quantitative Finance area)"
+        },
+        {
+          name: "Analytical Tools",
+          type: "deliverable",
+          value: 45,
+          description: "Reproducible pipeline (R/Python) for portfolio management decision support"
+        },
+        {
+          name: "Patent (Innovation)",
+          type: "deliverable",
+          value: 40,
+          description: "System/methodology with novelty, inventive activity, and industrial application requirements"
+        },
+        {
+          name: "Academic Training",
+          type: "deliverable",
+          value: 35,
+          description: "Capacity building for scholars/volunteers in quantitative methods and programming"
+        },
+        {
+          name: "Agribusiness\nContribution",
+          type: "deliverable",
+          value: 35,
+          description: "Applicability for trading companies, cooperatives, and risk managers"
+        }
+      ]
+    },
+    {
+      name: "ANALYZED\nCOMMODITIES",
+      type: "data",
+      value: 70,
+      description: "Grain market assets - futures and spot",
+      children: [
+        {
+          name: "Corn",
+          type: "asset",
+          value: 35,
+          description: "CME and B3 futures contracts"
+        },
+        {
+          name: "Soybeans",
+          type: "asset",
+          value: 35,
+          description: "Grain, meal, and oil - integrated markets"
+        },
+        {
+          name: "Wheat",
+          type: "asset",
+          value: 30,
+          description: "Complementary commodities for diversification"
+        },
+        {
+          name: "Historical Series",
+          type: "asset",
+          value: 30,
+          description: "Daily prices with rolling windows and volatility regimes"
+        }
+      ]
+    }
+  ]
+};
+
+// FAE institutional visual settings - colors
+const colors = {
+  root: '#003d7a',        // FAE Primary Blue
+  pillar: '#0056b3',      // Medium Blue
+  method: '#4a90e2',      // Light Blue
+  output: '#28a745',      // Success Green
+  timeline: '#ff6b35',    // Highlight Orange
+  phase: '#ffc107',       // Stages Yellow
+  outcomes: '#6c757d',    // Results Gray
+  deliverable: '#28a745', // Deliverables Green
+  data: '#003d7a',        // Data Blue
+  asset: '#0056b3'        // Assets Blue
+};
+
+// Dimensions
+const width = document.getElementById('mindmap-container').clientWidth;
+const height = 900;
+const margin = {top: 40, right: 120, bottom: 40, left: 120};
+
+// Create SVG
+const svg = d3.select("#mindmap")
+  .attr("viewBox", [0, 0, width, height])
+  .attr("style", "max-width: 100%; height: auto;");
+
+// Create hierarchy
+const root = d3.hierarchy(mindmapData);
+const treeLayout = d3.tree()
+  .size([height - margin.top - margin.bottom, width - margin.left - margin.right])
+  .separation((a, b) => (a.parent === b.parent ? 1.5 : 2));
+
+treeLayout(root);
+
+// Main group
+const g = svg.append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+// Links (connections)
+const links = g.selectAll(".link")
+  .data(root.links())
+  .join("path")
+  .attr("class", "link")
+  .attr("d", d3.linkHorizontal()
+    .x(d => d.y)
+    .y(d => d.x))
+  .attr("fill", "none")
+  .attr("stroke", d => colors[d.target.data.type] || "#999")
+  .attr("stroke-width", 2)
+  .attr("stroke-opacity", 0.6);
+
+// Nodes
+const nodes = g.selectAll(".node")
+  .data(root.descendants())
+  .join("g")
+  .attr("class", "node")
+  .attr("transform", d => `translate(${d.y},${d.x})`)
+  .style("cursor", "pointer");
+
+// Node circles
+nodes.append("circle")
+  .attr("r", d => Math.sqrt(d.data.value) * 1.5)
+  .attr("fill", d => colors[d.data.type] || "#003d7a")
+  .attr("stroke", "#fff")
+  .attr("stroke-width", 3)
+  .style("filter", "drop-shadow(0px 2px 4px rgba(0,0,0,0.2))")
+  .on("mouseover", function(event, d) {
+    d3.select(this)
+      .transition()
+      .duration(200)
+      .attr("r", Math.sqrt(d.data.value) * 2);
+    
+    showTooltip(event, d);
+  })
+  .on("mouseout", function(event, d) {
+    d3.select(this)
+      .transition()
+      .duration(200)
+      .attr("r", Math.sqrt(d.data.value) * 1.5);
+    
+    hideTooltip();
+  });
+
+// Node texts
+nodes.append("text")
+  .attr("dy", "0.31em")
+  .attr("x", d => d.children ? -15 : 15)
+  .attr("text-anchor", d => d.children ? "end" : "start")
+  .text(d => d.data.name)
+  .attr("font-size", d => d.data.type === "root" ? "16px" : "12px")
+  .attr("font-weight", d => d.data.type === "root" ? "bold" : d.children ? "600" : "normal")
+  .attr("fill", d => d.data.type === "root" ? "#003d7a" : "#212529")
+  .attr("font-family", "'Montserrat', sans-serif")
+  .style("text-shadow", "0 1px 2px rgba(255,255,255,0.8)");
+
+// Tooltip
+const tooltip = d3.select("body").append("div")
+  .attr("class", "mindmap-tooltip")
+  .style("position", "absolute")
+  .style("visibility", "hidden")
+  .style("background-color", "#003d7a")
+  .style("color", "white")
+  .style("padding", "12px 16px")
+  .style("border-radius", "8px")
+  .style("font-size", "13px")
+  .style("font-family", "'Open Sans', sans-serif")
+  .style("box-shadow", "0 4px 12px rgba(0,0,0,0.3)")
+  .style("max-width", "300px")
+  .style("z-index", "1000")
+  .style("pointer-events", "none");
+
+function showTooltip(event, d) {
+  let content = `<strong>${d.data.name}</strong>`;
+  
+  if (d.data.description) {
+    content += `<br/><br/>${d.data.description}`;
+  }
+  
+  if (d.data.period) {
+    content += `<br/><br/>📅 <em>${d.data.period}</em>`;
+  }
+  
+  tooltip
+    .html(content)
+    .style("visibility", "visible")
+    .style("top", (event.pageY - 10) + "px")
+    .style("left", (event.pageX + 15) + "px");
+}
+
+function hideTooltip() {
+  tooltip.style("visibility", "hidden");
+}
+
+// Add updated legend
+const legend = svg.append("g")
+  .attr("class", "legend")
+  .attr("transform", `translate(20, ${height - 160})`);
+
+const legendData = [
+  {label: "Central Core (Objective)", color: colors.root},
+  {label: "Methodological Pillars", color: colors.pillar},
+  {label: "Methods & Techniques", color: colors.method},
+  {label: "Timeline (Stages)", color: colors.phase},
+  {label: "Outputs & Results", color: colors.deliverable},
+  {label: "Analyzed Commodities", color: colors.data}
+];
+
+legendData.forEach((item, i) => {
+  const legendRow = legend.append("g")
+    .attr("transform", `translate(0, ${i * 24})`);
+  
+  legendRow.append("circle")
+    .attr("r", 8)
+    .attr("fill", item.color)
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 2);
+  
+  legendRow.append("text")
+    .attr("x", 18)
+    .attr("y", 5)
+    .text(item.label)
+    .attr("font-size", "12px")
+    .attr("font-family", "'Open Sans', sans-serif")
+    .attr("fill", "#495057")
+    .attr("font-weight", "500");
+});
+
+// Responsiveness
+window.addEventListener('resize', () => {
+  const newWidth = document.getElementById('mindmap-container').clientWidth;
+  svg.attr("viewBox", [0, 0, newWidth, height]);
+});
+</script>
+
+<style>
+#mindmap-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.link {
+  transition: all 0.3s ease;
+}
+
+.node text {
+  user-select: none;
+}
+
+.legend text {
+  font-weight: 500;
+}
+</style>
+```
+
+## Detailed Project Structure
+
+### 🎯 Three Methodological Pillars
+
+<div class="team-grid">
+
+<div class="project-info">
+#### PILLAR 1: Forecasting
+
+**Objectives:**
+- Forecast expected returns of agricultural commodities
+- Estimate conditional volatilities and risk regimes
+- Capture complex temporal dependencies
+
+**Main Methods:**
+- **GARCH/MSGARCH**: Volatility modeling with regime changes (Markov-Switching)
+- **Machine Learning**: LSTM, MLP, XGBoost, LightGBM
+- **Deep Learning**: Deep neural networks for non-linear patterns
+
+**Tools:**
+- R: `rugarch`, `MSGARCH`, `forecast`
+- Python: `torch`, `keras`, `xgboost`, `statsmodels`
+</div>
+
+<div class="project-info">
+#### PILLAR 2: Multi-Objective Optimization
+
+**Objectives:**
+- Determine efficient portfolio compositions
+- Balance return, risk, and diversification
+- Generate Pareto frontier with non-dominated solutions
+
+**Main Methods:**
+- **NSGA-II**: Non-dominated Sorting Genetic Algorithm II
+- **Differential Evolution**: Global evolutionary optimization
+- **SPEA2**: Strength Pareto Evolutionary Algorithm 2
+
+**Tools:**
+- R: `DEoptim`, `mco`, `nsga2R`
+- Python: `pymoo`, `DEAP`, `scipy.optimize`
+</div>
+
+<div class="project-info">
+#### PILLAR 3: Reinforcement Learning
+
+**Objectives:**
+- Develop dynamic and adaptive trading strategies
+- Simulate tactical allocation decisions
+- Implement reallocation policies under uncertainty
+
+**Main Methods:**
+- **PPO**: Proximal Policy Optimization
+- **Gym Environment**: Market simulation for training
+- **Strategies**: Momentum, dynamic hedging, trigger-based rebalancing
+
+**Tools:**
+- Python: `stable-baselines3`, `gym`, `ray[rllib]`
+- R: Integration via `reticulate`
+</div>
+
+</div>
+
+---
+
+## 📅 Official PAIC 2025/26 Timeline
+
+### Stage 1: Setup and Governance (Aug-Sep/2025)
+
+::: {.callout-tip}
+#### 🔧 Main Activities
+- **PAIC 2025/26 Opening**: August 13, 2025
+- Commitment Term Signing
+- Scope review and research questions definition
+- Computational environment setup (R/Python + Git/GitHub)
+- Data source mapping: YahooQuery, Quandl, FAO, B3, CME
+- Success criteria and risk management definition
+:::
+
+**Deliverables:**
+- Detailed work plan
+- Structured Git repository
+- Data sources documentation
+
+---
+
+### Stage 2: Data Collection and Curation (Sep-Oct/2025)
+
+::: {.callout-tip}
+#### 📊 Main Activities
+- Historical commodity series collection (corn, soybeans, meal, soybean oil)
+- Data cleaning and normalization (frequencies, outliers, contract adjustments)
+- Financial feature engineering: log-return, volatility, drawdown, technical indicators
+- Exploratory analysis and descriptive statistics
+:::
+
+**Deliverables:**
+- Curated and documented dataset
+- Complete exploratory data analysis (EDA)
+- Automated collection scripts
+
+---
+
+### Stage 3: Volatility and Return Modeling (Oct-Nov/2025)
+
+::: {.callout-tip}
+#### 🤖 Main Activities
+- GARCH/MSGARCH model estimation (asymmetric distributions, regimes)
+- ML/DL prototype development: LSTM, MLP for forecasting
+- Performance comparison between econometric and ML models
+- **📝 Partial Report 1**: November 24, 2025
+- **🎤 13th SPPAIC**: October 24, 2025
+:::
+
+**Deliverables:**
+- Calibrated forecasting models
+- Partial Report 1 (methodology and preliminary results)
+- Presentation at 13th PAIC Symposium
+
+---
+
+### Stage 4: Optimization and Frontiers (Nov/2025-Jan/2026)
+
+::: {.callout-tip}
+#### 🎯 Main Activities
+- NSGA-II and Differential Evolution implementation
+- Pareto frontier generation (risk-return-diversification trade-offs)
+- Sensitivity and robustness analysis of solutions
+- Comparison with benchmarks (buy-and-hold, risk parity, mean-variance)
+:::
+
+**Deliverables:**
+- Functional multi-objective optimization algorithms
+- Efficient portfolios on Pareto frontier
+- Alternative scenario analyses
+
+---
+
+### Stage 5: RL and Backtesting (Jan-Mar/2026)
+
+::: {.callout-tip}
+#### 🚀 Main Activities
+- PPO agent training for dynamic strategies
+- Backtesting with temporal validation (walk-forward)
+- Comparison with market benchmarks
+- **📝 Partial Report 2**: March 1, 2026
+- **🎓 Qualification Seminar**: March 15, 2026
+:::
+
+**Deliverables:**
+- Trained and validated RL agent
+- Partial Report 2 (complete results)
+- Qualification presentation
+
+---
+
+### Stage 6: Consolidation and Dissemination (Mar-Jul/2026)
+
+::: {.callout-tip}
+#### 📄 Main Activities
+- Scientific paper writing (April-June/2026)
+- **📬 Article submission**: July 6, 2026
+- Peer review and corrections
+- Poster/presentation preparation
+- **🎤 14th SPPAIC**: August 10, 2026
+:::
+
+**Deliverables:**
+- Submitted scientific article
+- Academic poster for SPPAIC
+- Complementary didactic material
+- Final project documentation
+
+---
+
+## 🎯 Expected Results
+
+### 📚 Academic and Scientific
+
+<div class="info-box">
+- **Publications**: Article in peer-reviewed journal (Quantitative Finance/Applied Econometrics area)
+- **Knowledge advancement**: Unprecedented integration of forecasting, multi-objective optimization, and RL for commodities
+- **Innovative methodology**: Reproducible and scalable framework for portfolio management
+- **Human resource training**: Scholar capacity building in advanced quantitative methods
+</div>
+
+### 💼 Practical and Applied
+
+<div class="info-box">
+- **Analytical tools**: Computational pipeline (R/Python) for decision support
+- **Trading strategies**: Adaptive models with reinforcement learning
+- **Risk management**: Instruments for VaR, ES, and drawdown analysis in portfolios
+- **Applicability**: Solutions for trading companies, agricultural cooperatives, and fund managers
+</div>
+
+### 🔬 Technological Innovation
+
+<div class="info-box">
+- **Patent**: System/methodology with novelty, inventive activity, and industrial application requirements
+- **Innovation**: Holistic and adaptive integration of advanced techniques (non-obvious to experts)
+- **Differential**: Temporal multi-objective approach with RL for sequential decisions
+- **Impact**: Positioning Brazil as an innovation hub in applied finance for agribusiness
+</div>
+
+---
+
+## 🌾 Analyzed Commodities
+
+### Grain Market
+
+| Commodity | Description | Markets |
+|-----------|-------------|---------|
+| **Corn** | Basic grain for animal feed and ethanol | CME, B3 (futures contracts) |
+| **Soybeans** | Grain, meal, and oil - integrated chain | CME, B3, DCE (China) |
+| **Wheat** | Complement for diversification | CME, CBOT |
+| **Derivatives** | Soybean meal, soybean oil | Spot and futures markets |
+
+**Data Characteristics:**
+- Daily historical series with sufficient periods for regime analysis
+- Rolling windows for out-of-sample validation
+- Futures contract adjustments (rollover)
+- Technical and fundamental indicators
+
+---
+
+## 📊 Interactive Visual Timeline
+
+### PAIC 2025/26 Timeline
+
+```{mermaid}
+%%| echo: false
+%%| fig-width: 12
+%%| fig-height: 8
+gantt
+    title PAIC 2025/26 - Official FAE Timeline
+    dateFormat YYYY-MM-DD
+    axisFormat %b/%y
+    
+    section Phase 1: Setup
+    PAIC 2025-26 Opening           :milestone, m1, 2025-08-13, 1d
+    Term Signing                   :active, 2025-08-05, 9d
+    Work Plan Preparation          :2025-08-13, 34d
+    Data Infrastructure            :2025-08-20, 41d
+    
+    section Phase 2: Data & Models
+    Collection & Curation          :2025-09-01, 60d
+    GARCH/MSGARCH Modeling         :2025-10-01, 60d
+    ML/DL Prototypes (LSTM)        :2025-10-15, 46d
+    13th SPPAIC                    :milestone, sppaic1, 2025-10-24, 1d
+    Partial Report 1               :milestone, m2, 2025-11-24, 1d
+    
+    section Phase 3: Optimization
+    Multi-Objective Framework      :2025-11-01, 119d
+    NSGA-II/DE Implementation      :2025-11-15, 77d
+    Backtesting & Validation       :2026-01-01, 58d
+    
+    section Phase 4: RL & Strategy
+    RL Environment Setup           :2026-02-01, 58d
+    PPO Agent Training             :2026-02-15, 59d
+    Partial Report 2               :milestone, m3, 2026-03-01, 1d
+    Qualification Seminar          :milestone, m4, 2026-03-15, 1d
+    Strategy Evaluation            :2026-03-01, 60d
+    
+    section Phase 5: Publication
+    Scientific Paper Writing       :2026-04-01, 96d
+    Article Submission             :milestone, m5, 2026-07-06, 1d
+    Peer Review Period             :2026-07-06, 22d
+    Article Corrections            :2026-07-08, 20d
+    Poster Preparation             :2026-07-01, 40d
+    14th SPPAIC                    :milestone, sppaic2, 2026-08-10, 1d
+    
+```
+
+---
+
+## 🔗 Connections Between Pillars
+
+### Integrated Methodological Flow
+
+```{mermaid}
+%%| echo: false
+flowchart LR
+    A[Historical<br/>Commodity<br/>Data] --> B[PILLAR 1:<br/>Forecasting]
+    B --> C[Return & Risk<br/>Predictions]
+    C --> D[PILLAR 2:<br/>Multi-Objective<br/>Optimization]
+    D --> E[Pareto<br/>Frontier]
+    E --> F[PILLAR 3:<br/>Reinforcement<br/>Learning]
+    F --> G[Dynamic<br/>Strategies]
+    G --> H[Backtesting &<br/>Evaluation]
+    H --> I{Satisfactory<br/>Performance?}
+    I -->|No| B
+    I -->|Yes| J[Publication &<br/>Implementation]
+    
+    style A fill:#f8f9fa,stroke:#003d7a,stroke-width:3px
+    style B fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff
+    style D fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff
+    style F fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff
+    style J fill:#28a745,stroke:#003d7a,stroke-width:3px,color:#fff
+```
+
+---
+
+## 📖 Main Methodological References
+
+::: {.callout-note collapse="true"}
+## 📚 Selected Bibliography
+
+**Forecasting & Volatility:**
+- Ardia et al. (2019) - Markov-Switching GARCH Models in R (MSGARCH Package)
+- Ramírez & Fadiga (2003) - Forecasting Agricultural Commodity Prices with Asymmetric-Error GARCH Models
+
+**Multi-Objective Optimization:**
+- Zitzler, Laumanns & Thiele (2001) - SPEA2: Improving the Strength Pareto Evolutionary Algorithm
+- Chen, Weng & Li (2009) - Multiobjective Extremal Optimization for Portfolio Optimization
+
+**Reinforcement Learning:**
+- Schulman et al. (2017) - Proximal Policy Optimization Algorithms
+- Recent applications in quantitative finance and algorithmic trading
+
+**Commodities & Agribusiness:**
+- Guidolin & Pedio (2020) - Forecasting commodity futures returns with stepwise regressions
+- Zhang et al. (2020) - Forecasting Agricultural Commodity Prices using Model Selection Framework
+:::
+
+---
+
+## 🎓 Team and Supervision
+
+<div class="team-grid">
+
+<div class="team-member">
+### Prof. Dr. Rodrigo Hermont Ozon
+<span class="team-role">Advisor / Lead Researcher</span>
+
+- **Education**: Economist (UFPR), MSc in Economic Development (UFPR)
+- **PhD**: PPGEPS/PUCPR (2022-2026)
+- **Area**: Financial Econometrics, Time Series, Optimization
+- **Institution**: FAE Business School
+
+<div class="team-social-links">
+  <a href="mailto:rodrigo.ozon@fae.edu" class="social-icon email" aria-label="Email">
+    <i class="fas fa-envelope"></i>
+  </a>
+  <a href="#" class="social-icon lattes" aria-label="Lattes">
+    <i class="fas fa-graduation-cap"></i>
+  </a>
+  <a href="#" class="social-icon linkedin" aria-label="LinkedIn">
+    <i class="fab fa-linkedin"></i>
+  </a>
+</div>
+</div>
+
+<div class="team-member">
+### PAIC Scholar/Volunteer
+<span class="team-role">Undergraduate Student</span>
+
+- **Activities**: Data collection, model execution, preliminary analyses
+- **Development**: R/Python programming, quantitative methods
+- **Support**: Documentation, visualizations, reports
+
+<span class="badge">Jhonathan, Vanessa, Eduardo</span>
+<span class="badge">PAIC 2025/26</span>
+</div>
+
+</div>
+
+---
+
+## 🏆 Institutional Support
+
+<div class="info-box">
+#### FAE Business School
+
+This project is developed within the **Support Program for Scientific Initiation (PAIC)** of FAE University Center, aligned with strategic areas of:
+
+- **Enabling Technologies** (AI, Big Data, Quantitative Analysis)
+- **Agribusiness and Applied Finance**
+- **Data Science and Econometrics**
+
+**Website**: [https://fae.edu](https://fae.edu)  
+**Contact**: rodrigo.ozon@fae.edu
+</div>
+
+---
+
+::: {.callout-tip}
+## 💡 Next Steps
+
+1. **August/2025**: Official PAIC opening and activity start
+2. **October/2025**: First presentation at 13th SPPAIC
+3. **November/2025**: Partial Report 1 delivery
+4. **March/2026**: Qualification Seminar
+5. **July/2026**: Scientific article submission
+6. **August/2026**: Final presentation at 14th SPPAIC
+:::
+
+---
+
+<div class="fae-brand-bar" style="margin-top: 3rem; padding: 1.5rem; border-radius: 8px;">
+  <p style="margin: 0; font-size: 0.95rem;">
+    <strong>PAIC Econometrics | FAE Business School</strong><br/>
+    Scientific Initiation Project 2025/26 - Curitiba, PR<br/>
+    © 2025 All rights reserved
+  </p>
+</div>

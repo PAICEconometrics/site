@@ -1,122 +1,230 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "PAIC Econometrics Research",
+    "objectID": "weekly_papers.html",
+    "href": "weekly_papers.html",
+    "title": "Weekly Papers Digest",
     "section": "",
-    "text": "Integrating Time Series Forecasting, Multi-Objective Decision Making & Reinforcement Learning\nAn innovative research initiative at FAE Business School developing patent-ready methodologies for agricultural commodities portfolio optimization through advanced econometric and machine learning techniques.\n\nExplore Our Research → View Publications →",
+    "text": "A continuously updated collection of the latest research papers in applied econometrics, multi-period multi-objective optimization, time series forecasting, and reinforcement learning for finance.\nLast Updated: outubro 21, 2025\nTotal Papers Catalogued: 24 papers across 4 weeks"
+  },
+  {
+    "objectID": "weekly_papers.html#about-this-digest",
+    "href": "weekly_papers.html#about-this-digest",
+    "title": "Weekly Papers Digest",
+    "section": "📖 About This Digest",
+    "text": "📖 About This Digest\nThis page is automatically updated every Friday with the latest scientific papers discovered by our Paper Hunter agent. Each week, we curate articles from:\n\narXiv (econ.EM, q-fin, cs.LG, math.OC)\nSSRN Working Papers\nGoogle Scholar Recent Publications\nMajor Journals (early access articles)\n\n\nCategories\nPapers are classified into four main categories:\n\n\n\n\n\n\n\nCategory\nFocus Area\n\n\n\n\n🔵 Econometrics\nTime series models, volatility forecasting, spillovers, cointegration\n\n\n🟢 Optimization\nMulti-objective optimization, MOO, NSGA-II/III, portfolio optimization\n\n\n🟣 RL\nReinforcement learning, Q-learning, Deep RL, policy optimization\n\n\n🟠 Volatility\nGARCH models, implied volatility, risk modeling, VaR/CVaR"
+  },
+  {
+    "objectID": "weekly_papers.html#october-2025",
+    "href": "weekly_papers.html#october-2025",
+    "title": "Weekly Papers Digest",
+    "section": "🗓️ October 2025",
+    "text": "🗓️ October 2025\n\nWeek of October 11-17, 2025\n\nSummary\nThis week we found 7 papers across multiple databases. Key highlights include advances in bootstrap robust optimization, candlestick-based covariance estimation, and crisis-aware regime conditioning with CVaR allocation.\nTop Pick: Deep Learning for Portfolio Optimization by Osaf Ali - A comprehensive multi-agent RL approach optimizing multiple risk metrics jointly.\n\n\n📊 Featured Papers\n\n\n🔵 Econometrics (3 papers)\n\n\n1. Beyond Returns: A Candlestick-Based Approach to Spot Covariance Estimation\nAuthors: Yasin Simsek\nVenue: arXiv (econ.EM) | Date: 2025-10-14\nLink: arXiv:2510.12911\nSummary: Introduces an applied econometrics method using high-frequency candlestick data to improve spot covariance estimates—a critical input for multi-period portfolio models. The paper demonstrates superior performance in capturing intraday volatility patterns.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nEssential for our volatility modeling component. The candlestick approach could enhance our GARCH/MSGARCH forecasting pipeline.\n\n\n\n2. Spatial and Temporal Boundaries in Difference-in-Differences\nAuthors: Tatsuru Kikuchi\nVenue: arXiv (econ.EM) | Date: 2025-10-13\nLink: arXiv:2510.11013\nSummary: Develops physics-inspired diagnostics using the Navier-Stokes equation framework to validate DID identification over space and time. Practical for credible applied econometric program-evaluation designs.\nRelevance to Our Research: ⭐⭐⭐\nMethodological interest for causal inference in time series contexts.\n\n\n\n3. (Non-Parametric) Bootstrap Robust Optimization for Portfolios\nAuthors: Daniel C. Oliveira, Grover Guzman, Nick Firoozye\nVenue: arXiv (q-fin.ST) | Date: 2025-10-14\nLink: arXiv:2510.12725\nSummary: Proposes a bootstrap-based robust optimization framework to harden portfolio and trading strategy design against estimation error. Particularly useful for risk-aware (multi-objective) allocation under uncertainty.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nHIGH PRIORITY - Directly applicable to our portfolio optimization pipeline. Should be incorporated into robustness checks.\n\n\n\n🟢 Optimization (2 papers)\n\n\n\n4. Deep Learning for Portfolio Optimization: AI-Driven Risk-Adjusted Returns\nAuthors: Osaf Ali\nVenue: SSRN | Date: 2025-10-15\nLink: SSRN 5510579\nSummary: Proposes a hybrid multi-agent RL + multi-objective approach optimizing Sharpe/Sortino/CVaR jointly. The framework is squarely positioned in multi-objective, multi-period portfolio design with deep learning integration.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nMUST READ - This is exactly our intersection: MOO + RL + portfolios. Excellent benchmark for our own implementation.\nKey Contributions: - Multi-agent architecture for different objectives - Joint optimization of multiple risk metrics - Backtesting on commodity futures data\n\n\n\n5. Evaluating Investment Performance: The p-index and Empirical Efficient Frontier\nAuthors: Jing Li, Bowei Guo, Xinqi Xie, Kuo-Ping Chang\nVenue: arXiv (q-fin.PM) | Date: 2025-10-13\nLink: arXiv:2510.11074\nSummary: Defines a put-option-based risk index and empirical efficient frontier for performance evaluation. Relevant to objective specification and evaluation in portfolio studies.\nRelevance to Our Research: ⭐⭐⭐⭐\nUseful for benchmarking our Pareto front against traditional efficient frontiers.\n\n\n\n🟣 RL (1 paper)\n\n\n\n6. Crisis-Aware Regime-Conditioned Diffusion with CVaR Allocation\nAuthors: Ali Atiah Alzahrani\nVenue: arXiv (cs.LG → q-fin.CP) | Date: 2025-10-12\nLink: arXiv:2510.10807\nSummary: Combines regime-aware generative scenarios with a CVaR allocator to improve drawdown control. Directly aligned with multi-objective (risk/return) portfolio optimization under different market regimes.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nHIGH PRIORITY - The regime-switching + CVaR combination is exactly what we need for our multi-period framework.\n\n\n\n🟠 Volatility (1 paper)\n\n\n\n7. On Evaluating Loss Functions for Stock Ranking with Transformer Models\nAuthors: Jan Kwiatkowski, Jarosław A. Chudziak\nVenue: arXiv (cs.LG → q-fin.PM) | Date: 2025-10-15\nLink: arXiv:2510.14156\nSummary: Benchmarks pointwise/pairwise/listwise loss functions for stock ranking using Transformer architecture. Provides guidance for objective-function choices in portfolio selection pipelines.\nRelevance to Our Research: ⭐⭐⭐\nUseful for our ML/DL forecasting module, particularly for ranking-based portfolio construction."
+  },
+  {
+    "objectID": "weekly_papers.html#september-2025",
+    "href": "weekly_papers.html#september-2025",
+    "title": "Weekly Papers Digest",
+    "section": "🗓️ September 2025",
+    "text": "🗓️ September 2025\n\nWeek of September 5-11, 2025\n\nSummary\nStrong week for multi-period optimization papers! Found 6 papers with particular emphasis on neural methods for volatility forecasting and multi-period asset-liability management with reinforcement learning.\nTop Pick: Multi-period Asset-Liability Management with RL by Gao et al. - Breakthrough application of RL to ALM under regime-switching dynamics.\n\n\n📊 Featured Papers\n\n\n🔵 Econometrics (2 papers)\n\n\n8. Neural Lévy SDE for State-Dependent Risk and Density Forecasting\nAuthors: Ziyao Wang, Svetlozar T. Rachev\nVenue: arXiv (q-fin.RM) | Date: 2025-09-03\nLink: arXiv:2509.01041\nSummary: Proposes a neural jump-diffusion model with state-dependent parameters for multi-horizon density and risk forecasting. Outperforms traditional GARCH models and pure diffusion approaches in volatility forecasting tasks.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nMUST READ - Neural Lévy processes are cutting-edge for our volatility modeling. Should compare against our MSGARCH implementation.\nKey Innovations: - State-dependent jump intensity - Multi-horizon density forecasts - Better tail risk estimation than GARCH\n\n\n\n9. Signal from Noise: Neural Network Denoising for Financial Spillovers\nAuthors: Abdullah Karasan, Özge Seda Alp\nVenue: arXiv (econ.EM) | Date: 2025-09-03\nLink: arXiv:2509.01156\nSummary: Introduces neural denoising applied to covariance matrices before estimating return/volatility spillovers. Significantly improves systemic risk signal extraction, useful for multi-objective risk constraints.\nRelevance to Our Research: ⭐⭐⭐⭐\nImportant for our diversification objectives and correlation-based constraints in the optimization model.\n\n\n\n🟢 Optimization (1 paper)\n\n\n\n10. Mean-Variance Stackelberg Games with Asymmetric Information\nAuthors: Yu-Jui Huang, Shihao Zhu\nVenue: arXiv (q-fin.PM) | Date: 2025-09-05\nLink: arXiv:2509.03669\nSummary: Formulates a leader-follower game with asymmetric information and entropy regularization in mean-variance optimization. Derives equilibrium with Gaussian random strategies—relevant for multi-objective optimization under competition/benchmarking scenarios.\nRelevance to Our Research: ⭐⭐⭐\nTheoretical interest, especially if we consider relative performance objectives.\n\n\n\n🟣 RL (1 paper)\n\n\n\n11. Multi-period Asset-Liability Management with RL in Regime-Switching Market\nAuthors: Zhongqin Gao, Ping Chen, Xun Li, Yan Lv, Wenhao Zhang\nVenue: arXiv (q-fin.PM) | Date: 2025-09-03\nLink: arXiv:2509.03251\nSummary: Resolves multi-period mean-variance optimization with regime switching and uncontrollable liabilities using reinforcement learning and filtering. Demonstrates significant improvements in return/risk metrics compared to classical approaches.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nBREAKTHROUGH PAPER - This is the exact intersection we’re working on! Multi-period + RL + regime-switching. Essential reference.\nImplementation Details: - Uses Hidden Markov Model for regime detection - Deep Q-Network for policy learning - Transaction costs and constraints incorporated\n\n\n\n🟠 Volatility (2 papers)\n\n\n\n12. Controllable Generation of Implied Volatility Surfaces with VAEs\nAuthors: Jing Wang, Shuaiqiang Liu, Cornelis Vuik\nVenue: arXiv (q-fin.CP) | Date: 2025-09-01\nLink: arXiv:2509.01743\nSummary: Generates controllable implied volatility surfaces (level, slope, curvature, term structure) with no-arbitrage verification using Variational Autoencoders. Useful for scenario simulation and stress testing.\nRelevance to Our Research: ⭐⭐⭐⭐\nExcellent for generating multiple scenarios in our multi-period optimization framework.\n\n\n\n13. Data-driven Modeling of Multiple Interest Rates with Generalized Vasicek\nAuthors: Pekka Ilmonen, Matti Laurikkala, Kirill Ralchenko, Timo Sottinen, Lauri Viitasaari\nVenue: arXiv (econ.EM) | Date: 2025-09-03\nLink: arXiv:2509.03208\nSummary: Joint modeling of multiple interest rate curves using generalized Vasicek-type models with non-Gaussian innovations. Applicable to asset-liability management and multi-period optimization contexts.\nRelevance to Our Research: ⭐⭐⭐\nRelevant if we extend to fixed-income commodities or futures with interest rate exposure."
+  },
+  {
+    "objectID": "weekly_papers.html#research-impact-tracker",
+    "href": "weekly_papers.html#research-impact-tracker",
+    "title": "Weekly Papers Digest",
+    "section": "📈 Research Impact Tracker",
+    "text": "📈 Research Impact Tracker\n\nPapers by Category (All-Time)\n\n\n\n\n\n\n\n\n\n\n\nRelevance Distribution"
+  },
+  {
+    "objectID": "weekly_papers.html#search-by-topic",
+    "href": "weekly_papers.html#search-by-topic",
+    "title": "Weekly Papers Digest",
+    "section": "🔍 Search by Topic",
+    "text": "🔍 Search by Topic\n\nQuick Filters\n\n\n🎯 Portfolio Optimization\nJump to papers\nPapers on multi-objective, multi-period portfolio construction, Pareto frontiers, and allocation strategies.\n\n\n📊 Volatility Forecasting\nJump to papers\nGARCH models, neural volatility, implied volatility surfaces, and risk metrics.\n\n\n🤖 Reinforcement Learning\nJump to papers\nDeep RL, Q-learning, policy optimization for dynamic trading and portfolio management.\n\n\n📈 Econometric Methods\nJump to papers\nTime series analysis, spillover estimation, cointegration, and causal inference."
+  },
+  {
+    "objectID": "weekly_papers.html#reading-list-by-priority",
+    "href": "weekly_papers.html#reading-list-by-priority",
+    "title": "Weekly Papers Digest",
+    "section": "📚 Reading List by Priority",
+    "text": "📚 Reading List by Priority\n\n🔥 Must Read (Priority 1)\nEssential papers that directly align with our thesis objectives:\n\nDeep Learning for Portfolio Optimization (Ali, 2025) - Multi-agent RL for MOO\nMulti-period ALM with RL (Gao et al., 2025) - Regime-switching + RL\nNeural Lévy SDE (Wang & Rachev, 2025) - Advanced volatility forecasting\nBootstrap Robust Optimization (Oliveira et al., 2025) - Portfolio robustness\nCrisis-Aware CVaR Allocation (Alzahrani, 2025) - Regime-conditional allocation\n\n\n\n⚡ High Priority (Priority 2)\nImportant papers for specific components:\n\nCandlestick Covariance Estimation (Simsek, 2025) - High-frequency data\nSignal from Noise (Karasan & Alp, 2025) - Correlation denoising\nEvaluating Performance (Li et al., 2025) - Benchmarking framework\nControllable IV Surfaces (Wang et al., 2025) - Scenario generation\n\n\n\n📖 Additional Reading (Priority 3)\nRelevant for methodology and context:\n\nMean-Variance Stackelberg Games (Huang & Zhu, 2025) - Game theory\nDID Boundaries (Kikuchi, 2025) - Causal inference\nStock Ranking Loss Functions (Kwiatkowski & Chudziak, 2025) - ML metrics\nVasicek Interest Rates (Ilmonen et al., 2025) - Fixed income"
+  },
+  {
+    "objectID": "weekly_papers.html#download-options",
+    "href": "weekly_papers.html#download-options",
+    "title": "Weekly Papers Digest",
+    "section": "📥 Download Options",
+    "text": "📥 Download Options\n\nComplete Database\nDownload the full database of papers in various formats:\n\nExcel File (.xlsx): Download Master Spreadsheet\nCSV Format (.csv): Download CSV\nBibTeX (.bib): Download Citations\nZotero RDF: Import to Zotero\n\n\n\nWeekly Reports\nIndividual weekly reports in PDF format:\n\nWeek of Oct 11-17, 2025 (PDF)\nWeek of Sep 05-11, 2025 (PDF)"
+  },
+  {
+    "objectID": "weekly_papers.html#stay-updated",
+    "href": "weekly_papers.html#stay-updated",
+    "title": "Weekly Papers Digest",
+    "section": "🔔 Stay Updated",
+    "text": "🔔 Stay Updated\n\nSubscribe to Weekly Digest\nWant to receive these updates directly? Join our mailing list:\n\n Subscribe\n\n\n\nRSS Feed\nAdd our RSS feed to your reader: RSS Feed URL"
+  },
+  {
+    "objectID": "weekly_papers.html#statistics",
+    "href": "weekly_papers.html#statistics",
+    "title": "Weekly Papers Digest",
+    "section": "📊 Statistics",
+    "text": "📊 Statistics\n\n\n\n\n\n\nDatabase Metrics\n\n\n\n\nTotal Papers Catalogued: 13\nAverage Papers/Week: 6.5\nMost Active Category: Econometrics (38%)\nHighest Rated Papers: 6 five-star papers\nSources Covered: arXiv, SSRN, Google Scholar\nTime Span: September - October 2025"
+  },
+  {
+    "objectID": "weekly_papers.html#contributing",
+    "href": "weekly_papers.html#contributing",
+    "title": "Weekly Papers Digest",
+    "section": "🤝 Contributing",
+    "text": "🤝 Contributing\nFound a relevant paper we missed? Submit it here:\nPaper Submission Form: - Paper Title - Authors - Venue/Date - Link - Brief Summary (50-100 words) - Suggested Category\nContact: rodrigo.ozon@fae.edu"
+  },
+  {
+    "objectID": "weekly_papers.html#related-resources",
+    "href": "weekly_papers.html#related-resources",
+    "title": "Weekly Papers Digest",
+    "section": "📖 Related Resources",
+    "text": "📖 Related Resources\n\nPaper Hunter: Our Automated Agent\nLiterature Review Methodology\nTheoretical Framework\nProject Overview\n\n\n\n📚 PAIC Econometrics | FAE Business School Weekly Papers Digest - Updated Every Friday at 08:00 AM (BRT) Powered by Paper Hunter AI Agent"
+  },
+  {
+    "objectID": "mindmap.html",
+    "href": "mindmap.html",
+    "title": "Research Mindmap",
+    "section": "",
+    "text": "Interactive visualization of the methodological structure, official timeline and connections of the project “Innovations in Financial Modeling: AI & Econometrics for Agricultural Commodity Portfolio Optimization”",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#research-vision",
-    "href": "index.html#research-vision",
-    "title": "PAIC Econometrics Research",
-    "section": "🎯 Research Vision",
-    "text": "🎯 Research Vision\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) represents the continuation and evolution of pioneering work initiated at PUCPR, now advancing at FAE Business School with enhanced scope and objectives.\n\n🎓 Academic Goals\nPrimary Objectives:\n\nPatent Development: Create innovative methodologies for multi-period portfolio optimization\nScientific Publications: Contribute to academic literature on agricultural finance\nDoctoral Research Integration: Support ongoing PhD thesis development\nUndergraduate Excellence: Train students in cutting-edge quantitative finance\n\nInstitutional Context:\nThis project builds upon the foundation established at PUCPR (visit the previous project site) while expanding into new frontiers of agricultural commodity portfolio management.",
+    "objectID": "mindmap.html#project-overview",
+    "href": "mindmap.html#project-overview",
+    "title": "Research Mindmap",
+    "section": "Project Overview",
+    "text": "Project Overview\nThis conceptual map presents the complete architecture of the PAIC 2025/26 research project, visually organizing the three methodological pillars, the six execution stages according to the official schedule and the expected results aligned with the program guidelines.\n\n\n\n\n\n\n💡 How to Use This Mindmap\n\n\n\n\nExplore interactive nodes to understand each methodological component\nFollow colored connections to comprehend relationships between techniques\nIdentify temporal stages in the PAIC 2025/26 timeline flow\nHover over elements to see detailed descriptions\n\n\n\n\n\n\n\n\n\n🎯 Project’s Central Objective\n\n\n\nDevelop an integrated model for analysis and optimization of agricultural commodity portfolios, combining:\n\nAdvanced Forecasting (GARCH/MSGARCH + ML/DL)\nMulti-Objective Optimization (NSGA-II, Differential Evolution)\nReinforcement Learning (PPO, adaptive strategies)\n\nGoal: Create tools for risk management and dynamic allocation in commodity markets, with potential for patent and scientific publications.",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#core-research-framework",
-    "href": "index.html#core-research-framework",
-    "title": "PAIC Econometrics Research",
-    "section": "🔬 Core Research Framework",
-    "text": "🔬 Core Research Framework\nOur methodology integrates three fundamental pillars:\n\n\n📈 Time Series Forecasting\nAdvanced predictive modeling for commodity prices using:\n\nARIMA/GARCH family models\nBayesian structural time series\nLSTM and GRU neural networks\nEnsemble forecasting methods\nHawkes processes for news impact\n\nEconometrics Deep Learning Bayesian Methods\n\n\n🎯 Multi-Objective Optimization\nPortfolio optimization considering multiple conflicting objectives:\n\nReturn maximization\nRisk minimization\nLiquidity management\nSustainability criteria\nDynamic rebalancing strategies\n\nEvolutionary Algorithms Pareto Optimization Fuzzy Logic\n\n\n🤖 Reinforcement Learning\nAdaptive decision-making strategies:\n\nQ-Learning for portfolio selection\nDeep Q-Networks (DQN)\nPolicy gradient methods\nMulti-agent systems\nDynamic strategy adaptation\n\nRL Algorithms Adaptive Systems Decision Theory",
+    "objectID": "mindmap.html#interactive-mindmap",
+    "href": "mindmap.html#interactive-mindmap",
+    "title": "Research Mindmap",
+    "section": "Interactive Mindmap",
+    "text": "Interactive Mindmap",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#key-commodities-focus",
-    "href": "index.html#key-commodities-focus",
-    "title": "PAIC Econometrics Research",
-    "section": "📊 Key Commodities Focus",
-    "text": "📊 Key Commodities Focus\nOur research concentrates on Brazilian agricultural grain commodities:",
+    "objectID": "mindmap.html#detailed-project-structure",
+    "href": "mindmap.html#detailed-project-structure",
+    "title": "Research Mindmap",
+    "section": "Detailed Project Structure",
+    "text": "Detailed Project Structure\n\n🎯 Three Methodological Pillars\n\n\nPILLAR 1: Forecasting\nObjectives: - Forecast expected returns of agricultural commodities - Estimate conditional volatilities and risk regimes - Capture complex temporal dependencies\nMain Methods: - GARCH/MSGARCH: Volatility modeling with regime changes (Markov-Switching) - Machine Learning: LSTM, MLP, XGBoost, LightGBM - Deep Learning: Deep neural networks for non-linear patterns\nTools: - R: rugarch, MSGARCH, forecast - Python: torch, keras, xgboost, statsmodels\n\n\nPILLAR 2: Multi-Objective Optimization\nObjectives: - Determine efficient portfolio compositions - Balance return, risk, and diversification - Generate Pareto frontier with non-dominated solutions\nMain Methods: - NSGA-II: Non-dominated Sorting Genetic Algorithm II - Differential Evolution: Global evolutionary optimization - SPEA2: Strength Pareto Evolutionary Algorithm 2\nTools: - R: DEoptim, mco, nsga2R - Python: pymoo, DEAP, scipy.optimize\n\n\nPILLAR 3: Reinforcement Learning\nObjectives: - Develop dynamic and adaptive trading strategies - Simulate tactical allocation decisions - Implement reallocation policies under uncertainty\nMain Methods: - PPO: Proximal Policy Optimization - Gym Environment: Market simulation for training - Strategies: Momentum, dynamic hedging, trigger-based rebalancing\nTools: - Python: stable-baselines3, gym, ray[rllib] - R: Integration via reticulate",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#technical-stack",
-    "href": "index.html#technical-stack",
-    "title": "PAIC Econometrics Research",
-    "section": "🛠️ Technical Stack",
-    "text": "🛠️ Technical Stack\n\nDevelopment Environment\nProgramming & Analysis:\n\nR Ecosystem: tidyverse, forecast, rugarch, quantmod, PerformanceAnalytics\nPython Ecosystem: pandas, numpy, scikit-learn, tensorflow, pytorch, stable-baselines3\nIntegration: Quarto for reproducible research combining R and Python\n\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ price indices\nUSDA agricultural reports\nNews APIs for sentiment analysis\n\nInfrastructure:\n\nVersion control: Git/GitHub\nCollaboration: RStudio/Positron IDE\nDeployment: GitHub Pages\nDocumentation: Quarto publishing system",
+    "objectID": "mindmap.html#official-paic-202526-timeline",
+    "href": "mindmap.html#official-paic-202526-timeline",
+    "title": "Research Mindmap",
+    "section": "📅 Official PAIC 2025/26 Timeline",
+    "text": "📅 Official PAIC 2025/26 Timeline\n\nStage 1: Setup and Governance (Aug-Sep/2025)\n\n\n\n\n\n\n🔧 Main Activities\n\n\n\n\nPAIC 2025/26 Opening: August 13, 2025\nCommitment Term Signing\nScope review and research questions definition\nComputational environment setup (R/Python + Git/GitHub)\nData source mapping: YahooQuery, Quandl, FAO, B3, CME\nSuccess criteria and risk management definition\n\n\n\nDeliverables: - Detailed work plan - Structured Git repository - Data sources documentation\n\n\n\nStage 2: Data Collection and Curation (Sep-Oct/2025)\n\n\n\n\n\n\n📊 Main Activities\n\n\n\n\nHistorical commodity series collection (corn, soybeans, meal, soybean oil)\nData cleaning and normalization (frequencies, outliers, contract adjustments)\nFinancial feature engineering: log-return, volatility, drawdown, technical indicators\nExploratory analysis and descriptive statistics\n\n\n\nDeliverables: - Curated and documented dataset - Complete exploratory data analysis (EDA) - Automated collection scripts\n\n\n\nStage 3: Volatility and Return Modeling (Oct-Nov/2025)\n\n\n\n\n\n\n🤖 Main Activities\n\n\n\n\nGARCH/MSGARCH model estimation (asymmetric distributions, regimes)\nML/DL prototype development: LSTM, MLP for forecasting\nPerformance comparison between econometric and ML models\n📝 Partial Report 1: November 24, 2025\n🎤 13th SPPAIC: October 24, 2025\n\n\n\nDeliverables: - Calibrated forecasting models - Partial Report 1 (methodology and preliminary results) - Presentation at 13th PAIC Symposium\n\n\n\nStage 4: Optimization and Frontiers (Nov/2025-Jan/2026)\n\n\n\n\n\n\n🎯 Main Activities\n\n\n\n\nNSGA-II and Differential Evolution implementation\nPareto frontier generation (risk-return-diversification trade-offs)\nSensitivity and robustness analysis of solutions\nComparison with benchmarks (buy-and-hold, risk parity, mean-variance)\n\n\n\nDeliverables: - Functional multi-objective optimization algorithms - Efficient portfolios on Pareto frontier - Alternative scenario analyses\n\n\n\nStage 5: RL and Backtesting (Jan-Mar/2026)\n\n\n\n\n\n\n🚀 Main Activities\n\n\n\n\nPPO agent training for dynamic strategies\nBacktesting with temporal validation (walk-forward)\nComparison with market benchmarks\n📝 Partial Report 2: March 1, 2026\n🎓 Qualification Seminar: March 15, 2026\n\n\n\nDeliverables: - Trained and validated RL agent - Partial Report 2 (complete results) - Qualification presentation\n\n\n\nStage 6: Consolidation and Dissemination (Mar-Jul/2026)\n\n\n\n\n\n\n📄 Main Activities\n\n\n\n\nScientific paper writing (April-June/2026)\n📬 Article submission: July 6, 2026\nPeer review and corrections\nPoster/presentation preparation\n🎤 14th SPPAIC: August 10, 2026\n\n\n\nDeliverables: - Submitted scientific article - Academic poster for SPPAIC - Complementary didactic material - Final project documentation",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#research-methodology-workflow",
-    "href": "index.html#research-methodology-workflow",
-    "title": "PAIC Econometrics Research",
-    "section": "📈 Research Methodology Workflow",
-    "text": "📈 Research Methodology Workflow\n\n\n\n\n\nflowchart TD\n    A[Data Collection] --&gt; B[Data Preprocessing]\n    B --&gt; C[Exploratory Analysis]\n    C --&gt; D[Feature Engineering]\n    D --&gt; E[Model Development]\n    E --&gt; F{Model Type}\n    F --&gt;|Time Series| G[ARIMA/GARCH/LSTM]\n    F --&gt;|Optimization| H[Multi-Objective Algorithms]\n    F --&gt;|RL| I[Agent Training]\n    G --&gt; J[Model Validation]\n    H --&gt; J\n    I --&gt; J\n    J --&gt; K[Backtesting]\n    K --&gt; L[Performance Evaluation]\n    L --&gt; M{Satisfactory?}\n    M --&gt;|No| E\n    M --&gt;|Yes| N[Documentation & Publication]\n    N --&gt; O[Patent Application]\n    \n    style A fill:#003d7a,color:#fff\n    style N fill:#28a745,color:#fff\n    style O fill:#ff6b35,color:#fff",
+    "objectID": "mindmap.html#expected-results",
+    "href": "mindmap.html#expected-results",
+    "title": "Research Mindmap",
+    "section": "🎯 Expected Results",
+    "text": "🎯 Expected Results\n\n📚 Academic and Scientific\n\n\nPublications: Article in peer-reviewed journal (Quantitative Finance/Applied Econometrics area)\nKnowledge advancement: Unprecedented integration of forecasting, multi-objective optimization, and RL for commodities\nInnovative methodology: Reproducible and scalable framework for portfolio management\nHuman resource training: Scholar capacity building in advanced quantitative methods\n\n\n\n\n💼 Practical and Applied\n\n\nAnalytical tools: Computational pipeline (R/Python) for decision support\nTrading strategies: Adaptive models with reinforcement learning\nRisk management: Instruments for VaR, ES, and drawdown analysis in portfolios\nApplicability: Solutions for trading companies, agricultural cooperatives, and fund managers\n\n\n\n\n🔬 Technological Innovation\n\n\nPatent: System/methodology with novelty, inventive activity, and industrial application requirements\nInnovation: Holistic and adaptive integration of advanced techniques (non-obvious to experts)\nDifferential: Temporal multi-objective approach with RL for sequential decisions\nImpact: Positioning Brazil as an innovation hub in applied finance for agribusiness",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#educational-impact",
-    "href": "index.html#educational-impact",
-    "title": "PAIC Econometrics Research",
-    "section": "🎓 Educational Impact",
-    "text": "🎓 Educational Impact\n\n\n\n\n\n\nStudent Development\n\n\n\nThis project provides undergraduate students with:\n\nPractical Experience: Real-world application of econometric and ML techniques\nResearch Skills: Scientific methodology and academic writing\nTechnical Proficiency: Advanced programming in R and Python\nCareer Preparation: Skills highly valued in quantitative finance and data science\nPublication Opportunities: Co-authorship in scientific papers",
+    "objectID": "mindmap.html#analyzed-commodities",
+    "href": "mindmap.html#analyzed-commodities",
+    "title": "Research Mindmap",
+    "section": "🌾 Analyzed Commodities",
+    "text": "🌾 Analyzed Commodities\n\nGrain Market\n\n\n\n\n\n\n\n\nCommodity\nDescription\nMarkets\n\n\n\n\nCorn\nBasic grain for animal feed and ethanol\nCME, B3 (futures contracts)\n\n\nSoybeans\nGrain, meal, and oil - integrated chain\nCME, B3, DCE (China)\n\n\nWheat\nComplement for diversification\nCME, CBOT\n\n\nDerivatives\nSoybean meal, soybean oil\nSpot and futures markets\n\n\n\nData Characteristics: - Daily historical series with sufficient periods for regime analysis - Rolling windows for out-of-sample validation - Futures contract adjustments (rollover) - Technical and fundamental indicators",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#expected-deliverables",
-    "href": "index.html#expected-deliverables",
-    "title": "PAIC Econometrics Research",
-    "section": "📚 Expected Deliverables",
-    "text": "📚 Expected Deliverables\n\nPhase 1 (Current - 6 months)\n\n✅ Project website and documentation\n📊 Literature review and theoretical framework\n🔧 Data infrastructure setup\n📈 Initial predictive models\n\n\n\nPhase 2 (6-12 months)\n\n🎯 Multi-objective optimization framework\n🤖 Reinforcement learning agent development\n📄 First scientific paper draft\n🔬 Patent methodology documentation\n\n\n\nPhase 3 (12-18 months)\n\n📖 Scientific publications submission\n🏆 Patent application filing\n🎤 Conference presentations\n📊 Final comprehensive report",
+    "objectID": "mindmap.html#interactive-visual-timeline",
+    "href": "mindmap.html#interactive-visual-timeline",
+    "title": "Research Mindmap",
+    "section": "📊 Interactive Visual Timeline",
+    "text": "📊 Interactive Visual Timeline\n\nPAIC 2025/26 Timeline\n\n\n\n\n\ngantt\n    title PAIC 2025/26 - Official FAE Timeline\n    dateFormat YYYY-MM-DD\n    axisFormat %b/%y\n    \n    section Phase 1: Setup\n    PAIC 2025-26 Opening           :milestone, m1, 2025-08-13, 1d\n    Term Signing                   :active, 2025-08-05, 9d\n    Work Plan Preparation          :2025-08-13, 34d\n    Data Infrastructure            :2025-08-20, 41d\n    \n    section Phase 2: Data & Models\n    Collection & Curation          :2025-09-01, 60d\n    GARCH/MSGARCH Modeling         :2025-10-01, 60d\n    ML/DL Prototypes (LSTM)        :2025-10-15, 46d\n    13th SPPAIC                    :milestone, sppaic1, 2025-10-24, 1d\n    Partial Report 1               :milestone, m2, 2025-11-24, 1d\n    \n    section Phase 3: Optimization\n    Multi-Objective Framework      :2025-11-01, 119d\n    NSGA-II/DE Implementation      :2025-11-15, 77d\n    Backtesting & Validation       :2026-01-01, 58d\n    \n    section Phase 4: RL & Strategy\n    RL Environment Setup           :2026-02-01, 58d\n    PPO Agent Training             :2026-02-15, 59d\n    Partial Report 2               :milestone, m3, 2026-03-01, 1d\n    Qualification Seminar          :milestone, m4, 2026-03-15, 1d\n    Strategy Evaluation            :2026-03-01, 60d\n    \n    section Phase 5: Publication\n    Scientific Paper Writing       :2026-04-01, 96d\n    Article Submission             :milestone, m5, 2026-07-06, 1d\n    Peer Review Period             :2026-07-06, 22d\n    Article Corrections            :2026-07-08, 20d\n    Poster Preparation             :2026-07-01, 40d\n    14th SPPAIC                    :milestone, sppaic2, 2026-08-10, 1d",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#collaboration-partnerships",
-    "href": "index.html#collaboration-partnerships",
-    "title": "PAIC Econometrics Research",
-    "section": "🤝 Collaboration & Partnerships",
-    "text": "🤝 Collaboration & Partnerships\nWe actively seek collaboration with:\n\nAcademic institutions researching quantitative finance\nFinancial industry professionals\nAgricultural cooperatives and traders\nTechnology companies developing FinTech solutions\nGovernment agencies interested in agricultural market intelligence\n\n\n\n\n\n\n\n📞 Get Involved\n\n\n\nInterested in collaborating or learning more?\n\nPrincipal Investigator: Prof. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution: FAE Business School, Curitiba, PR\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário",
+    "objectID": "mindmap.html#connections-between-pillars",
+    "href": "mindmap.html#connections-between-pillars",
+    "title": "Research Mindmap",
+    "section": "🔗 Connections Between Pillars",
+    "text": "🔗 Connections Between Pillars\n\nIntegrated Methodological Flow\n\n\n\n\n\nflowchart LR\n    A[Historical&lt;br/&gt;Commodity&lt;br/&gt;Data] --&gt; B[PILLAR 1:&lt;br/&gt;Forecasting]\n    B --&gt; C[Return & Risk&lt;br/&gt;Predictions]\n    C --&gt; D[PILLAR 2:&lt;br/&gt;Multi-Objective&lt;br/&gt;Optimization]\n    D --&gt; E[Pareto&lt;br/&gt;Frontier]\n    E --&gt; F[PILLAR 3:&lt;br/&gt;Reinforcement&lt;br/&gt;Learning]\n    F --&gt; G[Dynamic&lt;br/&gt;Strategies]\n    G --&gt; H[Backtesting &&lt;br/&gt;Evaluation]\n    H --&gt; I{Satisfactory&lt;br/&gt;Performance?}\n    I --&gt;|No| B\n    I --&gt;|Yes| J[Publication &&lt;br/&gt;Implementation]\n    \n    style A fill:#f8f9fa,stroke:#003d7a,stroke-width:3px\n    style B fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style D fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style F fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style J fill:#28a745,stroke:#003d7a,stroke-width:3px,color:#fff",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
     ]
   },
   {
-    "objectID": "index.html#quick-links",
-    "href": "index.html#quick-links",
-    "title": "PAIC Econometrics Research",
-    "section": "🔗 Quick Links",
-    "text": "🔗 Quick Links\n\n\n🎓 About Us\nMeet the team →\n\n\n📊 Research\nView our work →\n\n\n📰 News\nMarket updates →\n\n\n🏫 FAE\nVisit FAE.edu →\n\n\n\n\nPAIC - Programa de Apoio à Iniciação Científica | FAE Business School | Curitiba, Paraná, Brazil\n\nLast updated:\noutubro 20, 2025",
+    "objectID": "mindmap.html#main-methodological-references",
+    "href": "mindmap.html#main-methodological-references",
+    "title": "Research Mindmap",
+    "section": "📖 Main Methodological References",
+    "text": "📖 Main Methodological References\n\n\n\n\n\n\n📚 Selected Bibliography\n\n\n\n\n\nForecasting & Volatility: - Ardia et al. (2019) - Markov-Switching GARCH Models in R (MSGARCH Package) - Ramírez & Fadiga (2003) - Forecasting Agricultural Commodity Prices with Asymmetric-Error GARCH Models\nMulti-Objective Optimization: - Zitzler, Laumanns & Thiele (2001) - SPEA2: Improving the Strength Pareto Evolutionary Algorithm - Chen, Weng & Li (2009) - Multiobjective Extremal Optimization for Portfolio Optimization\nReinforcement Learning: - Schulman et al. (2017) - Proximal Policy Optimization Algorithms - Recent applications in quantitative finance and algorithmic trading\nCommodities & Agribusiness: - Guidolin & Pedio (2020) - Forecasting commodity futures returns with stepwise regressions - Zhang et al. (2020) - Forecasting Agricultural Commodity Prices using Model Selection Framework",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "Project Overview"
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#team-and-supervision",
+    "href": "mindmap.html#team-and-supervision",
+    "title": "Research Mindmap",
+    "section": "🎓 Team and Supervision",
+    "text": "🎓 Team and Supervision\n\n\nProf. Dr. Rodrigo Hermont Ozon\nAdvisor / Lead Researcher\n\nEducation: Economist (UFPR), MSc in Economic Development (UFPR)\nPhD: PPGEPS/PUCPR (2022-2026)\nArea: Financial Econometrics, Time Series, Optimization\nInstitution: FAE Business School\n\n\n        \n\n\n\nPAIC Scholar/Volunteer\nUndergraduate Student\n\nActivities: Data collection, model execution, preliminary analyses\nDevelopment: R/Python programming, quantitative methods\nSupport: Documentation, visualizations, reports\n\nIn Selection PAIC 2025/26",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#institutional-support",
+    "href": "mindmap.html#institutional-support",
+    "title": "Research Mindmap",
+    "section": "🏆 Institutional Support",
+    "text": "🏆 Institutional Support\n\nFAE Business School\nThis project is developed within the Support Program for Scientific Initiation (PAIC) of FAE University Center, aligned with strategic areas of:\n\nEnabling Technologies (AI, Big Data, Quantitative Analysis)\nAgribusiness and Applied Finance\nData Science and Econometrics\n\nWebsite: https://fae.edu\nContact: rodrigo.ozon@fae.edu\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\n\nAugust/2025: Official PAIC opening and activity start\nOctober/2025: First presentation at 13th SPPAIC\nNovember/2025: Partial Report 1 delivery\nMarch/2026: Qualification Seminar\nJuly/2026: Scientific article submission\nAugust/2026: Final presentation at 14th SPPAIC\n\n\n\n\n\n\nPAIC Econometrics | FAE Business School Scientific Initiation Project 2025/26 - Curitiba, PR © 2025 All rights reserved",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
     ]
   },
   {
@@ -244,7 +352,7 @@
     "href": "about.html#acknowledgments",
     "title": "About the Project",
     "section": "🙏 Acknowledgments",
-    "text": "🙏 Acknowledgments\nWe thank:\n\nFAE Business School for supporting this research through the PAIC program\nDepartment of Economics for institutional support and resources\nDepartment of Data Science for technical infrastructure\nPUCPR for the foundation laid in previous research phases\nResearch community for valuable feedback and collaboration\n\n\n\nPAIC Econometrics Research Project | FAE Business School | Est. 2024\n\nLast updated:\n\n\nCode\nformat(Sys.Date(), '%B %d, %Y')\n\n\n[1] \"outubro 20, 2025\"",
+    "text": "🙏 Acknowledgments\nWe thank:\n\nFAE Business School for supporting this research through the PAIC program\nDepartment of Economics for institutional support and resources\nDepartment of Data Science for technical infrastructure\nPUCPR for the foundation laid in previous research phases\nResearch community for valuable feedback and collaboration\n\n\n\nPAIC Econometrics Research Project | FAE Business School | Est. 2024\n\nLast updated:\n\n\nCode\nformat(Sys.Date(), '%B %d, %Y')\n\n\n[1] \"outubro 21, 2025\"",
     "crumbs": [
       "Home",
       "📘 Introduction",
@@ -252,15 +360,123 @@
     ]
   },
   {
-    "objectID": "about.html#expected-outcomes-1",
-    "href": "about.html#expected-outcomes-1",
-    "title": "About the Project",
-    "section": "🎯 Expected Outcomes",
-    "text": "🎯 Expected Outcomes\n\nAcademic Deliverables\n\nScientific Publications:\n\nPeer-reviewed journal articles\nConference papers and presentations\nTechnical reports and working papers\n\nIntellectual Property:\n\nPatent application for optimization methodology\nOpen-source software packages\nDocumented algorithms and frameworks\n\nEducational Materials:\n\nTutorial notebooks and guides\nDataset compilation\nReproducible research examples\n\n\n\n\nStudent Development\n\nAdvanced technical skills in R and Python\nExperience with scientific research methodology\nPortfolio of demonstrable projects\nPublication track record\nProfessional networking opportunities",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "PAIC Econometrics Research",
+    "section": "",
+    "text": "Integrating Time Series Forecasting, Multi-Objective Decision Making & Reinforcement Learning\nAn innovative research initiative at FAE Business School developing patent-ready methodologies for agricultural commodities portfolio optimization through advanced econometric and machine learning techniques.\n\nExplore Our Research → View Publications →",
     "crumbs": [
       "Home",
       "📘 Introduction",
-      "About the Team"
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#research-vision",
+    "href": "index.html#research-vision",
+    "title": "PAIC Econometrics Research",
+    "section": "🎯 Research Vision",
+    "text": "🎯 Research Vision\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) represents the continuation and evolution of pioneering work initiated at PUCPR, now advancing at FAE Business School with enhanced scope and objectives.\n\n🎓 Academic Goals\nPrimary Objectives:\n\nPatent Development: Create innovative methodologies for multi-period portfolio optimization\nScientific Publications: Contribute to academic literature on agricultural finance\nDoctoral Research Integration: Support ongoing PhD thesis development\nUndergraduate Excellence: Train students in cutting-edge quantitative finance\n\nInstitutional Context:\nThis project builds upon the foundation established at PUCPR (visit the previous project site) while expanding into new frontiers of agricultural commodity portfolio management.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#core-research-framework",
+    "href": "index.html#core-research-framework",
+    "title": "PAIC Econometrics Research",
+    "section": "🔬 Core Research Framework",
+    "text": "🔬 Core Research Framework\nOur methodology integrates three fundamental pillars:\n\n\n📈 Time Series Forecasting\nAdvanced predictive modeling for commodity prices using:\n\nARIMA/GARCH family models\nBayesian structural time series\nLSTM and GRU neural networks\nEnsemble forecasting methods\nHawkes processes for news impact\n\nEconometrics Deep Learning Bayesian Methods\n\n\n🎯 Multi-Objective Optimization\nPortfolio optimization considering multiple conflicting objectives:\n\nReturn maximization\nRisk minimization\nLiquidity management\nSustainability criteria\nDynamic rebalancing strategies\n\nEvolutionary Algorithms Pareto Optimization Fuzzy Logic\n\n\n🤖 Reinforcement Learning\nAdaptive decision-making strategies:\n\nQ-Learning for portfolio selection\nDeep Q-Networks (DQN)\nPolicy gradient methods\nMulti-agent systems\nDynamic strategy adaptation\n\nRL Algorithms Adaptive Systems Decision Theory",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#key-commodities-focus",
+    "href": "index.html#key-commodities-focus",
+    "title": "PAIC Econometrics Research",
+    "section": "📊 Key Commodities Focus",
+    "text": "📊 Key Commodities Focus\nOur research concentrates on Brazilian agricultural grain commodities:",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#technical-stack",
+    "href": "index.html#technical-stack",
+    "title": "PAIC Econometrics Research",
+    "section": "🛠️ Technical Stack",
+    "text": "🛠️ Technical Stack\n\nDevelopment Environment\nProgramming & Analysis:\n\nR Ecosystem: tidyverse, forecast, rugarch, quantmod, PerformanceAnalytics\nPython Ecosystem: pandas, numpy, scikit-learn, tensorflow, pytorch, stable-baselines3\nIntegration: Quarto for reproducible research combining R and Python\n\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ price indices\nUSDA agricultural reports\nNews APIs for sentiment analysis\n\nInfrastructure:\n\nVersion control: Git/GitHub\nCollaboration: RStudio/Positron IDE\nDeployment: GitHub Pages\nDocumentation: Quarto publishing system",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#research-methodology-workflow",
+    "href": "index.html#research-methodology-workflow",
+    "title": "PAIC Econometrics Research",
+    "section": "📈 Research Methodology Workflow",
+    "text": "📈 Research Methodology Workflow\n\n\n\n\n\nflowchart TD\n    A[Data Collection] --&gt; B[Data Preprocessing]\n    B --&gt; C[Exploratory Analysis]\n    C --&gt; D[Feature Engineering]\n    D --&gt; E[Model Development]\n    E --&gt; F{Model Type}\n    F --&gt;|Time Series| G[ARIMA/GARCH/LSTM]\n    F --&gt;|Optimization| H[Multi-Objective Algorithms]\n    F --&gt;|RL| I[Agent Training]\n    G --&gt; J[Model Validation]\n    H --&gt; J\n    I --&gt; J\n    J --&gt; K[Backtesting]\n    K --&gt; L[Performance Evaluation]\n    L --&gt; M{Satisfactory?}\n    M --&gt;|No| E\n    M --&gt;|Yes| N[Documentation & Publication]\n    N --&gt; O[Patent Application]\n    \n    style A fill:#003d7a,color:#fff\n    style N fill:#28a745,color:#fff\n    style O fill:#ff6b35,color:#fff",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#educational-impact",
+    "href": "index.html#educational-impact",
+    "title": "PAIC Econometrics Research",
+    "section": "🎓 Educational Impact",
+    "text": "🎓 Educational Impact\n\n\n\n\n\n\nStudent Development\n\n\n\nThis project provides undergraduate students with:\n\nPractical Experience: Real-world application of econometric and ML techniques\nResearch Skills: Scientific methodology and academic writing\nTechnical Proficiency: Advanced programming in R and Python\nCareer Preparation: Skills highly valued in quantitative finance and data science\nPublication Opportunities: Co-authorship in scientific papers",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#expected-deliverables",
+    "href": "index.html#expected-deliverables",
+    "title": "PAIC Econometrics Research",
+    "section": "📚 Expected Deliverables",
+    "text": "📚 Expected Deliverables\n\nPhase 1 (Current - 6 months)\n\n✅ Project website and documentation\n📊 Literature review and theoretical framework\n🔧 Data infrastructure setup\n📈 Initial predictive models\n\n\n\nPhase 2 (6-12 months)\n\n🎯 Multi-objective optimization framework\n🤖 Reinforcement learning agent development\n📄 First scientific paper draft\n🔬 Patent methodology documentation\n\n\n\nPhase 3 (12-18 months)\n\n📖 Scientific publications submission\n🏆 Patent application filing\n🎤 Conference presentations\n📊 Final comprehensive report",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#collaboration-partnerships",
+    "href": "index.html#collaboration-partnerships",
+    "title": "PAIC Econometrics Research",
+    "section": "🤝 Collaboration & Partnerships",
+    "text": "🤝 Collaboration & Partnerships\nWe actively seek collaboration with:\n\nAcademic institutions researching quantitative finance\nFinancial industry professionals\nAgricultural cooperatives and traders\nTechnology companies developing FinTech solutions\nGovernment agencies interested in agricultural market intelligence\n\n\n\n\n\n\n\n📞 Get Involved\n\n\n\nInterested in collaborating or learning more?\n\nPrincipal Investigator: Prof. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution: FAE Business School, Curitiba, PR\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#quick-links",
+    "href": "index.html#quick-links",
+    "title": "PAIC Econometrics Research",
+    "section": "🔗 Quick Links",
+    "text": "🔗 Quick Links\n\n\n🎓 About Us\nMeet the team →\n\n\n📊 Research\nView our work →\n\n\n📰 News\nMarket updates →\n\n\n🏫 FAE\nVisit FAE.edu →\n\n\n\n\nPAIC - Programa de Apoio à Iniciação Científica | FAE Business School | Curitiba, Paraná, Brazil\n\nLast updated:\noutubro 21, 2025",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
     ]
   },
   {
@@ -374,89 +590,5 @@
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "📝 Conclusion",
     "text": "📝 Conclusion\nPaper Hunter demonstrates how artificial intelligence can be used to increase scientific productivity without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: reading, analyzing, and producing quality knowledge.\nIf you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.\n\n\n📚 PAIC Econometrics | FAE Business School Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization Transforming research through artificial intelligence"
-  },
-  {
-    "objectID": "weekly_papers.html",
-    "href": "weekly_papers.html",
-    "title": "Weekly Papers Digest",
-    "section": "",
-    "text": "A continuously updated collection of the latest research papers in applied econometrics, multi-period multi-objective optimization, time series forecasting, and reinforcement learning for finance.\nLast Updated: outubro 20, 2025\nTotal Papers Catalogued: 24 papers across 4 weeks"
-  },
-  {
-    "objectID": "weekly_papers.html#about-this-digest",
-    "href": "weekly_papers.html#about-this-digest",
-    "title": "Weekly Papers Digest",
-    "section": "📖 About This Digest",
-    "text": "📖 About This Digest\nThis page is automatically updated every Friday with the latest scientific papers discovered by our Paper Hunter agent. Each week, we curate articles from:\n\narXiv (econ.EM, q-fin, cs.LG, math.OC)\nSSRN Working Papers\nGoogle Scholar Recent Publications\nMajor Journals (early access articles)\n\n\nCategories\nPapers are classified into four main categories:\n\n\n\n\n\n\n\nCategory\nFocus Area\n\n\n\n\n🔵 Econometrics\nTime series models, volatility forecasting, spillovers, cointegration\n\n\n🟢 Optimization\nMulti-objective optimization, MOO, NSGA-II/III, portfolio optimization\n\n\n🟣 RL\nReinforcement learning, Q-learning, Deep RL, policy optimization\n\n\n🟠 Volatility\nGARCH models, implied volatility, risk modeling, VaR/CVaR"
-  },
-  {
-    "objectID": "weekly_papers.html#october-2025",
-    "href": "weekly_papers.html#october-2025",
-    "title": "Weekly Papers Digest",
-    "section": "🗓️ October 2025",
-    "text": "🗓️ October 2025\n\nWeek of October 11-17, 2025\n\nSummary\nThis week we found 7 papers across multiple databases. Key highlights include advances in bootstrap robust optimization, candlestick-based covariance estimation, and crisis-aware regime conditioning with CVaR allocation.\nTop Pick: Deep Learning for Portfolio Optimization by Osaf Ali - A comprehensive multi-agent RL approach optimizing multiple risk metrics jointly.\n\n\n📊 Featured Papers\n\n\n🔵 Econometrics (3 papers)\n\n\n1. Beyond Returns: A Candlestick-Based Approach to Spot Covariance Estimation\nAuthors: Yasin Simsek\nVenue: arXiv (econ.EM) | Date: 2025-10-14\nLink: arXiv:2510.12911\nSummary: Introduces an applied econometrics method using high-frequency candlestick data to improve spot covariance estimates—a critical input for multi-period portfolio models. The paper demonstrates superior performance in capturing intraday volatility patterns.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nEssential for our volatility modeling component. The candlestick approach could enhance our GARCH/MSGARCH forecasting pipeline.\n\n\n\n2. Spatial and Temporal Boundaries in Difference-in-Differences\nAuthors: Tatsuru Kikuchi\nVenue: arXiv (econ.EM) | Date: 2025-10-13\nLink: arXiv:2510.11013\nSummary: Develops physics-inspired diagnostics using the Navier-Stokes equation framework to validate DID identification over space and time. Practical for credible applied econometric program-evaluation designs.\nRelevance to Our Research: ⭐⭐⭐\nMethodological interest for causal inference in time series contexts.\n\n\n\n3. (Non-Parametric) Bootstrap Robust Optimization for Portfolios\nAuthors: Daniel C. Oliveira, Grover Guzman, Nick Firoozye\nVenue: arXiv (q-fin.ST) | Date: 2025-10-14\nLink: arXiv:2510.12725\nSummary: Proposes a bootstrap-based robust optimization framework to harden portfolio and trading strategy design against estimation error. Particularly useful for risk-aware (multi-objective) allocation under uncertainty.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nHIGH PRIORITY - Directly applicable to our portfolio optimization pipeline. Should be incorporated into robustness checks.\n\n\n\n🟢 Optimization (2 papers)\n\n\n\n4. Deep Learning for Portfolio Optimization: AI-Driven Risk-Adjusted Returns\nAuthors: Osaf Ali\nVenue: SSRN | Date: 2025-10-15\nLink: SSRN 5510579\nSummary: Proposes a hybrid multi-agent RL + multi-objective approach optimizing Sharpe/Sortino/CVaR jointly. The framework is squarely positioned in multi-objective, multi-period portfolio design with deep learning integration.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nMUST READ - This is exactly our intersection: MOO + RL + portfolios. Excellent benchmark for our own implementation.\nKey Contributions: - Multi-agent architecture for different objectives - Joint optimization of multiple risk metrics - Backtesting on commodity futures data\n\n\n\n5. Evaluating Investment Performance: The p-index and Empirical Efficient Frontier\nAuthors: Jing Li, Bowei Guo, Xinqi Xie, Kuo-Ping Chang\nVenue: arXiv (q-fin.PM) | Date: 2025-10-13\nLink: arXiv:2510.11074\nSummary: Defines a put-option-based risk index and empirical efficient frontier for performance evaluation. Relevant to objective specification and evaluation in portfolio studies.\nRelevance to Our Research: ⭐⭐⭐⭐\nUseful for benchmarking our Pareto front against traditional efficient frontiers.\n\n\n\n🟣 RL (1 paper)\n\n\n\n6. Crisis-Aware Regime-Conditioned Diffusion with CVaR Allocation\nAuthors: Ali Atiah Alzahrani\nVenue: arXiv (cs.LG → q-fin.CP) | Date: 2025-10-12\nLink: arXiv:2510.10807\nSummary: Combines regime-aware generative scenarios with a CVaR allocator to improve drawdown control. Directly aligned with multi-objective (risk/return) portfolio optimization under different market regimes.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nHIGH PRIORITY - The regime-switching + CVaR combination is exactly what we need for our multi-period framework.\n\n\n\n🟠 Volatility (1 paper)\n\n\n\n7. On Evaluating Loss Functions for Stock Ranking with Transformer Models\nAuthors: Jan Kwiatkowski, Jarosław A. Chudziak\nVenue: arXiv (cs.LG → q-fin.PM) | Date: 2025-10-15\nLink: arXiv:2510.14156\nSummary: Benchmarks pointwise/pairwise/listwise loss functions for stock ranking using Transformer architecture. Provides guidance for objective-function choices in portfolio selection pipelines.\nRelevance to Our Research: ⭐⭐⭐\nUseful for our ML/DL forecasting module, particularly for ranking-based portfolio construction."
-  },
-  {
-    "objectID": "weekly_papers.html#september-2025",
-    "href": "weekly_papers.html#september-2025",
-    "title": "Weekly Papers Digest",
-    "section": "🗓️ September 2025",
-    "text": "🗓️ September 2025\n\nWeek of September 5-11, 2025\n\nSummary\nStrong week for multi-period optimization papers! Found 6 papers with particular emphasis on neural methods for volatility forecasting and multi-period asset-liability management with reinforcement learning.\nTop Pick: Multi-period Asset-Liability Management with RL by Gao et al. - Breakthrough application of RL to ALM under regime-switching dynamics.\n\n\n📊 Featured Papers\n\n\n🔵 Econometrics (2 papers)\n\n\n8. Neural Lévy SDE for State-Dependent Risk and Density Forecasting\nAuthors: Ziyao Wang, Svetlozar T. Rachev\nVenue: arXiv (q-fin.RM) | Date: 2025-09-03\nLink: arXiv:2509.01041\nSummary: Proposes a neural jump-diffusion model with state-dependent parameters for multi-horizon density and risk forecasting. Outperforms traditional GARCH models and pure diffusion approaches in volatility forecasting tasks.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nMUST READ - Neural Lévy processes are cutting-edge for our volatility modeling. Should compare against our MSGARCH implementation.\nKey Innovations: - State-dependent jump intensity - Multi-horizon density forecasts - Better tail risk estimation than GARCH\n\n\n\n9. Signal from Noise: Neural Network Denoising for Financial Spillovers\nAuthors: Abdullah Karasan, Özge Seda Alp\nVenue: arXiv (econ.EM) | Date: 2025-09-03\nLink: arXiv:2509.01156\nSummary: Introduces neural denoising applied to covariance matrices before estimating return/volatility spillovers. Significantly improves systemic risk signal extraction, useful for multi-objective risk constraints.\nRelevance to Our Research: ⭐⭐⭐⭐\nImportant for our diversification objectives and correlation-based constraints in the optimization model.\n\n\n\n🟢 Optimization (1 paper)\n\n\n\n10. Mean-Variance Stackelberg Games with Asymmetric Information\nAuthors: Yu-Jui Huang, Shihao Zhu\nVenue: arXiv (q-fin.PM) | Date: 2025-09-05\nLink: arXiv:2509.03669\nSummary: Formulates a leader-follower game with asymmetric information and entropy regularization in mean-variance optimization. Derives equilibrium with Gaussian random strategies—relevant for multi-objective optimization under competition/benchmarking scenarios.\nRelevance to Our Research: ⭐⭐⭐\nTheoretical interest, especially if we consider relative performance objectives.\n\n\n\n🟣 RL (1 paper)\n\n\n\n11. Multi-period Asset-Liability Management with RL in Regime-Switching Market\nAuthors: Zhongqin Gao, Ping Chen, Xun Li, Yan Lv, Wenhao Zhang\nVenue: arXiv (q-fin.PM) | Date: 2025-09-03\nLink: arXiv:2509.03251\nSummary: Resolves multi-period mean-variance optimization with regime switching and uncontrollable liabilities using reinforcement learning and filtering. Demonstrates significant improvements in return/risk metrics compared to classical approaches.\nRelevance to Our Research: ⭐⭐⭐⭐⭐\nBREAKTHROUGH PAPER - This is the exact intersection we’re working on! Multi-period + RL + regime-switching. Essential reference.\nImplementation Details: - Uses Hidden Markov Model for regime detection - Deep Q-Network for policy learning - Transaction costs and constraints incorporated\n\n\n\n🟠 Volatility (2 papers)\n\n\n\n12. Controllable Generation of Implied Volatility Surfaces with VAEs\nAuthors: Jing Wang, Shuaiqiang Liu, Cornelis Vuik\nVenue: arXiv (q-fin.CP) | Date: 2025-09-01\nLink: arXiv:2509.01743\nSummary: Generates controllable implied volatility surfaces (level, slope, curvature, term structure) with no-arbitrage verification using Variational Autoencoders. Useful for scenario simulation and stress testing.\nRelevance to Our Research: ⭐⭐⭐⭐\nExcellent for generating multiple scenarios in our multi-period optimization framework.\n\n\n\n13. Data-driven Modeling of Multiple Interest Rates with Generalized Vasicek\nAuthors: Pekka Ilmonen, Matti Laurikkala, Kirill Ralchenko, Timo Sottinen, Lauri Viitasaari\nVenue: arXiv (econ.EM) | Date: 2025-09-03\nLink: arXiv:2509.03208\nSummary: Joint modeling of multiple interest rate curves using generalized Vasicek-type models with non-Gaussian innovations. Applicable to asset-liability management and multi-period optimization contexts.\nRelevance to Our Research: ⭐⭐⭐\nRelevant if we extend to fixed-income commodities or futures with interest rate exposure."
-  },
-  {
-    "objectID": "weekly_papers.html#research-impact-tracker",
-    "href": "weekly_papers.html#research-impact-tracker",
-    "title": "Weekly Papers Digest",
-    "section": "📈 Research Impact Tracker",
-    "text": "📈 Research Impact Tracker\n\nPapers by Category (All-Time)\n\n\n\n\n\n\n\n\n\n\n\nRelevance Distribution"
-  },
-  {
-    "objectID": "weekly_papers.html#search-by-topic",
-    "href": "weekly_papers.html#search-by-topic",
-    "title": "Weekly Papers Digest",
-    "section": "🔍 Search by Topic",
-    "text": "🔍 Search by Topic\n\nQuick Filters\n\n\n🎯 Portfolio Optimization\nJump to papers\nPapers on multi-objective, multi-period portfolio construction, Pareto frontiers, and allocation strategies.\n\n\n📊 Volatility Forecasting\nJump to papers\nGARCH models, neural volatility, implied volatility surfaces, and risk metrics.\n\n\n🤖 Reinforcement Learning\nJump to papers\nDeep RL, Q-learning, policy optimization for dynamic trading and portfolio management.\n\n\n📈 Econometric Methods\nJump to papers\nTime series analysis, spillover estimation, cointegration, and causal inference."
-  },
-  {
-    "objectID": "weekly_papers.html#reading-list-by-priority",
-    "href": "weekly_papers.html#reading-list-by-priority",
-    "title": "Weekly Papers Digest",
-    "section": "📚 Reading List by Priority",
-    "text": "📚 Reading List by Priority\n\n🔥 Must Read (Priority 1)\nEssential papers that directly align with our thesis objectives:\n\nDeep Learning for Portfolio Optimization (Ali, 2025) - Multi-agent RL for MOO\nMulti-period ALM with RL (Gao et al., 2025) - Regime-switching + RL\nNeural Lévy SDE (Wang & Rachev, 2025) - Advanced volatility forecasting\nBootstrap Robust Optimization (Oliveira et al., 2025) - Portfolio robustness\nCrisis-Aware CVaR Allocation (Alzahrani, 2025) - Regime-conditional allocation\n\n\n\n⚡ High Priority (Priority 2)\nImportant papers for specific components:\n\nCandlestick Covariance Estimation (Simsek, 2025) - High-frequency data\nSignal from Noise (Karasan & Alp, 2025) - Correlation denoising\nEvaluating Performance (Li et al., 2025) - Benchmarking framework\nControllable IV Surfaces (Wang et al., 2025) - Scenario generation\n\n\n\n📖 Additional Reading (Priority 3)\nRelevant for methodology and context:\n\nMean-Variance Stackelberg Games (Huang & Zhu, 2025) - Game theory\nDID Boundaries (Kikuchi, 2025) - Causal inference\nStock Ranking Loss Functions (Kwiatkowski & Chudziak, 2025) - ML metrics\nVasicek Interest Rates (Ilmonen et al., 2025) - Fixed income"
-  },
-  {
-    "objectID": "weekly_papers.html#download-options",
-    "href": "weekly_papers.html#download-options",
-    "title": "Weekly Papers Digest",
-    "section": "📥 Download Options",
-    "text": "📥 Download Options\n\nComplete Database\nDownload the full database of papers in various formats:\n\nExcel File (.xlsx): Download Master Spreadsheet\nCSV Format (.csv): Download CSV\nBibTeX (.bib): Download Citations\nZotero RDF: Import to Zotero\n\n\n\nWeekly Reports\nIndividual weekly reports in PDF format:\n\nWeek of Oct 11-17, 2025 (PDF)\nWeek of Sep 05-11, 2025 (PDF)"
-  },
-  {
-    "objectID": "weekly_papers.html#stay-updated",
-    "href": "weekly_papers.html#stay-updated",
-    "title": "Weekly Papers Digest",
-    "section": "🔔 Stay Updated",
-    "text": "🔔 Stay Updated\n\nSubscribe to Weekly Digest\nWant to receive these updates directly? Join our mailing list:\n\n Subscribe\n\n\n\nRSS Feed\nAdd our RSS feed to your reader: RSS Feed URL"
-  },
-  {
-    "objectID": "weekly_papers.html#statistics",
-    "href": "weekly_papers.html#statistics",
-    "title": "Weekly Papers Digest",
-    "section": "📊 Statistics",
-    "text": "📊 Statistics\n\n\n\n\n\n\nDatabase Metrics\n\n\n\n\nTotal Papers Catalogued: 13\nAverage Papers/Week: 6.5\nMost Active Category: Econometrics (38%)\nHighest Rated Papers: 6 five-star papers\nSources Covered: arXiv, SSRN, Google Scholar\nTime Span: September - October 2025"
-  },
-  {
-    "objectID": "weekly_papers.html#contributing",
-    "href": "weekly_papers.html#contributing",
-    "title": "Weekly Papers Digest",
-    "section": "🤝 Contributing",
-    "text": "🤝 Contributing\nFound a relevant paper we missed? Submit it here:\nPaper Submission Form: - Paper Title - Authors - Venue/Date - Link - Brief Summary (50-100 words) - Suggested Category\nContact: rodrigo.ozon@fae.edu"
-  },
-  {
-    "objectID": "weekly_papers.html#related-resources",
-    "href": "weekly_papers.html#related-resources",
-    "title": "Weekly Papers Digest",
-    "section": "📖 Related Resources",
-    "text": "📖 Related Resources\n\nPaper Hunter: Our Automated Agent\nLiterature Review Methodology\nTheoretical Framework\nProject Overview\n\n\n\n📚 PAIC Econometrics | FAE Business School Weekly Papers Digest - Updated Every Friday at 08:00 AM (BRT) Powered by Paper Hunter AI Agent"
   }
 ]
