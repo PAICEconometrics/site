@@ -2,6 +2,9 @@ project:
   type: website
   output-dir: "."
 
+execute:
+  freeze: false
+  
 website:
   title: "PAIC Econometrics | FAE"
   favicon: favicon.png
