@@ -1,0 +1,16 @@
+# .Renviron.template - Template para a equipe
+
+# Configuração do renv
+RENV_PATHS_CACHE=C:/Users/SEU_USUARIO/OneDrive - Grupo Marista/FAE Business School/PAIC 2025-26/renv_cache_global
+
+# Credenciais do Banco de Dados
+CX_HOST=172.23.27.20
+CX_PORT=5432
+CX_DBNAME=cx_analytics
+CX_USER=seu_usuario
+CX_PASSWORD=sua_senha
+
+# Instruções:
+# 1. Copie para .Renviron.local
+# 2. Preencha com suas credenciais reais
+# 3. NUNCA commite .Renviron.local!

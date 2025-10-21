@@ -155,20 +155,25 @@ Icon
 *.7z
 
 # ============================================
-# --- Arquivos Sensíveis ---
+# CREDENCIAIS E ARQUIVOS SENSÍVEIS
 # ============================================
 
-# Credenciais e configurações sensíveis
+# Arquivos de ambiente com credenciais
+.Renviron.local
+.Renviron.private
+*.local
+
+# Credenciais diversas
 .env
 .env.local
 credentials.json
 secrets.yml
-config.local.yml
+database.yml
+
+# Chaves e tokens
 *.key
 *.pem
-*.pfx
-
-# API keys
+*_token*
 *_api_key*
 *_secret*
 
@@ -222,3 +227,25 @@ scratch/
 # ============================================
 # FIM DO .GITIGNORE
 # ============================================
+# ============================================
+# CREDENCIAIS E ARQUIVOS SENSÍVEIS
+# ============================================
+
+# Arquivos de ambiente com credenciais
+.Renviron.local
+.Renviron.private
+*.local
+
+# Credenciais diversas
+.env
+.env.local
+credentials.json
+secrets.yml
+database.yml
+
+# Chaves e tokens
+*.key
+*.pem
+*_token*
+*_api_key*
+*_secret*
