@@ -24,7 +24,8 @@ execute:
   warning: false
   message: false
   echo: true
-  cache: false
+  error: false    # ❌ MUDE para true temporariamente
+  cache: false    # ✅ Desabilite cache durante debug
 ---
 
 ```{r}
