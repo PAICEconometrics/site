@@ -388,112 +388,192 @@
     "href": "openAI_agent.html",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "",
-    "text": "Discover how we created a customized GPT agent that automatically searches, filters, and delivers the most relevant scientific articles every week, every Friday at 8 AM."
+    "text": "Discover how we created a customized GPT agent that automatically searches, filters, and delivers the most relevant scientific articles every week, every Friday at 8 AM.",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#project-overview",
     "href": "openAI_agent.html#project-overview",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.1 📋 Project Overview",
-    "text": "1.1 📋 Project Overview\nIn the context of an active research project on applied econometrics and multi-period multi-objective optimization, staying updated with the latest literature is fundamental but extremely time-consuming. Every week, dozens of new papers emerge in repositories like arXiv, SSRN, and scientific journals.\nOur solution? Create a personalized intelligent agent in ChatGPT that:\n\n🔍 Automatically searches across multiple scientific databases\n📊 Filters and categorizes articles by relevance\n📧 Delivers weekly structured reports\n⏰ Scheduled delivery: Every Friday at 08:00 AM (Brasília time)"
+    "text": "1.1 📋 Project Overview\nIn the context of an active research project on applied econometrics and multi-period multi-objective optimization, staying updated with the latest literature is fundamental but extremely time-consuming. Every week, dozens of new papers emerge in repositories like arXiv, SSRN, and scientific journals.\nOur solution? Create a personalized intelligent agent in ChatGPT that:\n\n🔍 Automatically searches across multiple scientific databases\n📊 Filters and categorizes articles by relevance\n📧 Delivers weekly structured reports\n⏰ Scheduled delivery: Every Friday at 08:00 AM (Brasília time)",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#paper-hunter-objectives",
     "href": "openAI_agent.html#paper-hunter-objectives",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.2 🎯 Paper Hunter Objectives",
-    "text": "1.2 🎯 Paper Hunter Objectives\n\n1.2.1 Identified Problem\nResearchers and students face challenges such as:\n\nInformation overload: Hundreds of papers published weekly\nSource dispersion: ArXiv, SSRN, Google Scholar, journals, etc.\nTime constraints: Difficulty keeping up with recent literature\nSharing difficulties: Need for an easy format to disseminate to students\n\n\n\n1.2.2 Implemented Solution\nWe developed Paper Hunter, a customized GPT agent that:\n\nPerforms targeted searches in specific scientific databases\nApplies quality and relevance filters\nGenerates structured reports in shareable format\nOperates completely autonomously"
+    "text": "1.2 🎯 Paper Hunter Objectives\n\n1.2.1 Identified Problem\nResearchers and students face challenges such as:\n\nInformation overload: Hundreds of papers published weekly\nSource dispersion: ArXiv, SSRN, Google Scholar, journals, etc.\nTime constraints: Difficulty keeping up with recent literature\nSharing difficulties: Need for an easy format to disseminate to students\n\n\n\n1.2.2 Implemented Solution\nWe developed Paper Hunter, a customized GPT agent that:\n\nPerforms targeted searches in specific scientific databases\nApplies quality and relevance filters\nGenerates structured reports in shareable format\nOperates completely autonomously",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#how-we-created-paper-hunter",
     "href": "openAI_agent.html#how-we-created-paper-hunter",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.3 🛠️ How We Created Paper Hunter",
-    "text": "1.3 🛠️ How We Created Paper Hunter\n\n1.3.1 Step 1: GPT Agent Configuration\nWe accessed ChatGPT and created a personalized GPT with the following specifications:\n\n\n\n\n\n\nAccessing GPT Builder\n\n\n\nTo create personalized GPTs, you need a ChatGPT Plus or Team account. Access: Settings → Explore GPTs → Create a GPT\n\n\nMain instructions provided to the agent:\nYou are an agent specialized in weekly scientific curation.\n\nOBJECTIVE:\nSearch weekly for recent scientific articles on:\n- Applied econometrics\n- Multi-period multi-objective optimization\n- Time series forecasting\n- Reinforcement learning applied to finance\n- Commodity volatility modeling\n\nSEARCH SCOPE:\n- Databases: arXiv (econ.EM, q-fin, cs.LG), SSRN, Google Scholar\n- Period: Last 7 days (articles AND preprints)\n- Language: English\n- Focus: Papers with finance/economics applications\n\nDELIVERY FORMAT:\n1. Structured table (Excel-ready)\n2. Columns: Date | Title | Authors | Venue/Type | Link | Summary | Category\n3. Categories: Econometrics, Optimization, RL, Volatility\n4. Direct and functional links\n5. Concise summary (1-2 sentences) in Portuguese\n\nFREQUENCY:\nEvery Friday at 08:00 AM (Brasília time)\n\n\n1.3.2 Step 2: Integration with Search Tools\nPaper Hunter uses multiple search strategies:\n\n1.3.2.1 2.1 ArXiv API\n# Example query on arXiv\nsearch_query = \"multi-objective portfolio optimization\"\ncategories = \"econ.EM OR q-fin.PM OR q-fin.RM OR cs.LG\"\ndate_filter = \"submittedDate:[last_week TO now]\"\n\n\n1.3.2.2 2.2 SSRN Working Papers\n\nSearch by specific keywords\nFilter by publication date\nMetadata extraction\n\n\n\n1.3.2.3 2.3 Google Scholar\n\nTargeted queries with Boolean operators\nTemporal filter: “Since 2025” + sort by date\nPDF availability verification\n\n\n\n1.3.2.4 2.4 Consensus AI\nSpecialized academic search tool that: - Accesses +200M papers - Uses GPT-4 for semantic analysis - Provides automatic insights and citations"
+    "text": "1.3 🛠️ How We Created Paper Hunter\n\n1.3.1 Step 1: GPT Agent Configuration\nWe accessed ChatGPT and created a personalized GPT with the following specifications:\n\n\n\n\n\n\nAccessing GPT Builder\n\n\n\nTo create personalized GPTs, you need a ChatGPT Plus or Team account. Access: Settings → Explore GPTs → Create a GPT\n\n\nMain instructions provided to the agent:\nYou are an agent specialized in weekly scientific curation.\n\nOBJECTIVE:\nSearch weekly for recent scientific articles on:\n- Applied econometrics\n- Multi-period multi-objective optimization\n- Time series forecasting\n- Reinforcement learning applied to finance\n- Commodity volatility modeling\n\nSEARCH SCOPE:\n- Databases: arXiv (econ.EM, q-fin, cs.LG), SSRN, Google Scholar\n- Period: Last 7 days (articles AND preprints)\n- Language: English\n- Focus: Papers with finance/economics applications\n\nDELIVERY FORMAT:\n1. Structured table (Excel-ready)\n2. Columns: Date | Title | Authors | Venue/Type | Link | Summary | Category\n3. Categories: Econometrics, Optimization, RL, Volatility\n4. Direct and functional links\n5. Concise summary (1-2 sentences) in Portuguese\n\nFREQUENCY:\nEvery Friday at 08:00 AM (Brasília time)\n\n\n1.3.2 Step 2: Integration with Search Tools\nPaper Hunter uses multiple search strategies:\n\n1.3.2.1 2.1 ArXiv API\n# Example query on arXiv\nsearch_query = \"multi-objective portfolio optimization\"\ncategories = \"econ.EM OR q-fin.PM OR q-fin.RM OR cs.LG\"\ndate_filter = \"submittedDate:[last_week TO now]\"\n\n\n1.3.2.2 2.2 SSRN Working Papers\n\nSearch by specific keywords\nFilter by publication date\nMetadata extraction\n\n\n\n1.3.2.3 2.3 Google Scholar\n\nTargeted queries with Boolean operators\nTemporal filter: “Since 2025” + sort by date\nPDF availability verification\n\n\n\n1.3.2.4 2.4 Consensus AI\nSpecialized academic search tool that: - Accesses +200M papers - Uses GPT-4 for semantic analysis - Provides automatic insights and citations",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#example-of-weekly-output",
     "href": "openAI_agent.html#example-of-weekly-output",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.4 📊 Example of Weekly Output",
-    "text": "1.4 📊 Example of Weekly Output\nHere’s a real example of Paper Hunter’s output:\n\n1.4.1 📅 Week of 09/05/2025\n\n\n\nDate\nTitle\nAuthors\nCategory\nLink\n\n\n\n\n2025-09-03\nNeural Lévy SDE for State-Dependent Risk and Density Forecasting\nZ. Wang; S.T. Rachev\nEconometrics; Volatility\narXiv\n\n\n2025-09-03\nMulti-period Asset-Liability Management with RL in Regime-Switching Market\nZ. Gao et al.\nRL; Optimization\narXiv\n\n\n2025-09-01\nControllable Generation of Implied Volatility Surfaces with VAEs\nJ. Wang; S. Liu; C. Vuik\nVolatility\narXiv\n\n\n\nSummaries: - Paper 1: Neural jump-diffusion model for multi-horizon density/risk forecasting; useful for volatility modeling and scenarios in multi-period optimization. - Paper 2: Use of RL in multi-period ALM with regime switching; outperforms classical models in return/risk. - Paper 3: Controllable generation of IV surfaces with no-arbitrage verification; useful for scenario simulations."
+    "text": "1.4 📊 Example of Weekly Output\nHere’s a real example of Paper Hunter’s output:\n\n1.4.1 📅 Week of 09/05/2025\n\n\n\nDate\nTitle\nAuthors\nCategory\nLink\n\n\n\n\n2025-09-03\nNeural Lévy SDE for State-Dependent Risk and Density Forecasting\nZ. Wang; S.T. Rachev\nEconometrics; Volatility\narXiv\n\n\n2025-09-03\nMulti-period Asset-Liability Management with RL in Regime-Switching Market\nZ. Gao et al.\nRL; Optimization\narXiv\n\n\n2025-09-01\nControllable Generation of Implied Volatility Surfaces with VAEs\nJ. Wang; S. Liu; C. Vuik\nVolatility\narXiv\n\n\n\nSummaries: - Paper 1: Neural jump-diffusion model for multi-horizon density/risk forecasting; useful for volatility modeling and scenarios in multi-period optimization. - Paper 2: Use of RL in multi-period ALM with regime switching; outperforms classical models in return/risk. - Paper 3: Controllable generation of IV surfaces with no-arbitrage verification; useful for scenario simulations.",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#setting-up-automatic-scheduling",
     "href": "openAI_agent.html#setting-up-automatic-scheduling",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.5 ⏰ Setting Up Automatic Scheduling",
-    "text": "1.5 ⏰ Setting Up Automatic Scheduling\n\n1.5.1 Method 1: Scheduled Actions in ChatGPT (Recommended)\nChatGPT Team/Enterprise offers native Scheduled Actions:\n\nAccess your personalized GPT\nGo to Settings → Actions\nConfigure:\n\nTrigger: Every Friday at 08:00 AM (America/Sao_Paulo)\nAction: Run research query and send results\nNotification: Email to team members\n\n\n\n\n\n\n\n\nFree Alternative\n\n\n\nIf you don’t have access to ChatGPT Team, you can use Zapier or Make.com to automate calls to the OpenAI API at specific times.\n\n\n\n\n1.5.2 Method 2: Automation via Zapier\nTrigger: Schedule by Zapier\n  - Frequency: Weekly\n  - Day: Friday\n  - Time: 08:00 AM (GMT-3)\n\nAction: OpenAI (GPT-4)\n  - Model: gpt-4\n  - Prompt: \"Run Paper Hunter weekly search\"\n  - Send results to: Email / Slack / Google Sheets"
+    "text": "1.5 ⏰ Setting Up Automatic Scheduling\n\n1.5.1 Method 1: Scheduled Actions in ChatGPT (Recommended)\nChatGPT Team/Enterprise offers native Scheduled Actions:\n\nAccess your personalized GPT\nGo to Settings → Actions\nConfigure:\n\nTrigger: Every Friday at 08:00 AM (America/Sao_Paulo)\nAction: Run research query and send results\nNotification: Email to team members\n\n\n\n\n\n\n\n\nFree Alternative\n\n\n\nIf you don’t have access to ChatGPT Team, you can use Zapier or Make.com to automate calls to the OpenAI API at specific times.\n\n\n\n\n1.5.2 Method 2: Automation via Zapier\nTrigger: Schedule by Zapier\n  - Frequency: Weekly\n  - Day: Friday\n  - Time: 08:00 AM (GMT-3)\n\nAction: OpenAI (GPT-4)\n  - Model: gpt-4\n  - Prompt: \"Run Paper Hunter weekly search\"\n  - Send results to: Email / Slack / Google Sheets",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#generating-shareable-spreadsheets",
     "href": "openAI_agent.html#generating-shareable-spreadsheets",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.6 📁 Generating Shareable Spreadsheets",
-    "text": "1.6 📁 Generating Shareable Spreadsheets\nTo facilitate sharing via WhatsApp with students, we configured the agent to automatically generate a consolidated Excel spreadsheet:\n\n1.6.1 Spreadsheet Structure\nMaster File: literature_master.xlsx\nSheets: 1. Index - Index of all weeks 2. All - All consolidated articles 3. 2025-09-05 - Articles from specific week 4. 2025-09-12 - Next week 5. (continues…)\n\n\n1.6.2 Table Columns\n\n\n\n\n\n\n\n\nColumn\nDescription\nExample\n\n\n\n\nWeek\nReference Friday\n2025-09-05\n\n\nDate\nSubmission date\n2025-09-03\n\n\nTitle\nArticle title\nNeural Lévy SDE for…\n\n\nAuthors\nAuthors\nZ. Wang; S.T. Rachev\n\n\nVenue/Type\nSource/Type\narXiv / Preprint\n\n\nLink\nDirect URL\nhttps://arxiv.org/…\n\n\nSummary (PT)\nSummary in Portuguese\nNeural jump-diffusion model…\n\n\nCategory\nClassification\nEconometrics; Volatility"
+    "text": "1.6 📁 Generating Shareable Spreadsheets\nTo facilitate sharing via WhatsApp with students, we configured the agent to automatically generate a consolidated Excel spreadsheet:\n\n1.6.1 Spreadsheet Structure\nMaster File: literature_master.xlsx\nSheets: 1. Index - Index of all weeks 2. All - All consolidated articles 3. 2025-09-05 - Articles from specific week 4. 2025-09-12 - Next week 5. (continues…)\n\n\n1.6.2 Table Columns\n\n\n\n\n\n\n\n\nColumn\nDescription\nExample\n\n\n\n\nWeek\nReference Friday\n2025-09-05\n\n\nDate\nSubmission date\n2025-09-03\n\n\nTitle\nArticle title\nNeural Lévy SDE for…\n\n\nAuthors\nAuthors\nZ. Wang; S.T. Rachev\n\n\nVenue/Type\nSource/Type\narXiv / Preprint\n\n\nLink\nDirect URL\nhttps://arxiv.org/…\n\n\nSummary (PT)\nSummary in Portuguese\nNeural jump-diffusion model…\n\n\nCategory\nClassification\nEconometrics; Volatility",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#automatic-categorization",
     "href": "openAI_agent.html#automatic-categorization",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.7 🎨 Automatic Categorization",
-    "text": "1.7 🎨 Automatic Categorization\nPaper Hunter automatically classifies each article into the following categories:\n\n\n1.7.1 📈 Econometrics\nEconometric models, time series, statistical tests, cointegration, spillovers\n\n\n1.7.2 🎯 Optimization\nMulti-objective optimization, MOO, genetic algorithms, NSGA-II/III, mathematical programming\n\n\n1.7.3 🤖 RL\nReinforcement Learning, Q-learning, Deep RL, optimal policies, simulation environments\n\n\n1.7.4 📊 Volatility\nVolatility modeling, GARCH, implied volatility, risk, VaR, CVaR"
+    "text": "1.7 🎨 Automatic Categorization\nPaper Hunter automatically classifies each article into the following categories:\n\n\n1.7.1 📈 Econometrics\nEconometric models, time series, statistical tests, cointegration, spillovers\n\n\n1.7.2 🎯 Optimization\nMulti-objective optimization, MOO, genetic algorithms, NSGA-II/III, mathematical programming\n\n\n1.7.3 🤖 RL\nReinforcement Learning, Q-learning, Deep RL, optimal policies, simulation environments\n\n\n1.7.4 📊 Volatility\nVolatility modeling, GARCH, implied volatility, risk, VaR, CVaR",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#best-practices-and-lessons-learned",
     "href": "openAI_agent.html#best-practices-and-lessons-learned",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.8 💡 Best Practices and Lessons Learned",
-    "text": "1.8 💡 Best Practices and Lessons Learned\n\n1.8.1 ✅ What Worked Well\n\nQuery specificity: The more specific the prompt, the better the results\nTemporal filters: Always include 7-day windows to avoid duplicates\nMultiple sources: Combining arXiv + SSRN + Scholar increases coverage\nStructured format: Tables greatly facilitate sharing\n\n\n\n1.8.2 ⚠️ Challenges Faced\n\nFalse positives: Some articles are not as relevant as they seem\nIndexing delay: Very recent papers may not appear\nAccess limitations: Some journals have paywalls\nAmbiguous categorization: Interdisciplinary papers require manual review\n\n\n\n1.8.3 🔧 Future Improvements\n\nImplement automatic relevance score (0-10)\nAdd LLM-generated summaries of abstracts\nCreate alerts for high-impact papers\nIntegrate with Zotero/Mendeley for reference management\nInteractive dashboard with visualizations"
+    "text": "1.8 💡 Best Practices and Lessons Learned\n\n1.8.1 ✅ What Worked Well\n\nQuery specificity: The more specific the prompt, the better the results\nTemporal filters: Always include 7-day windows to avoid duplicates\nMultiple sources: Combining arXiv + SSRN + Scholar increases coverage\nStructured format: Tables greatly facilitate sharing\n\n\n\n1.8.2 ⚠️ Challenges Faced\n\nFalse positives: Some articles are not as relevant as they seem\nIndexing delay: Very recent papers may not appear\nAccess limitations: Some journals have paywalls\nAmbiguous categorization: Interdisciplinary papers require manual review\n\n\n\n1.8.3 🔧 Future Improvements\n\nImplement automatic relevance score (0-10)\nAdd LLM-generated summaries of abstracts\nCreate alerts for high-impact papers\nIntegrate with Zotero/Mendeley for reference management\nInteractive dashboard with visualizations",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#how-to-replicate-this-system",
     "href": "openAI_agent.html#how-to-replicate-this-system",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.9 🚀 How to Replicate This System",
-    "text": "1.9 🚀 How to Replicate This System\n\n1.9.1 Detailed Step-by-Step\n\n1.9.1.1 1. Create ChatGPT Plus/Team Account\nAccess chat.openai.com and upgrade\n\n\n1.9.1.2 2. Configure the Personalized GPT\nName: Paper Hunter\nDescription: Weekly scientific curation agent\nInstructions: [Paste the complete prompt provided above]\nTools: Web Browsing + Code Interpreter\n\n\n1.9.1.3 3. Test Manually\nRun a test search:\n\"Search for articles from the past week on portfolio optimization\"\n\n\n1.9.1.4 4. Configure Scheduling\n\nOption A: ChatGPT Scheduled Actions (Team/Enterprise)\nOption B: Zapier + OpenAI API (any plan)\n\n\n\n1.9.1.5 5. Define Output Format\nInstruct the agent to always generate: - Markdown table - .xlsx file for download - Functional links"
+    "text": "1.9 🚀 How to Replicate This System\n\n1.9.1 Detailed Step-by-Step\n\n1.9.1.1 1. Create ChatGPT Plus/Team Account\nAccess chat.openai.com and upgrade\n\n\n1.9.1.2 2. Configure the Personalized GPT\nName: Paper Hunter\nDescription: Weekly scientific curation agent\nInstructions: [Paste the complete prompt provided above]\nTools: Web Browsing + Code Interpreter\n\n\n1.9.1.3 3. Test Manually\nRun a test search:\n\"Search for articles from the past week on portfolio optimization\"\n\n\n1.9.1.4 4. Configure Scheduling\n\nOption A: ChatGPT Scheduled Actions (Team/Enterprise)\nOption B: Zapier + OpenAI API (any plan)\n\n\n\n1.9.1.5 5. Define Output Format\nInstruct the agent to always generate: - Markdown table - .xlsx file for download - Functional links",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#resources-and-references",
     "href": "openAI_agent.html#resources-and-references",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.10 📚 Resources and References",
-    "text": "1.10 📚 Resources and References\n\n1.10.1 Databases Used\n\narXiv.org - Preprint repository (Physics, Math, CS, Economics)\nSSRN - Social Science Research Network\nGoogle Scholar - Academic search engine\nConsensus AI - AI-powered academic search\n\n\n\n1.10.2 Complementary Tools\n\nSemantic Scholar - Semantic paper search\nConnected Papers - Citation graph\nResearch Rabbit - Literature recommendation\n\n\n\n1.10.3 APIs Used\n# ArXiv API\n# http://export.arxiv.org/api/query\n\n# CrossRef API (DOIs)\n# https://api.crossref.org/\n\n# Semantic Scholar API\n# https://api.semanticscholar.org/"
+    "text": "1.10 📚 Resources and References\n\n1.10.1 Databases Used\n\narXiv.org - Preprint repository (Physics, Math, CS, Economics)\nSSRN - Social Science Research Network\nGoogle Scholar - Academic search engine\nConsensus AI - AI-powered academic search\n\n\n\n1.10.2 Complementary Tools\n\nSemantic Scholar - Semantic paper search\nConnected Papers - Citation graph\nResearch Rabbit - Literature recommendation\n\n\n\n1.10.3 APIs Used\n# ArXiv API\n# http://export.arxiv.org/api/query\n\n# CrossRef API (DOIs)\n# https://api.crossref.org/\n\n# Semantic Scholar API\n# https://api.semanticscholar.org/",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#usage-statistics",
     "href": "openAI_agent.html#usage-statistics",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.11 📊 Usage Statistics",
-    "text": "1.11 📊 Usage Statistics\n\n\n\n\n\n\nResults After 2 Months of Operation\n\n\n\n\nPapers scanned: ~450 articles/week\nRelevance rate: 75% of papers are useful\nTime saved: ~6h/week for the team\nSource coverage: 4 main databases + 10+ journals\nTeam satisfaction: 9.2/10"
+    "text": "1.11 📊 Usage Statistics\n\n\n\n\n\n\nResults After 2 Months of Operation\n\n\n\n\nPapers scanned: ~450 articles/week\nRelevance rate: 75% of papers are useful\nTime saved: ~6h/week for the team\nSource coverage: 4 main databases + 10+ journals\nTeam satisfaction: 9.2/10",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#research-impact",
     "href": "openAI_agent.html#research-impact",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.12 🎓 Research Impact",
-    "text": "1.12 🎓 Research Impact\n\n1.12.1 Observed Benefits\n\nConstant updates: We never miss important papers\nDiscovering connections: We find relevant interdisciplinary work\nEfficiency: More time for deep reading, less for searching\nSharing: Students receive quality curation\nOrganized history: Master spreadsheet works as a library\n\n\n\n1.12.2 Team Testimonials\n\n“Paper Hunter transformed our research routine. Before, we spent hours searching for papers, now we receive everything pre-filtered every Friday.”\n— Vanessa Monn, PAIC Scholar\n\n\n“I was able to identify 3 crucial papers for my part of the project thanks to the automated searches.”\n— Jhonathan Athanazio, Volunteer"
+    "text": "1.12 🎓 Research Impact\n\n1.12.1 Observed Benefits\n\nConstant updates: We never miss important papers\nDiscovering connections: We find relevant interdisciplinary work\nEfficiency: More time for deep reading, less for searching\nSharing: Students receive quality curation\nOrganized history: Master spreadsheet works as a library\n\n\n\n1.12.2 Team Testimonials\n\n“Paper Hunter transformed our research routine. Before, we spent hours searching for papers, now we receive everything pre-filtered every Friday.”\n— Vanessa Monn, PAIC Scholar\n\n\n“I was able to identify 3 crucial papers for my part of the project thanks to the automated searches.”\n— Jhonathan Athanazio, Volunteer",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#useful-links",
     "href": "openAI_agent.html#useful-links",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.13 🔗 Useful Links",
-    "text": "1.13 🔗 Useful Links\n\nChatGPT Custom GPTs Documentation\nArXiv API Documentation\nSSRN Author Center\nZapier + OpenAI Tutorial"
+    "text": "1.13 🔗 Useful Links\n\nChatGPT Custom GPTs Documentation\nArXiv API Documentation\nSSRN Author Center\nZapier + OpenAI Tutorial",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#contact-and-collaboration",
     "href": "openAI_agent.html#contact-and-collaboration",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.14 📞 Contact and Collaboration",
-    "text": "1.14 📞 Contact and Collaboration\nWant to implement a similar system in your research project?\nGet in touch:\n\n📧 Email: rodrigo.ozon@fae.edu\n🔗 LinkedIn: FAE Centro Universitário\n💻 GitHub: @PAICEconometrics\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\nWe are working on version 2.0 of Paper Hunter which will include:\n\nSentiment analysis of abstracts\nAutomatic ranking by relevance\nPersonalized recommendations per researcher\nIntegration with Notion/Obsidian\nReal-time alerts via Telegram\n\nStay tuned for updates!"
+    "text": "1.14 📞 Contact and Collaboration\nWant to implement a similar system in your research project?\nGet in touch:\n\n📧 Email: rodrigo.ozon@fae.edu\n🔗 LinkedIn: FAE Centro Universitário\n💻 GitHub: @PAICEconometrics\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\nWe are working on version 2.0 of Paper Hunter which will include:\n\nSentiment analysis of abstracts\nAutomatic ranking by relevance\nPersonalized recommendations per researcher\nIntegration with Notion/Obsidian\nReal-time alerts via Telegram\n\nStay tuned for updates!",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "openAI_agent.html#conclusion",
     "href": "openAI_agent.html#conclusion",
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "1.15 📝 Conclusion",
-    "text": "1.15 📝 Conclusion\nPaper Hunter demonstrates how artificial intelligence can be used to increase scientific productivity without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: reading, analyzing, and producing quality knowledge.\nIf you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.\n\n\n📚 PAIC Econometrics | FAE Business School Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization Transforming research through artificial intelligence"
+    "text": "1.15 📝 Conclusion\nPaper Hunter demonstrates how artificial intelligence can be used to increase scientific productivity without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: reading, analyzing, and producing quality knowledge.\nIf you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.\n\n\n📚 PAIC Econometrics | FAE Business School Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization Transforming research through artificial intelligence",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI News Agent"
+    ]
   },
   {
     "objectID": "mindmap.html",

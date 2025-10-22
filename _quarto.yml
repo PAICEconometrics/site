@@ -68,7 +68,7 @@ website:
           - text: "Commodities News"
             href: news.qmd
           - text: "AI News Agent"
-            href: openAi_agent.qmd
+            href: openAI_agent.qmd
       
       - section: "📊 Predictive Modeling"
         contents:
