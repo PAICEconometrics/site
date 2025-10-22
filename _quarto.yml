@@ -3,7 +3,7 @@ project:
   output-dir: "."
 
 execute:
-  freeze: false
+  freeze: auto  # ou 'true' para forçar uso de cache local
   
 website:
   title: "PAIC Econometrics | FAE"
