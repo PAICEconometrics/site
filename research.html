@@ -167,7 +167,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="https://fae.edu/" class="navbar-brand navbar-brand-logo">
+    <a href="https://fae.edu/servicos/caderno-paic.vm" class="navbar-brand navbar-brand-logo">
     <img src="https://raw.githubusercontent.com/profrhozon/FAE_Econometrics/refs/heads/main/fae_logo.png" alt="FAE Business School" class="navbar-logo">
     </a>
   </div>
@@ -256,7 +256,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./resmindmap.qmd" class="sidebar-item-text sidebar-link">
+  <a href="./resmindmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Theoretical Framework</span></a>
   </div>
 </li>
@@ -268,7 +268,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./publplan.qmd" class="sidebar-item-text sidebar-link">
+  <a href="./publplan.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Publication Plan</span></a>
   </div>
 </li>
@@ -340,6 +340,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="./econometrics_model_sel.qmd" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Model Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-draft.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Paper Draft</span></a>
   </div>
 </li>
       </ul>
@@ -429,66 +435,66 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#research-methodology" id="toc-research-methodology" class="nav-link active" data-scroll-target="#research-methodology">Research Methodology</a>
+  <li><a href="#research-methodology" id="toc-research-methodology" class="nav-link active" data-scroll-target="#research-methodology"><span class="header-section-number">1</span> Research Methodology</a>
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#research-framework" id="toc-research-framework" class="nav-link" data-scroll-target="#research-framework">Research Framework</a>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">1.1</span> Overview</a></li>
+  <li><a href="#research-framework" id="toc-research-framework" class="nav-link" data-scroll-target="#research-framework"><span class="header-section-number">1.2</span> Research Framework</a>
   <ul class="collapse">
-  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data">Stage 1: Data Collection &amp; Preparation</a>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data"><span class="header-section-number">1.2.1</span> Stage 1: Data Collection &amp; Preparation</a>
   <ul class="collapse">
-  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">1.1 Data Sources</a></li>
-  <li><a href="#commodities-universe" id="toc-commodities-universe" class="nav-link" data-scroll-target="#commodities-universe">1.2 Commodities Universe</a></li>
-  <li><a href="#data-preprocessing-pipeline" id="toc-data-preprocessing-pipeline" class="nav-link" data-scroll-target="#data-preprocessing-pipeline">1.3 Data Preprocessing Pipeline</a></li>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources"><span class="header-section-number">1.2.1.1</span> 1.1 Data Sources</a></li>
+  <li><a href="#commodities-universe" id="toc-commodities-universe" class="nav-link" data-scroll-target="#commodities-universe"><span class="header-section-number">1.2.1.2</span> 1.2 Commodities Universe</a></li>
+  <li><a href="#data-preprocessing-pipeline" id="toc-data-preprocessing-pipeline" class="nav-link" data-scroll-target="#data-preprocessing-pipeline"><span class="header-section-number">1.2.1.3</span> 1.3 Data Preprocessing Pipeline</a></li>
   </ul></li>
-  <li><a href="#sec-forecasting" id="toc-sec-forecasting" class="nav-link" data-scroll-target="#sec-forecasting">Stage 2: Time Series Forecasting Models</a>
+  <li><a href="#sec-forecasting" id="toc-sec-forecasting" class="nav-link" data-scroll-target="#sec-forecasting"><span class="header-section-number">1.2.2</span> Stage 2: Time Series Forecasting Models</a>
   <ul class="collapse">
-  <li><a href="#econometric-models" id="toc-econometric-models" class="nav-link" data-scroll-target="#econometric-models">2.1 Econometric Models</a></li>
-  <li><a href="#machine-learning-models" id="toc-machine-learning-models" class="nav-link" data-scroll-target="#machine-learning-models">2.2 Machine Learning Models</a></li>
-  <li><a href="#model-validation" id="toc-model-validation" class="nav-link" data-scroll-target="#model-validation">2.3 Model Validation</a></li>
+  <li><a href="#econometric-models" id="toc-econometric-models" class="nav-link" data-scroll-target="#econometric-models"><span class="header-section-number">1.2.2.1</span> 2.1 Econometric Models</a></li>
+  <li><a href="#machine-learning-models" id="toc-machine-learning-models" class="nav-link" data-scroll-target="#machine-learning-models"><span class="header-section-number">1.2.2.2</span> 2.2 Machine Learning Models</a></li>
+  <li><a href="#model-validation" id="toc-model-validation" class="nav-link" data-scroll-target="#model-validation"><span class="header-section-number">1.2.2.3</span> 2.3 Model Validation</a></li>
   </ul></li>
-  <li><a href="#sec-optimization" id="toc-sec-optimization" class="nav-link" data-scroll-target="#sec-optimization">Stage 3: Multi-Objective Optimization Framework</a>
+  <li><a href="#sec-optimization" id="toc-sec-optimization" class="nav-link" data-scroll-target="#sec-optimization"><span class="header-section-number">1.2.3</span> Stage 3: Multi-Objective Optimization Framework</a>
   <ul class="collapse">
-  <li><a href="#objective-functions" id="toc-objective-functions" class="nav-link" data-scroll-target="#objective-functions">3.1 Objective Functions</a></li>
-  <li><a href="#multi-objective-algorithms" id="toc-multi-objective-algorithms" class="nav-link" data-scroll-target="#multi-objective-algorithms">3.2 Multi-Objective Algorithms</a></li>
-  <li><a href="#pareto-front-analysis" id="toc-pareto-front-analysis" class="nav-link" data-scroll-target="#pareto-front-analysis">3.3 Pareto Front Analysis</a></li>
+  <li><a href="#objective-functions" id="toc-objective-functions" class="nav-link" data-scroll-target="#objective-functions"><span class="header-section-number">1.2.3.1</span> 3.1 Objective Functions</a></li>
+  <li><a href="#multi-objective-algorithms" id="toc-multi-objective-algorithms" class="nav-link" data-scroll-target="#multi-objective-algorithms"><span class="header-section-number">1.2.3.2</span> 3.2 Multi-Objective Algorithms</a></li>
+  <li><a href="#pareto-front-analysis" id="toc-pareto-front-analysis" class="nav-link" data-scroll-target="#pareto-front-analysis"><span class="header-section-number">1.2.3.3</span> 3.3 Pareto Front Analysis</a></li>
   </ul></li>
-  <li><a href="#sec-rl" id="toc-sec-rl" class="nav-link" data-scroll-target="#sec-rl">Stage 4: Reinforcement Learning for Dynamic Portfolio Management</a>
+  <li><a href="#sec-rl" id="toc-sec-rl" class="nav-link" data-scroll-target="#sec-rl"><span class="header-section-number">1.2.4</span> Stage 4: Reinforcement Learning for Dynamic Portfolio Management</a>
   <ul class="collapse">
-  <li><a href="#markov-decision-process-mdp-formulation" id="toc-markov-decision-process-mdp-formulation" class="nav-link" data-scroll-target="#markov-decision-process-mdp-formulation">4.1 Markov Decision Process (MDP) Formulation</a></li>
-  <li><a href="#rl-algorithms" id="toc-rl-algorithms" class="nav-link" data-scroll-target="#rl-algorithms">4.2 RL Algorithms</a></li>
-  <li><a href="#strategy-types" id="toc-strategy-types" class="nav-link" data-scroll-target="#strategy-types">4.3 Strategy Types</a></li>
+  <li><a href="#markov-decision-process-mdp-formulation" id="toc-markov-decision-process-mdp-formulation" class="nav-link" data-scroll-target="#markov-decision-process-mdp-formulation"><span class="header-section-number">1.2.4.1</span> 4.1 Markov Decision Process (MDP) Formulation</a></li>
+  <li><a href="#rl-algorithms" id="toc-rl-algorithms" class="nav-link" data-scroll-target="#rl-algorithms"><span class="header-section-number">1.2.4.2</span> 4.2 RL Algorithms</a></li>
+  <li><a href="#strategy-types" id="toc-strategy-types" class="nav-link" data-scroll-target="#strategy-types"><span class="header-section-number">1.2.4.3</span> 4.3 Strategy Types</a></li>
   </ul></li>
-  <li><a href="#sec-backtesting" id="toc-sec-backtesting" class="nav-link" data-scroll-target="#sec-backtesting">Stage 5: Backtesting &amp; Performance Evaluation</a>
+  <li><a href="#sec-backtesting" id="toc-sec-backtesting" class="nav-link" data-scroll-target="#sec-backtesting"><span class="header-section-number">1.2.5</span> Stage 5: Backtesting &amp; Performance Evaluation</a>
   <ul class="collapse">
-  <li><a href="#backtesting-protocol" id="toc-backtesting-protocol" class="nav-link" data-scroll-target="#backtesting-protocol">5.1 Backtesting Protocol</a></li>
-  <li><a href="#performance-metrics-1" id="toc-performance-metrics-1" class="nav-link" data-scroll-target="#performance-metrics-1">5.2 Performance Metrics</a></li>
-  <li><a href="#benchmark-comparisons" id="toc-benchmark-comparisons" class="nav-link" data-scroll-target="#benchmark-comparisons">5.3 Benchmark Comparisons</a></li>
+  <li><a href="#backtesting-protocol" id="toc-backtesting-protocol" class="nav-link" data-scroll-target="#backtesting-protocol"><span class="header-section-number">1.2.5.1</span> 5.1 Backtesting Protocol</a></li>
+  <li><a href="#performance-metrics-1" id="toc-performance-metrics-1" class="nav-link" data-scroll-target="#performance-metrics-1"><span class="header-section-number">1.2.5.2</span> 5.2 Performance Metrics</a></li>
+  <li><a href="#benchmark-comparisons" id="toc-benchmark-comparisons" class="nav-link" data-scroll-target="#benchmark-comparisons"><span class="header-section-number">1.2.5.3</span> 5.3 Benchmark Comparisons</a></li>
   </ul></li>
-  <li><a href="#sec-validation" id="toc-sec-validation" class="nav-link" data-scroll-target="#sec-validation">Stage 6: Validation &amp; Robustness Checks</a>
+  <li><a href="#sec-validation" id="toc-sec-validation" class="nav-link" data-scroll-target="#sec-validation"><span class="header-section-number">1.2.6</span> Stage 6: Validation &amp; Robustness Checks</a>
   <ul class="collapse">
-  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis">6.1 Sensitivity Analysis</a></li>
-  <li><a href="#monte-carlo-simulation" id="toc-monte-carlo-simulation" class="nav-link" data-scroll-target="#monte-carlo-simulation">6.2 Monte Carlo Simulation</a></li>
-  <li><a href="#out-of-sample-validation" id="toc-out-of-sample-validation" class="nav-link" data-scroll-target="#out-of-sample-validation">6.3 Out-of-Sample Validation</a></li>
+  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">1.2.6.1</span> 6.1 Sensitivity Analysis</a></li>
+  <li><a href="#monte-carlo-simulation" id="toc-monte-carlo-simulation" class="nav-link" data-scroll-target="#monte-carlo-simulation"><span class="header-section-number">1.2.6.2</span> 6.2 Monte Carlo Simulation</a></li>
+  <li><a href="#out-of-sample-validation" id="toc-out-of-sample-validation" class="nav-link" data-scroll-target="#out-of-sample-validation"><span class="header-section-number">1.2.6.3</span> 6.3 Out-of-Sample Validation</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#expected-outcomes" id="toc-expected-outcomes" class="nav-link" data-scroll-target="#expected-outcomes">Expected Outcomes</a>
+  <li><a href="#expected-outcomes" id="toc-expected-outcomes" class="nav-link" data-scroll-target="#expected-outcomes"><span class="header-section-number">1.3</span> Expected Outcomes</a>
   <ul class="collapse">
-  <li><a href="#scientific-contributions" id="toc-scientific-contributions" class="nav-link" data-scroll-target="#scientific-contributions">Scientific Contributions</a></li>
-  <li><a href="#academic-outputs" id="toc-academic-outputs" class="nav-link" data-scroll-target="#academic-outputs">Academic Outputs</a></li>
+  <li><a href="#scientific-contributions" id="toc-scientific-contributions" class="nav-link" data-scroll-target="#scientific-contributions"><span class="header-section-number">1.3.1</span> Scientific Contributions</a></li>
+  <li><a href="#academic-outputs" id="toc-academic-outputs" class="nav-link" data-scroll-target="#academic-outputs"><span class="header-section-number">1.3.2</span> Academic Outputs</a></li>
   </ul></li>
-  <li><a href="#technical-stack-tools" id="toc-technical-stack-tools" class="nav-link" data-scroll-target="#technical-stack-tools">Technical Stack &amp; Tools</a>
+  <li><a href="#technical-stack-tools" id="toc-technical-stack-tools" class="nav-link" data-scroll-target="#technical-stack-tools"><span class="header-section-number">1.4</span> Technical Stack &amp; Tools</a>
   <ul class="collapse">
-  <li><a href="#programming-languages" id="toc-programming-languages" class="nav-link" data-scroll-target="#programming-languages">Programming Languages</a></li>
-  <li><a href="#development-infrastructure" id="toc-development-infrastructure" class="nav-link" data-scroll-target="#development-infrastructure">Development Infrastructure</a></li>
+  <li><a href="#programming-languages" id="toc-programming-languages" class="nav-link" data-scroll-target="#programming-languages"><span class="header-section-number">1.4.1</span> Programming Languages</a></li>
+  <li><a href="#development-infrastructure" id="toc-development-infrastructure" class="nav-link" data-scroll-target="#development-infrastructure"><span class="header-section-number">1.4.2</span> Development Infrastructure</a></li>
   </ul></li>
-  <li><a href="#timeline-milestones" id="toc-timeline-milestones" class="nav-link" data-scroll-target="#timeline-milestones">Timeline &amp; Milestones</a></li>
-  <li><a href="#quality-assurance" id="toc-quality-assurance" class="nav-link" data-scroll-target="#quality-assurance">Quality Assurance</a>
+  <li><a href="#timeline-milestones" id="toc-timeline-milestones" class="nav-link" data-scroll-target="#timeline-milestones"><span class="header-section-number">1.5</span> Timeline &amp; Milestones</a></li>
+  <li><a href="#quality-assurance" id="toc-quality-assurance" class="nav-link" data-scroll-target="#quality-assurance"><span class="header-section-number">1.6</span> Quality Assurance</a>
   <ul class="collapse">
-  <li><a href="#reproducibility-standards" id="toc-reproducibility-standards" class="nav-link" data-scroll-target="#reproducibility-standards">Reproducibility Standards</a></li>
-  <li><a href="#ethical-considerations" id="toc-ethical-considerations" class="nav-link" data-scroll-target="#ethical-considerations">Ethical Considerations</a></li>
+  <li><a href="#reproducibility-standards" id="toc-reproducibility-standards" class="nav-link" data-scroll-target="#reproducibility-standards"><span class="header-section-number">1.6.1</span> Reproducibility Standards</a></li>
+  <li><a href="#ethical-considerations" id="toc-ethical-considerations" class="nav-link" data-scroll-target="#ethical-considerations"><span class="header-section-number">1.6.2</span> Ethical Considerations</a></li>
   </ul></li>
-  <li><a href="#collaboration-contact" id="toc-collaboration-contact" class="nav-link" data-scroll-target="#collaboration-contact">Collaboration &amp; Contact</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#collaboration-contact" id="toc-collaboration-contact" class="nav-link" data-scroll-target="#collaboration-contact"><span class="header-section-number">1.7</span> Collaboration &amp; Contact</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">1.8</span> References</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -516,10 +522,10 @@ window.Quarto = {
 </header>
 
 
-<section id="research-methodology" class="level1">
-<h1>Research Methodology</h1>
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<section id="research-methodology" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Research Methodology</h1>
+<section id="overview" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1.1</span> Overview</h2>
 <p>This research project adopts a <strong>quantitative, computational, and applied</strong> approach, combining statistical econometrics, machine learning, and optimization techniques to develop an integrated framework for agricultural commodities portfolio management.</p>
 <p>Our methodology follows a rigorous quasi-experimental design based on time series simulations and backtesting protocols, ensuring reproducibility and transparency throughout all research phases.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -542,13 +548,13 @@ window.Quarto = {
 </div>
 <hr>
 </section>
-<section id="research-framework" class="level2">
-<h2 class="anchored" data-anchor-id="research-framework">Research Framework</h2>
+<section id="research-framework" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="research-framework"><span class="header-section-number">1.2</span> Research Framework</h2>
 <p>Our integrated methodology is structured in <strong>six complementary stages</strong>, each building upon previous findings to create a comprehensive portfolio optimization system.</p>
-<section id="sec-data" class="level3">
-<h3 class="anchored" data-anchor-id="sec-data">Stage 1: Data Collection &amp; Preparation</h3>
-<section id="data-sources" class="level4">
-<h4 class="anchored" data-anchor-id="data-sources">1.1 Data Sources</h4>
+<section id="sec-data" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="sec-data"><span class="header-section-number">1.2.1</span> Stage 1: Data Collection &amp; Preparation</h3>
+<section id="data-sources" class="level4" data-number="1.2.1.1">
+<h4 data-number="1.2.1.1" class="anchored" data-anchor-id="data-sources"><span class="header-section-number">1.2.1.1</span> 1.1 Data Sources</h4>
 <p>We collect historical data from multiple authoritative sources:</p>
 <ul>
 <li><strong>Price Data</strong>: B3 (Brasil Bolsa Balcão) futures contracts</li>
@@ -557,8 +563,8 @@ window.Quarto = {
 <li><strong>Alternative Data</strong>: News sentiment via APIs, weather patterns</li>
 </ul>
 </section>
-<section id="commodities-universe" class="level4">
-<h4 class="anchored" data-anchor-id="commodities-universe">1.2 Commodities Universe</h4>
+<section id="commodities-universe" class="level4" data-number="1.2.1.2">
+<h4 data-number="1.2.1.2" class="anchored" data-anchor-id="commodities-universe"><span class="header-section-number">1.2.1.2</span> 1.2 Commodities Universe</h4>
 <p>Our focus encompasses Brazilian agricultural grain commodities:</p>
 <table class="caption-top table">
 <thead>
@@ -609,8 +615,8 @@ window.Quarto = {
 </tbody>
 </table>
 </section>
-<section id="data-preprocessing-pipeline" class="level4">
-<h4 class="anchored" data-anchor-id="data-preprocessing-pipeline">1.3 Data Preprocessing Pipeline</h4>
+<section id="data-preprocessing-pipeline" class="level4" data-number="1.2.1.3">
+<h4 data-number="1.2.1.3" class="anchored" data-anchor-id="data-preprocessing-pipeline"><span class="header-section-number">1.2.1.3</span> 1.3 Data Preprocessing Pipeline</h4>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Data Cleaning &amp; Normalization Pipeline</summary>
@@ -648,13 +654,13 @@ Data Quality Assurance
 <hr>
 </section>
 </section>
-<section id="sec-forecasting" class="level3">
-<h3 class="anchored" data-anchor-id="sec-forecasting">Stage 2: Time Series Forecasting Models</h3>
+<section id="sec-forecasting" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="sec-forecasting"><span class="header-section-number">1.2.2</span> Stage 2: Time Series Forecasting Models</h3>
 <p>We employ a <strong>hierarchical forecasting framework</strong> combining econometric and machine learning approaches.</p>
-<section id="econometric-models" class="level4">
-<h4 class="anchored" data-anchor-id="econometric-models">2.1 Econometric Models</h4>
-<section id="garch-family-models" class="level5">
-<h5 class="anchored" data-anchor-id="garch-family-models">GARCH Family Models</h5>
+<section id="econometric-models" class="level4" data-number="1.2.2.1">
+<h4 data-number="1.2.2.1" class="anchored" data-anchor-id="econometric-models"><span class="header-section-number">1.2.2.1</span> 2.1 Econometric Models</h4>
+<section id="garch-family-models" class="level5" data-number="1.2.2.1.1">
+<h5 data-number="1.2.2.1.1" class="anchored" data-anchor-id="garch-family-models"><span class="header-section-number">1.2.2.1.1</span> GARCH Family Models</h5>
 <p>For volatility forecasting, we implement multiple GARCH specifications:</p>
 <p><strong>Standard GARCH(1,1)</strong>: <span class="math display">\[
 \sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \beta \sigma_{t-1}^2
@@ -694,15 +700,15 @@ Why Markov-Switching?
 </div>
 </div>
 </section>
-<section id="arima-models-with-exogenous-variables" class="level5">
-<h5 class="anchored" data-anchor-id="arima-models-with-exogenous-variables">ARIMA Models with Exogenous Variables</h5>
+<section id="arima-models-with-exogenous-variables" class="level5" data-number="1.2.2.1.2">
+<h5 data-number="1.2.2.1.2" class="anchored" data-anchor-id="arima-models-with-exogenous-variables"><span class="header-section-number">1.2.2.1.2</span> ARIMA Models with Exogenous Variables</h5>
 <p>For return forecasting, we use ARIMAX models incorporating: - Lagged returns - Macroeconomic indicators (USD/BRL exchange rate, interest rates) - Seasonal components - News sentiment scores</p>
 </section>
 </section>
-<section id="machine-learning-models" class="level4">
-<h4 class="anchored" data-anchor-id="machine-learning-models">2.2 Machine Learning Models</h4>
-<section id="long-short-term-memory-lstm-networks" class="level5">
-<h5 class="anchored" data-anchor-id="long-short-term-memory-lstm-networks">Long Short-Term Memory (LSTM) Networks</h5>
+<section id="machine-learning-models" class="level4" data-number="1.2.2.2">
+<h4 data-number="1.2.2.2" class="anchored" data-anchor-id="machine-learning-models"><span class="header-section-number">1.2.2.2</span> 2.2 Machine Learning Models</h4>
+<section id="long-short-term-memory-lstm-networks" class="level5" data-number="1.2.2.2.1">
+<h5 data-number="1.2.2.2.1" class="anchored" data-anchor-id="long-short-term-memory-lstm-networks"><span class="header-section-number">1.2.2.2.1</span> Long Short-Term Memory (LSTM) Networks</h5>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -725,8 +731,8 @@ Why Markov-Switching?
 </details>
 </div>
 </section>
-<section id="ensemble-methods" class="level5">
-<h5 class="anchored" data-anchor-id="ensemble-methods">Ensemble Methods</h5>
+<section id="ensemble-methods" class="level5" data-number="1.2.2.2.2">
+<h5 data-number="1.2.2.2.2" class="anchored" data-anchor-id="ensemble-methods"><span class="header-section-number">1.2.2.2.2</span> Ensemble Methods</h5>
 <p>We combine multiple models via weighted averaging:</p>
 <p><span class="math display">\[
 \hat{y}_t = \sum_{i=1}^M w_i \hat{y}_{i,t}
@@ -734,8 +740,8 @@ Why Markov-Switching?
 <p>where weights <span class="math inline">\(w_i\)</span> are optimized via: - <strong>Inverse RMSE weighting</strong> - <strong>Bayesian Model Averaging</strong> - <strong>Stacking with meta-learner</strong></p>
 </section>
 </section>
-<section id="model-validation" class="level4">
-<h4 class="anchored" data-anchor-id="model-validation">2.3 Model Validation</h4>
+<section id="model-validation" class="level4" data-number="1.2.2.3">
+<h4 data-number="1.2.2.3" class="anchored" data-anchor-id="model-validation"><span class="header-section-number">1.2.2.3</span> 2.3 Model Validation</h4>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Walk-Forward Validation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Performance Metrics</a></li></ul>
 <div class="tab-content">
@@ -789,11 +795,11 @@ Why Markov-Switching?
 <hr>
 </section>
 </section>
-<section id="sec-optimization" class="level3">
-<h3 class="anchored" data-anchor-id="sec-optimization">Stage 3: Multi-Objective Optimization Framework</h3>
+<section id="sec-optimization" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="sec-optimization"><span class="header-section-number">1.2.3</span> Stage 3: Multi-Objective Optimization Framework</h3>
 <p>The portfolio optimization phase addresses <strong>multiple conflicting objectives</strong> simultaneously.</p>
-<section id="objective-functions" class="level4">
-<h4 class="anchored" data-anchor-id="objective-functions">3.1 Objective Functions</h4>
+<section id="objective-functions" class="level4" data-number="1.2.3.1">
+<h4 data-number="1.2.3.1" class="anchored" data-anchor-id="objective-functions"><span class="header-section-number">1.2.3.1</span> 3.1 Objective Functions</h4>
 <p>We optimize portfolios considering:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -824,10 +830,10 @@ Conditional Value-at-Risk (CVaR)
 </div>
 </div>
 </section>
-<section id="multi-objective-algorithms" class="level4">
-<h4 class="anchored" data-anchor-id="multi-objective-algorithms">3.2 Multi-Objective Algorithms</h4>
-<section id="nsga-ii-non-dominated-sorting-genetic-algorithm-ii" class="level5">
-<h5 class="anchored" data-anchor-id="nsga-ii-non-dominated-sorting-genetic-algorithm-ii">NSGA-II (Non-dominated Sorting Genetic Algorithm II)</h5>
+<section id="multi-objective-algorithms" class="level4" data-number="1.2.3.2">
+<h4 data-number="1.2.3.2" class="anchored" data-anchor-id="multi-objective-algorithms"><span class="header-section-number">1.2.3.2</span> 3.2 Multi-Objective Algorithms</h4>
+<section id="nsga-ii-non-dominated-sorting-genetic-algorithm-ii" class="level5" data-number="1.2.3.2.1">
+<h5 data-number="1.2.3.2.1" class="anchored" data-anchor-id="nsga-ii-non-dominated-sorting-genetic-algorithm-ii"><span class="header-section-number">1.2.3.2.1</span> NSGA-II (Non-dominated Sorting Genetic Algorithm II)</h5>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -860,8 +866,8 @@ Conditional Value-at-Risk (CVaR)
 </details>
 </div>
 </section>
-<section id="differential-evolution-for-multi-objective-optimization" class="level5">
-<h5 class="anchored" data-anchor-id="differential-evolution-for-multi-objective-optimization">Differential Evolution for Multi-Objective Optimization</h5>
+<section id="differential-evolution-for-multi-objective-optimization" class="level5" data-number="1.2.3.2.2">
+<h5 data-number="1.2.3.2.2" class="anchored" data-anchor-id="differential-evolution-for-multi-objective-optimization"><span class="header-section-number">1.2.3.2.2</span> Differential Evolution for Multi-Objective Optimization</h5>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -884,8 +890,8 @@ Conditional Value-at-Risk (CVaR)
 </div>
 </section>
 </section>
-<section id="pareto-front-analysis" class="level4">
-<h4 class="anchored" data-anchor-id="pareto-front-analysis">3.3 Pareto Front Analysis</h4>
+<section id="pareto-front-analysis" class="level4" data-number="1.2.3.3">
+<h4 data-number="1.2.3.3" class="anchored" data-anchor-id="pareto-front-analysis"><span class="header-section-number">1.2.3.3</span> 3.3 Pareto Front Analysis</h4>
 <p>The optimization generates a <strong>Pareto-optimal frontier</strong> representing the trade-off between objectives:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -915,11 +921,11 @@ Conditional Value-at-Risk (CVaR)
 <hr>
 </section>
 </section>
-<section id="sec-rl" class="level3">
-<h3 class="anchored" data-anchor-id="sec-rl">Stage 4: Reinforcement Learning for Dynamic Portfolio Management</h3>
+<section id="sec-rl" class="level3" data-number="1.2.4">
+<h3 data-number="1.2.4" class="anchored" data-anchor-id="sec-rl"><span class="header-section-number">1.2.4</span> Stage 4: Reinforcement Learning for Dynamic Portfolio Management</h3>
 <p>We employ RL agents to learn <strong>adaptive rebalancing strategies</strong> that respond to market conditions.</p>
-<section id="markov-decision-process-mdp-formulation" class="level4">
-<h4 class="anchored" data-anchor-id="markov-decision-process-mdp-formulation">4.1 Markov Decision Process (MDP) Formulation</h4>
+<section id="markov-decision-process-mdp-formulation" class="level4" data-number="1.2.4.1">
+<h4 data-number="1.2.4.1" class="anchored" data-anchor-id="markov-decision-process-mdp-formulation"><span class="header-section-number">1.2.4.1</span> 4.1 Markov Decision Process (MDP) Formulation</h4>
 <p><strong>State Space</strong> <span class="math inline">\(\mathcal{S}\)</span>:</p>
 <p><span class="math display">\[
 s_t = \{w_t, \mu_t, \Sigma_t, \text{indicators}_t\}
@@ -933,10 +939,10 @@ a_t = \Delta w_t \in [-\delta, \delta]^n \quad \text{(portfolio weight adjustmen
 r_t = R_{p,t} - \lambda \cdot \text{Risk}_{p,t} - \kappa \cdot \text{TransactionCost}_t
 \]</span></p>
 </section>
-<section id="rl-algorithms" class="level4">
-<h4 class="anchored" data-anchor-id="rl-algorithms">4.2 RL Algorithms</h4>
-<section id="deep-q-network-dqn" class="level5">
-<h5 class="anchored" data-anchor-id="deep-q-network-dqn">Deep Q-Network (DQN)</h5>
+<section id="rl-algorithms" class="level4" data-number="1.2.4.2">
+<h4 data-number="1.2.4.2" class="anchored" data-anchor-id="rl-algorithms"><span class="header-section-number">1.2.4.2</span> 4.2 RL Algorithms</h4>
+<section id="deep-q-network-dqn" class="level5" data-number="1.2.4.2.1">
+<h5 data-number="1.2.4.2.1" class="anchored" data-anchor-id="deep-q-network-dqn"><span class="header-section-number">1.2.4.2.1</span> Deep Q-Network (DQN)</h5>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -979,8 +985,8 @@ r_t = R_{p,t} - \lambda \cdot \text{Risk}_{p,t} - \kappa \cdot \text{Transaction
 </details>
 </div>
 </section>
-<section id="proximal-policy-optimization-ppo" class="level5">
-<h5 class="anchored" data-anchor-id="proximal-policy-optimization-ppo">Proximal Policy Optimization (PPO)</h5>
+<section id="proximal-policy-optimization-ppo" class="level5" data-number="1.2.4.2.2">
+<h5 data-number="1.2.4.2.2" class="anchored" data-anchor-id="proximal-policy-optimization-ppo"><span class="header-section-number">1.2.4.2.2</span> Proximal Policy Optimization (PPO)</h5>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1005,8 +1011,8 @@ r_t = R_{p,t} - \lambda \cdot \text{Risk}_{p,t} - \kappa \cdot \text{Transaction
 </div>
 </section>
 </section>
-<section id="strategy-types" class="level4">
-<h4 class="anchored" data-anchor-id="strategy-types">4.3 Strategy Types</h4>
+<section id="strategy-types" class="level4" data-number="1.2.4.3">
+<h4 data-number="1.2.4.3" class="anchored" data-anchor-id="strategy-types"><span class="header-section-number">1.2.4.3</span> 4.3 Strategy Types</h4>
 <p>The RL agent learns to implement various strategies:</p>
 <table class="caption-top table">
 <colgroup>
@@ -1052,10 +1058,10 @@ r_t = R_{p,t} - \lambda \cdot \text{Risk}_{p,t} - \kappa \cdot \text{Transaction
 <hr>
 </section>
 </section>
-<section id="sec-backtesting" class="level3">
-<h3 class="anchored" data-anchor-id="sec-backtesting">Stage 5: Backtesting &amp; Performance Evaluation</h3>
-<section id="backtesting-protocol" class="level4">
-<h4 class="anchored" data-anchor-id="backtesting-protocol">5.1 Backtesting Protocol</h4>
+<section id="sec-backtesting" class="level3" data-number="1.2.5">
+<h3 data-number="1.2.5" class="anchored" data-anchor-id="sec-backtesting"><span class="header-section-number">1.2.5</span> Stage 5: Backtesting &amp; Performance Evaluation</h3>
+<section id="backtesting-protocol" class="level4" data-number="1.2.5.1">
+<h4 data-number="1.2.5.1" class="anchored" data-anchor-id="backtesting-protocol"><span class="header-section-number">1.2.5.1</span> 5.1 Backtesting Protocol</h4>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1093,10 +1099,10 @@ Avoiding Overfitting
 </details>
 </div>
 </section>
-<section id="performance-metrics-1" class="level4">
-<h4 class="anchored" data-anchor-id="performance-metrics-1">5.2 Performance Metrics</h4>
-<section id="risk-adjusted-returns" class="level5">
-<h5 class="anchored" data-anchor-id="risk-adjusted-returns">Risk-Adjusted Returns</h5>
+<section id="performance-metrics-1" class="level4" data-number="1.2.5.2">
+<h4 data-number="1.2.5.2" class="anchored" data-anchor-id="performance-metrics-1"><span class="header-section-number">1.2.5.2</span> 5.2 Performance Metrics</h4>
+<section id="risk-adjusted-returns" class="level5" data-number="1.2.5.2.1">
+<h5 data-number="1.2.5.2.1" class="anchored" data-anchor-id="risk-adjusted-returns"><span class="header-section-number">1.2.5.2.1</span> Risk-Adjusted Returns</h5>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 28%">
@@ -1134,8 +1140,8 @@ Avoiding Overfitting
 </tbody>
 </table>
 </section>
-<section id="drawdown-analysis" class="level5">
-<h5 class="anchored" data-anchor-id="drawdown-analysis">Drawdown Analysis</h5>
+<section id="drawdown-analysis" class="level5" data-number="1.2.5.2.2">
+<h5 data-number="1.2.5.2.2" class="anchored" data-anchor-id="drawdown-analysis"><span class="header-section-number">1.2.5.2.2</span> Drawdown Analysis</h5>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1158,8 +1164,8 @@ Avoiding Overfitting
 </div>
 </section>
 </section>
-<section id="benchmark-comparisons" class="level4">
-<h4 class="anchored" data-anchor-id="benchmark-comparisons">5.3 Benchmark Comparisons</h4>
+<section id="benchmark-comparisons" class="level4" data-number="1.2.5.3">
+<h4 data-number="1.2.5.3" class="anchored" data-anchor-id="benchmark-comparisons"><span class="header-section-number">1.2.5.3</span> 5.3 Benchmark Comparisons</h4>
 <p>We compare our strategies against:</p>
 <ol type="1">
 <li><strong>Buy-and-Hold</strong>: Equal-weighted static portfolio</li>
@@ -1198,10 +1204,10 @@ Avoiding Overfitting
 <hr>
 </section>
 </section>
-<section id="sec-validation" class="level3">
-<h3 class="anchored" data-anchor-id="sec-validation">Stage 6: Validation &amp; Robustness Checks</h3>
-<section id="sensitivity-analysis" class="level4">
-<h4 class="anchored" data-anchor-id="sensitivity-analysis">6.1 Sensitivity Analysis</h4>
+<section id="sec-validation" class="level3" data-number="1.2.6">
+<h3 data-number="1.2.6" class="anchored" data-anchor-id="sec-validation"><span class="header-section-number">1.2.6</span> Stage 6: Validation &amp; Robustness Checks</h3>
+<section id="sensitivity-analysis" class="level4" data-number="1.2.6.1">
+<h4 data-number="1.2.6.1" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">1.2.6.1</span> 6.1 Sensitivity Analysis</h4>
 <p>Test model robustness under various scenarios:</p>
 <ul>
 <li><strong>Parameter Sensitivity</strong>: Vary RL hyperparameters (±20%)</li>
@@ -1210,8 +1216,8 @@ Avoiding Overfitting
 <li><strong>Market Conditions</strong>: Bull vs.&nbsp;bear vs.&nbsp;sideways markets</li>
 </ul>
 </section>
-<section id="monte-carlo-simulation" class="level4">
-<h4 class="anchored" data-anchor-id="monte-carlo-simulation">6.2 Monte Carlo Simulation</h4>
+<section id="monte-carlo-simulation" class="level4" data-number="1.2.6.2">
+<h4 data-number="1.2.6.2" class="anchored" data-anchor-id="monte-carlo-simulation"><span class="header-section-number">1.2.6.2</span> 6.2 Monte Carlo Simulation</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1236,8 +1242,8 @@ Avoiding Overfitting
 </details>
 </div>
 </section>
-<section id="out-of-sample-validation" class="level4">
-<h4 class="anchored" data-anchor-id="out-of-sample-validation">6.3 Out-of-Sample Validation</h4>
+<section id="out-of-sample-validation" class="level4" data-number="1.2.6.3">
+<h4 data-number="1.2.6.3" class="anchored" data-anchor-id="out-of-sample-validation"><span class="header-section-number">1.2.6.3</span> 6.3 Out-of-Sample Validation</h4>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1260,10 +1266,10 @@ Cross-Validation Strategy
 </section>
 </section>
 </section>
-<section id="expected-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="expected-outcomes">Expected Outcomes</h2>
-<section id="scientific-contributions" class="level3">
-<h3 class="anchored" data-anchor-id="scientific-contributions">Scientific Contributions</h3>
+<section id="expected-outcomes" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="expected-outcomes"><span class="header-section-number">1.3</span> Expected Outcomes</h2>
+<section id="scientific-contributions" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="scientific-contributions"><span class="header-section-number">1.3.1</span> Scientific Contributions</h3>
 <ol type="1">
 <li><strong>Methodological Innovation</strong>
 <ul>
@@ -1285,8 +1291,8 @@ Cross-Validation Strategy
 </ul></li>
 </ol>
 </section>
-<section id="academic-outputs" class="level3">
-<h3 class="anchored" data-anchor-id="academic-outputs">Academic Outputs</h3>
+<section id="academic-outputs" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="academic-outputs"><span class="header-section-number">1.3.2</span> Academic Outputs</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Publications</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Conferences</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Technical Reports</a></li></ul>
 <div class="tab-content">
@@ -1322,10 +1328,10 @@ Cross-Validation Strategy
 <hr>
 </section>
 </section>
-<section id="technical-stack-tools" class="level2">
-<h2 class="anchored" data-anchor-id="technical-stack-tools">Technical Stack &amp; Tools</h2>
-<section id="programming-languages" class="level3">
-<h3 class="anchored" data-anchor-id="programming-languages">Programming Languages</h3>
+<section id="technical-stack-tools" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="technical-stack-tools"><span class="header-section-number">1.4</span> Technical Stack &amp; Tools</h2>
+<section id="programming-languages" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="programming-languages"><span class="header-section-number">1.4.1</span> Programming Languages</h3>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -1353,8 +1359,8 @@ Cross-Validation Strategy
 </details>
 </div>
 </section>
-<section id="development-infrastructure" class="level3">
-<h3 class="anchored" data-anchor-id="development-infrastructure">Development Infrastructure</h3>
+<section id="development-infrastructure" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="development-infrastructure"><span class="header-section-number">1.4.2</span> Development Infrastructure</h3>
 <ul>
 <li><strong>Version Control</strong>: GitHub (https://github.com/PAICEconometrics)</li>
 <li><strong>IDE</strong>: RStudio / Positron IDE</li>
@@ -1365,8 +1371,8 @@ Cross-Validation Strategy
 <hr>
 </section>
 </section>
-<section id="timeline-milestones" class="level2">
-<h2 class="anchored" data-anchor-id="timeline-milestones">Timeline &amp; Milestones</h2>
+<section id="timeline-milestones" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="timeline-milestones"><span class="header-section-number">1.5</span> Timeline &amp; Milestones</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -1406,10 +1412,10 @@ Cross-Validation Strategy
 </div>
 <hr>
 </section>
-<section id="quality-assurance" class="level2">
-<h2 class="anchored" data-anchor-id="quality-assurance">Quality Assurance</h2>
-<section id="reproducibility-standards" class="level3">
-<h3 class="anchored" data-anchor-id="reproducibility-standards">Reproducibility Standards</h3>
+<section id="quality-assurance" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="quality-assurance"><span class="header-section-number">1.6</span> Quality Assurance</h2>
+<section id="reproducibility-standards" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="reproducibility-standards"><span class="header-section-number">1.6.1</span> Reproducibility Standards</h3>
 <p>All research outputs follow <strong>FAIR principles</strong> (Findable, Accessible, Interoperable, Reusable):</p>
 <ul>
 <li>✅ <strong>Code Repository</strong>: Public GitHub with MIT License</li>
@@ -1419,8 +1425,8 @@ Cross-Validation Strategy
 <li>✅ <strong>Version Control</strong>: Semantic versioning for major milestones</li>
 </ul>
 </section>
-<section id="ethical-considerations" class="level3">
-<h3 class="anchored" data-anchor-id="ethical-considerations">Ethical Considerations</h3>
+<section id="ethical-considerations" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="ethical-considerations"><span class="header-section-number">1.6.2</span> Ethical Considerations</h3>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1442,8 +1448,8 @@ Research Ethics
 <hr>
 </section>
 </section>
-<section id="collaboration-contact" class="level2">
-<h2 class="anchored" data-anchor-id="collaboration-contact">Collaboration &amp; Contact</h2>
+<section id="collaboration-contact" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="collaboration-contact"><span class="header-section-number">1.7</span> Collaboration &amp; Contact</h2>
 <p>Interested in collaborating or learning more about our methodology?</p>
 <ul>
 <li><strong>Principal Investigator</strong>: Prof.&nbsp;Rodrigo Hermont Ozon</li>
@@ -1454,14 +1460,14 @@ Research Ethics
 </ul>
 <hr>
 </section>
-<section id="references" class="level2">
-<h2 class="anchored" data-anchor-id="references">References</h2>
+<section id="references" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="references"><span class="header-section-number">1.8</span> References</h2>
 <div id="refs" role="list">
 
 </div>
 <hr>
 <p>*Last updated:</p>
-<p>2025-10-21</p>
+<p>2025-10-22</p>
 
 
 <!-- -->

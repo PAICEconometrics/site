@@ -74,14 +74,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8598d624af1d875e24ba1dc5ecbbe8a2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-ca0e396e99c2f8e4bee89bc3795d562f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-8598d624af1d875e24ba1dc5ecbbe8a2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8598d624af1d875e24ba1dc5ecbbe8a2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -115,186 +111,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
-    const toggleBodyColorMode = (bsSheetEl) => {
-      const mode = bsSheetEl.getAttribute("data-mode");
-      const bodyEl = window.document.querySelector("body");
-      if (mode === "dark") {
-        bodyEl.classList.add("quarto-dark");
-        bodyEl.classList.remove("quarto-light");
-      } else {
-        bodyEl.classList.add("quarto-light");
-        bodyEl.classList.remove("quarto-dark");
-      }
-    }
-    const toggleBodyColorPrimary = () => {
-      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
-      if (bsSheetEl) {
-        toggleBodyColorMode(bsSheetEl);
-      }
-    }
-    const setColorSchemeToggle = (alternate) => {
-      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-      for (let i=0; i < toggles.length; i++) {
-        const toggle = toggles[i];
-        if (toggle) {
-          if (alternate) {
-            toggle.classList.add("alternate");
-          } else {
-            toggle.classList.remove("alternate");
-          }
-        }
-      }
-    };
-    const toggleColorMode = (alternate) => {
-      // Switch the stylesheets
-      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
-      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-      manageTransitions('#quarto-margin-sidebar .nav-link', false);
-      if (alternate) {
-        // note: dark is layered on light, we don't disable primary!
-        enableStylesheet(alternateStylesheets);
-        for (const sheetNode of alternateStylesheets) {
-          if (sheetNode.id === "quarto-bootstrap") {
-            toggleBodyColorMode(sheetNode);
-          }
-        }
-      } else {
-        disableStylesheet(alternateStylesheets);
-        enableStylesheet(primaryStylesheets)
-        toggleBodyColorPrimary();
-      }
-      manageTransitions('#quarto-margin-sidebar .nav-link', true);
-      // Switch the toggles
-      setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
-      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-        manageTransitions("body", false);
-        window.scrollTo(0, 1);
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          manageTransitions("body", true);
-        }, 40);
-      }
-    }
-    const disableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        stylesheet.rel = 'disabled-stylesheet';
-      }
-    }
-    const enableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
-          stylesheet.rel = 'stylesheet';
-        }
-      }
-    }
-    const manageTransitions = (selector, allowTransitions) => {
-      const els = window.document.querySelectorAll(selector);
-      for (let i=0; i < els.length; i++) {
-        const el = els[i];
-        if (allowTransitions) {
-          el.classList.remove('notransition');
-        } else {
-          el.classList.add('notransition');
-        }
-      }
-    }
-    const isFileUrl = () => {
-      return window.location.protocol === 'file:';
-    }
-    const hasAlternateSentinel = () => {
-      let styleSentinel = getColorSchemeSentinel();
-      if (styleSentinel !== null) {
-        return styleSentinel === "alternate";
-      } else {
-        return false;
-      }
-    }
-    const setStyleSentinel = (alternate) => {
-      const value = alternate ? "alternate" : "default";
-      if (!isFileUrl()) {
-        window.localStorage.setItem("quarto-color-scheme", value);
-      } else {
-        localAlternateSentinel = value;
-      }
-    }
-    const getColorSchemeSentinel = () => {
-      if (!isFileUrl()) {
-        const storageValue = window.localStorage.getItem("quarto-color-scheme");
-        return storageValue != null ? storageValue : localAlternateSentinel;
-      } else {
-        return localAlternateSentinel;
-      }
-    }
-    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-      let newTheme = '';
-      if(authorPrefersDark) {
-        newTheme = isAlternate ? baseTheme : alternateTheme;
-      } else {
-        newTheme = isAlternate ? alternateTheme : baseTheme;
-      }
-      const changeGiscusTheme = () => {
-        // From: https://github.com/giscus/giscus/issues/336
-        const sendMessage = (message) => {
-          const iframe = document.querySelector('iframe.giscus-frame');
-          if (!iframe) return;
-          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-        }
-        sendMessage({
-          setConfig: {
-            theme: newTheme
-          }
-        });
-      }
-      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-      if (isGiscussLoaded) {
-        changeGiscusTheme();
-      }
-    };
-    const authorPrefersDark = false;
-    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const darkModeDefault = queryPrefersDark.matches;
-      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-    // Dark / light mode switch
-    window.quartoToggleColorScheme = () => {
-      // Read the current dark / light value
-      let toAlternate = !hasAlternateSentinel();
-      toggleColorMode(toAlternate);
-      setStyleSentinel(toAlternate);
-      toggleGiscusIfUsed(toAlternate, darkModeDefault);
-      window.dispatchEvent(new Event('resize'));
-    };
-    queryPrefersDark.addEventListener("change", e => {
-      if(window.localStorage.getItem("quarto-color-scheme") !== null)
-        return;
-      const alternate = e.matches
-      toggleColorMode(alternate);
-      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
-      toggleGiscusIfUsed(alternate, darkModeDefault);
-    });
-    // Switch to dark mode if need be
-    if (hasAlternateSentinel()) {
-      toggleColorMode(true);
-    } else {
-      toggleColorMode(false);
-    }
-  </script>
+<body class="nav-sidebar docked nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">PAIC Econometrics | FAE</span>
+    <a href="https://fae.edu/servicos/caderno-paic.vm" class="navbar-brand navbar-brand-logo">
+    <img src="https://raw.githubusercontent.com/profrhozon/FAE_Econometrics/refs/heads/main/fae_logo.png" alt="FAE Business School" class="navbar-logo">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -312,7 +137,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./research.qmd"> 
+    <a class="nav-link" href="./research.html"> 
 <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
@@ -325,7 +150,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a href="https://www.linkedin.com/school/fae-centro-universitario/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-linkedin"></i></a>
     <a href="https://github.com/PAICEconometrics" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
     <a href="mailto:rodrigo.ozon@fae.edu" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -383,19 +207,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./resmindmap.qmd" class="sidebar-item-text sidebar-link">
+  <a href="./resmindmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Theoretical Framework</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./revsyslit.qmd" class="sidebar-item-text sidebar-link">
+  <a href="./revsyslit.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Literature Review</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./publplan.qmd" class="sidebar-item-text sidebar-link">
+  <a href="./publplan.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Publication Plan</span></a>
   </div>
 </li>
@@ -467,6 +291,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./econometrics_model_sel.qmd" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Model Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-draft.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Paper Draft</span></a>
   </div>
 </li>
       </ul>
@@ -552,55 +382,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#weekly-papers-digest" id="toc-weekly-papers-digest" class="nav-link active" data-scroll-target="#weekly-papers-digest">📚 Weekly Papers Digest</a></li>
-  <li><a href="#about-this-digest" id="toc-about-this-digest" class="nav-link" data-scroll-target="#about-this-digest">📖 About This Digest</a>
+  <li><a href="#weekly-papers-digest" id="toc-weekly-papers-digest" class="nav-link active" data-scroll-target="#weekly-papers-digest"><span class="header-section-number">1</span> 📚 Weekly Papers Digest</a></li>
+  <li><a href="#about-this-digest" id="toc-about-this-digest" class="nav-link" data-scroll-target="#about-this-digest"><span class="header-section-number">1.1</span> 📖 About This Digest</a>
   <ul>
-  <li><a href="#categories" id="toc-categories" class="nav-link" data-scroll-target="#categories">Categories</a></li>
+  <li><a href="#categories" id="toc-categories" class="nav-link" data-scroll-target="#categories"><span class="header-section-number">1.1.1</span> Categories</a></li>
   </ul></li>
-  <li><a href="#october-2025" id="toc-october-2025" class="nav-link" data-scroll-target="#october-2025">🗓️ October 2025</a>
+  <li><a href="#october-2025" id="toc-october-2025" class="nav-link" data-scroll-target="#october-2025"><span class="header-section-number">1.2</span> 🗓️ October 2025</a>
   <ul>
-  <li><a href="#week-of-october-11-17-2025" id="toc-week-of-october-11-17-2025" class="nav-link" data-scroll-target="#week-of-october-11-17-2025">Week of October 11-17, 2025</a>
+  <li><a href="#week-of-october-11-17-2025" id="toc-week-of-october-11-17-2025" class="nav-link" data-scroll-target="#week-of-october-11-17-2025"><span class="header-section-number">1.2.1</span> Week of October 11-17, 2025</a>
   <ul class="collapse">
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
-  <li><a href="#featured-papers" id="toc-featured-papers" class="nav-link" data-scroll-target="#featured-papers">📊 Featured Papers</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">1.2.1.1</span> Summary</a></li>
+  <li><a href="#featured-papers" id="toc-featured-papers" class="nav-link" data-scroll-target="#featured-papers"><span class="header-section-number">1.2.1.2</span> 📊 Featured Papers</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#september-2025" id="toc-september-2025" class="nav-link" data-scroll-target="#september-2025">🗓️ September 2025</a>
+  <li><a href="#september-2025" id="toc-september-2025" class="nav-link" data-scroll-target="#september-2025"><span class="header-section-number">1.3</span> 🗓️ September 2025</a>
   <ul>
-  <li><a href="#week-of-september-5-11-2025" id="toc-week-of-september-5-11-2025" class="nav-link" data-scroll-target="#week-of-september-5-11-2025">Week of September 5-11, 2025</a>
+  <li><a href="#week-of-september-5-11-2025" id="toc-week-of-september-5-11-2025" class="nav-link" data-scroll-target="#week-of-september-5-11-2025"><span class="header-section-number">1.3.1</span> Week of September 5-11, 2025</a>
   <ul class="collapse">
-  <li><a href="#summary-1" id="toc-summary-1" class="nav-link" data-scroll-target="#summary-1">Summary</a></li>
-  <li><a href="#featured-papers-1" id="toc-featured-papers-1" class="nav-link" data-scroll-target="#featured-papers-1">📊 Featured Papers</a></li>
+  <li><a href="#summary-1" id="toc-summary-1" class="nav-link" data-scroll-target="#summary-1"><span class="header-section-number">1.3.1.1</span> Summary</a></li>
+  <li><a href="#featured-papers-1" id="toc-featured-papers-1" class="nav-link" data-scroll-target="#featured-papers-1"><span class="header-section-number">1.3.1.2</span> 📊 Featured Papers</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#research-impact-tracker" id="toc-research-impact-tracker" class="nav-link" data-scroll-target="#research-impact-tracker">📈 Research Impact Tracker</a>
+  <li><a href="#research-impact-tracker" id="toc-research-impact-tracker" class="nav-link" data-scroll-target="#research-impact-tracker"><span class="header-section-number">1.4</span> 📈 Research Impact Tracker</a>
   <ul>
-  <li><a href="#papers-by-category-all-time" id="toc-papers-by-category-all-time" class="nav-link" data-scroll-target="#papers-by-category-all-time">Papers by Category (All-Time)</a></li>
-  <li><a href="#relevance-distribution" id="toc-relevance-distribution" class="nav-link" data-scroll-target="#relevance-distribution">Relevance Distribution</a></li>
+  <li><a href="#papers-by-category-all-time" id="toc-papers-by-category-all-time" class="nav-link" data-scroll-target="#papers-by-category-all-time"><span class="header-section-number">1.4.1</span> Papers by Category (All-Time)</a></li>
+  <li><a href="#relevance-distribution" id="toc-relevance-distribution" class="nav-link" data-scroll-target="#relevance-distribution"><span class="header-section-number">1.4.2</span> Relevance Distribution</a></li>
   </ul></li>
-  <li><a href="#search-by-topic" id="toc-search-by-topic" class="nav-link" data-scroll-target="#search-by-topic">🔍 Search by Topic</a>
+  <li><a href="#search-by-topic" id="toc-search-by-topic" class="nav-link" data-scroll-target="#search-by-topic"><span class="header-section-number">1.5</span> 🔍 Search by Topic</a>
   <ul>
-  <li><a href="#quick-filters" id="toc-quick-filters" class="nav-link" data-scroll-target="#quick-filters">Quick Filters</a></li>
+  <li><a href="#quick-filters" id="toc-quick-filters" class="nav-link" data-scroll-target="#quick-filters"><span class="header-section-number">1.5.1</span> Quick Filters</a></li>
   </ul></li>
-  <li><a href="#reading-list-by-priority" id="toc-reading-list-by-priority" class="nav-link" data-scroll-target="#reading-list-by-priority">📚 Reading List by Priority</a>
+  <li><a href="#reading-list-by-priority" id="toc-reading-list-by-priority" class="nav-link" data-scroll-target="#reading-list-by-priority"><span class="header-section-number">1.6</span> 📚 Reading List by Priority</a>
   <ul>
-  <li><a href="#must-read-priority-1" id="toc-must-read-priority-1" class="nav-link" data-scroll-target="#must-read-priority-1">🔥 Must Read (Priority 1)</a></li>
-  <li><a href="#high-priority-priority-2" id="toc-high-priority-priority-2" class="nav-link" data-scroll-target="#high-priority-priority-2">⚡ High Priority (Priority 2)</a></li>
-  <li><a href="#additional-reading-priority-3" id="toc-additional-reading-priority-3" class="nav-link" data-scroll-target="#additional-reading-priority-3">📖 Additional Reading (Priority 3)</a></li>
+  <li><a href="#must-read-priority-1" id="toc-must-read-priority-1" class="nav-link" data-scroll-target="#must-read-priority-1"><span class="header-section-number">1.6.1</span> 🔥 Must Read (Priority 1)</a></li>
+  <li><a href="#high-priority-priority-2" id="toc-high-priority-priority-2" class="nav-link" data-scroll-target="#high-priority-priority-2"><span class="header-section-number">1.6.2</span> ⚡ High Priority (Priority 2)</a></li>
+  <li><a href="#additional-reading-priority-3" id="toc-additional-reading-priority-3" class="nav-link" data-scroll-target="#additional-reading-priority-3"><span class="header-section-number">1.6.3</span> 📖 Additional Reading (Priority 3)</a></li>
   </ul></li>
-  <li><a href="#download-options" id="toc-download-options" class="nav-link" data-scroll-target="#download-options">📥 Download Options</a>
+  <li><a href="#download-options" id="toc-download-options" class="nav-link" data-scroll-target="#download-options"><span class="header-section-number">1.7</span> 📥 Download Options</a>
   <ul>
-  <li><a href="#complete-database" id="toc-complete-database" class="nav-link" data-scroll-target="#complete-database">Complete Database</a></li>
-  <li><a href="#weekly-reports" id="toc-weekly-reports" class="nav-link" data-scroll-target="#weekly-reports">Weekly Reports</a></li>
+  <li><a href="#complete-database" id="toc-complete-database" class="nav-link" data-scroll-target="#complete-database"><span class="header-section-number">1.7.1</span> Complete Database</a></li>
+  <li><a href="#weekly-reports" id="toc-weekly-reports" class="nav-link" data-scroll-target="#weekly-reports"><span class="header-section-number">1.7.2</span> Weekly Reports</a></li>
   </ul></li>
-  <li><a href="#stay-updated" id="toc-stay-updated" class="nav-link" data-scroll-target="#stay-updated">🔔 Stay Updated</a>
+  <li><a href="#stay-updated" id="toc-stay-updated" class="nav-link" data-scroll-target="#stay-updated"><span class="header-section-number">1.8</span> 🔔 Stay Updated</a>
   <ul>
-  <li><a href="#subscribe-to-weekly-digest" id="toc-subscribe-to-weekly-digest" class="nav-link" data-scroll-target="#subscribe-to-weekly-digest">Subscribe to Weekly Digest</a></li>
-  <li><a href="#rss-feed" id="toc-rss-feed" class="nav-link" data-scroll-target="#rss-feed">RSS Feed</a></li>
+  <li><a href="#subscribe-to-weekly-digest" id="toc-subscribe-to-weekly-digest" class="nav-link" data-scroll-target="#subscribe-to-weekly-digest"><span class="header-section-number">1.8.1</span> Subscribe to Weekly Digest</a></li>
+  <li><a href="#rss-feed" id="toc-rss-feed" class="nav-link" data-scroll-target="#rss-feed"><span class="header-section-number">1.8.2</span> RSS Feed</a></li>
   </ul></li>
-  <li><a href="#statistics" id="toc-statistics" class="nav-link" data-scroll-target="#statistics">📊 Statistics</a></li>
-  <li><a href="#contributing" id="toc-contributing" class="nav-link" data-scroll-target="#contributing">🤝 Contributing</a></li>
-  <li><a href="#related-resources" id="toc-related-resources" class="nav-link" data-scroll-target="#related-resources">📖 Related Resources</a></li>
+  <li><a href="#statistics" id="toc-statistics" class="nav-link" data-scroll-target="#statistics"><span class="header-section-number">1.9</span> 📊 Statistics</a></li>
+  <li><a href="#contributing" id="toc-contributing" class="nav-link" data-scroll-target="#contributing"><span class="header-section-number">1.10</span> 🤝 Contributing</a></li>
+  <li><a href="#related-resources" id="toc-related-resources" class="nav-link" data-scroll-target="#related-resources"><span class="header-section-number">1.11</span> 📖 Related Resources</a></li>
   </ul>
 </nav>
 </nav>
@@ -610,7 +440,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
-
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -649,15 +478,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="weekly-papers-digest" class="level1 hero-section">
-<h1>📚 Weekly Papers Digest</h1>
+<section id="weekly-papers-digest" class="level1 hero-section" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> 📚 Weekly Papers Digest</h1>
 <p>A continuously updated collection of the latest research papers in <strong>applied econometrics</strong>, <strong>multi-period multi-objective optimization</strong>, <strong>time series forecasting</strong>, and <strong>reinforcement learning</strong> for finance.</p>
-<p><strong>Last Updated:</strong> outubro 21, 2025<br>
+<p><strong>Last Updated:</strong> outubro 22, 2025<br>
 <strong>Total Papers Catalogued:</strong> 24 papers across 4 weeks</p>
 </section>
 <hr>
-<section id="about-this-digest" class="level2">
-<h2 class="anchored" data-anchor-id="about-this-digest">📖 About This Digest</h2>
+<section id="about-this-digest" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="about-this-digest"><span class="header-section-number">1.1</span> 📖 About This Digest</h2>
 <p>This page is <strong>automatically updated every Friday</strong> with the latest scientific papers discovered by our <a href="./openAI_agent.html">Paper Hunter</a> agent. Each week, we curate articles from:</p>
 <ul>
 <li><strong>arXiv</strong> (econ.EM, q-fin, cs.LG, math.OC)</li>
@@ -665,8 +494,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Google Scholar</strong> Recent Publications</li>
 <li><strong>Major Journals</strong> (early access articles)</li>
 </ul>
-<section id="categories" class="level3">
-<h3 class="anchored" data-anchor-id="categories">Categories</h3>
+<section id="categories" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="categories"><span class="header-section-number">1.1.1</span> Categories</h3>
 <p>Papers are classified into four main categories:</p>
 <table class="caption-top table">
 <colgroup>
@@ -701,23 +530,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 </section>
-<section id="october-2025" class="level2">
-<h2 class="anchored" data-anchor-id="october-2025">🗓️ October 2025</h2>
-<section id="week-of-october-11-17-2025" class="level3">
-<h3 class="anchored" data-anchor-id="week-of-october-11-17-2025">Week of October 11-17, 2025</h3>
-<section id="summary" class="level4 info-box">
-<h4 class="anchored" data-anchor-id="summary">Summary</h4>
+<section id="october-2025" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="october-2025"><span class="header-section-number">1.2</span> 🗓️ October 2025</h2>
+<section id="week-of-october-11-17-2025" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="week-of-october-11-17-2025"><span class="header-section-number">1.2.1</span> Week of October 11-17, 2025</h3>
+<section id="summary" class="level4 info-box" data-number="1.2.1.1">
+<h4 data-number="1.2.1.1" class="anchored" data-anchor-id="summary"><span class="header-section-number">1.2.1.1</span> Summary</h4>
 <p>This week we found <strong>7 papers</strong> across multiple databases. Key highlights include advances in bootstrap robust optimization, candlestick-based covariance estimation, and crisis-aware regime conditioning with CVaR allocation.</p>
 <p><strong>Top Pick:</strong> <em>Deep Learning for Portfolio Optimization</em> by Osaf Ali - A comprehensive multi-agent RL approach optimizing multiple risk metrics jointly.</p>
 </section>
-<section id="featured-papers" class="level4">
-<h4 class="anchored" data-anchor-id="featured-papers">📊 Featured Papers</h4>
+<section id="featured-papers" class="level4" data-number="1.2.1.2">
+<h4 data-number="1.2.1.2" class="anchored" data-anchor-id="featured-papers"><span class="header-section-number">1.2.1.2</span> 📊 Featured Papers</h4>
 <details open="">
 <summary>
 <strong>🔵 Econometrics (3 papers)</strong>
 </summary>
-<section id="beyond-returns-a-candlestick-based-approach-to-spot-covariance-estimation" class="level5">
-<h5 class="anchored" data-anchor-id="beyond-returns-a-candlestick-based-approach-to-spot-covariance-estimation">1. Beyond Returns: A Candlestick-Based Approach to Spot Covariance Estimation</h5>
+<section id="beyond-returns-a-candlestick-based-approach-to-spot-covariance-estimation" class="level5" data-number="1.2.1.2.1">
+<h5 data-number="1.2.1.2.1" class="anchored" data-anchor-id="beyond-returns-a-candlestick-based-approach-to-spot-covariance-estimation"><span class="header-section-number">1.2.1.2.1</span> 1. Beyond Returns: A Candlestick-Based Approach to Spot Covariance Estimation</h5>
 <p><strong>Authors:</strong> Yasin Simsek<br>
 <strong>Venue:</strong> arXiv (econ.EM) | <strong>Date:</strong> 2025-10-14<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2510.12911">arXiv:2510.12911</a></p>
@@ -726,8 +555,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Essential for our volatility modeling component. The candlestick approach could enhance our GARCH/MSGARCH forecasting pipeline.</p>
 <hr>
 </section>
-<section id="spatial-and-temporal-boundaries-in-difference-in-differences" class="level5">
-<h5 class="anchored" data-anchor-id="spatial-and-temporal-boundaries-in-difference-in-differences">2. Spatial and Temporal Boundaries in Difference-in-Differences</h5>
+<section id="spatial-and-temporal-boundaries-in-difference-in-differences" class="level5" data-number="1.2.1.2.2">
+<h5 data-number="1.2.1.2.2" class="anchored" data-anchor-id="spatial-and-temporal-boundaries-in-difference-in-differences"><span class="header-section-number">1.2.1.2.2</span> 2. Spatial and Temporal Boundaries in Difference-in-Differences</h5>
 <p><strong>Authors:</strong> Tatsuru Kikuchi<br>
 <strong>Venue:</strong> arXiv (econ.EM) | <strong>Date:</strong> 2025-10-13<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2510.11013">arXiv:2510.11013</a></p>
@@ -736,8 +565,8 @@ Essential for our volatility modeling component. The candlestick approach could 
 Methodological interest for causal inference in time series contexts.</p>
 <hr>
 </section>
-<section id="non-parametric-bootstrap-robust-optimization-for-portfolios" class="level5">
-<h5 class="anchored" data-anchor-id="non-parametric-bootstrap-robust-optimization-for-portfolios">3. (Non-Parametric) Bootstrap Robust Optimization for Portfolios</h5>
+<section id="non-parametric-bootstrap-robust-optimization-for-portfolios" class="level5" data-number="1.2.1.2.3">
+<h5 data-number="1.2.1.2.3" class="anchored" data-anchor-id="non-parametric-bootstrap-robust-optimization-for-portfolios"><span class="header-section-number">1.2.1.2.3</span> 3. (Non-Parametric) Bootstrap Robust Optimization for Portfolios</h5>
 <p><strong>Authors:</strong> Daniel C. Oliveira, Grover Guzman, Nick Firoozye<br>
 <strong>Venue:</strong> arXiv (q-fin.ST) | <strong>Date:</strong> 2025-10-14<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2510.12725">arXiv:2510.12725</a></p>
@@ -750,8 +579,8 @@ Methodological interest for causal inference in time series contexts.</p>
 <strong>🟢 Optimization (2 papers)</strong>
 </summary>
 </details></section>
-<section id="deep-learning-for-portfolio-optimization-ai-driven-risk-adjusted-returns" class="level5">
-<h5 class="anchored" data-anchor-id="deep-learning-for-portfolio-optimization-ai-driven-risk-adjusted-returns">4. Deep Learning for Portfolio Optimization: AI-Driven Risk-Adjusted Returns</h5>
+<section id="deep-learning-for-portfolio-optimization-ai-driven-risk-adjusted-returns" class="level5" data-number="1.2.1.2.4">
+<h5 data-number="1.2.1.2.4" class="anchored" data-anchor-id="deep-learning-for-portfolio-optimization-ai-driven-risk-adjusted-returns"><span class="header-section-number">1.2.1.2.4</span> 4. Deep Learning for Portfolio Optimization: AI-Driven Risk-Adjusted Returns</h5>
 <p><strong>Authors:</strong> Osaf Ali<br>
 <strong>Venue:</strong> SSRN | <strong>Date:</strong> 2025-10-15<br>
 <strong>Link:</strong> <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5510579">SSRN 5510579</a></p>
@@ -761,8 +590,8 @@ Methodological interest for causal inference in time series contexts.</p>
 <p><strong>Key Contributions:</strong> - Multi-agent architecture for different objectives - Joint optimization of multiple risk metrics - Backtesting on commodity futures data</p>
 <hr>
 </section>
-<section id="evaluating-investment-performance-the-p-index-and-empirical-efficient-frontier" class="level5">
-<h5 class="anchored" data-anchor-id="evaluating-investment-performance-the-p-index-and-empirical-efficient-frontier">5. Evaluating Investment Performance: The p-index and Empirical Efficient Frontier</h5>
+<section id="evaluating-investment-performance-the-p-index-and-empirical-efficient-frontier" class="level5" data-number="1.2.1.2.5">
+<h5 data-number="1.2.1.2.5" class="anchored" data-anchor-id="evaluating-investment-performance-the-p-index-and-empirical-efficient-frontier"><span class="header-section-number">1.2.1.2.5</span> 5. Evaluating Investment Performance: The p-index and Empirical Efficient Frontier</h5>
 <p><strong>Authors:</strong> Jing Li, Bowei Guo, Xinqi Xie, Kuo-Ping Chang<br>
 <strong>Venue:</strong> arXiv (q-fin.PM) | <strong>Date:</strong> 2025-10-13<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2510.11074">arXiv:2510.11074</a></p>
@@ -775,8 +604,8 @@ Useful for benchmarking our Pareto front against traditional efficient frontiers
 <strong>🟣 RL (1 paper)</strong>
 </summary>
 </details></section>
-<section id="crisis-aware-regime-conditioned-diffusion-with-cvar-allocation" class="level5">
-<h5 class="anchored" data-anchor-id="crisis-aware-regime-conditioned-diffusion-with-cvar-allocation">6. Crisis-Aware Regime-Conditioned Diffusion with CVaR Allocation</h5>
+<section id="crisis-aware-regime-conditioned-diffusion-with-cvar-allocation" class="level5" data-number="1.2.1.2.6">
+<h5 data-number="1.2.1.2.6" class="anchored" data-anchor-id="crisis-aware-regime-conditioned-diffusion-with-cvar-allocation"><span class="header-section-number">1.2.1.2.6</span> 6. Crisis-Aware Regime-Conditioned Diffusion with CVaR Allocation</h5>
 <p><strong>Authors:</strong> Ali Atiah Alzahrani<br>
 <strong>Venue:</strong> arXiv (cs.LG → q-fin.CP) | <strong>Date:</strong> 2025-10-12<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2510.10807">arXiv:2510.10807</a></p>
@@ -789,8 +618,8 @@ Useful for benchmarking our Pareto front against traditional efficient frontiers
 <strong>🟠 Volatility (1 paper)</strong>
 </summary>
 </details></section>
-<section id="on-evaluating-loss-functions-for-stock-ranking-with-transformer-models" class="level5">
-<h5 class="anchored" data-anchor-id="on-evaluating-loss-functions-for-stock-ranking-with-transformer-models">7. On Evaluating Loss Functions for Stock Ranking with Transformer Models</h5>
+<section id="on-evaluating-loss-functions-for-stock-ranking-with-transformer-models" class="level5" data-number="1.2.1.2.7">
+<h5 data-number="1.2.1.2.7" class="anchored" data-anchor-id="on-evaluating-loss-functions-for-stock-ranking-with-transformer-models"><span class="header-section-number">1.2.1.2.7</span> 7. On Evaluating Loss Functions for Stock Ranking with Transformer Models</h5>
 <p><strong>Authors:</strong> Jan Kwiatkowski, Jarosław A. Chudziak<br>
 <strong>Venue:</strong> arXiv (cs.LG → q-fin.PM) | <strong>Date:</strong> 2025-10-15<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2510.14156">arXiv:2510.14156</a></p>
@@ -803,23 +632,23 @@ Useful for our ML/DL forecasting module, particularly for ranking-based portfoli
 </section>
 </section>
 
-<section id="september-2025" class="level2">
-<h2 class="anchored" data-anchor-id="september-2025">🗓️ September 2025</h2>
-<section id="week-of-september-5-11-2025" class="level3">
-<h3 class="anchored" data-anchor-id="week-of-september-5-11-2025">Week of September 5-11, 2025</h3>
-<section id="summary-1" class="level4 info-box">
-<h4 class="anchored" data-anchor-id="summary-1">Summary</h4>
+<section id="september-2025" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="september-2025"><span class="header-section-number">1.3</span> 🗓️ September 2025</h2>
+<section id="week-of-september-5-11-2025" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="week-of-september-5-11-2025"><span class="header-section-number">1.3.1</span> Week of September 5-11, 2025</h3>
+<section id="summary-1" class="level4 info-box" data-number="1.3.1.1">
+<h4 data-number="1.3.1.1" class="anchored" data-anchor-id="summary-1"><span class="header-section-number">1.3.1.1</span> Summary</h4>
 <p>Strong week for multi-period optimization papers! Found <strong>6 papers</strong> with particular emphasis on neural methods for volatility forecasting and multi-period asset-liability management with reinforcement learning.</p>
 <p><strong>Top Pick:</strong> <em>Multi-period Asset-Liability Management with RL</em> by Gao et al.&nbsp;- Breakthrough application of RL to ALM under regime-switching dynamics.</p>
 </section>
-<section id="featured-papers-1" class="level4">
-<h4 class="anchored" data-anchor-id="featured-papers-1">📊 Featured Papers</h4>
+<section id="featured-papers-1" class="level4" data-number="1.3.1.2">
+<h4 data-number="1.3.1.2" class="anchored" data-anchor-id="featured-papers-1"><span class="header-section-number">1.3.1.2</span> 📊 Featured Papers</h4>
 <details>
 <summary>
 <strong>🔵 Econometrics (2 papers)</strong>
 </summary>
-<section id="neural-lévy-sde-for-state-dependent-risk-and-density-forecasting" class="level5">
-<h5 class="anchored" data-anchor-id="neural-lévy-sde-for-state-dependent-risk-and-density-forecasting">8. Neural Lévy SDE for State-Dependent Risk and Density Forecasting</h5>
+<section id="neural-lévy-sde-for-state-dependent-risk-and-density-forecasting" class="level5" data-number="1.3.1.2.1">
+<h5 data-number="1.3.1.2.1" class="anchored" data-anchor-id="neural-lévy-sde-for-state-dependent-risk-and-density-forecasting"><span class="header-section-number">1.3.1.2.1</span> 8. Neural Lévy SDE for State-Dependent Risk and Density Forecasting</h5>
 <p><strong>Authors:</strong> Ziyao Wang, Svetlozar T. Rachev<br>
 <strong>Venue:</strong> arXiv (q-fin.RM) | <strong>Date:</strong> 2025-09-03<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2509.01041">arXiv:2509.01041</a></p>
@@ -829,8 +658,8 @@ Useful for our ML/DL forecasting module, particularly for ranking-based portfoli
 <p><strong>Key Innovations:</strong> - State-dependent jump intensity - Multi-horizon density forecasts - Better tail risk estimation than GARCH</p>
 <hr>
 </section>
-<section id="signal-from-noise-neural-network-denoising-for-financial-spillovers" class="level5">
-<h5 class="anchored" data-anchor-id="signal-from-noise-neural-network-denoising-for-financial-spillovers">9. Signal from Noise: Neural Network Denoising for Financial Spillovers</h5>
+<section id="signal-from-noise-neural-network-denoising-for-financial-spillovers" class="level5" data-number="1.3.1.2.2">
+<h5 data-number="1.3.1.2.2" class="anchored" data-anchor-id="signal-from-noise-neural-network-denoising-for-financial-spillovers"><span class="header-section-number">1.3.1.2.2</span> 9. Signal from Noise: Neural Network Denoising for Financial Spillovers</h5>
 <p><strong>Authors:</strong> Abdullah Karasan, Özge Seda Alp<br>
 <strong>Venue:</strong> arXiv (econ.EM) | <strong>Date:</strong> 2025-09-03<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2509.01156">arXiv:2509.01156</a></p>
@@ -843,8 +672,8 @@ Important for our diversification objectives and correlation-based constraints i
 <strong>🟢 Optimization (1 paper)</strong>
 </summary>
 </details></section>
-<section id="mean-variance-stackelberg-games-with-asymmetric-information" class="level5">
-<h5 class="anchored" data-anchor-id="mean-variance-stackelberg-games-with-asymmetric-information">10. Mean-Variance Stackelberg Games with Asymmetric Information</h5>
+<section id="mean-variance-stackelberg-games-with-asymmetric-information" class="level5" data-number="1.3.1.2.3">
+<h5 data-number="1.3.1.2.3" class="anchored" data-anchor-id="mean-variance-stackelberg-games-with-asymmetric-information"><span class="header-section-number">1.3.1.2.3</span> 10. Mean-Variance Stackelberg Games with Asymmetric Information</h5>
 <p><strong>Authors:</strong> Yu-Jui Huang, Shihao Zhu<br>
 <strong>Venue:</strong> arXiv (q-fin.PM) | <strong>Date:</strong> 2025-09-05<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2509.03669">arXiv:2509.03669</a></p>
@@ -857,8 +686,8 @@ Theoretical interest, especially if we consider relative performance objectives.
 <strong>🟣 RL (1 paper)</strong>
 </summary>
 </details></section>
-<section id="multi-period-asset-liability-management-with-rl-in-regime-switching-market" class="level5">
-<h5 class="anchored" data-anchor-id="multi-period-asset-liability-management-with-rl-in-regime-switching-market">11. Multi-period Asset-Liability Management with RL in Regime-Switching Market</h5>
+<section id="multi-period-asset-liability-management-with-rl-in-regime-switching-market" class="level5" data-number="1.3.1.2.4">
+<h5 data-number="1.3.1.2.4" class="anchored" data-anchor-id="multi-period-asset-liability-management-with-rl-in-regime-switching-market"><span class="header-section-number">1.3.1.2.4</span> 11. Multi-period Asset-Liability Management with RL in Regime-Switching Market</h5>
 <p><strong>Authors:</strong> Zhongqin Gao, Ping Chen, Xun Li, Yan Lv, Wenhao Zhang<br>
 <strong>Venue:</strong> arXiv (q-fin.PM) | <strong>Date:</strong> 2025-09-03<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2509.03251">arXiv:2509.03251</a></p>
@@ -872,8 +701,8 @@ Theoretical interest, especially if we consider relative performance objectives.
 <strong>🟠 Volatility (2 papers)</strong>
 </summary>
 </details></section>
-<section id="controllable-generation-of-implied-volatility-surfaces-with-vaes" class="level5">
-<h5 class="anchored" data-anchor-id="controllable-generation-of-implied-volatility-surfaces-with-vaes">12. Controllable Generation of Implied Volatility Surfaces with VAEs</h5>
+<section id="controllable-generation-of-implied-volatility-surfaces-with-vaes" class="level5" data-number="1.3.1.2.5">
+<h5 data-number="1.3.1.2.5" class="anchored" data-anchor-id="controllable-generation-of-implied-volatility-surfaces-with-vaes"><span class="header-section-number">1.3.1.2.5</span> 12. Controllable Generation of Implied Volatility Surfaces with VAEs</h5>
 <p><strong>Authors:</strong> Jing Wang, Shuaiqiang Liu, Cornelis Vuik<br>
 <strong>Venue:</strong> arXiv (q-fin.CP) | <strong>Date:</strong> 2025-09-01<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2509.01743">arXiv:2509.01743</a></p>
@@ -882,8 +711,8 @@ Theoretical interest, especially if we consider relative performance objectives.
 Excellent for generating multiple scenarios in our multi-period optimization framework.</p>
 <hr>
 </section>
-<section id="data-driven-modeling-of-multiple-interest-rates-with-generalized-vasicek" class="level5">
-<h5 class="anchored" data-anchor-id="data-driven-modeling-of-multiple-interest-rates-with-generalized-vasicek">13. Data-driven Modeling of Multiple Interest Rates with Generalized Vasicek</h5>
+<section id="data-driven-modeling-of-multiple-interest-rates-with-generalized-vasicek" class="level5" data-number="1.3.1.2.6">
+<h5 data-number="1.3.1.2.6" class="anchored" data-anchor-id="data-driven-modeling-of-multiple-interest-rates-with-generalized-vasicek"><span class="header-section-number">1.3.1.2.6</span> 13. Data-driven Modeling of Multiple Interest Rates with Generalized Vasicek</h5>
 <p><strong>Authors:</strong> Pekka Ilmonen, Matti Laurikkala, Kirill Ralchenko, Timo Sottinen, Lauri Viitasaari<br>
 <strong>Venue:</strong> arXiv (econ.EM) | <strong>Date:</strong> 2025-09-03<br>
 <strong>Link:</strong> <a href="https://arxiv.org/abs/2509.03208">arXiv:2509.03208</a></p>
@@ -896,10 +725,10 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 </section>
 </section>
 
-<section id="research-impact-tracker" class="level2">
-<h2 class="anchored" data-anchor-id="research-impact-tracker">📈 Research Impact Tracker</h2>
-<section id="papers-by-category-all-time" class="level3">
-<h3 class="anchored" data-anchor-id="papers-by-category-all-time">Papers by Category (All-Time)</h3>
+<section id="research-impact-tracker" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="research-impact-tracker"><span class="header-section-number">1.4</span> 📈 Research Impact Tracker</h2>
+<section id="papers-by-category-all-time" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="papers-by-category-all-time"><span class="header-section-number">1.4.1</span> Papers by Category (All-Time)</h3>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -910,8 +739,8 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 </div>
 </div>
 </section>
-<section id="relevance-distribution" class="level3">
-<h3 class="anchored" data-anchor-id="relevance-distribution">Relevance Distribution</h3>
+<section id="relevance-distribution" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="relevance-distribution"><span class="header-section-number">1.4.2</span> Relevance Distribution</h3>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -924,28 +753,28 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 <hr>
 </section>
 </section>
-<section id="search-by-topic" class="level2">
-<h2 class="anchored" data-anchor-id="search-by-topic">🔍 Search by Topic</h2>
-<section id="quick-filters" class="level3">
-<h3 class="anchored" data-anchor-id="quick-filters">Quick Filters</h3>
+<section id="search-by-topic" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="search-by-topic"><span class="header-section-number">1.5</span> 🔍 Search by Topic</h2>
+<section id="quick-filters" class="level3" data-number="1.5.1">
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="quick-filters"><span class="header-section-number">1.5.1</span> Quick Filters</h3>
 <div class="team-grid">
-<section id="portfolio-optimization" class="level4 team-member">
-<h4 class="anchored" data-anchor-id="portfolio-optimization">🎯 Portfolio Optimization</h4>
+<section id="portfolio-optimization" class="level4 team-member" data-number="1.5.1.1">
+<h4 data-number="1.5.1.1" class="anchored" data-anchor-id="portfolio-optimization"><span class="header-section-number">1.5.1.1</span> 🎯 Portfolio Optimization</h4>
 <p><a href="#optimization-papers">Jump to papers</a></p>
 <p>Papers on multi-objective, multi-period portfolio construction, Pareto frontiers, and allocation strategies.</p>
 </section>
-<section id="volatility-forecasting" class="level4 team-member">
-<h4 class="anchored" data-anchor-id="volatility-forecasting">📊 Volatility Forecasting</h4>
+<section id="volatility-forecasting" class="level4 team-member" data-number="1.5.1.2">
+<h4 data-number="1.5.1.2" class="anchored" data-anchor-id="volatility-forecasting"><span class="header-section-number">1.5.1.2</span> 📊 Volatility Forecasting</h4>
 <p><a href="#volatility-papers">Jump to papers</a></p>
 <p>GARCH models, neural volatility, implied volatility surfaces, and risk metrics.</p>
 </section>
-<section id="reinforcement-learning" class="level4 team-member">
-<h4 class="anchored" data-anchor-id="reinforcement-learning">🤖 Reinforcement Learning</h4>
+<section id="reinforcement-learning" class="level4 team-member" data-number="1.5.1.3">
+<h4 data-number="1.5.1.3" class="anchored" data-anchor-id="reinforcement-learning"><span class="header-section-number">1.5.1.3</span> 🤖 Reinforcement Learning</h4>
 <p><a href="#rl-papers">Jump to papers</a></p>
 <p>Deep RL, Q-learning, policy optimization for dynamic trading and portfolio management.</p>
 </section>
-<section id="econometric-methods" class="level4 team-member">
-<h4 class="anchored" data-anchor-id="econometric-methods">📈 Econometric Methods</h4>
+<section id="econometric-methods" class="level4 team-member" data-number="1.5.1.4">
+<h4 data-number="1.5.1.4" class="anchored" data-anchor-id="econometric-methods"><span class="header-section-number">1.5.1.4</span> 📈 Econometric Methods</h4>
 <p><a href="#econometrics-papers">Jump to papers</a></p>
 <p>Time series analysis, spillover estimation, cointegration, and causal inference.</p>
 </section>
@@ -953,10 +782,10 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 <hr>
 </section>
 </section>
-<section id="reading-list-by-priority" class="level2">
-<h2 class="anchored" data-anchor-id="reading-list-by-priority">📚 Reading List by Priority</h2>
-<section id="must-read-priority-1" class="level3">
-<h3 class="anchored" data-anchor-id="must-read-priority-1">🔥 Must Read (Priority 1)</h3>
+<section id="reading-list-by-priority" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="reading-list-by-priority"><span class="header-section-number">1.6</span> 📚 Reading List by Priority</h2>
+<section id="must-read-priority-1" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="must-read-priority-1"><span class="header-section-number">1.6.1</span> 🔥 Must Read (Priority 1)</h3>
 <p>Essential papers that directly align with our thesis objectives:</p>
 <ol type="1">
 <li><strong>Deep Learning for Portfolio Optimization</strong> (Ali, 2025) - Multi-agent RL for MOO</li>
@@ -966,8 +795,8 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 <li><strong>Crisis-Aware CVaR Allocation</strong> (Alzahrani, 2025) - Regime-conditional allocation</li>
 </ol>
 </section>
-<section id="high-priority-priority-2" class="level3">
-<h3 class="anchored" data-anchor-id="high-priority-priority-2">⚡ High Priority (Priority 2)</h3>
+<section id="high-priority-priority-2" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="high-priority-priority-2"><span class="header-section-number">1.6.2</span> ⚡ High Priority (Priority 2)</h3>
 <p>Important papers for specific components:</p>
 <ol start="6" type="1">
 <li><strong>Candlestick Covariance Estimation</strong> (Simsek, 2025) - High-frequency data</li>
@@ -976,8 +805,8 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 <li><strong>Controllable IV Surfaces</strong> (Wang et al., 2025) - Scenario generation</li>
 </ol>
 </section>
-<section id="additional-reading-priority-3" class="level3">
-<h3 class="anchored" data-anchor-id="additional-reading-priority-3">📖 Additional Reading (Priority 3)</h3>
+<section id="additional-reading-priority-3" class="level3" data-number="1.6.3">
+<h3 data-number="1.6.3" class="anchored" data-anchor-id="additional-reading-priority-3"><span class="header-section-number">1.6.3</span> 📖 Additional Reading (Priority 3)</h3>
 <p>Relevant for methodology and context:</p>
 <ol start="10" type="1">
 <li><strong>Mean-Variance Stackelberg Games</strong> (Huang &amp; Zhu, 2025) - Game theory</li>
@@ -988,10 +817,10 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 <hr>
 </section>
 </section>
-<section id="download-options" class="level2">
-<h2 class="anchored" data-anchor-id="download-options">📥 Download Options</h2>
-<section id="complete-database" class="level3">
-<h3 class="anchored" data-anchor-id="complete-database">Complete Database</h3>
+<section id="download-options" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="download-options"><span class="header-section-number">1.7</span> 📥 Download Options</h2>
+<section id="complete-database" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="complete-database"><span class="header-section-number">1.7.1</span> Complete Database</h3>
 <p>Download the full database of papers in various formats:</p>
 <ul>
 <li><strong>Excel File</strong> (.xlsx): <a href="files/literature_master.xlsx">Download Master Spreadsheet</a></li>
@@ -1000,8 +829,8 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 <li><strong>Zotero RDF</strong>: <a href="files/literature.rdf">Import to Zotero</a></li>
 </ul>
 </section>
-<section id="weekly-reports" class="level3">
-<h3 class="anchored" data-anchor-id="weekly-reports">Weekly Reports</h3>
+<section id="weekly-reports" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="weekly-reports"><span class="header-section-number">1.7.2</span> Weekly Reports</h3>
 <p>Individual weekly reports in PDF format:</p>
 <ul>
 <li><a href="files/weekly_2025-10-17.pdf">Week of Oct 11-17, 2025 (PDF)</a></li>
@@ -1010,23 +839,23 @@ Relevant if we extend to fixed-income commodities or futures with interest rate 
 <hr>
 </section>
 </section>
-<section id="stay-updated" class="level2">
-<h2 class="anchored" data-anchor-id="stay-updated">🔔 Stay Updated</h2>
-<section id="subscribe-to-weekly-digest" class="level3">
-<h3 class="anchored" data-anchor-id="subscribe-to-weekly-digest">Subscribe to Weekly Digest</h3>
+<section id="stay-updated" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="stay-updated"><span class="header-section-number">1.8</span> 🔔 Stay Updated</h2>
+<section id="subscribe-to-weekly-digest" class="level3" data-number="1.8.1">
+<h3 data-number="1.8.1" class="anchored" data-anchor-id="subscribe-to-weekly-digest"><span class="header-section-number">1.8.1</span> Subscribe to Weekly Digest</h3>
 <p>Want to receive these updates directly? Join our mailing list:</p>
 <form action="#" method="post" style="max-width: 500px; margin: 2rem auto;">
 <input type="email" placeholder="your.email@university.edu" style="width: 70%; padding: 0.75rem; border: 2px solid var(--fae-blue); border-radius: 4px 0 0 4px; font-size: 1rem;"> <button type="submit" style="width: 30%; padding: 0.75rem; background: var(--fae-blue); color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer; font-size: 1rem; font-weight: 600;">Subscribe</button>
 </form>
 </section>
-<section id="rss-feed" class="level3">
-<h3 class="anchored" data-anchor-id="rss-feed">RSS Feed</h3>
+<section id="rss-feed" class="level3" data-number="1.8.2">
+<h3 data-number="1.8.2" class="anchored" data-anchor-id="rss-feed"><span class="header-section-number">1.8.2</span> RSS Feed</h3>
 <p>Add our RSS feed to your reader: <a href="feed.xml">RSS Feed URL</a></p>
 <hr>
 </section>
 </section>
-<section id="statistics" class="level2">
-<h2 class="anchored" data-anchor-id="statistics">📊 Statistics</h2>
+<section id="statistics" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="statistics"><span class="header-section-number">1.9</span> 📊 Statistics</h2>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1049,19 +878,19 @@ Database Metrics
 </div>
 <hr>
 </section>
-<section id="contributing" class="level2">
-<h2 class="anchored" data-anchor-id="contributing">🤝 Contributing</h2>
+<section id="contributing" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="contributing"><span class="header-section-number">1.10</span> 🤝 Contributing</h2>
 <p>Found a relevant paper we missed? Submit it here:</p>
 <p><strong>Paper Submission Form:</strong> - Paper Title - Authors - Venue/Date - Link - Brief Summary (50-100 words) - Suggested Category</p>
 <p>Contact: <a href="mailto:rodrigo.ozon@fae.edu">rodrigo.ozon@fae.edu</a></p>
 <hr>
 </section>
-<section id="related-resources" class="level2">
-<h2 class="anchored" data-anchor-id="related-resources">📖 Related Resources</h2>
+<section id="related-resources" class="level2" data-number="1.11">
+<h2 data-number="1.11" class="anchored" data-anchor-id="related-resources"><span class="header-section-number">1.11</span> 📖 Related Resources</h2>
 <ul>
 <li><a href="./openAI_agent.html">Paper Hunter: Our Automated Agent</a></li>
-<li><a href="revsyslit.qmd">Literature Review Methodology</a></li>
-<li><a href="resmindmap.qmd">Theoretical Framework</a></li>
+<li><a href="./revsyslit.html">Literature Review Methodology</a></li>
+<li><a href="./resmindmap.html">Theoretical Framework</a></li>
 <li><a href="./index.html">Project Overview</a></li>
 </ul>
 <hr>
@@ -1077,19 +906,6 @@ Database Metrics
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
-    // Ensure there is a toggle, if there isn't float one in the top right
-    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-      const i = window.document.createElement("i");
-      i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
-    }
-    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {

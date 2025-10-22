@@ -72,14 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8598d624af1d875e24ba1dc5ecbbe8a2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-ca0e396e99c2f8e4bee89bc3795d562f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-8598d624af1d875e24ba1dc5ecbbe8a2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8598d624af1d875e24ba1dc5ecbbe8a2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -134,186 +130,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
-    const toggleBodyColorMode = (bsSheetEl) => {
-      const mode = bsSheetEl.getAttribute("data-mode");
-      const bodyEl = window.document.querySelector("body");
-      if (mode === "dark") {
-        bodyEl.classList.add("quarto-dark");
-        bodyEl.classList.remove("quarto-light");
-      } else {
-        bodyEl.classList.add("quarto-light");
-        bodyEl.classList.remove("quarto-dark");
-      }
-    }
-    const toggleBodyColorPrimary = () => {
-      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
-      if (bsSheetEl) {
-        toggleBodyColorMode(bsSheetEl);
-      }
-    }
-    const setColorSchemeToggle = (alternate) => {
-      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-      for (let i=0; i < toggles.length; i++) {
-        const toggle = toggles[i];
-        if (toggle) {
-          if (alternate) {
-            toggle.classList.add("alternate");
-          } else {
-            toggle.classList.remove("alternate");
-          }
-        }
-      }
-    };
-    const toggleColorMode = (alternate) => {
-      // Switch the stylesheets
-      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
-      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-      manageTransitions('#quarto-margin-sidebar .nav-link', false);
-      if (alternate) {
-        // note: dark is layered on light, we don't disable primary!
-        enableStylesheet(alternateStylesheets);
-        for (const sheetNode of alternateStylesheets) {
-          if (sheetNode.id === "quarto-bootstrap") {
-            toggleBodyColorMode(sheetNode);
-          }
-        }
-      } else {
-        disableStylesheet(alternateStylesheets);
-        enableStylesheet(primaryStylesheets)
-        toggleBodyColorPrimary();
-      }
-      manageTransitions('#quarto-margin-sidebar .nav-link', true);
-      // Switch the toggles
-      setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
-      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-        manageTransitions("body", false);
-        window.scrollTo(0, 1);
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          manageTransitions("body", true);
-        }, 40);
-      }
-    }
-    const disableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        stylesheet.rel = 'disabled-stylesheet';
-      }
-    }
-    const enableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
-          stylesheet.rel = 'stylesheet';
-        }
-      }
-    }
-    const manageTransitions = (selector, allowTransitions) => {
-      const els = window.document.querySelectorAll(selector);
-      for (let i=0; i < els.length; i++) {
-        const el = els[i];
-        if (allowTransitions) {
-          el.classList.remove('notransition');
-        } else {
-          el.classList.add('notransition');
-        }
-      }
-    }
-    const isFileUrl = () => {
-      return window.location.protocol === 'file:';
-    }
-    const hasAlternateSentinel = () => {
-      let styleSentinel = getColorSchemeSentinel();
-      if (styleSentinel !== null) {
-        return styleSentinel === "alternate";
-      } else {
-        return false;
-      }
-    }
-    const setStyleSentinel = (alternate) => {
-      const value = alternate ? "alternate" : "default";
-      if (!isFileUrl()) {
-        window.localStorage.setItem("quarto-color-scheme", value);
-      } else {
-        localAlternateSentinel = value;
-      }
-    }
-    const getColorSchemeSentinel = () => {
-      if (!isFileUrl()) {
-        const storageValue = window.localStorage.getItem("quarto-color-scheme");
-        return storageValue != null ? storageValue : localAlternateSentinel;
-      } else {
-        return localAlternateSentinel;
-      }
-    }
-    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-      let newTheme = '';
-      if(authorPrefersDark) {
-        newTheme = isAlternate ? baseTheme : alternateTheme;
-      } else {
-        newTheme = isAlternate ? alternateTheme : baseTheme;
-      }
-      const changeGiscusTheme = () => {
-        // From: https://github.com/giscus/giscus/issues/336
-        const sendMessage = (message) => {
-          const iframe = document.querySelector('iframe.giscus-frame');
-          if (!iframe) return;
-          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-        }
-        sendMessage({
-          setConfig: {
-            theme: newTheme
-          }
-        });
-      }
-      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-      if (isGiscussLoaded) {
-        changeGiscusTheme();
-      }
-    };
-    const authorPrefersDark = false;
-    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const darkModeDefault = queryPrefersDark.matches;
-      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-    // Dark / light mode switch
-    window.quartoToggleColorScheme = () => {
-      // Read the current dark / light value
-      let toAlternate = !hasAlternateSentinel();
-      toggleColorMode(toAlternate);
-      setStyleSentinel(toAlternate);
-      toggleGiscusIfUsed(toAlternate, darkModeDefault);
-      window.dispatchEvent(new Event('resize'));
-    };
-    queryPrefersDark.addEventListener("change", e => {
-      if(window.localStorage.getItem("quarto-color-scheme") !== null)
-        return;
-      const alternate = e.matches
-      toggleColorMode(alternate);
-      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
-      toggleGiscusIfUsed(alternate, darkModeDefault);
-    });
-    // Switch to dark mode if need be
-    if (hasAlternateSentinel()) {
-      toggleColorMode(true);
-    } else {
-      toggleColorMode(false);
-    }
-  </script>
+<body class="nav-sidebar docked nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">PAIC Econometrics | FAE</span>
+    <a href="https://fae.edu/servicos/caderno-paic.vm" class="navbar-brand navbar-brand-logo">
+    <img src="https://raw.githubusercontent.com/profrhozon/FAE_Econometrics/refs/heads/main/fae_logo.png" alt="FAE Business School" class="navbar-logo">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -344,7 +169,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a href="https://www.linkedin.com/school/fae-centro-universitario/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-linkedin"></i></a>
     <a href="https://github.com/PAICEconometrics" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
     <a href="mailto:rodrigo.ozon@fae.edu" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -402,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./resmindmap.qmd" class="sidebar-item-text sidebar-link">
+  <a href="./resmindmap.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Theoretical Framework</span></a>
   </div>
 </li>
@@ -414,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./publplan.qmd" class="sidebar-item-text sidebar-link">
+  <a href="./publplan.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Publication Plan</span></a>
   </div>
 </li>
@@ -486,6 +310,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./econometrics_model_sel.qmd" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Model Selection</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-draft.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Paper Draft</span></a>
   </div>
 </li>
       </ul>
@@ -575,33 +405,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#commodities-portfolio-intelligence" id="toc-commodities-portfolio-intelligence" class="nav-link active" data-scroll-target="#commodities-portfolio-intelligence">Commodities Portfolio Intelligence</a></li>
-  <li><a href="#research-vision" id="toc-research-vision" class="nav-link" data-scroll-target="#research-vision">🎯 Research Vision</a>
+  <li><a href="#commodities-portfolio-intelligence" id="toc-commodities-portfolio-intelligence" class="nav-link active" data-scroll-target="#commodities-portfolio-intelligence"><span class="header-section-number">1</span> Commodities Portfolio Intelligence</a></li>
+  <li><a href="#research-vision" id="toc-research-vision" class="nav-link" data-scroll-target="#research-vision"><span class="header-section-number">1.1</span> 🎯 Research Vision</a>
   <ul class="collapse">
-  <li><a href="#academic-goals" id="toc-academic-goals" class="nav-link" data-scroll-target="#academic-goals">🎓 Academic Goals</a></li>
+  <li><a href="#academic-goals" id="toc-academic-goals" class="nav-link" data-scroll-target="#academic-goals"><span class="header-section-number">1.1.1</span> 🎓 Academic Goals</a></li>
   </ul></li>
-  <li><a href="#core-research-framework" id="toc-core-research-framework" class="nav-link" data-scroll-target="#core-research-framework">🔬 Core Research Framework</a></li>
-  <li><a href="#key-commodities-focus" id="toc-key-commodities-focus" class="nav-link" data-scroll-target="#key-commodities-focus">📊 Key Commodities Focus</a></li>
-  <li><a href="#technical-stack" id="toc-technical-stack" class="nav-link" data-scroll-target="#technical-stack">🛠️ Technical Stack</a>
+  <li><a href="#core-research-framework" id="toc-core-research-framework" class="nav-link" data-scroll-target="#core-research-framework"><span class="header-section-number">1.2</span> 🔬 Core Research Framework</a></li>
+  <li><a href="#key-commodities-focus" id="toc-key-commodities-focus" class="nav-link" data-scroll-target="#key-commodities-focus"><span class="header-section-number">1.3</span> 📊 Key Commodities Focus</a></li>
+  <li><a href="#technical-stack" id="toc-technical-stack" class="nav-link" data-scroll-target="#technical-stack"><span class="header-section-number">1.4</span> 🛠️ Technical Stack</a>
   <ul class="collapse">
-  <li><a href="#development-environment" id="toc-development-environment" class="nav-link" data-scroll-target="#development-environment">Development Environment</a></li>
+  <li><a href="#development-environment" id="toc-development-environment" class="nav-link" data-scroll-target="#development-environment"><span class="header-section-number">1.4.1</span> Development Environment</a></li>
   </ul></li>
-  <li><a href="#research-methodology-workflow" id="toc-research-methodology-workflow" class="nav-link" data-scroll-target="#research-methodology-workflow">📈 Research Methodology Workflow</a></li>
-  <li><a href="#educational-impact" id="toc-educational-impact" class="nav-link" data-scroll-target="#educational-impact">🎓 Educational Impact</a></li>
-  <li><a href="#expected-deliverables" id="toc-expected-deliverables" class="nav-link" data-scroll-target="#expected-deliverables">📚 Expected Deliverables</a>
+  <li><a href="#research-methodology-workflow" id="toc-research-methodology-workflow" class="nav-link" data-scroll-target="#research-methodology-workflow"><span class="header-section-number">1.5</span> 📈 Research Methodology Workflow</a></li>
+  <li><a href="#educational-impact" id="toc-educational-impact" class="nav-link" data-scroll-target="#educational-impact"><span class="header-section-number">1.6</span> 🎓 Educational Impact</a></li>
+  <li><a href="#expected-deliverables" id="toc-expected-deliverables" class="nav-link" data-scroll-target="#expected-deliverables"><span class="header-section-number">1.7</span> 📚 Expected Deliverables</a>
   <ul class="collapse">
-  <li><a href="#phase-1-current---6-months" id="toc-phase-1-current---6-months" class="nav-link" data-scroll-target="#phase-1-current---6-months">Phase 1 (Current - 6 months)</a></li>
-  <li><a href="#phase-2-6-12-months" id="toc-phase-2-6-12-months" class="nav-link" data-scroll-target="#phase-2-6-12-months">Phase 2 (6-12 months)</a></li>
-  <li><a href="#phase-3-12-18-months" id="toc-phase-3-12-18-months" class="nav-link" data-scroll-target="#phase-3-12-18-months">Phase 3 (12-18 months)</a></li>
+  <li><a href="#phase-1-current---6-months" id="toc-phase-1-current---6-months" class="nav-link" data-scroll-target="#phase-1-current---6-months"><span class="header-section-number">1.7.1</span> Phase 1 (Current - 6 months)</a></li>
+  <li><a href="#phase-2-6-12-months" id="toc-phase-2-6-12-months" class="nav-link" data-scroll-target="#phase-2-6-12-months"><span class="header-section-number">1.7.2</span> Phase 2 (6-12 months)</a></li>
+  <li><a href="#phase-3-12-18-months" id="toc-phase-3-12-18-months" class="nav-link" data-scroll-target="#phase-3-12-18-months"><span class="header-section-number">1.7.3</span> Phase 3 (12-18 months)</a></li>
   </ul></li>
-  <li><a href="#collaboration-partnerships" id="toc-collaboration-partnerships" class="nav-link" data-scroll-target="#collaboration-partnerships">🤝 Collaboration &amp; Partnerships</a></li>
-  <li><a href="#quick-links" id="toc-quick-links" class="nav-link" data-scroll-target="#quick-links">🔗 Quick Links</a></li>
+  <li><a href="#collaboration-partnerships" id="toc-collaboration-partnerships" class="nav-link" data-scroll-target="#collaboration-partnerships"><span class="header-section-number">1.8</span> 🤝 Collaboration &amp; Partnerships</a></li>
+  <li><a href="#quick-links" id="toc-quick-links" class="nav-link" data-scroll-target="#quick-links"><span class="header-section-number">1.9</span> 🔗 Quick Links</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content column-body" id="quarto-document-content">
-
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">📘 Introduction</a></li><li class="breadcrumb-item"><a href="./index.html">Project Overview</a></li></ol></nav>
 <div class="quarto-title">
@@ -623,19 +452,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="commodities-portfolio-intelligence" class="level1 hero-section">
-<h1>Commodities Portfolio Intelligence</h1>
+<section id="commodities-portfolio-intelligence" class="level1 hero-section" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Commodities Portfolio Intelligence</h1>
 <p><strong>Integrating Time Series Forecasting, Multi-Objective Decision Making &amp; Reinforcement Learning</strong></p>
 <p>An innovative research initiative at FAE Business School developing patent-ready methodologies for agricultural commodities portfolio optimization through advanced econometric and machine learning techniques.</p>
 <div style="margin-top: 2rem;">
-<p><a href="./about.html" class="btn btn-primary" style="margin-right: 1rem;">Explore Our Research →</a> <a href="publplan.qmd" class="btn btn-secondary">View Publications →</a></p>
+<p><a href="./about.html" class="btn btn-primary" style="margin-right: 1rem;">Explore Our Research →</a> <a href="./publplan.html" class="btn btn-secondary">View Publications →</a></p>
 </div>
 </section>
-<section id="research-vision" class="level2">
-<h2 class="anchored" data-anchor-id="research-vision">🎯 Research Vision</h2>
+<section id="research-vision" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="research-vision"><span class="header-section-number">1.1</span> 🎯 Research Vision</h2>
 <p>This Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) represents the continuation and evolution of pioneering work initiated at PUCPR, now advancing at FAE Business School with enhanced scope and objectives.</p>
-<section id="academic-goals" class="level3 project-info">
-<h3 class="anchored" data-anchor-id="academic-goals">🎓 Academic Goals</h3>
+<section id="academic-goals" class="level3 project-info" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="academic-goals"><span class="header-section-number">1.1.1</span> 🎓 Academic Goals</h3>
 <p><strong>Primary Objectives:</strong></p>
 <ul>
 <li><strong>Patent Development</strong>: Create innovative methodologies for multi-period portfolio optimization</li>
@@ -647,12 +476,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This project builds upon the foundation established at PUCPR (visit the <a href="https://pibicagrofinance.github.io/site/">previous project site</a>) while expanding into new frontiers of agricultural commodity portfolio management.</p>
 </section>
 </section>
-<section id="core-research-framework" class="level2">
-<h2 class="anchored" data-anchor-id="core-research-framework">🔬 Core Research Framework</h2>
+<section id="core-research-framework" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="core-research-framework"><span class="header-section-number">1.2</span> 🔬 Core Research Framework</h2>
 <p>Our methodology integrates three fundamental pillars:</p>
 <div class="team-grid">
-<section id="time-series-forecasting" class="level3 team-member">
-<h3 class="anchored" data-anchor-id="time-series-forecasting">📈 Time Series Forecasting</h3>
+<section id="time-series-forecasting" class="level3 team-member" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="time-series-forecasting"><span class="header-section-number">1.2.1</span> 📈 Time Series Forecasting</h3>
 <p>Advanced predictive modeling for commodity prices using:</p>
 <ul>
 <li>ARIMA/GARCH family models</li>
@@ -663,8 +492,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p><span class="badge">Econometrics</span> <span class="badge">Deep Learning</span> <span class="badge">Bayesian Methods</span></p>
 </section>
-<section id="multi-objective-optimization" class="level3 team-member">
-<h3 class="anchored" data-anchor-id="multi-objective-optimization">🎯 Multi-Objective Optimization</h3>
+<section id="multi-objective-optimization" class="level3 team-member" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="multi-objective-optimization"><span class="header-section-number">1.2.2</span> 🎯 Multi-Objective Optimization</h3>
 <p>Portfolio optimization considering multiple conflicting objectives:</p>
 <ul>
 <li>Return maximization</li>
@@ -675,8 +504,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p><span class="badge">Evolutionary Algorithms</span> <span class="badge">Pareto Optimization</span> <span class="badge">Fuzzy Logic</span></p>
 </section>
-<section id="reinforcement-learning" class="level3 team-member">
-<h3 class="anchored" data-anchor-id="reinforcement-learning">🤖 Reinforcement Learning</h3>
+<section id="reinforcement-learning" class="level3 team-member" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="reinforcement-learning"><span class="header-section-number">1.2.3</span> 🤖 Reinforcement Learning</h3>
 <p>Adaptive decision-making strategies:</p>
 <ul>
 <li>Q-Learning for portfolio selection</li>
@@ -689,20 +518,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </div>
 </section>
-<section id="key-commodities-focus" class="level2">
-<h2 class="anchored" data-anchor-id="key-commodities-focus">📊 Key Commodities Focus</h2>
+<section id="key-commodities-focus" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="key-commodities-focus"><span class="header-section-number">1.3</span> 📊 Key Commodities Focus</h2>
 <p>Our research concentrates on Brazilian agricultural grain commodities:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-a46145f39d393034c662" style="width:100%;height:371px;"></div>
-<script type="application/json" data-for="htmlwidget-a46145f39d393034c662">{"x":{"data":[{"orientation":"h","width":[0.29999999999999982,0.29999999999999982,0.30000000000000071,0.30000000000000004,0.29999999999999982],"base":[0,0,0,0,0],"x":[90,85,70,75,82],"y":[2.6999999999999997,1.6999999999999997,4.7000000000000002,0.69999999999999984,3.6999999999999997],"text":["Commodity: Soybeans<br />Score: 90<br />Metric: Liquidity","Commodity: Corn<br />Score: 85<br />Metric: Liquidity","Commodity: Wheat<br />Score: 70<br />Metric: Liquidity","Commodity: Coffee<br />Score: 75<br />Metric: Liquidity","Commodity: Sugar<br />Score: 82<br />Metric: Liquidity"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(0,61,122,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Liquidity","legendgroup":"Liquidity","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.29999999999999982,0.29999999999999982,0.30000000000000071,0.29999999999999993,0.30000000000000027],"base":[0,0,0,0,0],"x":[95,88,75,82,85],"y":[3,2,5,1,4],"text":["Commodity: Soybeans<br />Score: 95<br />Metric: Market_Importance","Commodity: Corn<br />Score: 88<br />Metric: Market_Importance","Commodity: Wheat<br />Score: 75<br />Metric: Market_Importance","Commodity: Coffee<br />Score: 82<br />Metric: Market_Importance","Commodity: Sugar<br />Score: 85<br />Metric: Market_Importance"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(74,144,226,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Market_Importance","legendgroup":"Market_Importance","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.29999999999999982,0.29999999999999982,0.30000000000000071,0.29999999999999982,0.30000000000000071],"base":[0,0,0,0,0],"x":[72,78,65,88,80],"y":[3.3000000000000003,2.3000000000000003,5.2999999999999998,1.3000000000000003,4.2999999999999998],"text":["Commodity: Soybeans<br />Score: 72<br />Metric: Volatility","Commodity: Corn<br />Score: 78<br />Metric: Volatility","Commodity: Wheat<br />Score: 65<br />Metric: Volatility","Commodity: Coffee<br />Score: 88<br />Metric: Volatility","Commodity: Sugar<br />Score: 80<br />Metric: Volatility"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(255,107,53,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Volatility","legendgroup":"Volatility","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":41.902864259028647,"r":7.3059360730593621,"b":37.260273972602747,"l":57.716894977168963},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"<b> Key Commodities Analysis <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.596928185969286},"x":0.5,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-4.75,99.75],"tickmode":"array","ticktext":["0","25","50","75"],"tickvals":[0,25,50,75],"categoryorder":"array","categoryarray":["0","25","50","75"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716894984},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Index Score (0-100)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["Coffee","Corn","Soybeans","Sugar","Wheat"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["Coffee","Corn","Soybeans","Sugar","Wheat"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716894984},"title":{"text":"Metric","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"orientation":"h","x":0.29999999999999999,"y":1.1000000000000001},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"7b3470d646d":{"x":{},"y":{},"fill":{},"type":"bar"}},"cur_data":"7b3470d646d","visdat":{"7b3470d646d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ff923a38cbb597088a1f" style="width:100%;height:371px;"></div>
+<script type="application/json" data-for="htmlwidget-ff923a38cbb597088a1f">{"x":{"data":[{"orientation":"h","width":[0.29999999999999982,0.29999999999999982,0.30000000000000071,0.30000000000000004,0.29999999999999982],"base":[0,0,0,0,0],"x":[90,85,70,75,82],"y":[2.6999999999999997,1.6999999999999997,4.7000000000000002,0.69999999999999984,3.6999999999999997],"text":["Commodity: Soybeans<br />Score: 90<br />Metric: Liquidity","Commodity: Corn<br />Score: 85<br />Metric: Liquidity","Commodity: Wheat<br />Score: 70<br />Metric: Liquidity","Commodity: Coffee<br />Score: 75<br />Metric: Liquidity","Commodity: Sugar<br />Score: 82<br />Metric: Liquidity"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(0,61,122,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Liquidity","legendgroup":"Liquidity","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.29999999999999982,0.29999999999999982,0.30000000000000071,0.29999999999999993,0.30000000000000027],"base":[0,0,0,0,0],"x":[95,88,75,82,85],"y":[3,2,5,1,4],"text":["Commodity: Soybeans<br />Score: 95<br />Metric: Market_Importance","Commodity: Corn<br />Score: 88<br />Metric: Market_Importance","Commodity: Wheat<br />Score: 75<br />Metric: Market_Importance","Commodity: Coffee<br />Score: 82<br />Metric: Market_Importance","Commodity: Sugar<br />Score: 85<br />Metric: Market_Importance"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(74,144,226,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Market_Importance","legendgroup":"Market_Importance","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":[0.29999999999999982,0.29999999999999982,0.30000000000000071,0.29999999999999982,0.30000000000000071],"base":[0,0,0,0,0],"x":[72,78,65,88,80],"y":[3.3000000000000003,2.3000000000000003,5.2999999999999998,1.3000000000000003,4.2999999999999998],"text":["Commodity: Soybeans<br />Score: 72<br />Metric: Volatility","Commodity: Corn<br />Score: 78<br />Metric: Volatility","Commodity: Wheat<br />Score: 65<br />Metric: Volatility","Commodity: Coffee<br />Score: 88<br />Metric: Volatility","Commodity: Sugar<br />Score: 80<br />Metric: Volatility"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(255,107,53,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Volatility","legendgroup":"Volatility","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":41.902864259028647,"r":7.3059360730593621,"b":37.260273972602747,"l":57.716894977168963},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"<b> Key Commodities Analysis <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.596928185969286},"x":0.5,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-4.75,99.75],"tickmode":"array","ticktext":["0","25","50","75"],"tickvals":[0,25,50,75],"categoryorder":"array","categoryarray":["0","25","50","75"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716894984},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Index Score (0-100)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["Coffee","Corn","Soybeans","Sugar","Wheat"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["Coffee","Corn","Soybeans","Sugar","Wheat"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716894984},"title":{"text":"Metric","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"orientation":"h","x":0.29999999999999999,"y":1.1000000000000001},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"7af865e4367c":{"x":{},"y":{},"fill":{},"type":"bar"}},"cur_data":"7af865e4367c","visdat":{"7af865e4367c":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
-<section id="technical-stack" class="level2">
-<h2 class="anchored" data-anchor-id="technical-stack">🛠️ Technical Stack</h2>
-<section id="development-environment" class="level3 info-box">
-<h3 class="anchored" data-anchor-id="development-environment">Development Environment</h3>
+<section id="technical-stack" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="technical-stack"><span class="header-section-number">1.4</span> 🛠️ Technical Stack</h2>
+<section id="development-environment" class="level3 info-box" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="development-environment"><span class="header-section-number">1.4.1</span> Development Environment</h3>
 <p><strong>Programming &amp; Analysis:</strong></p>
 <ul>
 <li><strong>R Ecosystem</strong>: <code>tidyverse</code>, <code>forecast</code>, <code>rugarch</code>, <code>quantmod</code>, <code>PerformanceAnalytics</code></li>
@@ -726,8 +555,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 </section>
-<section id="research-methodology-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="research-methodology-workflow">📈 Research Methodology Workflow</h2>
+<section id="research-methodology-workflow" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="research-methodology-workflow"><span class="header-section-number">1.5</span> 📈 Research Methodology Workflow</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -762,8 +591,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="educational-impact" class="level2">
-<h2 class="anchored" data-anchor-id="educational-impact">🎓 Educational Impact</h2>
+<section id="educational-impact" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="educational-impact"><span class="header-section-number">1.6</span> 🎓 Educational Impact</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -785,10 +614,10 @@ Student Development
 </div>
 </div>
 </section>
-<section id="expected-deliverables" class="level2">
-<h2 class="anchored" data-anchor-id="expected-deliverables">📚 Expected Deliverables</h2>
-<section id="phase-1-current---6-months" class="level3">
-<h3 class="anchored" data-anchor-id="phase-1-current---6-months">Phase 1 (Current - 6 months)</h3>
+<section id="expected-deliverables" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="expected-deliverables"><span class="header-section-number">1.7</span> 📚 Expected Deliverables</h2>
+<section id="phase-1-current---6-months" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="phase-1-current---6-months"><span class="header-section-number">1.7.1</span> Phase 1 (Current - 6 months)</h3>
 <ul>
 <li>✅ Project website and documentation</li>
 <li>📊 Literature review and theoretical framework</li>
@@ -796,8 +625,8 @@ Student Development
 <li>📈 Initial predictive models</li>
 </ul>
 </section>
-<section id="phase-2-6-12-months" class="level3">
-<h3 class="anchored" data-anchor-id="phase-2-6-12-months">Phase 2 (6-12 months)</h3>
+<section id="phase-2-6-12-months" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="phase-2-6-12-months"><span class="header-section-number">1.7.2</span> Phase 2 (6-12 months)</h3>
 <ul>
 <li>🎯 Multi-objective optimization framework</li>
 <li>🤖 Reinforcement learning agent development</li>
@@ -805,8 +634,8 @@ Student Development
 <li>🔬 Patent methodology documentation</li>
 </ul>
 </section>
-<section id="phase-3-12-18-months" class="level3">
-<h3 class="anchored" data-anchor-id="phase-3-12-18-months">Phase 3 (12-18 months)</h3>
+<section id="phase-3-12-18-months" class="level3" data-number="1.7.3">
+<h3 data-number="1.7.3" class="anchored" data-anchor-id="phase-3-12-18-months"><span class="header-section-number">1.7.3</span> Phase 3 (12-18 months)</h3>
 <ul>
 <li>📖 Scientific publications submission</li>
 <li>🏆 Patent application filing</li>
@@ -815,8 +644,8 @@ Student Development
 </ul>
 </section>
 </section>
-<section id="collaboration-partnerships" class="level2">
-<h2 class="anchored" data-anchor-id="collaboration-partnerships">🤝 Collaboration &amp; Partnerships</h2>
+<section id="collaboration-partnerships" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="collaboration-partnerships"><span class="header-section-number">1.8</span> 🤝 Collaboration &amp; Partnerships</h2>
 <p>We actively seek collaboration with:</p>
 <ul>
 <li>Academic institutions researching quantitative finance</li>
@@ -846,8 +675,8 @@ Student Development
 </div>
 </div>
 </section>
-<section id="quick-links" class="level2">
-<h2 class="anchored" data-anchor-id="quick-links">🔗 Quick Links</h2>
+<section id="quick-links" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="quick-links"><span class="header-section-number">1.9</span> 🔗 Quick Links</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
 <div style="padding: 1rem; background: var(--fae-gray-light); border-radius: 8px; border-left: 4px solid var(--fae-blue);">
 <p><strong>🎓 About Us</strong><br>
@@ -871,7 +700,7 @@ Student Development
 <p><strong>PAIC - Programa de Apoio à Iniciação Científica</strong> | FAE Business School | Curitiba, Paraná, Brazil</p>
 </div>
 <p><em>Last updated:</em></p>
-<p>outubro 21, 2025</p>
+<p>outubro 22, 2025</p>
 
 
 <!-- -->
@@ -881,19 +710,6 @@ Student Development
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
-    // Ensure there is a toggle, if there isn't float one in the top right
-    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-      const i = window.document.createElement("i");
-      i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
-    }
-    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
