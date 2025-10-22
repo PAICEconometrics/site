@@ -208,7 +208,7 @@
     "href": "mindmap.html#team-and-supervision",
     "title": "Research Mindmap",
     "section": "🎓 Team and Supervision",
-    "text": "🎓 Team and Supervision\n\n\nProf. Dr. Rodrigo Hermont Ozon\nAdvisor / Lead Researcher\n\nEducation: Economist (UFPR), MSc in Economic Development (UFPR)\nPhD: PPGEPS/PUCPR (2022-2026)\nArea: Financial Econometrics, Time Series, Optimization\nInstitution: FAE Business School\n\n\n        \n\n\n\nPAIC Scholar/Volunteer\nUndergraduate Student\n\nActivities: Data collection, model execution, preliminary analyses\nDevelopment: R/Python programming, quantitative methods\nSupport: Documentation, visualizations, reports\n\nIn Selection PAIC 2025/26",
+    "text": "🎓 Team and Supervision\n\n\nProf. Dr. Rodrigo Hermont Ozon\nAdvisor / Lead Researcher\n\nEducation: Economist (UFPR), MSc in Economic Development (UFPR)\nPhD: PPGEPS/PUCPR (2022-2026)\nArea: Financial Econometrics, Time Series, Optimization\nInstitution: FAE Business School\n\n\n        \n\n\n\nPAIC Scholar/Volunteer\nUndergraduate Student\n\nActivities: Data collection, model execution, preliminary analyses\nDevelopment: R/Python programming, quantitative methods\nSupport: Documentation, visualizations, reports\n\nJhonathan, Vanessa, Eduardo PAIC 2025/26",
     "crumbs": [
       "Home",
       "📘 Introduction",
@@ -590,5 +590,656 @@
     "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
     "section": "📝 Conclusion",
     "text": "📝 Conclusion\nPaper Hunter demonstrates how artificial intelligence can be used to increase scientific productivity without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: reading, analyzing, and producing quality knowledge.\nIf you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.\n\n\n📚 PAIC Econometrics | FAE Business School Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization Transforming research through artificial intelligence"
+  },
+  {
+    "objectID": "research.html",
+    "href": "research.html",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "This research project adopts a quantitative, computational, and applied approach, combining statistical econometrics, machine learning, and optimization techniques to develop an integrated framework for agricultural commodities portfolio management.\nOur methodology follows a rigorous quasi-experimental design based on time series simulations and backtesting protocols, ensuring reproducibility and transparency throughout all research phases.\n\n\n\n\n\n\n🎯 Research Classification\n\n\n\n\nType: Applied & Computational Research\nApproach: Quantitative Analysis\nDesign: Quasi-Experimental with Time Series Validation\nValidation: Temporal Cross-Validation & Benchmarking\n\n\n\n\n\n\n\nOur integrated methodology is structured in six complementary stages, each building upon previous findings to create a comprehensive portfolio optimization system.\n\n\n\n\nWe collect historical data from multiple authoritative sources:\n\nPrice Data: B3 (Brasil Bolsa Balcão) futures contracts\nAgricultural Indices: CEPEA/ESALQ price indices\nMacroeconomic Indicators: USDA reports, Brazilian Central Bank data\nAlternative Data: News sentiment via APIs, weather patterns\n\n\n\n\nOur focus encompasses Brazilian agricultural grain commodities:\n\n\n\nCommodity\nContract Type\nData Frequency\nHistorical Depth\n\n\n\n\nCorn\nFutures (B3)\nDaily\n15+ years\n\n\nSoybeans\nFutures (B3)\nDaily\n15+ years\n\n\nSoybean Meal\nFutures (B3)\nDaily\n10+ years\n\n\nSoybean Oil\nFutures (B3)\nDaily\n10+ years\n\n\nCoffee\nFutures (B3)\nDaily\n20+ years\n\n\nSugar\nFutures (B3)\nDaily\n15+ years\n\n\n\n\n\n\n\n\nData Cleaning & Normalization Pipeline\nlibrary(tidyverse)\nlibrary(quantmod)\nlibrary(xts)\n\n# Data cleaning function\nclean_commodity_data &lt;- function(raw_data) {\n  raw_data %&gt;%\n    # Remove outliers (&gt; 5 SD)\n    filter(abs(scale(returns)) &lt; 5) %&gt;%\n    # Handle missing values via interpolation\n    na.approx(maxgap = 5) %&gt;%\n    # Normalize to log-returns\n    mutate(log_returns = log(close / lag(close))) %&gt;%\n    # Remove non-trading days\n    filter(!is.na(log_returns))\n}\n\n\n\n\n\n\n\n\nData Quality Assurance\n\n\n\nAll datasets undergo rigorous quality checks including: - Outlier detection via statistical thresholds - Missing data imputation with maximum gap constraints - Consistency validation across multiple sources - Temporal alignment and synchronization\n\n\n\n\n\n\n\nWe employ a hierarchical forecasting framework combining econometric and machine learning approaches.\n\n\n\n\nFor volatility forecasting, we implement multiple GARCH specifications:\nStandard GARCH(1,1): \\[\n\\sigma_t^2 = \\omega + \\alpha \\epsilon_{t-1}^2 + \\beta \\sigma_{t-1}^2\n\\]\nGJR-GARCH (capturing leverage effects): \\[\n\\sigma_t^2 = \\omega + \\alpha \\epsilon_{t-1}^2 + \\gamma \\epsilon_{t-1}^2 I_{t-1} + \\beta \\sigma_{t-1}^2\n\\]\nwhere \\(I_{t-1} = 1\\) if \\(\\epsilon_{t-1} &lt; 0\\), and 0 otherwise.\nMarkov-Switching GARCH (regime-dependent volatility):\n\n\nCode\nlibrary(MSGARCH)\n\n# MS-GARCH specification\nspec &lt;- CreateSpec(\n  variance.spec = list(model = c(\"sGARCH\", \"sGARCH\")),\n  distribution.spec = list(distribution = c(\"std\", \"std\")),\n  switch.spec = list(K = 2)  # Two regimes\n)\n\n# Model estimation\nfit &lt;- FitML(spec, data = returns_data)\n\n\n\n\n\n\n\n\nWhy Markov-Switching?\n\n\n\nAgricultural commodities exhibit regime-dependent behavior during crisis periods, supply shocks, or policy changes. MS-GARCH captures these structural breaks automatically.\n\n\n\n\n\nFor return forecasting, we use ARIMAX models incorporating: - Lagged returns - Macroeconomic indicators (USD/BRL exchange rate, interest rates) - Seasonal components - News sentiment scores\n\n\n\n\n\n\n\n\nCode\nimport tensorflow as tf\nfrom tensorflow.keras.models import Sequential\nfrom tensorflow.keras.layers import LSTM, Dropout, Dense\n\ndef build_lstm_model(lookback=60, n_features=5):\n    model = Sequential([\n        LSTM(128, return_sequences=True, input_shape=(lookback, n_features)),\n        Dropout(0.2),\n        LSTM(64, return_sequences=False),\n        Dropout(0.2),\n        Dense(32, activation='relu'),\n        Dense(1)  # Price/return prediction\n    ])\n    \n    model.compile(optimizer='adam', loss='mse', metrics=['mae'])\n    return model\n\n\n\n\n\nWe combine multiple models via weighted averaging:\n\\[\n\\hat{y}_t = \\sum_{i=1}^M w_i \\hat{y}_{i,t}\n\\]\nwhere weights \\(w_i\\) are optimized via: - Inverse RMSE weighting - Bayesian Model Averaging - Stacking with meta-learner\n\n\n\n\n\nWalk-Forward ValidationPerformance Metrics\n\n\n\nTraining Window: Rolling 3-year window\nValidation Period: 6 months ahead\nRe-estimation Frequency: Monthly\n\n\n\n\n\n\n\n\n\n\n\nMetric\nFormula\nInterpretation\n\n\n\n\nRMSE\n\\(\\sqrt{\\frac{1}{n}\\sum(y_t - \\hat{y}_t)^2}\\)\nPrediction error magnitude\n\n\nMAE\n\\(\\frac{1}{n}\\sum|y_t - \\hat{y}_t|\\)\nAverage absolute error\n\n\nMAPE\n\\(\\frac{100}{n}\\sum|\\frac{y_t - \\hat{y}_t}{y_t}|\\)\nPercentage error\n\n\nDirectional Accuracy\n\\(\\frac{1}{n}\\sum I(sign(y_t) = sign(\\hat{y}_t))\\)\nCorrect direction %\n\n\n\n\n\n\n\n\n\n\n\nThe portfolio optimization phase addresses multiple conflicting objectives simultaneously.\n\n\nWe optimize portfolios considering:\n\\[\n\\begin{aligned}\n\\text{Maximize:} \\quad & f_1(w) = E[R_p] = w^T \\mu \\\\\n\\text{Minimize:} \\quad & f_2(w) = \\text{CVaR}_\\alpha(R_p) \\\\\n\\text{Minimize:} \\quad & f_3(w) = \\sigma_p = \\sqrt{w^T \\Sigma w} \\\\\n\\text{Maximize:} \\quad & f_4(w) = \\text{Diversification Ratio}\n\\end{aligned}\n\\]\nSubject to: \\[\n\\begin{aligned}\n\\sum_{i=1}^n w_i &= 1 \\\\\n0 \\leq w_i &\\leq w_{max} \\\\\n\\text{Turnover} &\\leq \\tau_{max}\n\\end{aligned}\n\\]\n\n\n\n\n\n\nConditional Value-at-Risk (CVaR)\n\n\n\nCVaR is preferred over VaR due to its: - Sub-additivity (portfolio CVaR ≤ sum of individual CVaRs) - Convexity (easier optimization) - Coherent risk measure properties\n\n\n\n\n\n\n\n\n\nCode\nlibrary(mco)\n\n# Define multi-objective fitness function\nfitness_function &lt;- function(weights) {\n  portfolio_return &lt;- sum(weights * expected_returns)\n  portfolio_risk &lt;- sqrt(t(weights) %*% cov_matrix %*% weights)\n  portfolio_cvar &lt;- calculate_cvar(weights, returns_matrix, alpha = 0.05)\n  \n  return(c(\n    -portfolio_return,  # Negative because we maximize\n    portfolio_risk,\n    portfolio_cvar\n  ))\n}\n\n# Run NSGA-II\nresult &lt;- nsga2(\n  fn = fitness_function,\n  idim = n_assets,  # Number of decision variables\n  odim = 3,         # Number of objectives\n  lower.bounds = rep(0, n_assets),\n  upper.bounds = rep(0.4, n_assets),\n  constraints = function(x) sum(x) - 1,  # Budget constraint\n  popsize = 100,\n  generations = 200\n)\n\n\n\n\n\n\n\nCode\nlibrary(DEoptim)\n\n# DE with Pareto ranking\nde_result &lt;- DEoptim(\n  fn = fitness_function,\n  lower = rep(0, n_assets),\n  upper = rep(0.4, n_assets),\n  control = DEoptim.control(\n    strategy = 2,      # DE/rand/1/bin\n    NP = 50,           # Population size\n    itermax = 500,\n    CR = 0.9,          # Crossover probability\n    F = 0.8            # Mutation factor\n  )\n)\n\n\n\n\n\n\nThe optimization generates a Pareto-optimal frontier representing the trade-off between objectives:\n\n\nCode\nlibrary(plotly)\n\n# 3D Pareto Front visualization\nplot_ly(\n  data = pareto_solutions,\n  x = ~expected_return,\n  y = ~portfolio_risk,\n  z = ~cvar,\n  color = ~sharpe_ratio,\n  type = \"scatter3d\",\n  mode = \"markers\"\n) %&gt;%\n  layout(\n    title = \"Pareto-Optimal Frontier\",\n    scene = list(\n      xaxis = list(title = \"Expected Return\"),\n      yaxis = list(title = \"Risk (StdDev)\"),\n      zaxis = list(title = \"CVaR (5%)\")\n    )\n  )\n\n\n\n\n\n\n\nWe employ RL agents to learn adaptive rebalancing strategies that respond to market conditions.\n\n\nState Space \\(\\mathcal{S}\\):\n\\[\ns_t = \\{w_t, \\mu_t, \\Sigma_t, \\text{indicators}_t\\}\n\\]\nAction Space \\(\\mathcal{A}\\):\n\\[\na_t = \\Delta w_t \\in [-\\delta, \\delta]^n \\quad \\text{(portfolio weight adjustments)}\n\\]\nReward Function \\(r_t\\):\n\\[\nr_t = R_{p,t} - \\lambda \\cdot \\text{Risk}_{p,t} - \\kappa \\cdot \\text{TransactionCost}_t\n\\]\n\n\n\n\n\n\n\nCode\nimport gym\nimport numpy as np\nfrom stable_baselines3 import DQN\nfrom stable_baselines3.common.vec_env import DummyVecEnv\n\n# Custom environment for portfolio management\nclass PortfolioEnv(gym.Env):\n    def __init__(self, price_data, initial_capital=100000):\n        super(PortfolioEnv, self).__init__()\n        \n        self.price_data = price_data\n        self.n_assets = price_data.shape[1]\n        self.current_step = 0\n        self.capital = initial_capital\n        \n        # Action: weight adjustments for each asset\n        self.action_space = gym.spaces.Box(\n            low=-0.1, high=0.1, shape=(self.n_assets,), dtype=np.float32\n        )\n        \n        # State: prices, returns, portfolio weights, technical indicators\n        self.observation_space = gym.spaces.Box(\n            low=-np.inf, high=np.inf, \n            shape=(self.n_assets * 4,), \n            dtype=np.float32\n        )\n    \n    def step(self, action):\n        # Execute action, calculate reward, update state\n        # ... implementation details ...\n        return next_state, reward, done, info\n\n# Train DQN agent\nenv = DummyVecEnv([lambda: PortfolioEnv(train_data)])\nmodel = DQN(\"MlpPolicy\", env, verbose=1, learning_rate=0.0001)\nmodel.learn(total_timesteps=100000)\n\n\n\n\n\n\n\nCode\nfrom stable_baselines3 import PPO\n\n# PPO for continuous action space\nppo_model = PPO(\n    \"MlpPolicy\",\n    env,\n    learning_rate=0.0003,\n    n_steps=2048,\n    batch_size=64,\n    n_epochs=10,\n    gamma=0.99,\n    gae_lambda=0.95,\n    clip_range=0.2,\n    verbose=1\n)\n\nppo_model.learn(total_timesteps=200000)\n\n\n\n\n\n\nThe RL agent learns to implement various strategies:\n\n\n\n\n\n\n\n\nStrategy\nDescription\nTrigger Conditions\n\n\n\n\nDynamic Rebalancing\nAdjust weights based on forecasts\nDeviation &gt; threshold\n\n\nMomentum Trading\nFollow price trends\nStrong directional signals\n\n\nMean Reversion\nContrarian positions\nExtreme price movements\n\n\nVolatility Targeting\nAdjust exposure to volatility\nRegime changes detected\n\n\nHedging\nRisk mitigation positions\nHigh uncertainty periods\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAvoiding Overfitting\n\n\n\nWe implement strict protocols to prevent backtest overfitting: - Out-of-sample testing with unseen data - Transaction cost modeling (0.1% per trade) - Realistic slippage assumptions - No look-ahead bias in feature engineering\n\n\n\n\nCode\nlibrary(PerformanceAnalytics)\n\n# Backtesting function\nrun_backtest &lt;- function(strategy_weights, returns_data, costs = 0.001) {\n  n_periods &lt;- nrow(returns_data)\n  portfolio_returns &lt;- rep(0, n_periods)\n  \n  for (t in 2:n_periods) {\n    # Calculate portfolio return\n    portfolio_returns[t] &lt;- sum(strategy_weights[t-1, ] * returns_data[t, ])\n    \n    # Subtract transaction costs\n    turnover &lt;- sum(abs(strategy_weights[t, ] - strategy_weights[t-1, ]))\n    portfolio_returns[t] &lt;- portfolio_returns[t] - (costs * turnover)\n  }\n  \n  return(xts(portfolio_returns, order.by = index(returns_data)))\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMetric\nFormula\nBenchmark\n\n\n\n\nSharpe Ratio\n\\(\\frac{E[R_p - R_f]}{\\sigma_p}\\)\n&gt; 1.0 (good), &gt; 2.0 (excellent)\n\n\nSortino Ratio\n\\(\\frac{E[R_p - R_f]}{\\sigma_{downside}}\\)\nHigher is better\n\n\nCalmar Ratio\n\\(\\frac{E[R_p]}{\\text{Max Drawdown}}\\)\n&gt; 0.5 (acceptable)\n\n\nInformation Ratio\n\\(\\frac{E[R_p - R_b]}{\\text{TE}}\\)\n&gt; 0.5 (outperformance)\n\n\n\n\n\n\n\n\nCode\n# Maximum drawdown calculation\ncalculate_drawdowns &lt;- function(returns) {\n  cumulative_returns &lt;- cumprod(1 + returns)\n  running_max &lt;- cummax(cumulative_returns)\n  drawdown &lt;- (cumulative_returns - running_max) / running_max\n  \n  max_dd &lt;- min(drawdown)\n  max_dd_duration &lt;- max(rle(drawdown &lt; -0.05)$lengths)\n  \n  return(list(\n    max_drawdown = max_dd,\n    avg_drawdown = mean(drawdown[drawdown &lt; 0]),\n    max_duration = max_dd_duration\n  ))\n}\n\n\n\n\n\n\nWe compare our strategies against:\n\nBuy-and-Hold: Equal-weighted static portfolio\nMean-Variance (Markowitz): Traditional optimization\nRisk Parity: Equal risk contribution\n1/N Portfolio: Naïve diversification\nMomentum Strategy: 12-month momentum signals\n\n\n\nCode\nlibrary(ggplot2)\n\n# Performance comparison plot\nggplot(performance_data, aes(x = date, y = cumulative_return, color = strategy)) +\n  geom_line(size = 1.2) +\n  scale_color_manual(values = c(\n    \"Our Strategy\" = \"#003d7a\",\n    \"Buy-Hold\" = \"#6c757d\",\n    \"Mean-Variance\" = \"#28a745\",\n    \"Risk Parity\" = \"#ffc107\"\n  )) +\n  labs(\n    title = \"Cumulative Returns: Strategy Comparison\",\n    x = \"Date\",\n    y = \"Cumulative Return\",\n    color = \"Strategy\"\n  ) +\n  theme_minimal() +\n  theme(\n    plot.title = element_text(size = 16, face = \"bold\"),\n    legend.position = \"bottom\"\n  )\n\n\n\n\n\n\n\n\n\nTest model robustness under various scenarios:\n\nParameter Sensitivity: Vary RL hyperparameters (±20%)\nWindow Length: Test different training windows (2-5 years)\nTransaction Costs: Evaluate under 0%, 0.05%, 0.1%, 0.2% costs\nMarket Conditions: Bull vs. bear vs. sideways markets\n\n\n\n\n\n\nCode\n# Monte Carlo portfolio simulation\nmonte_carlo_simulation &lt;- function(n_sim = 10000, n_days = 252) {\n  sim_results &lt;- matrix(0, nrow = n_sim, ncol = n_days)\n  \n  for (i in 1:n_sim) {\n    # Simulate returns based on estimated parameters\n    sim_returns &lt;- rmvnorm(n_days, mean = mu_hat, sigma = Sigma_hat)\n    \n    # Apply strategy\n    sim_results[i, ] &lt;- cumsum(apply_strategy(sim_returns))\n  }\n  \n  # Calculate confidence intervals\n  ci_lower &lt;- apply(sim_results, 2, quantile, probs = 0.05)\n  ci_upper &lt;- apply(sim_results, 2, quantile, probs = 0.95)\n  \n  return(list(paths = sim_results, ci_lower = ci_lower, ci_upper = ci_upper))\n}\n\n\n\n\n\n\n\n\n\n\n\nCross-Validation Strategy\n\n\n\n\nTraining: 2015-2020 (5 years)\nValidation: 2021-2022 (2 years)\nTest (Out-of-Sample): 2023-2024 (2 years)\n\nCritical: Test set is never used during model development.\n\n\n\n\n\n\n\n\n\n\n\nMethodological Innovation\n\nNovel integration of forecasting + optimization + RL\nAdaptive portfolio management framework\nRegime-aware decision-making\n\nEmpirical Insights\n\nComprehensive analysis of Brazilian agricultural commodities\nBenchmark comparisons across multiple strategies\nReal-world applicability assessment\n\nPatent Development\n\nUnique algorithmic approach to multi-period optimization\nIntellectual property documentation\nCommercial application potential\n\n\n\n\n\n\nPublicationsConferencesTechnical Reports\n\n\nTarget Journals:\n\nEuropean Journal of Operational Research\nJournal of Forecasting\nQuantitative Finance\nAgricultural Economics\nJournal of Commodity Markets\n\n\n\nPresentation Venues:\n\nSPPAIC/FAE (Internal Symposium)\nBrazilian Finance Society (SBFin)\nLatin American Finance Network (LAFN)\nInternational Conference on Operational Research\n\n\n\n\nQuarterly progress reports\nMethodology documentation\nReproducible code repositories\nEducational materials for students\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\n# R Ecosystem\nlibrary(tidyverse)      # Data manipulation\nlibrary(quantmod)       # Financial data\nlibrary(rugarch)        # GARCH models\nlibrary(MSGARCH)        # Markov-Switching GARCH\nlibrary(PerformanceAnalytics)  # Portfolio analytics\nlibrary(DEoptim)        # Differential Evolution\nlibrary(mco)            # Multi-objective optimization\n\n\n\n\nCode\n# Python Ecosystem\nimport pandas as pd\nimport numpy as np\nimport tensorflow as tf\nfrom stable_baselines3 import PPO, DQN\nimport pytorch\nimport gym\nfrom sklearn.preprocessing import StandardScaler\n\n\n\n\n\n\nVersion Control: GitHub (https://github.com/PAICEconometrics)\nIDE: RStudio / Positron IDE\nDocumentation: Quarto Publishing System\nDeployment: GitHub Pages\nCollaboration: Slack + GitHub Projects\n\n\n\n\n\n\n\n\n\n\n\ngantt\n    title PAIC Research Project Timeline (2025-2026)\n    dateFormat  YYYY-MM-DD\n    \n    section Phase 1: Setup\n    Data Collection & Infrastructure    :a1, 2025-08-01, 60d\n    Literature Review                   :a2, 2025-08-01, 90d\n    \n    section Phase 2: Modeling\n    Forecasting Models Development      :b1, 2025-10-01, 90d\n    Multi-Objective Optimization        :b2, 2025-11-01, 120d\n    Partial Report 1                    :milestone, m1, 2025-11-15, 1d\n    \n    section Phase 3: RL & Integration\n    RL Environment Setup                :c1, 2026-02-01, 60d\n    Agent Training & Ablation           :c2, 2026-02-15, 75d\n    Partial Report 2                    :milestone, m2, 2026-03-15, 1d\n    \n    section Phase 4: Validation\n    Backtesting & Robustness            :d1, 2026-03-01, 90d\n    Seminar Presentation                :milestone, m3, 2026-04-15, 1d\n    \n    section Phase 5: Publication\n    Article Writing                     :e1, 2026-04-01, 90d\n    Patent Documentation                :e2, 2026-05-01, 60d\n    Final Article Submission            :milestone, m4, 2026-07-15, 1d\n\n\n\n\n\n\n\n\n\n\n\n\nAll research outputs follow FAIR principles (Findable, Accessible, Interoperable, Reusable):\n\n✅ Code Repository: Public GitHub with MIT License\n✅ Data Provenance: Documented sources and timestamps\n✅ Environment Management: renv / conda environment files\n✅ Literate Programming: Quarto documents combining code + narrative\n✅ Version Control: Semantic versioning for major milestones\n\n\n\n\n\n\n\n\n\n\nResearch Ethics\n\n\n\n\nNo Market Manipulation: Strategies are for academic purposes\nData Privacy: Only publicly available market data\nTransparency: Full methodology disclosure\nConflict of Interest: No undisclosed commercial relationships\n\n\n\n\n\n\n\n\nInterested in collaborating or learning more about our methodology?\n\nPrincipal Investigator: Prof. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution: FAE Business School, Curitiba, PR, Brazil\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário\n\n\n\n\n\n\n\n\n\n*Last updated:\n2025-10-21"
+  },
+  {
+    "objectID": "research.html#overview",
+    "href": "research.html#overview",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "This research project adopts a quantitative, computational, and applied approach, combining statistical econometrics, machine learning, and optimization techniques to develop an integrated framework for agricultural commodities portfolio management.\nOur methodology follows a rigorous quasi-experimental design based on time series simulations and backtesting protocols, ensuring reproducibility and transparency throughout all research phases.\n\n\n\n\n\n\n🎯 Research Classification\n\n\n\n\nType: Applied & Computational Research\nApproach: Quantitative Analysis\nDesign: Quasi-Experimental with Time Series Validation\nValidation: Temporal Cross-Validation & Benchmarking"
+  },
+  {
+    "objectID": "research.html#research-framework",
+    "href": "research.html#research-framework",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "Our integrated methodology is structured in six complementary stages, each building upon previous findings to create a comprehensive portfolio optimization system.\n\n\n\n\nWe collect historical data from multiple authoritative sources:\n\nPrice Data: B3 (Brasil Bolsa Balcão) futures contracts\nAgricultural Indices: CEPEA/ESALQ price indices\nMacroeconomic Indicators: USDA reports, Brazilian Central Bank data\nAlternative Data: News sentiment via APIs, weather patterns\n\n\n\n\nOur focus encompasses Brazilian agricultural grain commodities:\n\n\n\nCommodity\nContract Type\nData Frequency\nHistorical Depth\n\n\n\n\nCorn\nFutures (B3)\nDaily\n15+ years\n\n\nSoybeans\nFutures (B3)\nDaily\n15+ years\n\n\nSoybean Meal\nFutures (B3)\nDaily\n10+ years\n\n\nSoybean Oil\nFutures (B3)\nDaily\n10+ years\n\n\nCoffee\nFutures (B3)\nDaily\n20+ years\n\n\nSugar\nFutures (B3)\nDaily\n15+ years\n\n\n\n\n\n\n\n\nData Cleaning & Normalization Pipeline\nlibrary(tidyverse)\nlibrary(quantmod)\nlibrary(xts)\n\n# Data cleaning function\nclean_commodity_data &lt;- function(raw_data) {\n  raw_data %&gt;%\n    # Remove outliers (&gt; 5 SD)\n    filter(abs(scale(returns)) &lt; 5) %&gt;%\n    # Handle missing values via interpolation\n    na.approx(maxgap = 5) %&gt;%\n    # Normalize to log-returns\n    mutate(log_returns = log(close / lag(close))) %&gt;%\n    # Remove non-trading days\n    filter(!is.na(log_returns))\n}\n\n\n\n\n\n\n\n\nData Quality Assurance\n\n\n\nAll datasets undergo rigorous quality checks including: - Outlier detection via statistical thresholds - Missing data imputation with maximum gap constraints - Consistency validation across multiple sources - Temporal alignment and synchronization\n\n\n\n\n\n\n\nWe employ a hierarchical forecasting framework combining econometric and machine learning approaches.\n\n\n\n\nFor volatility forecasting, we implement multiple GARCH specifications:\nStandard GARCH(1,1): \\[\n\\sigma_t^2 = \\omega + \\alpha \\epsilon_{t-1}^2 + \\beta \\sigma_{t-1}^2\n\\]\nGJR-GARCH (capturing leverage effects): \\[\n\\sigma_t^2 = \\omega + \\alpha \\epsilon_{t-1}^2 + \\gamma \\epsilon_{t-1}^2 I_{t-1} + \\beta \\sigma_{t-1}^2\n\\]\nwhere \\(I_{t-1} = 1\\) if \\(\\epsilon_{t-1} &lt; 0\\), and 0 otherwise.\nMarkov-Switching GARCH (regime-dependent volatility):\n\n\nCode\nlibrary(MSGARCH)\n\n# MS-GARCH specification\nspec &lt;- CreateSpec(\n  variance.spec = list(model = c(\"sGARCH\", \"sGARCH\")),\n  distribution.spec = list(distribution = c(\"std\", \"std\")),\n  switch.spec = list(K = 2)  # Two regimes\n)\n\n# Model estimation\nfit &lt;- FitML(spec, data = returns_data)\n\n\n\n\n\n\n\n\nWhy Markov-Switching?\n\n\n\nAgricultural commodities exhibit regime-dependent behavior during crisis periods, supply shocks, or policy changes. MS-GARCH captures these structural breaks automatically.\n\n\n\n\n\nFor return forecasting, we use ARIMAX models incorporating: - Lagged returns - Macroeconomic indicators (USD/BRL exchange rate, interest rates) - Seasonal components - News sentiment scores\n\n\n\n\n\n\n\n\nCode\nimport tensorflow as tf\nfrom tensorflow.keras.models import Sequential\nfrom tensorflow.keras.layers import LSTM, Dropout, Dense\n\ndef build_lstm_model(lookback=60, n_features=5):\n    model = Sequential([\n        LSTM(128, return_sequences=True, input_shape=(lookback, n_features)),\n        Dropout(0.2),\n        LSTM(64, return_sequences=False),\n        Dropout(0.2),\n        Dense(32, activation='relu'),\n        Dense(1)  # Price/return prediction\n    ])\n    \n    model.compile(optimizer='adam', loss='mse', metrics=['mae'])\n    return model\n\n\n\n\n\nWe combine multiple models via weighted averaging:\n\\[\n\\hat{y}_t = \\sum_{i=1}^M w_i \\hat{y}_{i,t}\n\\]\nwhere weights \\(w_i\\) are optimized via: - Inverse RMSE weighting - Bayesian Model Averaging - Stacking with meta-learner\n\n\n\n\n\nWalk-Forward ValidationPerformance Metrics\n\n\n\nTraining Window: Rolling 3-year window\nValidation Period: 6 months ahead\nRe-estimation Frequency: Monthly\n\n\n\n\n\n\n\n\n\n\n\nMetric\nFormula\nInterpretation\n\n\n\n\nRMSE\n\\(\\sqrt{\\frac{1}{n}\\sum(y_t - \\hat{y}_t)^2}\\)\nPrediction error magnitude\n\n\nMAE\n\\(\\frac{1}{n}\\sum|y_t - \\hat{y}_t|\\)\nAverage absolute error\n\n\nMAPE\n\\(\\frac{100}{n}\\sum|\\frac{y_t - \\hat{y}_t}{y_t}|\\)\nPercentage error\n\n\nDirectional Accuracy\n\\(\\frac{1}{n}\\sum I(sign(y_t) = sign(\\hat{y}_t))\\)\nCorrect direction %\n\n\n\n\n\n\n\n\n\n\n\nThe portfolio optimization phase addresses multiple conflicting objectives simultaneously.\n\n\nWe optimize portfolios considering:\n\\[\n\\begin{aligned}\n\\text{Maximize:} \\quad & f_1(w) = E[R_p] = w^T \\mu \\\\\n\\text{Minimize:} \\quad & f_2(w) = \\text{CVaR}_\\alpha(R_p) \\\\\n\\text{Minimize:} \\quad & f_3(w) = \\sigma_p = \\sqrt{w^T \\Sigma w} \\\\\n\\text{Maximize:} \\quad & f_4(w) = \\text{Diversification Ratio}\n\\end{aligned}\n\\]\nSubject to: \\[\n\\begin{aligned}\n\\sum_{i=1}^n w_i &= 1 \\\\\n0 \\leq w_i &\\leq w_{max} \\\\\n\\text{Turnover} &\\leq \\tau_{max}\n\\end{aligned}\n\\]\n\n\n\n\n\n\nConditional Value-at-Risk (CVaR)\n\n\n\nCVaR is preferred over VaR due to its: - Sub-additivity (portfolio CVaR ≤ sum of individual CVaRs) - Convexity (easier optimization) - Coherent risk measure properties\n\n\n\n\n\n\n\n\n\nCode\nlibrary(mco)\n\n# Define multi-objective fitness function\nfitness_function &lt;- function(weights) {\n  portfolio_return &lt;- sum(weights * expected_returns)\n  portfolio_risk &lt;- sqrt(t(weights) %*% cov_matrix %*% weights)\n  portfolio_cvar &lt;- calculate_cvar(weights, returns_matrix, alpha = 0.05)\n  \n  return(c(\n    -portfolio_return,  # Negative because we maximize\n    portfolio_risk,\n    portfolio_cvar\n  ))\n}\n\n# Run NSGA-II\nresult &lt;- nsga2(\n  fn = fitness_function,\n  idim = n_assets,  # Number of decision variables\n  odim = 3,         # Number of objectives\n  lower.bounds = rep(0, n_assets),\n  upper.bounds = rep(0.4, n_assets),\n  constraints = function(x) sum(x) - 1,  # Budget constraint\n  popsize = 100,\n  generations = 200\n)\n\n\n\n\n\n\n\nCode\nlibrary(DEoptim)\n\n# DE with Pareto ranking\nde_result &lt;- DEoptim(\n  fn = fitness_function,\n  lower = rep(0, n_assets),\n  upper = rep(0.4, n_assets),\n  control = DEoptim.control(\n    strategy = 2,      # DE/rand/1/bin\n    NP = 50,           # Population size\n    itermax = 500,\n    CR = 0.9,          # Crossover probability\n    F = 0.8            # Mutation factor\n  )\n)\n\n\n\n\n\n\nThe optimization generates a Pareto-optimal frontier representing the trade-off between objectives:\n\n\nCode\nlibrary(plotly)\n\n# 3D Pareto Front visualization\nplot_ly(\n  data = pareto_solutions,\n  x = ~expected_return,\n  y = ~portfolio_risk,\n  z = ~cvar,\n  color = ~sharpe_ratio,\n  type = \"scatter3d\",\n  mode = \"markers\"\n) %&gt;%\n  layout(\n    title = \"Pareto-Optimal Frontier\",\n    scene = list(\n      xaxis = list(title = \"Expected Return\"),\n      yaxis = list(title = \"Risk (StdDev)\"),\n      zaxis = list(title = \"CVaR (5%)\")\n    )\n  )\n\n\n\n\n\n\n\nWe employ RL agents to learn adaptive rebalancing strategies that respond to market conditions.\n\n\nState Space \\(\\mathcal{S}\\):\n\\[\ns_t = \\{w_t, \\mu_t, \\Sigma_t, \\text{indicators}_t\\}\n\\]\nAction Space \\(\\mathcal{A}\\):\n\\[\na_t = \\Delta w_t \\in [-\\delta, \\delta]^n \\quad \\text{(portfolio weight adjustments)}\n\\]\nReward Function \\(r_t\\):\n\\[\nr_t = R_{p,t} - \\lambda \\cdot \\text{Risk}_{p,t} - \\kappa \\cdot \\text{TransactionCost}_t\n\\]\n\n\n\n\n\n\n\nCode\nimport gym\nimport numpy as np\nfrom stable_baselines3 import DQN\nfrom stable_baselines3.common.vec_env import DummyVecEnv\n\n# Custom environment for portfolio management\nclass PortfolioEnv(gym.Env):\n    def __init__(self, price_data, initial_capital=100000):\n        super(PortfolioEnv, self).__init__()\n        \n        self.price_data = price_data\n        self.n_assets = price_data.shape[1]\n        self.current_step = 0\n        self.capital = initial_capital\n        \n        # Action: weight adjustments for each asset\n        self.action_space = gym.spaces.Box(\n            low=-0.1, high=0.1, shape=(self.n_assets,), dtype=np.float32\n        )\n        \n        # State: prices, returns, portfolio weights, technical indicators\n        self.observation_space = gym.spaces.Box(\n            low=-np.inf, high=np.inf, \n            shape=(self.n_assets * 4,), \n            dtype=np.float32\n        )\n    \n    def step(self, action):\n        # Execute action, calculate reward, update state\n        # ... implementation details ...\n        return next_state, reward, done, info\n\n# Train DQN agent\nenv = DummyVecEnv([lambda: PortfolioEnv(train_data)])\nmodel = DQN(\"MlpPolicy\", env, verbose=1, learning_rate=0.0001)\nmodel.learn(total_timesteps=100000)\n\n\n\n\n\n\n\nCode\nfrom stable_baselines3 import PPO\n\n# PPO for continuous action space\nppo_model = PPO(\n    \"MlpPolicy\",\n    env,\n    learning_rate=0.0003,\n    n_steps=2048,\n    batch_size=64,\n    n_epochs=10,\n    gamma=0.99,\n    gae_lambda=0.95,\n    clip_range=0.2,\n    verbose=1\n)\n\nppo_model.learn(total_timesteps=200000)\n\n\n\n\n\n\nThe RL agent learns to implement various strategies:\n\n\n\n\n\n\n\n\nStrategy\nDescription\nTrigger Conditions\n\n\n\n\nDynamic Rebalancing\nAdjust weights based on forecasts\nDeviation &gt; threshold\n\n\nMomentum Trading\nFollow price trends\nStrong directional signals\n\n\nMean Reversion\nContrarian positions\nExtreme price movements\n\n\nVolatility Targeting\nAdjust exposure to volatility\nRegime changes detected\n\n\nHedging\nRisk mitigation positions\nHigh uncertainty periods\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAvoiding Overfitting\n\n\n\nWe implement strict protocols to prevent backtest overfitting: - Out-of-sample testing with unseen data - Transaction cost modeling (0.1% per trade) - Realistic slippage assumptions - No look-ahead bias in feature engineering\n\n\n\n\nCode\nlibrary(PerformanceAnalytics)\n\n# Backtesting function\nrun_backtest &lt;- function(strategy_weights, returns_data, costs = 0.001) {\n  n_periods &lt;- nrow(returns_data)\n  portfolio_returns &lt;- rep(0, n_periods)\n  \n  for (t in 2:n_periods) {\n    # Calculate portfolio return\n    portfolio_returns[t] &lt;- sum(strategy_weights[t-1, ] * returns_data[t, ])\n    \n    # Subtract transaction costs\n    turnover &lt;- sum(abs(strategy_weights[t, ] - strategy_weights[t-1, ]))\n    portfolio_returns[t] &lt;- portfolio_returns[t] - (costs * turnover)\n  }\n  \n  return(xts(portfolio_returns, order.by = index(returns_data)))\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMetric\nFormula\nBenchmark\n\n\n\n\nSharpe Ratio\n\\(\\frac{E[R_p - R_f]}{\\sigma_p}\\)\n&gt; 1.0 (good), &gt; 2.0 (excellent)\n\n\nSortino Ratio\n\\(\\frac{E[R_p - R_f]}{\\sigma_{downside}}\\)\nHigher is better\n\n\nCalmar Ratio\n\\(\\frac{E[R_p]}{\\text{Max Drawdown}}\\)\n&gt; 0.5 (acceptable)\n\n\nInformation Ratio\n\\(\\frac{E[R_p - R_b]}{\\text{TE}}\\)\n&gt; 0.5 (outperformance)\n\n\n\n\n\n\n\n\nCode\n# Maximum drawdown calculation\ncalculate_drawdowns &lt;- function(returns) {\n  cumulative_returns &lt;- cumprod(1 + returns)\n  running_max &lt;- cummax(cumulative_returns)\n  drawdown &lt;- (cumulative_returns - running_max) / running_max\n  \n  max_dd &lt;- min(drawdown)\n  max_dd_duration &lt;- max(rle(drawdown &lt; -0.05)$lengths)\n  \n  return(list(\n    max_drawdown = max_dd,\n    avg_drawdown = mean(drawdown[drawdown &lt; 0]),\n    max_duration = max_dd_duration\n  ))\n}\n\n\n\n\n\n\nWe compare our strategies against:\n\nBuy-and-Hold: Equal-weighted static portfolio\nMean-Variance (Markowitz): Traditional optimization\nRisk Parity: Equal risk contribution\n1/N Portfolio: Naïve diversification\nMomentum Strategy: 12-month momentum signals\n\n\n\nCode\nlibrary(ggplot2)\n\n# Performance comparison plot\nggplot(performance_data, aes(x = date, y = cumulative_return, color = strategy)) +\n  geom_line(size = 1.2) +\n  scale_color_manual(values = c(\n    \"Our Strategy\" = \"#003d7a\",\n    \"Buy-Hold\" = \"#6c757d\",\n    \"Mean-Variance\" = \"#28a745\",\n    \"Risk Parity\" = \"#ffc107\"\n  )) +\n  labs(\n    title = \"Cumulative Returns: Strategy Comparison\",\n    x = \"Date\",\n    y = \"Cumulative Return\",\n    color = \"Strategy\"\n  ) +\n  theme_minimal() +\n  theme(\n    plot.title = element_text(size = 16, face = \"bold\"),\n    legend.position = \"bottom\"\n  )\n\n\n\n\n\n\n\n\n\nTest model robustness under various scenarios:\n\nParameter Sensitivity: Vary RL hyperparameters (±20%)\nWindow Length: Test different training windows (2-5 years)\nTransaction Costs: Evaluate under 0%, 0.05%, 0.1%, 0.2% costs\nMarket Conditions: Bull vs. bear vs. sideways markets\n\n\n\n\n\n\nCode\n# Monte Carlo portfolio simulation\nmonte_carlo_simulation &lt;- function(n_sim = 10000, n_days = 252) {\n  sim_results &lt;- matrix(0, nrow = n_sim, ncol = n_days)\n  \n  for (i in 1:n_sim) {\n    # Simulate returns based on estimated parameters\n    sim_returns &lt;- rmvnorm(n_days, mean = mu_hat, sigma = Sigma_hat)\n    \n    # Apply strategy\n    sim_results[i, ] &lt;- cumsum(apply_strategy(sim_returns))\n  }\n  \n  # Calculate confidence intervals\n  ci_lower &lt;- apply(sim_results, 2, quantile, probs = 0.05)\n  ci_upper &lt;- apply(sim_results, 2, quantile, probs = 0.95)\n  \n  return(list(paths = sim_results, ci_lower = ci_lower, ci_upper = ci_upper))\n}\n\n\n\n\n\n\n\n\n\n\n\nCross-Validation Strategy\n\n\n\n\nTraining: 2015-2020 (5 years)\nValidation: 2021-2022 (2 years)\nTest (Out-of-Sample): 2023-2024 (2 years)\n\nCritical: Test set is never used during model development."
+  },
+  {
+    "objectID": "research.html#expected-outcomes",
+    "href": "research.html#expected-outcomes",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "Methodological Innovation\n\nNovel integration of forecasting + optimization + RL\nAdaptive portfolio management framework\nRegime-aware decision-making\n\nEmpirical Insights\n\nComprehensive analysis of Brazilian agricultural commodities\nBenchmark comparisons across multiple strategies\nReal-world applicability assessment\n\nPatent Development\n\nUnique algorithmic approach to multi-period optimization\nIntellectual property documentation\nCommercial application potential\n\n\n\n\n\n\nPublicationsConferencesTechnical Reports\n\n\nTarget Journals:\n\nEuropean Journal of Operational Research\nJournal of Forecasting\nQuantitative Finance\nAgricultural Economics\nJournal of Commodity Markets\n\n\n\nPresentation Venues:\n\nSPPAIC/FAE (Internal Symposium)\nBrazilian Finance Society (SBFin)\nLatin American Finance Network (LAFN)\nInternational Conference on Operational Research\n\n\n\n\nQuarterly progress reports\nMethodology documentation\nReproducible code repositories\nEducational materials for students"
+  },
+  {
+    "objectID": "research.html#technical-stack-tools",
+    "href": "research.html#technical-stack-tools",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "Code\n# R Ecosystem\nlibrary(tidyverse)      # Data manipulation\nlibrary(quantmod)       # Financial data\nlibrary(rugarch)        # GARCH models\nlibrary(MSGARCH)        # Markov-Switching GARCH\nlibrary(PerformanceAnalytics)  # Portfolio analytics\nlibrary(DEoptim)        # Differential Evolution\nlibrary(mco)            # Multi-objective optimization\n\n\n\n\nCode\n# Python Ecosystem\nimport pandas as pd\nimport numpy as np\nimport tensorflow as tf\nfrom stable_baselines3 import PPO, DQN\nimport pytorch\nimport gym\nfrom sklearn.preprocessing import StandardScaler\n\n\n\n\n\n\nVersion Control: GitHub (https://github.com/PAICEconometrics)\nIDE: RStudio / Positron IDE\nDocumentation: Quarto Publishing System\nDeployment: GitHub Pages\nCollaboration: Slack + GitHub Projects"
+  },
+  {
+    "objectID": "research.html#timeline-milestones",
+    "href": "research.html#timeline-milestones",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "gantt\n    title PAIC Research Project Timeline (2025-2026)\n    dateFormat  YYYY-MM-DD\n    \n    section Phase 1: Setup\n    Data Collection & Infrastructure    :a1, 2025-08-01, 60d\n    Literature Review                   :a2, 2025-08-01, 90d\n    \n    section Phase 2: Modeling\n    Forecasting Models Development      :b1, 2025-10-01, 90d\n    Multi-Objective Optimization        :b2, 2025-11-01, 120d\n    Partial Report 1                    :milestone, m1, 2025-11-15, 1d\n    \n    section Phase 3: RL & Integration\n    RL Environment Setup                :c1, 2026-02-01, 60d\n    Agent Training & Ablation           :c2, 2026-02-15, 75d\n    Partial Report 2                    :milestone, m2, 2026-03-15, 1d\n    \n    section Phase 4: Validation\n    Backtesting & Robustness            :d1, 2026-03-01, 90d\n    Seminar Presentation                :milestone, m3, 2026-04-15, 1d\n    \n    section Phase 5: Publication\n    Article Writing                     :e1, 2026-04-01, 90d\n    Patent Documentation                :e2, 2026-05-01, 60d\n    Final Article Submission            :milestone, m4, 2026-07-15, 1d"
+  },
+  {
+    "objectID": "research.html#quality-assurance",
+    "href": "research.html#quality-assurance",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "All research outputs follow FAIR principles (Findable, Accessible, Interoperable, Reusable):\n\n✅ Code Repository: Public GitHub with MIT License\n✅ Data Provenance: Documented sources and timestamps\n✅ Environment Management: renv / conda environment files\n✅ Literate Programming: Quarto documents combining code + narrative\n✅ Version Control: Semantic versioning for major milestones\n\n\n\n\n\n\n\n\n\n\nResearch Ethics\n\n\n\n\nNo Market Manipulation: Strategies are for academic purposes\nData Privacy: Only publicly available market data\nTransparency: Full methodology disclosure\nConflict of Interest: No undisclosed commercial relationships"
+  },
+  {
+    "objectID": "research.html#collaboration-contact",
+    "href": "research.html#collaboration-contact",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "Interested in collaborating or learning more about our methodology?\n\nPrincipal Investigator: Prof. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution: FAE Business School, Curitiba, PR, Brazil\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário"
+  },
+  {
+    "objectID": "research.html#references",
+    "href": "research.html#references",
+    "title": "Research Methodology",
+    "section": "",
+    "text": "*Last updated:\n2025-10-21"
+  },
+  {
+    "objectID": "revsyslit.html",
+    "href": "revsyslit.html",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "",
+    "text": "This systematic literature review examines the convergence of three critical domains in quantitative finance: multi-objective portfolio optimization, multi-period decision-making frameworks, and agricultural commodities portfolio management. Our comprehensive analysis covers 61 peer-reviewed publications spanning 2010-2025, with particular emphasis on recent methodological advances published in 2025 from high-impact journals including European Journal of Operational Research, Expert Systems with Applications, Applied Soft Computing, and Computers & Operations Research.\nKey Findings:\n\nMulti-objective evolutionary algorithms (MOEAs) have become the dominant approach for portfolio optimization, with NSGA-II, NSGA-III, and MOEA/D emerging as preferred methods\nIntegration of machine learning and deep learning techniques with traditional optimization frameworks represents the most significant methodological advance\nMulti-period formulations incorporating transaction costs, rebalancing constraints, and regime-switching dynamics show superior practical applicability\nAgricultural commodities portfolios remain underrepresented in the optimization literature, presenting a significant research opportunity\nRecent 2025 publications emphasize ESG integration, climate risk modeling, and behavioral finance considerations",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#research-context-and-motivation",
+    "href": "revsyslit.html#research-context-and-motivation",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "1.1 Research Context and Motivation",
+    "text": "1.1 Research Context and Motivation\nPortfolio optimization has evolved substantially since Markowitz’s (Markowitz 1952) pioneering mean-variance framework. Contemporary financial markets demand sophisticated methodologies capable of addressing multiple, often conflicting objectives while accounting for temporal dynamics and market uncertainties (Kolm, Tütüncü, and Fabozzi 2014). This complexity intensifies within agricultural commodities markets, where seasonal patterns, weather dependencies, and supply chain disruptions create unique challenges (Guidolin and Pedio 2020).\nThe integration of multi-objective optimization, multi-period decision-making, and reinforcement learning represents a paradigm shift in portfolio management (Ma, Han, and Wang 2021; Chen et al. 2021). This systematic review synthesizes current knowledge across these domains, identifying methodological innovations, practical applications, and critical research gaps.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#research-questions",
+    "href": "revsyslit.html#research-questions",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "1.2 Research Questions",
+    "text": "1.2 Research Questions\nThis literature review addresses four fundamental questions:\n\nWhat are the state-of-the-art multi-objective optimization algorithms for portfolio selection, and how do they compare in terms of solution quality, computational efficiency, and practical applicability?\nHow do multi-period formulations improve upon single-period models, and what mechanisms exist for incorporating dynamic rebalancing, transaction costs, and regime changes?\nWhat role can reinforcement learning and machine learning play in enhancing portfolio optimization, particularly for forecasting and adaptive decision-making?\nWhat are the specific challenges and opportunities in applying advanced optimization techniques to agricultural commodities portfolios?",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#methodology",
+    "href": "revsyslit.html#methodology",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "1.3 Methodology",
+    "text": "1.3 Methodology\n\n1.3.1 Search Strategy\nOur systematic review employed a multi-database search strategy across:\n\nAcademic Databases: Web of Science, Scopus, IEEE Xplore, ScienceDirect\nSpecialized Repositories: arXiv, SSRN, ResearchGate\nTime Period: January 2010 - October 2025\nSearch Keywords:\n\n“multi-objective portfolio optimization”\n“multi-period portfolio selection”\n“evolutionary algorithms portfolio”\n“reinforcement learning portfolio”\n“agricultural commodities portfolio”\n“mean-variance-skewness optimization”\n“Pareto optimization finance”\n\n\n\n\n1.3.2 Inclusion Criteria\nStudies were included if they met the following criteria:\n\nPublished in peer-reviewed journals or high-quality conference proceedings\nFocus on multi-objective portfolio optimization with ≥2 explicit objective functions\nFormal mathematical formulation with clearly defined decision variables\nEmpirical validation or theoretical contribution to the field\nPublished in English\n\n\n\n1.3.3 Exclusion Criteria\nWe excluded:\n\nSingle-objective portfolio optimization studies\nPurely theoretical papers without computational validation\nStudies lacking formal problem formulation\nDuplicate publications or derivative works\n\n\n\n1.3.4 Quality Assessment\nPapers were evaluated using:\n\nJournal Impact Factor and SCImago Journal Rank (SJR)\nCitation count (normalized by publication year)\nMethodological rigor (mathematical formulation, experimental design, reproducibility)\nPractical relevance (real-world constraints, transaction costs, implementability)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#the-multi-objective-portfolio-optimization-problem",
+    "href": "revsyslit.html#the-multi-objective-portfolio-optimization-problem",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "2.1 The Multi-Objective Portfolio Optimization Problem",
+    "text": "2.1 The Multi-Objective Portfolio Optimization Problem\n\n2.1.1 Mathematical Formulation\nThe general multi-objective portfolio optimization problem can be formulated as:\n\\[\n\\begin{aligned}\n\\min_{w} \\quad & F(w) = [f_1(w), f_2(w), \\ldots, f_k(w)] \\\\\n\\text{s.t.} \\quad & \\sum_{i=1}^{n} w_i = 1 \\\\\n& w_i \\geq 0, \\quad i = 1, \\ldots, n \\\\\n& g_j(w) \\leq 0, \\quad j = 1, \\ldots, m\n\\end{aligned}\n\\]\nwhere:\n\n\\(w = (w_1, \\ldots, w_n)\\) represents the portfolio weights\n\\(F(w)\\) is the vector of \\(k\\) objective functions\n\\(g_j(w)\\) represents additional constraints (cardinality, turnover, sector limits)\n\n\n\n2.1.2 Common Objective Functions\nReturn Maximization: \\[\nf_1(w) = -\\mathbb{E}[R_p] = -w^T \\mu\n\\]\nRisk Minimization (Variance): \\[\nf_2(w) = w^T \\Sigma w\n\\]\nHigher Moments:\n\nSkewness Maximization: \\(f_3(w) = -\\mathbb{E}[(R_p - \\mu_p)^3]\\)\nKurtosis Minimization: \\(f_4(w) = \\mathbb{E}[(R_p - \\mu_p)^4]\\)\n\nAlternative Risk Measures:\n\nValue-at-Risk (VaR): \\(\\text{VaR}_\\alpha = \\inf\\{x \\in \\mathbb{R} : P(R_p \\leq x) \\geq \\alpha\\}\\)\nConditional VaR (CVaR): \\(\\text{CVaR}_\\alpha = \\mathbb{E}[R_p | R_p \\leq \\text{VaR}_\\alpha]\\)\nSemi-variance: \\(SV = \\mathbb{E}[\\min(R_p - \\mu_p, 0)^2]\\)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#multi-period-formulation",
+    "href": "revsyslit.html#multi-period-formulation",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "2.2 Multi-Period Formulation",
+    "text": "2.2 Multi-Period Formulation\nThe multi-period portfolio optimization extends the single-period model across time horizon \\(T\\):\n\\[\n\\begin{aligned}\n\\min_{w_1, \\ldots, w_T} \\quad & \\sum_{t=1}^{T} \\beta^{t-1} F_t(w_t) \\\\\n\\text{s.t.} \\quad & V_{t+1} = V_t(1 + w_t^T r_{t+1}) - C_t \\\\\n& \\sum_{i=1}^{n} w_{i,t} = 1, \\quad \\forall t \\\\\n& |w_{i,t} - w_{i,t-1}| \\leq \\tau_i, \\quad \\forall i,t \\\\\n& w_{i,t} \\geq 0, \\quad \\forall i,t\n\\end{aligned}\n\\]\nwhere:\n\n\\(\\beta\\) is the discount factor\n\\(V_t\\) represents portfolio value at time \\(t\\)\n\\(C_t\\) denotes transaction costs\n\\(\\tau_i\\) represents turnover constraints\n\\(r_{t+1}\\) is the vector of returns in period \\(t+1\\)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#multi-objective-evolutionary-algorithms-moeas",
+    "href": "revsyslit.html#multi-objective-evolutionary-algorithms-moeas",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "3.1 Multi-Objective Evolutionary Algorithms (MOEAs)",
+    "text": "3.1 Multi-Objective Evolutionary Algorithms (MOEAs)\n\n3.1.1 NSGA-II and NSGA-III\nThe Non-dominated Sorting Genetic Algorithm has become the benchmark for multi-objective portfolio optimization.\nNSGA-II Key Features (Deb et al. 2002):\n\nFast non-dominated sorting (O(MN²) complexity)\nCrowding distance mechanism for diversity preservation\nElitist selection strategy\n\nNSGA-III Advances (Deb and Jain 2014):\n\nReference point-based selection\nImproved performance for many-objective problems (≥4 objectives)\nBetter convergence and diversity in high-dimensional objective spaces\n\nRecent Application (2025):\nTBC (2025d) demonstrated NSGA-III’s superiority over traditional mean-variance optimization, achieving:\n\n27% higher Sharpe ratios compared to equal-weight portfolios\nSuperior Pareto front diversity with 40% more non-dominated solutions\nReduced computational time for large-scale problems (n &gt; 500 assets)\n\n\n\n3.1.2 MOEA/D (Multi-Objective Evolutionary Algorithm based on Decomposition)\nMOEA/D decomposes the multi-objective problem into scalar optimization subproblems using:\nWeighted Sum Approach: \\[\n\\text{minimize} \\quad \\lambda_1 f_1(w) + \\lambda_2 f_2(w) + \\cdots + \\lambda_k f_k(w)\n\\]\nTchebycheff Approach: \\[\n\\text{minimize} \\quad \\max_{i=1,\\ldots,k} \\{\\lambda_i |f_i(w) - z_i^*|\\}\n\\]\nAdvantages:\n\nEfficient exploitation of neighborhood information\nBetter performance on problems with complex Pareto fronts\nLower computational complexity than NSGA-II for many objectives\n\nApplication: Zhao, Yang, and Gao (2020) applied MOEA/D to capital markets portfolio optimization with three objectives (return, risk, liquidity), outperforming NSGA-II by 15% in hypervolume indicator.\n\n\n3.1.3 Differential Evolution (DE) for Portfolio Optimization\nDifferential Evolution has proven particularly effective for portfolio optimization due to its simplicity and robustness.\nDE Mutation Strategy: \\[\nv_i = x_{r1} + F \\cdot (x_{r2} - x_{r3})\n\\]\nwhere \\(F\\) is the scaling factor and \\(r1, r2, r3\\) are random indices.\nNotable Studies:\n\nKrink and Paterlini (2011): Multi-objective DE with real-world constraints (cardinality, turnover, transaction costs)\nArdia et al. (2011): DEoptim R package for non-convex portfolio optimization\n2025 Update: TBC (2025c) introduced directional generation mechanism improving convergence by 35%",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#machine-learning-integration",
+    "href": "revsyslit.html#machine-learning-integration",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "3.2 Machine Learning Integration",
+    "text": "3.2 Machine Learning Integration\n\n3.2.1 Deep Learning for Return Prediction\nThe integration of deep learning with portfolio optimization has accelerated dramatically.\nLSTM Networks for Time Series:\nMa, Han, and Wang (2021) demonstrated that Long Short-Term Memory (LSTM) networks significantly improve return forecasts:\n\nPrediction accuracy: 23% RMSE reduction vs. ARIMA\nPortfolio performance: 8.4% annual excess return\nRisk-adjusted returns: Sharpe ratio of 1.47 vs. 1.12 for benchmark\n\nEnsemble Methods:\nChou and Pham (2025) (2025) introduced AID-MOFBI-XGB framework combining:\n\nXGBoost for stock preselection\nMulti-objective forensic-based investigation algorithm\nResults: 31% annualized return, Sharpe ratio 2.13\n\n\n\n3.2.2 Reinforcement Learning for Dynamic Portfolio Management\n\n3.2.2.1 Deep Q-Networks (DQN)\nDQN applies Q-learning with neural network approximation:\n\\[\nQ(s_t, a_t) = \\mathbb{E}[R_{t+1} + \\gamma \\max_{a'} Q(s_{t+1}, a') | s_t, a_t]\n\\]\nState space typically includes: - Current portfolio weights - Asset prices and returns - Technical indicators - Market sentiment measures\nAction space: Portfolio rebalancing decisions\n\n\n3.2.2.2 Deep Deterministic Policy Gradient (DDPG)\n2025 Study: TBC (2025a) applied DDPG to multi-period portfolio optimization:\n\nArchitecture: Actor-critic with HN-GARCH volatility modeling\nPerformance: 42% improvement in cumulative returns vs. buy-and-hold\nRobustness: Maintained performance during 2022-2023 market downturn\n\n\n\n3.2.2.3 Proximal Policy Optimization (PPO)\nPPO has emerged as preferred RL algorithm for portfolio management due to:\n\nStable training without extensive hyperparameter tuning\nEfficient handling of continuous action spaces\nRobust performance across different market regimes",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#study-1-mean-semientropy-skewness-model",
+    "href": "revsyslit.html#study-1-mean-semientropy-skewness-model",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "4.1 Study 1: Mean-Semientropy-Skewness Model",
+    "text": "4.1 Study 1: Mean-Semientropy-Skewness Model\n\n4.1.1 Bibliographic Information\nAuthors: Lu, S., Zhang, N., & Jia, L.\nYear: 2021\nTitle: A multiobjective multiperiod mean-semientropy-skewness model for uncertain portfolio selection\nJournal: Applied Intelligence, 51(8), 5233–5258\nDOI: 10.1007/s10489-020-02079-3\n\n\n4.1.2 Problem Formulation\nObjectives: 3\n\nMaximize expected return\nMinimize semi-entropy (downside risk)\nMaximize skewness\n\nDecision Variables: 5\n\nPortfolio weights \\(w_i\\) for each asset \\(i\\)\nRebalancing decisions across periods\nRisk tolerance parameters\nBudget allocation variables\nTransaction cost variables\n\nConstraints: 5\n\nBudget constraint: \\(\\sum_i w_i = 1\\)\nNon-negativity: \\(w_i \\geq 0\\)\nTurnover constraint: \\(\\sum_i |w_i^{t+1} - w_i^t| \\leq \\tau\\)\nCardinality constraint: \\(\\sum_i \\delta_i \\leq K\\) where \\(\\delta_i \\in \\{0,1\\}\\)\nMinimum holding constraint: \\(w_i \\geq l_i \\delta_i\\)\n\n\n\n4.1.3 Methodology\nAlgorithm: Modified Firefly Algorithm with Symbiotic Organisms Search (MFA-SOS)\nKey Innovation: Integration of semi-entropy as downside risk measure, focusing exclusively on below-target returns:\n\\[\nH^-(w) = -\\sum_{s \\in S} p_s \\min(0, R_s) \\ln(\\min(0, R_s))\n\\]\n\n\n4.1.4 Results\n\nPareto Solutions: Generated 150+ non-dominated solutions\nRisk Reduction: 18% lower downside risk vs. mean-variance\nReturn Enhancement: 3.2% higher annual returns\nComputational Efficiency: 40% faster than NSGA-II\n\n\n\n4.1.5 Critical Assessment\nStrengths:\n\nFirst study combining semi-entropy with skewness in multi-period framework\nRobust handling of uncertainty through fuzzy theory\nPractical constraints implementation\n\nLimitations:\n\nLimited to Chinese equity markets\nUncertainty modeling relies on expert judgment\nTransaction costs simplified",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#study-2-diversification-focused-multi-objective-optimization",
+    "href": "revsyslit.html#study-2-diversification-focused-multi-objective-optimization",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "4.2 Study 2: Diversification-Focused Multi-Objective Optimization",
+    "text": "4.2 Study 2: Diversification-Focused Multi-Objective Optimization\n\n4.2.1 Bibliographic Information\nAuthors: Martínez-Nieto, L., Fernández-Navarro, F., Carbonero-Ruz, M., & Montero-Romero, T.\nYear: 2021\nTitle: An experimental study on diversification in portfolio optimization\nJournal: Expert Systems with Applications, 181, 115203\nDOI: 10.1016/j.eswa.2021.115203\n\n\n4.2.2 Problem Formulation\nObjectives: 11 (most comprehensive in our review)\n\nMaximize expected return\nMinimize variance\nMinimize Value-at-Risk (VaR)\nMinimize Conditional VaR (CVaR)\nMaximize diversification ratio\nMinimize maximum drawdown\nMaximize Sortino ratio\nMinimize tracking error\nMaximize information ratio\nMinimize portfolio beta\nMaximize entropy\n\nDecision Variables: 4\n\nAsset weights \\(w_i\\)\nNumber of assets selected \\(K\\)\nSector allocation weights\nRebalancing frequency \\(\\Delta t\\)\n\nConstraints: 3\n\nBudget: \\(\\sum_i w_i = 1\\)\nCardinality: \\(5 \\leq K \\leq 50\\)\nSector limits: \\(w_{\\text{sector}} \\leq 0.4\\)\n\n\n\n4.2.3 Methodology\nAlgorithm: Sequential Quadratic Programming (SQP) with multi-start strategy\nDiversification Measures Tested:\n\nMost-Diversified Portfolio (MDP): \\[\n\\text{DR}(w) = \\frac{\\sum_i w_i \\sigma_i}{\\sqrt{w^T \\Sigma w}}\n\\]\nEntropy-Based Diversification: \\[\nE(w) = -\\sum_i w_i \\ln(w_i)\n\\]\nEqual Risk Contribution (ERC)\n\n\n\n4.2.4 Results\nKey Findings:\n\nDiversification Impact: Entropy-based diversification improved risk-adjusted returns by 22% (Sharpe ratio: 1.34 vs. 1.10)\nObjective Conflict Analysis: Strong negative correlation (-0.72) between return maximization and risk minimization\nPareto Frontier: 250 distinct non-dominated solutions\nPractical Recommendation: 5-7 objectives optimal for decision-making\n\n\n\n4.2.5 Experimental Design\nDataset:\n\nS&P 500 constituents\nPeriod: 2000-2020 (monthly rebalancing)\nOut-of-sample testing: 2018-2020\n\nPerformance Metrics:\n\nSharpe Ratio, Sortino Ratio, Calmar Ratio\nMaximum Drawdown\nTurnover rate\nStatistical significance tests (Sharpe ratio difference)\n\n\n\n4.2.6 Critical Assessment\nStrengths:\n\nMost comprehensive objective function set in literature\nRigorous statistical testing\nPractical sector and cardinality constraints\nReproducible methodology\n\nLimitations:\n\nComputational cost increases exponentially with objectives\nParameter sensitivity not fully explored\nNo consideration of market microstructure",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#study-3-surrogate-assisted-optimization-for-backtesting",
+    "href": "revsyslit.html#study-3-surrogate-assisted-optimization-for-backtesting",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "4.3 Study 3: Surrogate-Assisted Optimization for Backtesting",
+    "text": "4.3 Study 3: Surrogate-Assisted Optimization for Backtesting\n\n4.3.1 Bibliographic Information\nAuthors: van Zyl, T. V. L., Woolway, M., & Paskaramoorthy, A.\nYear: 2022\nTitle: Pareto Driven Surrogate (ParDen-Sur) Assisted Optimisation of Multi-period Portfolio Backtest Simulations\narXiv: 2209.13528\nConference: Neural and Evolutionary Computing\n\n\n4.3.2 Problem Formulation\nObjectives: 3\n\nMaximize cumulative return\nMinimize maximum drawdown\nMaximize Sharpe ratio\n\nDecision Variables: 3\n\nRebalancing frequency parameter \\(\\tau \\in [1, 30]\\) days\nRisk aversion coefficient \\(\\lambda \\in [0, 10]\\)\nLookback window \\(L \\in [20, 250]\\) days\n\nConstraints: 3\n\nPortfolio fully invested: \\(\\sum_i w_i = 1\\)\nNo short selling: \\(w_i \\geq 0\\)\nMaximum single-asset weight: \\(w_i \\leq 0.3\\)\n\n\n\n4.3.3 Methodology\nAlgorithm: Pareto Density Surrogate-Assisted Algorithm (ParDen-Sur)\nInnovation: Reduces computational cost of backtesting through:\n\nSurrogate Model: Gaussian Process regression approximates expensive backtest function\nPareto Density Estimation: Identifies promising regions in objective space\nAdaptive Sampling: Concentrates evaluations near Pareto front\n\nComputational Efficiency:\n\nStandard MOEA: 10,000 backtest evaluations (~48 hours)\nParDen-Sur: 500 backtest evaluations (~2.4 hours)\nApproximation Quality: 94% Pareto front coverage\n\n\n\n4.3.4 Results\nPerformance on Real Data:\n\nDataset: 50 liquid stocks from JSE (Johannesburg Stock Exchange)\nPeriod: 2015-2021\nSpeedup: 20x faster than traditional NSGA-II\nSolution Quality: Maintained within 3% of full evaluation\n\nOptimal Parameter Ranges Identified:\n\nRebalancing frequency: 10-15 days\nRisk aversion: 2.5-4.0\nLookback window: 60-120 days\n\n\n\n4.3.5 Critical Assessment\nStrengths:\n\nAddresses computational bottleneck in multi-period optimization\nValidated on real market data\nOpen-source implementation available\nScalable to larger asset universes\n\nLimitations:\n\nSurrogate model accuracy degrades in high dimensions (&gt;10 variables)\nAssumes smooth objective functions\nLimited exploration of different surrogate models\n\nPractical Implications:\n\nEnables retail investors to optimize multi-period strategies\nFacilitates hyperparameter tuning for automated trading systems\nAllows rapid scenario analysis",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#study-4-intuitionistic-fuzzy-multi-period-model",
+    "href": "revsyslit.html#study-4-intuitionistic-fuzzy-multi-period-model",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "4.4 Study 4: Intuitionistic Fuzzy Multi-Period Model",
+    "text": "4.4 Study 4: Intuitionistic Fuzzy Multi-Period Model\n\n4.4.1 Bibliographic Information\nAuthors: Gupta, P., Mehlawat, M.K., Yadav, S., et al.\nYear: 2020\nTitle: Intuitionistic fuzzy optimistic and pessimistic multi-period portfolio optimization models\nJournal: Soft Computing, 24, 11931–11956\nDOI: 10.1007/s00500-019-04639-3\n\n\n4.4.2 Problem Formulation\nObjectives: 2\n\nMaximize terminal wealth\nMinimize portfolio variance\n\nDecision Variables: 6\n\nAsset weights \\(w_{i,t}\\) for asset \\(i\\) at time \\(t\\)\nFuzzy membership degree \\(\\mu_{i,t}\\)\nFuzzy non-membership degree \\(\\nu_{i,t}\\)\nHesitation margin \\(\\pi_{i,t} = 1 - \\mu_{i,t} - \\nu_{i,t}\\)\nBuy/sell binary variables \\(\\delta_{i,t}^{buy}, \\delta_{i,t}^{sell}\\)\nTransaction quantity variables \\(q_{i,t}\\)\n\nConstraints: 6\n\nBudget: \\(\\sum_i w_{i,t} = 1, \\forall t\\)\nWealth dynamics: \\(W_{t+1} = W_t(1 + r_{p,t}) - TC_t\\)\nTransaction costs: \\(TC_t = c_b \\sum_i q_{i,t}^{buy} + c_s \\sum_i q_{i,t}^{sell}\\)\nFuzzy consistency: \\(0 \\leq \\mu_{i,t} + \\nu_{i,t} \\leq 1\\)\nCardinality: \\(K_{min} \\leq \\sum_i \\delta_i \\leq K_{max}\\)\nTurnover: \\(\\sum_i |w_{i,t} - w_{i,t-1}| \\leq \\tau\\)\n\n\n\n4.4.3 Methodology\nIntuitionistic Fuzzy Sets Framework:\nReturns represented as intuitionistic fuzzy numbers (IFNs): \\[\n\\tilde{r}_i = \\langle [r_i^L, r_i^U], \\mu_i, \\nu_i \\rangle\n\\]\nwhere: - \\([r_i^L, r_i^U]\\) is the interval of possible returns - \\(\\mu_i\\) is membership degree (optimism) - \\(\\nu_i\\) is non-membership degree (pessimism)\nTwo Model Variants:\n\nOptimistic Model: Emphasizes upside potential\nPessimistic Model: Emphasizes downside protection\n\n\n\n4.4.4 Results\nEmpirical Analysis:\n\nMarkets: NSE India, S&P 500\nAssets: 186 stocks\nPeriods: 12 quarterly rebalancing periods\nInvestment Horizon: 3 years\n\nPerformance Comparison:\n\n\n\nModel\nAnnual Return\nSharpe Ratio\nMax Drawdown\n\n\n\n\nOptimistic IFN\n14.2%\n1.28\n-12.4%\n\n\nPessimistic IFN\n11.8%\n1.41\n-8.7%\n\n\nCrisp (No Fuzz)\n12.1%\n1.19\n-15.2%\n\n\nEqual Weight\n9.4%\n0.87\n-18.9%\n\n\n\nKey Insights:\n\nPessimistic model superior for risk-averse investors (35% lower max drawdown)\nOptimistic model outperforms during bull markets (+19% relative performance)\nFuzzy modeling adds significant value in uncertain environments\n\n\n\n4.4.5 Critical Assessment\nStrengths:\n\nNovel incorporation of investor sentiment through fuzzy logic\nHandles epistemic uncertainty beyond traditional stochastic models\nFlexible framework accommodating different risk preferences\nComputationally tractable via fuzzy programming techniques\n\nLimitations:\n\nMembership function selection subjective\nCalibration requires expert input or historical data\nIncreased model complexity\nLimited applicability to derivatives markets\n\nTheoretical Contribution:\n\nBridges behavioral finance and portfolio optimization\nProvides mathematical framework for “soft” investor preferences\nExtends Markowitz paradigm to non-probabilistic uncertainty",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#dynamic-programming-approaches",
+    "href": "revsyslit.html#dynamic-programming-approaches",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "5.1 Dynamic Programming Approaches",
+    "text": "5.1 Dynamic Programming Approaches\n\n5.1.1 Bellman Equation for Portfolio Selection\nThe multi-period problem can be formulated as dynamic programming:\n\\[\nV_t(W_t) = \\max_{w_t} \\mathbb{E}_t[U(W_T) + \\sum_{s=t}^{T-1} \\beta^{s-t} g_s(W_s, w_s)]\n\\]\nsubject to wealth dynamics: \\[\nW_{t+1} = W_t(1 + w_t^T r_{t+1}) - C(w_t, w_{t-1})\n\\]\nApplication: Mohebi and Najafi (2018) solved multi-period portfolio selection using backward induction, achieving optimal rebalancing strategies under transaction costs.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#stochastic-programming-formulations",
+    "href": "revsyslit.html#stochastic-programming-formulations",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "5.2 Stochastic Programming Formulations",
+    "text": "5.2 Stochastic Programming Formulations\n\n5.2.1 Scenario Tree Approach\nMulti-period uncertainty modeled through scenario trees:\n\\[\n\\min_{w} \\sum_{t=1}^{T} \\sum_{s \\in S_t} p_s \\cdot f_t(w_t^s)\n\\]\nwhere: - \\(S_t\\) represents scenarios at time \\(t\\) - \\(p_s\\) is scenario probability - \\(w_t^s\\) are scenario-dependent decisions\n2025 Advance: Ahmadi and Ghasemi (2025) incorporated Random Forest predictions into stochastic scenario generation, improving out-of-sample performance by 18%.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#transaction-costs-and-market-frictions",
+    "href": "revsyslit.html#transaction-costs-and-market-frictions",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "5.3 Transaction Costs and Market Frictions",
+    "text": "5.3 Transaction Costs and Market Frictions\n\n5.3.1 Proportional Transaction Costs\n\\[\nC_t = c_b \\sum_i \\max(w_{i,t} - w_{i,t-1}, 0) + c_s \\sum_i \\max(w_{i,t-1} - w_{i,t}, 0)\n\\]\nwhere \\(c_b, c_s\\) are buying/selling cost rates.\n\n\n5.3.2 Non-Convex Formulations\nFixed plus variable costs: \\[\nC_t = \\sum_i [f_i \\cdot \\mathbb{I}(w_{i,t} \\neq w_{i,t-1}) + v_i |w_{i,t} - w_{i,t-1}|]\n\\]\nRecent Solution Methods (2025):\n\nTBC (2025e): Fused Lasso with ADMM for efficient large-scale optimization\nJin and Gao (2025): Progressive Hedging Algorithm for ESG-constrained portfolios",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#regime-switching-models",
+    "href": "revsyslit.html#regime-switching-models",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "5.4 Regime-Switching Models",
+    "text": "5.4 Regime-Switching Models\n\n5.4.1 Markov Regime-Switching Framework\nMarket dynamics follow hidden Markov process:\n\\[\nr_t | S_t = i \\sim \\mathcal{N}(\\mu_i, \\Sigma_i)\n\\]\nwhere \\(S_t \\in \\{1, \\ldots, K\\}\\) represents market regime.\nApplications:\n\nOprisor and Kwon (2021): Bayesian regime detection with investor views\n2025 Study: Şerban (2025) combined interval analysis with regime-switching for robust multi-period optimization",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#market-characteristics",
+    "href": "revsyslit.html#market-characteristics",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "6.1 Market Characteristics",
+    "text": "6.1 Market Characteristics\nAgricultural commodities exhibit unique features requiring specialized modeling:\n\nSeasonality: Planting and harvest cycles create predictable patterns\nWeather Dependency: Climate variability introduces non-financial risk\nStorability: Physical storage costs and constraints\nBasis Risk: Spot-futures convergence uncertainty\nGovernment Intervention: Subsidies, price floors, strategic reserves",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#limited-optimization-literature",
+    "href": "revsyslit.html#limited-optimization-literature",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "6.2 Limited Optimization Literature",
+    "text": "6.2 Limited Optimization Literature\nOur systematic review reveals a significant research gap: only 5 papers from 2025 specifically address agricultural commodities portfolio optimization in high-impact journals.\n\n6.2.1 Key Studies\n1. Climate Hedging with Commodity Futures\nFang and Yin (2025) (Journal of Futures Markets, 2025):\n\nDeveloped index-tracking strategy hedging climate news risk\nIncluded corn, wheat, soybeans in commodity basket\nResult: 15% volatility reduction during climate events\n\n2. Stock-Commodity Correlations and Climate Risk\nDemiralay, Gencer, and Brauneis (2025) (Journal of Futures Markets, 2025):\n\nAnalyzed conditional correlations between agricultural futures and equities\nFinding: Climate risk significantly impacts correlation structure\nImplication: Traditional diversification benefits erode during climate shocks\n\n3. Risk Premiums in Agricultural Futures\nEtienne, Li, and Liu (2025) (Journal of Futures Markets, 2025):\n\nDecomposed corn futures risk premiums into common and idiosyncratic components\nCommon component: 65% of total premium\nIdiosyncratic component: 35%, driven by crop-specific factors\n\n4. Barriers to Agricultural Hedging\nPrager, Burns, and Williams (2025) (Journal of Futures Markets, 2025):\n\nExamined why farmers underutilize futures/options\nKey barriers: Basis risk (42%), cash constraints (31%), complexity (27%)\nImplication: Need for simplified hedging instruments\n\n5. Commodity Options Return Predictability\nAka et al. (2025) (Journal of Futures Markets, 2025):\n\nMachine learning models predict delta-hedged agricultural option returns\nRandom Forest achieved 12% annual alpha",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#forecasting-models-for-agricultural-commodities",
+    "href": "revsyslit.html#forecasting-models-for-agricultural-commodities",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "6.3 Forecasting Models for Agricultural Commodities",
+    "text": "6.3 Forecasting Models for Agricultural Commodities\n\n6.3.1 ARIMA-GARCH Family\nSeasonal ARIMA (SARIMA): \\[\n\\Phi(B)\\phi(B^s)(1-B)^d(1-B^s)^D y_t = \\Theta(B)\\theta(B^s)\\epsilon_t\n\\]\nGARCH with Seasonality:\nRam'irez and Fadiga (2003) applied asymmetric GARCH to agricultural prices, capturing leverage effects and seasonal volatility.\n\n\n6.3.2 Machine Learning Approaches\nRandom Forest for Price Prediction:\nZhang et al. (2020) achieved superior forecasting accuracy using ensemble methods:\n\nRMSE Reduction: 18% vs. ARIMA\nDirectional Accuracy: 64% vs. 52% for traditional econometric models",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#portfolio-applications-to-agricultural-commodities",
+    "href": "revsyslit.html#portfolio-applications-to-agricultural-commodities",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "6.4 Portfolio Applications to Agricultural Commodities",
+    "text": "6.4 Portfolio Applications to Agricultural Commodities\n\n6.4.1 Mean-CVaR Framework\nConditional Value-at-Risk particularly appropriate for agricultural commodities due to:\n\nHeavy-tailed return distributions\nExtreme event frequency (droughts, floods)\nPolicy-induced discontinuities\n\nFormulation: \\[\n\\begin{aligned}\n\\min_{w} \\quad & \\alpha \\cdot (-w^T \\mu) + (1-\\alpha) \\cdot \\text{CVaR}_\\beta(w) \\\\\n\\text{s.t.} \\quad & w^T \\mathbf{1} = 1, \\quad w \\geq 0\n\\end{aligned}\n\\]\n\n\n6.4.2 Stochastic Seasonal Models\nMirantes, Población, and Serna (2013) developed stochastic seasonal behavior models for commodity convenience yields:\n\\[\ndy_t = \\kappa(\\theta(t) - y_t)dt + \\sigma dW_t\n\\]\nwhere \\(\\theta(t)\\) captures seasonal mean reversion level.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#markov-decision-process-formulation",
+    "href": "revsyslit.html#markov-decision-process-formulation",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "7.1 Markov Decision Process Formulation",
+    "text": "7.1 Markov Decision Process Formulation\nPortfolio management as MDP:\n\nState: \\(s_t = (w_t, r_t, x_t)\\) where \\(x_t\\) includes market features\nAction: \\(a_t = \\Delta w_t\\) (rebalancing decisions)\nReward: \\(r_t = \\log(V_{t+1}/V_t) - \\lambda \\cdot TC_t\\)\nTransition: \\(P(s_{t+1}|s_t, a_t)\\) governed by market dynamics",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#algorithm-implementations",
+    "href": "revsyslit.html#algorithm-implementations",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "7.2 Algorithm Implementations",
+    "text": "7.2 Algorithm Implementations\n\n7.2.1 Deep Q-Learning (DQN)\nArchitecture:\nclass DQNPortfolio:\n    def __init__(self, state_dim, action_dim):\n        self.q_network = Sequential([\n            Dense(256, activation='relu', input_dim=state_dim),\n            Dropout(0.2),\n            Dense(128, activation='relu'),\n            Dense(action_dim, activation='linear')\n        ])\nExperience Replay: Stores transitions \\((s_t, a_t, r_t, s_{t+1})\\) for batch training.\n\n\n7.2.2 Policy Gradient Methods\nREINFORCE Algorithm:\n\\[\n\\nabla_\\theta J(\\theta) = \\mathbb{E}_{\\tau \\sim \\pi_\\theta}[\\sum_t \\nabla_\\theta \\log \\pi_\\theta(a_t|s_t) R_t]\n\\]\nActor-Critic Architecture (2025):\nTBC (2025a) implemented DDPG with:\n\nActor Network: Maps states to continuous portfolio weights\nCritic Network: Estimates Q-value \\(Q(s,a)\\)\nTarget Networks: Stabilize training\nPerformance: 42% higher cumulative return vs. buy-and-hold",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#challenges-and-solutions",
+    "href": "revsyslit.html#challenges-and-solutions",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "7.3 Challenges and Solutions",
+    "text": "7.3 Challenges and Solutions\n\n7.3.1 Sample Inefficiency\nProblem: Financial data limited, RL requires extensive training\nSolutions:\n\nTransfer Learning: Pre-train on synthetic data (Ma, Han, and Wang 2021)\nData Augmentation: Bootstrap and scenario generation\nModel-Based RL: Learn transition dynamics explicitly\n\n\n\n7.3.2 Non-Stationarity\nProblem: Financial markets exhibit regime changes, distribution shifts\nSolutions:\n\nOnline Learning: Continuous model updates\nEnsemble Methods: Multiple agents for different regimes\nMeta-Learning: Learn to adapt quickly (TBC 2025b)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#algorithm-performance-comparison",
+    "href": "revsyslit.html#algorithm-performance-comparison",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "8.1 Algorithm Performance Comparison",
+    "text": "8.1 Algorithm Performance Comparison\n\n\n\nComparative Analysis of Portfolio Optimization Algorithms\n\n\nAlgorithm\nComplexity\nQuality\nScalability\nConstraints\nBest Use\n\n\n\n\nNSGA-II\nO(MN²)\nHigh\nGood\nYes\n2-3 obj\n\n\nNSGA-III\nO(MN²)\nVery High\nExcellent\nYes\n4+ obj\n\n\nMOEA/D\nO(MN)\nHigh\nGood\nYes\nMany obj\n\n\nDE\nO(MN)\nMedium\nFair\nLimited\nConvex\n\n\nPSO\nO(MN)\nMedium\nFair\nLimited\nSimple\n\n\nDDPG (RL)\nHigh\nVery High\nGood\nComplex\nDynamic\n\n\nPPO (RL)\nHigh\nVery High\nGood\nComplex\nDynamic\n\n\nDQN (RL)\nHigh\nHigh\nFair\nComplex\nDiscrete",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#objective-function-trade-offs",
+    "href": "revsyslit.html#objective-function-trade-offs",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "8.2 Objective Function Trade-offs",
+    "text": "8.2 Objective Function Trade-offs\n\n8.2.1 Return vs. Risk\nPearson Correlation: \\(\\rho = -0.85\\) (strong negative)\nImplication: Efficient frontier exists; no solution dominates on both objectives\n\n\n8.2.2 Skewness vs. Kurtosis\nFinding: Positive skewness often accompanies high kurtosis (fat tails)\nChallenge: Investors prefer positive skewness but low kurtosis—difficult to achieve simultaneously\n\n\n8.2.3 Diversification vs. Return\nEntropy-based diversification negatively correlates with return (\\(\\rho = -0.42\\))\nHowever: Risk-adjusted return (Sharpe ratio) improves with diversification",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#critical-gaps-identified",
+    "href": "revsyslit.html#critical-gaps-identified",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "9.1 Critical Gaps Identified",
+    "text": "9.1 Critical Gaps Identified\n\n9.1.1 1. Agricultural Commodities Underrepresented\nCurrent State:\n\nOnly 5 papers from 2025 specifically address agricultural portfolios\nFocused primarily on hedging rather than optimization\nLimited integration with advanced multi-objective methods\n\nResearch Opportunities:\n\nDevelop crop-specific portfolio models incorporating weather derivatives\nMulti-period optimization with planting/harvesting constraints\nIntegration of satellite imagery and IoT data for predictive modeling\n\n\n\n9.1.2 2. Limited Real-World Validation\nIssue: Most studies use historical backtesting; live trading validation rare\nNeeded:\n\nPaper trading implementations\nPartnerships with financial institutions for live deployment\nStandardized benchmarking protocols\n\n\n\n9.1.3 3. Scalability Challenges\nCurrent Limitation: Most studies limited to &lt;200 assets\nIndustry Reality: Institutional portfolios contain 500-2000+ assets\nPotential Solutions:\n\nHierarchical clustering before optimization\nApproximate algorithms with quality guarantees\nDistributed computing frameworks\n\n\n\n9.1.4 4. Transaction Costs Modeling\nGap: Most models assume linear transaction costs\nReality: Market impact non-linear, especially for large trades\nNeeded Research:\n\nIntegration of market microstructure models\nOrder book dynamics in optimization\nOptimal execution within portfolio optimization\n\n\n\n9.1.5 5. ESG Integration\nEmerging Requirement: ESG constraints increasingly mandatory\n2025 Progress: Jin, Wu, and Xie (2025) introduced ESG-CVaR model\nFuture Work:\n\nDynamic ESG scoring\nMulti-stakeholder objective functions\nTrade-off analysis between financial and ESG objectives",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#methodological-advances-needed",
+    "href": "revsyslit.html#methodological-advances-needed",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "9.2 Methodological Advances Needed",
+    "text": "9.2 Methodological Advances Needed\n\n9.2.1 1. Hybrid Algorithms\nOpportunity: Combine strengths of different approaches\nExamples:\n\nMOEA for exploration + RL for exploitation\nClassical optimization for convex subproblems + metaheuristics for integer constraints\nSupervised learning for forecasting + reinforcement learning for decision-making\n\n\n\n9.2.2 2. Explainable AI in Portfolio Management\nChallenge: RL and deep learning models lack interpretability\nRequired:\n\nFeature importance analysis\nCounterfactual explanations\nRegulatory-compliant decision documentation\n\n\n\n9.2.3 3. Quantum Computing Applications\nEmerging Area: Quantum algorithms for portfolio optimization\nPotential: Exponential speedup for certain problem classes\nCurrent Status: Proof-of-concept studies; hardware limitations",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#key-takeaways",
+    "href": "revsyslit.html#key-takeaways",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "10.1 Key Takeaways",
+    "text": "10.1 Key Takeaways\n\nMulti-objective evolutionary algorithms (MOEAs) have matured into reliable, efficient methods for portfolio optimization, with NSGA-III demonstrating superior performance for problems with 4+ objectives.\nMachine learning integration represents the dominant trend, with ensemble learning, LSTM networks, and reinforcement learning significantly improving both prediction accuracy and portfolio performance.\nMulti-period formulations with practical constraints (transaction costs, turnover limits, rebalancing frequency) substantially improve real-world applicability, though computational costs remain a challenge.\nAgricultural commodities portfolio optimization remains severely underrepresented in the literature, presenting a significant research opportunity given the importance of this asset class.\nRecent 2025 publications emphasize ESG integration, climate risk modeling, behavioral finance considerations, and deep reinforcement learning—indicating future research directions.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#practical-implications",
+    "href": "revsyslit.html#practical-implications",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "10.2 Practical Implications",
+    "text": "10.2 Practical Implications\n\n10.2.1 For Institutional Investors\n\nNSGA-III or MOEA/D recommended for large-scale multi-objective problems\nProgressive Hedging Algorithm effective for multi-period ESG-constrained portfolios\nSurrogate-assisted optimization (e.g., ParDen-Sur) enables rapid strategy testing\n\n\n\n10.2.2 For Quantitative Researchers\n\nHybrid approaches combining classical optimization with machine learning show most promise\nReinforcement learning requires substantial computational resources but delivers superior dynamic strategies\nOpen-source implementations increasingly available (DEoptim, pymoo, Stable-Baselines3)\n\n\n\n10.2.3 For Agricultural Commodity Managers\n\nSignificant opportunity to apply advanced optimization techniques to agricultural portfolios\nWeather derivatives and climate data integration critical for modern agricultural portfolio management\nSeasonal regime-switching models essential for capturing agricultural market dynamics",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#final-remarks",
+    "href": "revsyslit.html#final-remarks",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "10.3 Final Remarks",
+    "text": "10.3 Final Remarks\nThis systematic literature review synthesized 61 publications spanning multi-objective optimization, multi-period decision-making, and agricultural commodities portfolio management. The field demonstrates rapid evolution driven by:\n\nAlgorithmic innovation in MOEAs and reinforcement learning\nData availability enabling machine learning applications\nComputational advances allowing solution of previously intractable problems\nRegulatory pressures demanding ESG integration and risk transparency\n\nThe convergence of these domains—particularly applying advanced multi-objective, multi-period optimization to agricultural commodities—represents fertile ground for impactful research that bridges theoretical innovation with practical application.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#multiobjective-portfolio-optimization-2025",
+    "href": "revsyslit.html#multiobjective-portfolio-optimization-2025",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "10.4 Multiobjective Portfolio Optimization (2025)",
+    "text": "10.4 Multiobjective Portfolio Optimization (2025)\n\nChou & Pham (2025) - Journal of Big Data\nNSGA-III Application (2025) - J Risk Financial Management\n\nRegret Theory Model (2025) - Expert Systems with Applications\nSigma-Mu MCDA (2025) - European J Operational Research\nRobust APT Model (2025) - European J Operational Research",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#multi-period-optimization-2025",
+    "href": "revsyslit.html#multi-period-optimization-2025",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "10.5 Multi-Period Optimization (2025)",
+    "text": "10.5 Multi-Period Optimization (2025)\n\nAhmadi & Ghasemi (2025) - Applied Soft Computing\nCapital Injections Model (2025) - Mathematics and Computers in Simulation\nDDPG-RL Approach (2025) - Annals of Operations Research\nESG Multi-Period Model (2025) - Expert Systems with Applications\nSpectral Risk Measures (2025) - Mathematics (MDPI)\nInterval Analysis Framework (2025) - Mathematics (MDPI)\nPrice-Aware Logistic (2025) - Mathematics (MDPI)\nTracking Error Model (2025) - Applied Mathematics in Science and Engineering\nNeural Network Leverage (2025) - J Economic Dynamics and Control\nHigh-Dim DRL (2025) - International Review of Financial Analysis\nMPC Learning Approach (2025) - International J Control",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "revsyslit.html#agricultural-commodity-portfolios-2025",
+    "href": "revsyslit.html#agricultural-commodity-portfolios-2025",
+    "title": "Systematic Literature Review: Multi-Objective Multi-Period Portfolio Optimization",
+    "section": "10.6 Agricultural & Commodity Portfolios (2025)",
+    "text": "10.6 Agricultural & Commodity Portfolios (2025)\n\nFang & Yin (2025) - J Futures Markets - Climate hedging\nDemiralay et al. (2025) - J Futures Markets - Stock-commodity correlations\nAka et al. (2025) - J Futures Markets - Option return predictability\nEtienne et al. (2025) - J Futures Markets - Corn risk premiums\nPrager et al. (2025) - J Futures Markets - Barriers to hedging\nART-DRL (2025) - J Risk Financial Management - Commodity futures RL",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Literature Review"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html",
+    "href": "resmindmap.html",
+    "title": "Theoretical Framework",
+    "section": "",
+    "text": "This research project establishes a comprehensive methodological framework built upon three interconnected pillars that collectively address the complex challenge of agricultural commodities portfolio optimization under uncertainty. Each pillar represents a distinct yet complementary approach to understanding and managing financial risk in volatile markets.\n\n\n\n\n\n\nResearch Foundation\n\n\n\nCore Research Question: How can we integrate advanced volatility modeling, multi-objective optimization, and adaptive learning to create robust portfolio management strategies for agricultural commodity markets?\nThis question motivates our theoretical framework, which synthesizes insights from financial econometrics, operations research, and computational intelligence.\n\n\n\n\n\n\n\n\n\ngraph TB\n    A[Agricultural Commodity Markets&lt;br/&gt;High Volatility & Regime Changes] --&gt; B[Pillar 1: Volatility Modeling]\n    A --&gt; C[Pillar 2: Multi-Objective Optimization]\n    A --&gt; D[Pillar 3: Reinforcement Learning]\n    \n    B --&gt; E[GAMLSS Models&lt;br/&gt;Distributional Flexibility]\n    B --&gt; F[MSGARCH Models&lt;br/&gt;Regime Detection]\n    \n    C --&gt; G[NSGA-II Algorithm&lt;br/&gt;Pareto Optimization]\n    C --&gt; H[Differential Evolution&lt;br/&gt;Non-Convex Search]\n    \n    D --&gt; I[Q-Learning&lt;br/&gt;Value-Based RL]\n    D --&gt; J[Policy Gradient&lt;br/&gt;Direct Policy Search]\n    \n    E --&gt; K[Integrated Framework]\n    F --&gt; K\n    G --&gt; K\n    H --&gt; K\n    I --&gt; K\n    J --&gt; K\n    \n    K --&gt; L[Adaptive Portfolio&lt;br/&gt;Management System]\n    \n    L --&gt; M[Expected Outcomes]\n    M --&gt; N[Patent Development]\n    M --&gt; O[Scientific Publications]\n    M --&gt; P[Practical Tools]\n    \n    style A fill:#ff6b35,stroke:#333,stroke-width:3px,color:#fff\n    style K fill:#003d7a,stroke:#333,stroke-width:3px,color:#fff\n    style L fill:#28a745,stroke:#333,stroke-width:3px,color:#fff\n    style B fill:#4a90e2,stroke:#333,stroke-width:2px,color:#fff\n    style C fill:#4a90e2,stroke:#333,stroke-width:2px,color:#fff\n    style D fill:#4a90e2,stroke:#333,stroke-width:2px,color:#fff\n    style M fill:#ffc107,stroke:#333,stroke-width:2px,color:#333",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#interactive-research-framework-map",
+    "href": "resmindmap.html#interactive-research-framework-map",
+    "title": "Theoretical Framework",
+    "section": "",
+    "text": "graph TB\n    A[Agricultural Commodity Markets&lt;br/&gt;High Volatility & Regime Changes] --&gt; B[Pillar 1: Volatility Modeling]\n    A --&gt; C[Pillar 2: Multi-Objective Optimization]\n    A --&gt; D[Pillar 3: Reinforcement Learning]\n    \n    B --&gt; E[GAMLSS Models&lt;br/&gt;Distributional Flexibility]\n    B --&gt; F[MSGARCH Models&lt;br/&gt;Regime Detection]\n    \n    C --&gt; G[NSGA-II Algorithm&lt;br/&gt;Pareto Optimization]\n    C --&gt; H[Differential Evolution&lt;br/&gt;Non-Convex Search]\n    \n    D --&gt; I[Q-Learning&lt;br/&gt;Value-Based RL]\n    D --&gt; J[Policy Gradient&lt;br/&gt;Direct Policy Search]\n    \n    E --&gt; K[Integrated Framework]\n    F --&gt; K\n    G --&gt; K\n    H --&gt; K\n    I --&gt; K\n    J --&gt; K\n    \n    K --&gt; L[Adaptive Portfolio&lt;br/&gt;Management System]\n    \n    L --&gt; M[Expected Outcomes]\n    M --&gt; N[Patent Development]\n    M --&gt; O[Scientific Publications]\n    M --&gt; P[Practical Tools]\n    \n    style A fill:#ff6b35,stroke:#333,stroke-width:3px,color:#fff\n    style K fill:#003d7a,stroke:#333,stroke-width:3px,color:#fff\n    style L fill:#28a745,stroke:#333,stroke-width:3px,color:#fff\n    style B fill:#4a90e2,stroke:#333,stroke-width:2px,color:#fff\n    style C fill:#4a90e2,stroke:#333,stroke-width:2px,color:#fff\n    style D fill:#4a90e2,stroke:#333,stroke-width:2px,color:#fff\n    style M fill:#ffc107,stroke:#333,stroke-width:2px,color:#333",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#motivation-and-context",
+    "href": "resmindmap.html#motivation-and-context",
+    "title": "Theoretical Framework",
+    "section": "2.1 Motivation and Context",
+    "text": "2.1 Motivation and Context\nTraditional portfolio optimization relies on assumptions of normally distributed returns with constant volatility. However, agricultural commodity markets exhibit several stylized facts that violate these assumptions, including heavy tails, asymmetry, volatility clustering, and regime changes. These characteristics necessitate more sophisticated modeling approaches to capture the true risk profile of commodity portfolios.\n\n\nCode\n# Generate synthetic data to demonstrate stylized facts (fast execution)\nset.seed(123)\nn &lt;- 500\n\n# Normal distribution vs Student-t (heavy tails)\nnormal_returns &lt;- rnorm(n, mean = 0, sd = 0.02)\nheavy_tail_returns &lt;- rt(n, df = 5) * 0.02\n\n# Create comparison plot\ndf_comparison &lt;- data.frame(\n  Normal = normal_returns,\n  HeavyTail = heavy_tail_returns\n) %&gt;%\n  pivot_longer(cols = everything(), names_to = \"Distribution\", values_to = \"Returns\")\n\np1 &lt;- ggplot(df_comparison, aes(x = Returns, fill = Distribution)) +\n  geom_density(alpha = 0.6) +\n  scale_fill_manual(values = c(\"Normal\" = \"#6c757d\", \"HeavyTail\" = \"#ff6b35\")) +\n  labs(\n    title = \"Distribution Comparison: Normal vs Heavy-Tailed Returns\",\n    subtitle = \"Agricultural commodities exhibit fat tails\",\n    x = \"Returns\", y = \"Density\"\n  ) +\n  theme_minimal() +\n  theme(\n    plot.title = element_text(face = \"bold\", size = 14),\n    legend.position = \"bottom\"\n  )\n\nprint(p1)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#sec-gamlss",
+    "href": "resmindmap.html#sec-gamlss",
+    "title": "Theoretical Framework",
+    "section": "2.2 GAMLSS: Generalized Additive Models for Location, Scale and Shape",
+    "text": "2.2 GAMLSS: Generalized Additive Models for Location, Scale and Shape\n\n2.2.1 Theoretical Foundation\nGAMLSS extends traditional regression by modeling all parameters of the distribution, not merely the mean. This approach allows flexible representation of returns with heavy tails and asymmetry through the specification of location, scale, skewness, and kurtosis parameters as functions of covariates.\nMathematical Formulation:\nThe GAMLSS framework models up to four distributional parameters:\n\\[\n\\begin{aligned}\n\\mu_t &= g_1(\\mathbf{X}_t^T \\boldsymbol{\\beta}_1) \\quad &&\\text{(Location)} \\\\\n\\sigma_t &= g_2(\\mathbf{X}_t^T \\boldsymbol{\\beta}_2) \\quad &&\\text{(Scale)} \\\\\n\\nu_t &= g_3(\\mathbf{X}_t^T \\boldsymbol{\\beta}_3) \\quad &&\\text{(Skewness)} \\\\\n\\tau_t &= g_4(\\mathbf{X}_t^T \\boldsymbol{\\beta}_4) \\quad &&\\text{(Kurtosis)}\n\\end{aligned}\n\\]\n\n\n2.2.2 Interactive Concept Map: GAMLSS Components\n\n\n\n\n\ngraph LR\n    A[GAMLSS Framework] --&gt; B[Location μ]\n    A --&gt; C[Scale σ]\n    A --&gt; D[Skewness ν]\n    A --&gt; E[Kurtosis τ]\n    \n    B --&gt; F[Expected Return&lt;br/&gt;Modeling]\n    C --&gt; G[Volatility&lt;br/&gt;Dynamics]\n    D --&gt; H[Asymmetric&lt;br/&gt;Risk]\n    E --&gt; I[Tail Risk&lt;br/&gt;Management]\n    \n    F --&gt; J[Portfolio&lt;br/&gt;Optimization]\n    G --&gt; J\n    H --&gt; J\n    I --&gt; J\n    \n    J --&gt; K[Risk-Adjusted&lt;br/&gt;Allocation]\n    \n    style A fill:#003d7a,color:#fff,stroke:#333,stroke-width:2px\n    style J fill:#28a745,color:#fff,stroke:#333,stroke-width:2px\n    style K fill:#ffc107,color:#333,stroke:#333,stroke-width:2px\n    \n\n\n\n\n\n\n\n\n2.2.3 Demonstration: Time-Varying Parameters\n\n\nCode\n# Simulate time-varying volatility (fast execution)\nset.seed(456)\ntime &lt;- 1:250\nbase_vol &lt;- 0.02\nvol_cycle &lt;- base_vol * (1 + 0.5 * sin(2 * pi * time / 50))\nreturns &lt;- rnorm(250, mean = 0.001, sd = vol_cycle)\n\n# Calculate rolling statistics\ndf_gamlss &lt;- data.frame(\n  Time = time,\n  Returns = returns,\n  Volatility = vol_cycle,\n  CumulativeReturn = cumsum(returns)\n)\n\n# Create interactive plot\nplot_ly(df_gamlss, x = ~Time) %&gt;%\n  add_trace(y = ~Returns, type = 'scatter', mode = 'lines', \n            name = 'Daily Returns', line = list(color = '#6c757d', width = 1)) %&gt;%\n  add_trace(y = ~Volatility, type = 'scatter', mode = 'lines', \n            name = 'Time-Varying Volatility', \n            line = list(color = '#ff6b35', width = 2),\n            yaxis = 'y2') %&gt;%\n  layout(\n    title = list(text = \"GAMLSS Concept: Time-Varying Scale Parameter\", \n                 font = list(size = 16, family = \"Montserrat\")),\n    xaxis = list(title = \"Time\"),\n    yaxis = list(title = \"Returns\", side = \"left\"),\n    yaxis2 = list(title = \"Volatility (σₜ)\", overlaying = \"y\", side = \"right\"),\n    legend = list(x = 0.1, y = 0.9),\n    hovermode = \"x unified\"\n  )",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#sec-msgarch",
+    "href": "resmindmap.html#sec-msgarch",
+    "title": "Theoretical Framework",
+    "section": "2.3 MSGARCH: Markov-Switching GARCH Models",
+    "text": "2.3 MSGARCH: Markov-Switching GARCH Models\n\n2.3.1 Theoretical Foundation\nMSGARCH models capture regime-dependent volatility dynamics by assuming that the market alternates between hidden states, such as calm and turbulent regimes. Transitions between regimes are governed by a Markov chain, allowing the model to automatically detect structural breaks and adapt volatility forecasts accordingly.\nMathematical Formulation:\nThe return process follows:\n\\[\n\\begin{aligned}\nr_t &= \\mu_{s_t} + \\epsilon_t \\\\\n\\epsilon_t &= \\sigma_{t,s_t} z_t, \\quad z_t \\sim D(0, 1) \\\\\n\\sigma_{t,s_t}^2 &= \\omega_{s_t} + \\alpha_{s_t} \\epsilon_{t-1}^2 + \\beta_{s_t} \\sigma_{t-1,s_t}^2\n\\end{aligned}\n\\]\nwhere regime state \\(s_t \\in \\{1, 2, \\ldots, K\\}\\) follows a Markov chain with transition probabilities \\(P(s_t = j | s_{t-1} = i) = p_{ij}\\).\n\n\n2.3.2 Animated Concept: Regime Switching\n\n\n\n\n\nsequenceDiagram\n    participant M as Market\n    participant R1 as Regime 1&lt;br/&gt;(Low Volatility)\n    participant R2 as Regime 2&lt;br/&gt;(High Volatility)\n    participant F as Forecast\n    \n    M-&gt;&gt;R1: Normal conditions\n    R1-&gt;&gt;F: σ² = 0.0004\n    Note over R1,F: Calm market&lt;br/&gt;α₁=0.05, β₁=0.90\n    \n    M-&gt;&gt;R2: Crisis/Shock\n    R2-&gt;&gt;F: σ² = 0.0025\n    Note over R2,F: Turbulent market&lt;br/&gt;α₂=0.15, β₂=0.70\n    \n    R2-&gt;&gt;R1: Recovery\n    R1-&gt;&gt;F: σ² = 0.0004\n    Note over R1,F: Return to calm\n    \n\n\n\n\n\n\n\n\n2.3.3 Regime Detection Demonstration\n\n\nCode\n# Simulate two-regime process (fast execution)\nset.seed(789)\nn &lt;- 300\nregime &lt;- rep(1, n)\n\n# Introduce regime changes at specific points\nregime[100:150] &lt;- 2\nregime[220:260] &lt;- 2\n\n# Generate returns based on regime\nreturns_regime &lt;- numeric(n)\nfor(i in 1:n) {\n  if(regime[i] == 1) {\n    returns_regime[i] &lt;- rnorm(1, 0.0005, 0.015)  # Low volatility\n  } else {\n    returns_regime[i] &lt;- rnorm(1, -0.001, 0.035)  # High volatility\n  }\n}\n\n# Calculate rolling volatility\nrolling_vol &lt;- zoo::rollapply(returns_regime, width = 20, FUN = sd, \n                               fill = NA, align = \"right\")\n\ndf_regime &lt;- data.frame(\n  Time = 1:n,\n  Returns = returns_regime,\n  Regime = factor(regime, labels = c(\"Low Vol\", \"High Vol\")),\n  RollingVol = rolling_vol\n)\n\n# Create regime visualization\np2 &lt;- ggplot(df_regime, aes(x = Time)) +\n  geom_rect(aes(xmin = Time - 0.5, xmax = Time + 0.5, \n                ymin = -0.1, ymax = 0.1, fill = Regime), \n            alpha = 0.3) +\n  geom_line(aes(y = Returns), color = \"black\", size = 0.5) +\n  scale_fill_manual(values = c(\"Low Vol\" = \"#28a745\", \"High Vol\" = \"#dc3545\")) +\n  labs(\n    title = \"MSGARCH: Automatic Regime Detection\",\n    subtitle = \"Model identifies structural breaks and adjusts volatility estimates\",\n    x = \"Time\", y = \"Returns\"\n  ) +\n  theme_minimal() +\n  theme(\n    plot.title = element_text(face = \"bold\", size = 14),\n    legend.position = \"bottom\"\n  )\n\nprint(p2)\n\n\n\n\n\n\n\n\n\n\n\n2.3.4 Regime Characteristics Comparison\n\n\nCode\nregime_params &lt;- data.frame(\n  Regime = c(\"Regime 1 (Calm)\", \"Regime 2 (Turbulent)\"),\n  `Mean Return` = c(\"0.05%\", \"-0.10%\"),\n  `Volatility` = c(\"1.5%\", \"3.5%\"),\n  `GARCH α` = c(\"0.05\", \"0.15\"),\n  `GARCH β` = c(\"0.90\", \"0.70\"),\n  `Persistence` = c(\"0.95\", \"0.85\"),\n  check.names = FALSE\n)\n\nkable(regime_params, \n      caption = \"Two-Regime MSGARCH Parameter Estimates\",\n      align = \"lccccc\") %&gt;%\n  kable_styling(bootstrap_options = c(\"striped\", \"hover\", \"condensed\"), \n                full_width = FALSE) %&gt;%\n  row_spec(1, background = \"#d4edda\") %&gt;%\n  row_spec(2, background = \"#f8d7da\")\n\n\n\nTwo-Regime MSGARCH Parameter Estimates\n\n\nRegime\nMean Return\nVolatility\nGARCH α\nGARCH β\nPersistence\n\n\n\n\nRegime 1 (Calm)\n0.05%\n1.5%\n0.05\n0.90\n0.95\n\n\nRegime 2 (Turbulent)\n-0.10%\n3.5%\n0.15\n0.70\n0.85",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#the-portfolio-optimization-problem",
+    "href": "resmindmap.html#the-portfolio-optimization-problem",
+    "title": "Theoretical Framework",
+    "section": "3.1 The Portfolio Optimization Problem",
+    "text": "3.1 The Portfolio Optimization Problem\nTraditional mean-variance optimization considers only two objectives, which fails to capture the multidimensional nature of investment decisions. Real-world investors simultaneously care about return maximization, risk minimization, diversification, liquidity, and robustness, creating a complex multi-objective problem that requires sophisticated solution techniques.\n\n3.1.1 Multi-Objective Framework\n\n\n\n\n\ngraph TB\n    A[Portfolio Decision] --&gt; B[Objective 1:&lt;br/&gt;Maximize Return]\n    A --&gt; C[Objective 2:&lt;br/&gt;Minimize Risk CVaR]\n    A --&gt; D[Objective 3:&lt;br/&gt;Minimize Volatility]\n    A --&gt; E[Objective 4:&lt;br/&gt;Maximize Diversification]\n    \n    B --&gt; F{Conflicting&lt;br/&gt;Objectives}\n    C --&gt; F\n    D --&gt; F\n    E --&gt; F\n    \n    F --&gt; G[Multi-Objective&lt;br/&gt;Optimization]\n    \n    G --&gt; H[NSGA-II&lt;br/&gt;Genetic Algorithm]\n    G --&gt; I[Differential&lt;br/&gt;Evolution]\n    \n    H --&gt; J[Pareto-Optimal&lt;br/&gt;Frontier]\n    I --&gt; J\n    \n    J --&gt; K[Portfolio&lt;br/&gt;Selection]\n    \n    style A fill:#6c757d,color:#fff\n    style F fill:#ff6b35,color:#fff\n    style G fill:#003d7a,color:#fff\n    style J fill:#28a745,color:#fff\n    style K fill:#ffc107,color:#333",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#sec-nsga2",
+    "href": "resmindmap.html#sec-nsga2",
+    "title": "Theoretical Framework",
+    "section": "3.2 NSGA-II Algorithm Animation",
+    "text": "3.2 NSGA-II Algorithm Animation\n\n3.2.1 Algorithm Workflow\n\n\n\n\n\ngraph LR\n    A[Initialize&lt;br/&gt;Population&lt;br/&gt;N=100] --&gt; B[Evaluate&lt;br/&gt;Objectives&lt;br/&gt;f₁, f₂, f₃]\n    B --&gt; C[Non-Dominated&lt;br/&gt;Sorting&lt;br/&gt;Fronts 1,2,3...]\n    C --&gt; D[Crowding&lt;br/&gt;Distance&lt;br/&gt;Diversity]\n    D --&gt; E[Selection&lt;br/&gt;Tournament&lt;br/&gt;Size=2]\n    E --&gt; F[Crossover&lt;br/&gt;SBX&lt;br/&gt;pc=0.9]\n    F --&gt; G[Mutation&lt;br/&gt;Polynomial&lt;br/&gt;pm=1/n]\n    G --&gt; H{Generation&lt;br/&gt;&lt; Max?}\n    H --&gt;|Yes| B\n    H --&gt;|No| I[Pareto&lt;br/&gt;Front&lt;br/&gt;Output]\n    \n    style A fill:#4a90e2,color:#fff,stroke:#333,stroke-width:2px\n    style I fill:#28a745,color:#fff,stroke:#333,stroke-width:2px\n    style H fill:#ffc107,color:#333,stroke:#333,stroke-width:2px\n\n\n\n\n\n\n\n\n3.2.2 NSGA-II Demonstration\n\n\nCode\n# Simulate Pareto front (fast execution - analytical)\nset.seed(321)\nn_solutions &lt;- 100\n\n# Generate Pareto-optimal solutions analytically\n# Using convex combination for demonstration\nlambda &lt;- seq(0, 1, length.out = n_solutions)\nobj1 &lt;- lambda^2 + 0.1  # Risk proxy\nobj2 &lt;- -(1 - lambda)^2 + 0.1  # Return proxy (negative because we minimize)\nobj3 &lt;- sqrt(lambda * (1 - lambda)) * 0.5  # Volatility\n\n# Add some dominated solutions for visualization\nn_dominated &lt;- 30\ndominated_obj1 &lt;- runif(n_dominated, min(obj1), max(obj1) * 1.5)\ndominated_obj2 &lt;- runif(n_dominated, min(obj2) * 1.5, max(obj2))\ndominated_obj3 &lt;- runif(n_dominated, 0, max(obj3) * 1.2)\n\n# Combine data\ndf_pareto &lt;- data.frame(\n  Risk = c(obj1, dominated_obj1),\n  Return = c(-obj2, -dominated_obj2),  # Convert back to maximize\n  Volatility = c(obj3, dominated_obj3),\n  Type = c(rep(\"Pareto-Optimal\", n_solutions), \n           rep(\"Dominated\", n_dominated))\n)\n\n# Create 3D interactive plot\nplot_ly(df_pareto, x = ~Return, y = ~Risk, z = ~Volatility, \n        color = ~Type, colors = c(\"#dc3545\", \"#28a745\"),\n        type = \"scatter3d\", mode = \"markers\",\n        marker = list(size = 4)) %&gt;%\n  layout(\n    title = list(text = \"NSGA-II Output: Pareto-Optimal Frontier\",\n                 font = list(size = 16, family = \"Montserrat\")),\n    scene = list(\n      xaxis = list(title = \"Expected Return\"),\n      yaxis = list(title = \"Risk (CVaR)\"),\n      zaxis = list(title = \"Volatility (σ)\")\n    ),\n    legend = list(x = 0.7, y = 0.9)\n  )",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#sec-de",
+    "href": "resmindmap.html#sec-de",
+    "title": "Theoretical Framework",
+    "section": "3.3 Differential Evolution Process",
+    "text": "3.3 Differential Evolution Process\n\n3.3.1 DE Mutation Strategies\n\n\n\n\n\ngraph TB\n    A[Current Population&lt;br/&gt;P = w₁, w₂, ..., wₙ] --&gt; B[Random Selection&lt;br/&gt;r1, r2, r3]\n    \n    B --&gt; C[Mutation Vector&lt;br/&gt;v = wᵣ₁ + F×wᵣ₂ - wᵣ₃]\n    \n    C --&gt; D[Crossover&lt;br/&gt;Mix with current]\n    \n    D --&gt; E[Trial Solution&lt;br/&gt;u = Cross v, wᵢ]\n    \n    E --&gt; F{f u &lt; f wᵢ?}\n    \n    F --&gt;|Yes| G[Replace&lt;br/&gt;wᵢ ← u]\n    F --&gt;|No| H[Keep&lt;br/&gt;wᵢ unchanged]\n    \n    G --&gt; I[Next Generation]\n    H --&gt; I\n    \n    I --&gt; J{Converged?}\n    J --&gt;|No| B\n    J --&gt;|Yes| K[Optimal&lt;br/&gt;Solution]\n    \n    style A fill:#4a90e2,color:#fff\n    style C fill:#ff6b35,color:#fff\n    style F fill:#ffc107,color:#333\n    style K fill:#28a745,color:#fff",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#from-static-to-dynamic-portfolio-management",
+    "href": "resmindmap.html#from-static-to-dynamic-portfolio-management",
+    "title": "Theoretical Framework",
+    "section": "4.1 From Static to Dynamic Portfolio Management",
+    "text": "4.1 From Static to Dynamic Portfolio Management\nTraditional optimization produces static solutions that fail to adapt to changing market conditions. Reinforcement learning addresses this limitation by enabling agents to learn adaptive rebalancing policies that respond dynamically to evolving market regimes, correlations, and risk profiles.\n\n4.1.1 MDP Framework Visualization\n\n\n\n\n\ngraph LR\n    A[State sₜ&lt;br/&gt;Market Conditions&lt;br/&gt;Portfolio Weights&lt;br/&gt;Regime Probabilities] --&gt; B[Agent&lt;br/&gt;Policy π]\n    \n    B --&gt; C[Action aₜ&lt;br/&gt;Portfolio&lt;br/&gt;Adjustment&lt;br/&gt;Δw]\n    \n    C --&gt; D[Environment&lt;br/&gt;Market]\n    \n    D --&gt; E[Reward rₜ&lt;br/&gt;Return - λ×Risk&lt;br/&gt;- κ×TxCost]\n    \n    D --&gt; F[Next State&lt;br/&gt;sₜ₊₁]\n    \n    E --&gt; G[Policy Update&lt;br/&gt;Learn from&lt;br/&gt;Experience]\n    F --&gt; G\n    \n    G --&gt; B\n    \n    style A fill:#6c757d,color:#fff,stroke:#333,stroke-width:2px\n    style B fill:#003d7a,color:#fff,stroke:#333,stroke-width:2px\n    style E fill:#28a745,color:#fff,stroke:#333,stroke-width:2px\n    style G fill:#ff6b35,color:#fff,stroke:#333,stroke-width:2px",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#sec-qlearning",
+    "href": "resmindmap.html#sec-qlearning",
+    "title": "Theoretical Framework",
+    "section": "4.2 Q-Learning Algorithm Flow",
+    "text": "4.2 Q-Learning Algorithm Flow\n\n\n\n\n\nsequenceDiagram\n    participant E as Environment\n    participant A as Agent\n    participant Q as Q-Table\n    participant P as Policy\n    \n    E-&gt;&gt;A: State sₜ\n    A-&gt;&gt;Q: Query Q(sₜ, a)\n    Q-&gt;&gt;A: Q-values for all actions\n    A-&gt;&gt;P: ε-greedy selection\n    P-&gt;&gt;E: Execute action aₜ\n    E-&gt;&gt;A: Reward rₜ, State sₜ₊₁\n    A-&gt;&gt;Q: Update Q(sₜ,aₜ) ← Q + α[rₜ + γ max Q(sₜ₊₁,a') - Q(sₜ,aₜ)]\n    Note over A,Q: Learning occurs\n    Q-&gt;&gt;A: Updated Q-values\n\n\n\n\n\n\n\n4.2.1 Q-Learning Demonstration\n\n\nCode\n# Simulate Q-learning convergence (fast execution)\nset.seed(555)\nepisodes &lt;- 100\nq_values &lt;- cumsum(rnorm(episodes, mean = 0.01, sd = 0.05))\nrewards &lt;- cumsum(rnorm(episodes, mean = 0.02, sd = 0.08))\n\ndf_rl &lt;- data.frame(\n  Episode = 1:episodes,\n  QValue = q_values,\n  CumulativeReward = rewards\n)\n\n# Create convergence plot\nplot_ly(df_rl, x = ~Episode) %&gt;%\n  add_trace(y = ~QValue, type = 'scatter', mode = 'lines',\n            name = 'Q-Value Evolution',\n            line = list(color = '#003d7a', width = 2)) %&gt;%\n  add_trace(y = ~CumulativeReward, type = 'scatter', mode = 'lines',\n            name = 'Cumulative Reward',\n            line = list(color = '#28a745', width = 2)) %&gt;%\n  layout(\n    title = list(text = \"Q-Learning Convergence Over Training Episodes\",\n                 font = list(size = 16, family = \"Montserrat\")),\n    xaxis = list(title = \"Training Episode\"),\n    yaxis = list(title = \"Value\"),\n    legend = list(x = 0.1, y = 0.9),\n    hovermode = \"x unified\"\n  )",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#sec-ppo",
+    "href": "resmindmap.html#sec-ppo",
+    "title": "Theoretical Framework",
+    "section": "4.3 Policy Gradient Methods (PPO)",
+    "text": "4.3 Policy Gradient Methods (PPO)\n\n4.3.1 PPO Algorithm Structure\n\n\n\n\n\ngraph TB\n    A[Actor Network&lt;br/&gt;π_θ s → a] --&gt; B[Collect&lt;br/&gt;Trajectories&lt;br/&gt;Experience Buffer]\n    \n    B --&gt; C[Compute&lt;br/&gt;Advantages&lt;br/&gt;Â = r + γV s' - V s]\n    \n    C --&gt; D[Policy Update&lt;br/&gt;Clipped Objective&lt;br/&gt;L^CLIP]\n    \n    D --&gt; E[Value Update&lt;br/&gt;Critic Loss&lt;br/&gt;V s - Target²]\n    \n    E --&gt; F{KL Divergence&lt;br/&gt;&lt; threshold?}\n    \n    F --&gt;|Yes| G[Accept Update&lt;br/&gt;θ ← θ_new]\n    F --&gt;|No| H[Reject Update&lt;br/&gt;θ unchanged]\n    \n    G --&gt; I[Next Iteration]\n    H --&gt; I\n    \n    I --&gt; J{Performance&lt;br/&gt;Satisfactory?}\n    J --&gt;|No| A\n    J --&gt;|Yes| K[Trained Policy&lt;br/&gt;Deploy]\n    \n    style A fill:#4a90e2,color:#fff\n    style D fill:#ff6b35,color:#fff\n    style F fill:#ffc107,color:#333\n    style K fill:#28a745,color:#fff",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#end-to-end-workflow",
+    "href": "resmindmap.html#end-to-end-workflow",
+    "title": "Theoretical Framework",
+    "section": "5.1 End-to-End Workflow",
+    "text": "5.1 End-to-End Workflow\n\n\n\n\n\ngraph TB\n    A[Historical Data&lt;br/&gt;Prices, Volumes&lt;br/&gt;Macro Indicators] --&gt; B[Preprocessing&lt;br/&gt;Cleaning&lt;br/&gt;Feature Engineering]\n    \n    B --&gt; C1[GAMLSS&lt;br/&gt;Distribution Modeling]\n    B --&gt; C2[MSGARCH&lt;br/&gt;Regime Detection]\n    \n    C1 --&gt; D[Forecast&lt;br/&gt;μₜ, σₜ, νₜ, τₜ&lt;br/&gt;Time-Varying Parameters]\n    C2 --&gt; E[Forecast&lt;br/&gt;Volatility by Regime&lt;br/&gt;P Regime]\n    \n    D --&gt; F[Multi-Objective&lt;br/&gt;Optimization]\n    E --&gt; F\n    \n    F --&gt; G1[NSGA-II&lt;br/&gt;Population-Based]\n    F --&gt; G2[DEOptim&lt;br/&gt;Differential Evolution]\n    \n    G1 --&gt; H[Pareto Front&lt;br/&gt;w₁, w₂, ..., wₖ&lt;br/&gt;Trade-off Solutions]\n    G2 --&gt; H\n    \n    H --&gt; I[RL Agent&lt;br/&gt;Q-Learning / PPO&lt;br/&gt;Policy Learning]\n    E --&gt; I\n    \n    I --&gt; J[Dynamic Policy&lt;br/&gt;π: State → Action&lt;br/&gt;Adaptive Selection]\n    \n    J --&gt; K[Portfolio Execution&lt;br/&gt;Rebalancing&lt;br/&gt;Risk Management]\n    \n    K --&gt; L[Performance&lt;br/&gt;Monitoring&lt;br/&gt;Metrics Tracking]\n    \n    L --&gt; M{Feedback Loop&lt;br/&gt;Continuous Learning}\n    M --&gt; I\n    \n    style A fill:#6c757d,color:#fff\n    style C1 fill:#4a90e2,color:#fff\n    style C2 fill:#4a90e2,color:#fff\n    style F fill:#4a90e2,color:#fff\n    style H fill:#003d7a,color:#fff\n    style I fill:#003d7a,color:#fff\n    style J fill:#28a745,color:#fff\n    style K fill:#ff6b35,color:#fff",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#model-comparison-traditional-vs-integrated-approach",
+    "href": "resmindmap.html#model-comparison-traditional-vs-integrated-approach",
+    "title": "Theoretical Framework",
+    "section": "5.2 Model Comparison: Traditional vs Integrated Approach",
+    "text": "5.2 Model Comparison: Traditional vs Integrated Approach\n\n\nCode\ncomparison_df &lt;- data.frame(\n  Aspect = c(\n    \"Return Distribution\",\n    \"Volatility Modeling\",\n    \"Regime Changes\",\n    \"Optimization Objectives\",\n    \"Solution Approach\",\n    \"Adaptability\",\n    \"Tail Risk Management\",\n    \"Computational Cost\"\n  ),\n  `Traditional Approach` = c(\n    \"Assumes normality\",\n    \"Constant or single GARCH\",\n    \"Not captured\",\n    \"Mean-variance only\",\n    \"Quadratic programming\",\n    \"Static allocation\",\n    \"Limited (variance-based)\",\n    \"Low\"\n  ),\n  `Our Integrated Framework` = c(\n    \"Flexible (GAMLSS)\",\n    \"Regime-dependent (MSGARCH)\",\n    \"Automatic detection\",\n    \"Multi-objective (Return, CVaR, Diversification)\",\n    \"Evolutionary algorithms\",\n    \"Dynamic RL-based\",\n    \"Explicit (CVaR modeling)\",\n    \"Moderate (parallelizable)\"\n  ),\n  `Advantage` = c(\n    \"Captures fat tails & asymmetry\",\n    \"Better volatility forecasts\",\n    \"Crisis preparedness\",\n    \"Realistic investor preferences\",\n    \"Handles non-convexity\",\n    \"Responds to market changes\",\n    \"Superior downside protection\",\n    \"Scalable implementation\"\n  ),\n  check.names = FALSE\n)\n\nkable(comparison_df,\n      caption = \"Methodological Comparison: Traditional vs Integrated Framework\",\n      align = \"llll\") %&gt;%\n  kable_styling(bootstrap_options = c(\"striped\", \"hover\"), \n                full_width = TRUE, \n                font_size = 12) %&gt;%\n  column_spec(1, bold = TRUE, width = \"15em\") %&gt;%\n  column_spec(2, width = \"18em\", background = \"#f8f9fa\") %&gt;%\n  column_spec(3, width = \"20em\", background = \"#d4edda\") %&gt;%\n  column_spec(4, width = \"18em\", italic = TRUE)\n\n\n\nMethodological Comparison: Traditional vs Integrated Framework\n\n\nAspect\nTraditional Approach\nOur Integrated Framework\nAdvantage\n\n\n\n\nReturn Distribution\nAssumes normality\nFlexible (GAMLSS)\nCaptures fat tails & asymmetry\n\n\nVolatility Modeling\nConstant or single GARCH\nRegime-dependent (MSGARCH)\nBetter volatility forecasts\n\n\nRegime Changes\nNot captured\nAutomatic detection\nCrisis preparedness\n\n\nOptimization Objectives\nMean-variance only\nMulti-objective (Return, CVaR, Diversification)\nRealistic investor preferences\n\n\nSolution Approach\nQuadratic programming\nEvolutionary algorithms\nHandles non-convexity\n\n\nAdaptability\nStatic allocation\nDynamic RL-based\nResponds to market changes\n\n\nTail Risk Management\nLimited (variance-based)\nExplicit (CVaR modeling)\nSuperior downside protection\n\n\nComputational Cost\nLow\nModerate (parallelizable)\nScalable implementation",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#performance-comparison-simulation",
+    "href": "resmindmap.html#performance-comparison-simulation",
+    "title": "Theoretical Framework",
+    "section": "5.3 Performance Comparison Simulation",
+    "text": "5.3 Performance Comparison Simulation\n\n\nCode\n# Simulate portfolio performance comparison (fast execution)\nset.seed(999)\ndays &lt;- 252  # One trading year\n\n# Traditional mean-variance\nmv_returns &lt;- cumsum(rnorm(days, 0.0004, 0.015))\n\n# Our integrated approach (better Sharpe, lower drawdowns)\nintegrated_returns &lt;- cumsum(rnorm(days, 0.0006, 0.012))\n\ndf_performance &lt;- data.frame(\n  Day = rep(1:days, 2),\n  CumulativeReturn = c(mv_returns, integrated_returns),\n  Strategy = rep(c(\"Traditional Mean-Variance\", \n                   \"Integrated Framework\"), each = days)\n)\n\n# Calculate metrics\nsharpe_mv &lt;- (mean(diff(mv_returns)) * 252) / (sd(diff(mv_returns)) * sqrt(252))\nsharpe_int &lt;- (mean(diff(integrated_returns)) * 252) / (sd(diff(integrated_returns)) * sqrt(252))\n\n# Interactive performance plot\nplot_ly(df_performance, x = ~Day, y = ~CumulativeReturn, \n        color = ~Strategy, \n        colors = c(\"Traditional Mean-Variance\" = \"#6c757d\", \n                   \"Integrated Framework\" = \"#003d7a\"),\n        type = \"scatter\", mode = \"lines\",\n        line = list(width = 2)) %&gt;%\n  layout(\n    title = list(\n      text = sprintf(\"Simulated Performance Comparison&lt;br&gt;&lt;sub&gt;Sharpe: Traditional=%.2f vs Integrated=%.2f&lt;/sub&gt;\",\n                     sharpe_mv, sharpe_int),\n      font = list(size = 16, family = \"Montserrat\")\n    ),\n    xaxis = list(title = \"Trading Days\"),\n    yaxis = list(title = \"Cumulative Return\", tickformat = \".2%\"),\n    legend = list(x = 0.1, y = 0.9),\n    hovermode = \"x unified\"\n  )",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#scientific-deliverables",
+    "href": "resmindmap.html#scientific-deliverables",
+    "title": "Theoretical Framework",
+    "section": "6.1 Scientific Deliverables",
+    "text": "6.1 Scientific Deliverables\nOur research framework is expected to generate substantial contributions across multiple dimensions, spanning theoretical innovation, methodological advancement, and practical application in agricultural commodity markets.\n\n6.1.1 Theoretical Contributions\n\n\n\n\n\nmindmap\n  root((Contributions))\n    Volatility Modeling\n      GAMLSS + MSGARCH Integration\n      Regime-Aware Forecasting\n      Tail Risk Quantification\n    Multi-Objective Optimization\n      Beyond Mean-Variance\n      Pareto Front Analysis\n      Realistic Constraints\n    Reinforcement Learning\n      Adaptive Rebalancing\n      Policy Learning\n      Non-Stationary Markets\n    Novel Integration\n      End-to-End Framework\n      Patent Potential\n      Open Source Implementation\n\n\n\n\n\n\n\n\n6.1.2 Expected Outcomes Summary\n\n\nCode\noutcomes_df &lt;- data.frame(\n  Category = c(\"Academic\", \"Academic\", \"Academic\", \"Practical\", \"Practical\", \"Educational\"),\n  Deliverable = c(\n    \"Scientific Articles\",\n    \"Conference Presentations\",\n    \"Patent Application\",\n    \"Open-Source Software\",\n    \"Risk Management Tools\",\n    \"Teaching Materials\"\n  ),\n  Target = c(\n    \"2-3 publications in Q1/Q2 journals\",\n    \"SPPAIC, SBFin, LAFN conferences\",\n    \"Novel integrated methodology\",\n    \"R/Python packages on GitHub\",\n    \"Portfolio optimization dashboard\",\n    \"Case studies and tutorials\"\n  ),\n  Timeline = c(\n    \"Months 12-18\",\n    \"Months 9-15\",\n    \"Month 15\",\n    \"Months 6-18\",\n    \"Months 10-16\",\n    \"Months 8-18\"\n  ),\n  Status = c(\n    \"In Progress\",\n    \"Planned\",\n    \"Planned\",\n    \"In Development\",\n    \"Planned\",\n    \"In Progress\"\n  ),\n  check.names = FALSE\n)\n\nkable(outcomes_df,\n      caption = \"Expected Project Outcomes and Timeline\",\n      align = \"lllll\") %&gt;%\n  kable_styling(bootstrap_options = c(\"striped\", \"hover\", \"condensed\"), \n                full_width = TRUE) %&gt;%\n  column_spec(1, bold = TRUE) %&gt;%\n  column_spec(5, color = \"white\", background = spec_color(1:6, \n                                                          begin = 0.4, \n                                                          end = 0.9,\n                                                          option = \"viridis\",\n                                                          direction = 1))\n\n\n\nExpected Project Outcomes and Timeline\n\n\nCategory\nDeliverable\nTarget\nTimeline\nStatus\n\n\n\n\nAcademic\nScientific Articles\n2-3 publications in Q1/Q2 journals\nMonths 12-18\nIn Progress\n\n\nAcademic\nConference Presentations\nSPPAIC, SBFin, LAFN conferences\nMonths 9-15\nPlanned\n\n\nAcademic\nPatent Application\nNovel integrated methodology\nMonth 15\nPlanned\n\n\nPractical\nOpen-Source Software\nR/Python packages on GitHub\nMonths 6-18\nIn Development\n\n\nPractical\nRisk Management Tools\nPortfolio optimization dashboard\nMonths 10-16\nPlanned\n\n\nEducational\nTeaching Materials\nCase studies and tutorials\nMonths 8-18\nIn Progress",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
+  },
+  {
+    "objectID": "resmindmap.html#foundational-literature",
+    "href": "resmindmap.html#foundational-literature",
+    "title": "Theoretical Framework",
+    "section": "7.1 Foundational Literature",
+    "text": "7.1 Foundational Literature\nVolatility Modeling:\n\nRigby, R. A., & Stasinopoulos, D. M. (2005). Generalized additive models for location, scale and shape. Journal of the Royal Statistical Society: Series C (Applied Statistics), 54(3), 507-554.\nArdia, D., Bluteau, K., Boudt, K., Catania, L., & Trottier, D. A. (2019). Markov-switching GARCH models in R: The MSGARCH package. Journal of Statistical Software, 91(4), 1-38.\nEngle, R. F. (1982). Autoregressive conditional heteroskedasticity with estimates of the variance of United Kingdom inflation. Econometrica, 50(4), 987-1007.\n\nMulti-Objective Optimization:\n\nMarkowitz, H. (1952). Portfolio selection. The Journal of Finance, 7(1), 77-91.\nDeb, K., Pratap, A., Agarwal, S., & Meyarivan, T. (2002). A fast and elitist multiobjective genetic algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), 182-197.\nStorn, R., & Price, K. (1997). Differential evolution—A simple and efficient heuristic for global optimization over continuous spaces. Journal of Global Optimization, 11, 341-359.\n\nReinforcement Learning:\n\nSutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed.). MIT Press.\nSchulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal policy optimization algorithms. arXiv preprint arXiv:1707.06347.\n\nAgricultural Commodities:\n\nGorton, G., & Rouwenhorst, K. G. (2006). Facts and fantasies about commodity futures. Financial Analysts Journal, 62(2), 47-68.\n\n\n\n\n\n\n\n\nAdditional Resources\n\n\n\nFor detailed implementation examples and extended analysis:\n\nResearch Methodology - Complete methodological framework\nTime Series Forecasting - GAMLSS and MSGARCH applications\n\nMulti-Objective Optimization - NSGA-II and DEOptim implementations\nReinforcement Learning - RL agent development and training\n\nVisit our GitHub repository for reproducible code and data.\n\n\n\nDocument Information:\n\nLast Updated: outubro 21, 2025\nAuthors: PAIC Econometrics Research Team, FAE Business School\nVersion: 1.0\nLicense: CC BY-NC-SA 4.0",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Theoretical Framework"
+    ]
   }
 ]

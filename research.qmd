@@ -1,0 +1,804 @@
+---
+title: "Research Methodology"
+subtitle: "Systematic Approach to Multi-Objective Portfolio Optimization"
+format:
+  html:
+    toc: true
+    toc-depth: 4
+    code-fold: true
+    code-tools: true
+---
+
+# Research Methodology
+
+## Overview
+
+This research project adopts a **quantitative, computational, and applied** approach, combining statistical econometrics, machine learning, and optimization techniques to develop an integrated framework for agricultural commodities portfolio management.
+
+Our methodology follows a rigorous quasi-experimental design based on time series simulations and backtesting protocols, ensuring reproducibility and transparency throughout all research phases.
+
+::: {.callout-note icon=false}
+## 🎯 Research Classification
+- **Type**: Applied & Computational Research
+- **Approach**: Quantitative Analysis
+- **Design**: Quasi-Experimental with Time Series Validation
+- **Validation**: Temporal Cross-Validation & Benchmarking
+:::
+
+---
+
+## Research Framework
+
+Our integrated methodology is structured in **six complementary stages**, each building upon previous findings to create a comprehensive portfolio optimization system.
+
+### Stage 1: Data Collection & Preparation {#sec-data}
+
+#### 1.1 Data Sources
+
+We collect historical data from multiple authoritative sources:
+
+- **Price Data**: B3 (Brasil Bolsa Balcão) futures contracts
+- **Agricultural Indices**: CEPEA/ESALQ price indices
+- **Macroeconomic Indicators**: USDA reports, Brazilian Central Bank data
+- **Alternative Data**: News sentiment via APIs, weather patterns
+
+#### 1.2 Commodities Universe
+
+Our focus encompasses Brazilian agricultural grain commodities:
+
+| Commodity | Contract Type | Data Frequency | Historical Depth |
+|-----------|---------------|----------------|------------------|
+| Corn | Futures (B3) | Daily | 15+ years |
+| Soybeans | Futures (B3) | Daily | 15+ years |
+| Soybean Meal | Futures (B3) | Daily | 10+ years |
+| Soybean Oil | Futures (B3) | Daily | 10+ years |
+| Coffee | Futures (B3) | Daily | 20+ years |
+| Sugar | Futures (B3) | Daily | 15+ years |
+
+#### 1.3 Data Preprocessing Pipeline
+
+
+```{r}
+#| eval: false
+#| code-fold: show
+#| code-summary: "Data Cleaning & Normalization Pipeline"
+
+library(tidyverse)
+library(quantmod)
+library(xts)
+
+# Data cleaning function
+clean_commodity_data <- function(raw_data) {
+  raw_data %>%
+    # Remove outliers (> 5 SD)
+    filter(abs(scale(returns)) < 5) %>%
+    # Handle missing values via interpolation
+    na.approx(maxgap = 5) %>%
+    # Normalize to log-returns
+    mutate(log_returns = log(close / lag(close))) %>%
+    # Remove non-trading days
+    filter(!is.na(log_returns))
+}
+
+
+```
+
+::: {.callout-important}
+## Data Quality Assurance
+All datasets undergo rigorous quality checks including:
+- Outlier detection via statistical thresholds
+- Missing data imputation with maximum gap constraints
+- Consistency validation across multiple sources
+- Temporal alignment and synchronization
+:::
+
+---
+
+### Stage 2: Time Series Forecasting Models {#sec-forecasting}
+
+We employ a **hierarchical forecasting framework** combining econometric and machine learning approaches.
+
+#### 2.1 Econometric Models
+
+##### GARCH Family Models
+
+For volatility forecasting, we implement multiple GARCH specifications:
+
+**Standard GARCH(1,1)**:
+$$
+\sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \beta \sigma_{t-1}^2
+$$
+
+**GJR-GARCH** (capturing leverage effects):
+$$
+\sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \gamma \epsilon_{t-1}^2 I_{t-1} + \beta \sigma_{t-1}^2
+$$
+
+where $I_{t-1} = 1$ if $\epsilon_{t-1} < 0$, and 0 otherwise.
+
+**Markov-Switching GARCH** (regime-dependent volatility):
+
+```{r}
+#| eval: false
+#| code-fold: show
+
+library(MSGARCH)
+
+# MS-GARCH specification
+spec <- CreateSpec(
+  variance.spec = list(model = c("sGARCH", "sGARCH")),
+  distribution.spec = list(distribution = c("std", "std")),
+  switch.spec = list(K = 2)  # Two regimes
+)
+
+# Model estimation
+fit <- FitML(spec, data = returns_data)
+
+```
+
+::: {.callout-tip}
+## Why Markov-Switching?
+Agricultural commodities exhibit **regime-dependent behavior** during crisis periods, supply shocks, or policy changes. MS-GARCH captures these structural breaks automatically.
+:::
+
+##### ARIMA Models with Exogenous Variables
+
+For return forecasting, we use ARIMAX models incorporating:
+- Lagged returns
+- Macroeconomic indicators (USD/BRL exchange rate, interest rates)
+- Seasonal components
+- News sentiment scores
+
+#### 2.2 Machine Learning Models
+
+##### Long Short-Term Memory (LSTM) Networks
+
+```{python}
+#| eval: false
+#| code-fold: show
+
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dropout, Dense
+
+def build_lstm_model(lookback=60, n_features=5):
+    model = Sequential([
+        LSTM(128, return_sequences=True, input_shape=(lookback, n_features)),
+        Dropout(0.2),
+        LSTM(64, return_sequences=False),
+        Dropout(0.2),
+        Dense(32, activation='relu'),
+        Dense(1)  # Price/return prediction
+    ])
+    
+    model.compile(optimizer='adam', loss='mse', metrics=['mae'])
+    return model
+  
+```
+
+##### Ensemble Methods
+
+We combine multiple models via weighted averaging:
+
+$$
+\hat{y}_t = \sum_{i=1}^M w_i \hat{y}_{i,t}
+$$
+
+where weights $w_i$ are optimized via:
+- **Inverse RMSE weighting**
+- **Bayesian Model Averaging**
+- **Stacking with meta-learner**
+
+#### 2.3 Model Validation
+
+::: {.panel-tabset}
+
+## Walk-Forward Validation
+
+- **Training Window**: Rolling 3-year window
+- **Validation Period**: 6 months ahead
+- **Re-estimation Frequency**: Monthly
+
+## Performance Metrics
+
+| Metric | Formula | Interpretation |
+|--------|---------|----------------|
+| RMSE | $\sqrt{\frac{1}{n}\sum(y_t - \hat{y}_t)^2}$ | Prediction error magnitude |
+| MAE | $\frac{1}{n}\sum|y_t - \hat{y}_t|$ | Average absolute error |
+| MAPE | $\frac{100}{n}\sum|\frac{y_t - \hat{y}_t}{y_t}|$ | Percentage error |
+| Directional Accuracy | $\frac{1}{n}\sum I(sign(y_t) = sign(\hat{y}_t))$ | Correct direction % |
+
+:::
+
+---
+
+### Stage 3: Multi-Objective Optimization Framework {#sec-optimization}
+
+The portfolio optimization phase addresses **multiple conflicting objectives** simultaneously.
+
+#### 3.1 Objective Functions
+
+We optimize portfolios considering:
+
+$$
+\begin{aligned}
+\text{Maximize:} \quad & f_1(w) = E[R_p] = w^T \mu \\
+\text{Minimize:} \quad & f_2(w) = \text{CVaR}_\alpha(R_p) \\
+\text{Minimize:} \quad & f_3(w) = \sigma_p = \sqrt{w^T \Sigma w} \\
+\text{Maximize:} \quad & f_4(w) = \text{Diversification Ratio}
+\end{aligned}
+$$
+
+Subject to:
+$$
+\begin{aligned}
+\sum_{i=1}^n w_i &= 1 \\
+0 \leq w_i &\leq w_{max} \\
+\text{Turnover} &\leq \tau_{max}
+\end{aligned}
+$$
+
+::: {.callout-note}
+## Conditional Value-at-Risk (CVaR)
+CVaR is preferred over VaR due to its:
+- **Sub-additivity** (portfolio CVaR ≤ sum of individual CVaRs)
+- **Convexity** (easier optimization)
+- **Coherent risk measure properties**
+:::
+
+#### 3.2 Multi-Objective Algorithms
+
+##### NSGA-II (Non-dominated Sorting Genetic Algorithm II)
+```{r}
+#| eval: false
+#| code-fold: show
+
+library(mco)
+
+# Define multi-objective fitness function
+fitness_function <- function(weights) {
+  portfolio_return <- sum(weights * expected_returns)
+  portfolio_risk <- sqrt(t(weights) %*% cov_matrix %*% weights)
+  portfolio_cvar <- calculate_cvar(weights, returns_matrix, alpha = 0.05)
+  
+  return(c(
+    -portfolio_return,  # Negative because we maximize
+    portfolio_risk,
+    portfolio_cvar
+  ))
+}
+
+# Run NSGA-II
+result <- nsga2(
+  fn = fitness_function,
+  idim = n_assets,  # Number of decision variables
+  odim = 3,         # Number of objectives
+  lower.bounds = rep(0, n_assets),
+  upper.bounds = rep(0.4, n_assets),
+  constraints = function(x) sum(x) - 1,  # Budget constraint
+  popsize = 100,
+  generations = 200
+)
+
+```
+
+##### Differential Evolution for Multi-Objective Optimization
+
+```{r}
+#| eval: false
+
+library(DEoptim)
+
+# DE with Pareto ranking
+de_result <- DEoptim(
+  fn = fitness_function,
+  lower = rep(0, n_assets),
+  upper = rep(0.4, n_assets),
+  control = DEoptim.control(
+    strategy = 2,      # DE/rand/1/bin
+    NP = 50,           # Population size
+    itermax = 500,
+    CR = 0.9,          # Crossover probability
+    F = 0.8            # Mutation factor
+  )
+)
+```
+
+#### 3.3 Pareto Front Analysis
+
+The optimization generates a **Pareto-optimal frontier** representing the trade-off between objectives:
+
+```{r}
+#| eval: false
+#| code-fold: show
+
+library(plotly)
+
+# 3D Pareto Front visualization
+plot_ly(
+  data = pareto_solutions,
+  x = ~expected_return,
+  y = ~portfolio_risk,
+  z = ~cvar,
+  color = ~sharpe_ratio,
+  type = "scatter3d",
+  mode = "markers"
+) %>%
+  layout(
+    title = "Pareto-Optimal Frontier",
+    scene = list(
+      xaxis = list(title = "Expected Return"),
+      yaxis = list(title = "Risk (StdDev)"),
+      zaxis = list(title = "CVaR (5%)")
+    )
+  )
+
+
+```
+
+---
+
+### Stage 4: Reinforcement Learning for Dynamic Portfolio Management {#sec-rl}
+
+We employ RL agents to learn **adaptive rebalancing strategies** that respond to market conditions.
+
+#### 4.1 Markov Decision Process (MDP) Formulation
+
+**State Space** $\mathcal{S}$:
+
+$$
+s_t = \{w_t, \mu_t, \Sigma_t, \text{indicators}_t\}
+$$
+
+**Action Space** $\mathcal{A}$:
+
+$$
+a_t = \Delta w_t \in [-\delta, \delta]^n \quad \text{(portfolio weight adjustments)}
+$$
+
+**Reward Function** $r_t$:
+
+$$
+r_t = R_{p,t} - \lambda \cdot \text{Risk}_{p,t} - \kappa \cdot \text{TransactionCost}_t
+$$
+
+#### 4.2 RL Algorithms
+
+##### Deep Q-Network (DQN)
+
+```{python}
+#| eval: false
+#| code-fold: show
+
+import gym
+import numpy as np
+from stable_baselines3 import DQN
+from stable_baselines3.common.vec_env import DummyVecEnv
+
+# Custom environment for portfolio management
+class PortfolioEnv(gym.Env):
+    def __init__(self, price_data, initial_capital=100000):
+        super(PortfolioEnv, self).__init__()
+        
+        self.price_data = price_data
+        self.n_assets = price_data.shape[1]
+        self.current_step = 0
+        self.capital = initial_capital
+        
+        # Action: weight adjustments for each asset
+        self.action_space = gym.spaces.Box(
+            low=-0.1, high=0.1, shape=(self.n_assets,), dtype=np.float32
+        )
+        
+        # State: prices, returns, portfolio weights, technical indicators
+        self.observation_space = gym.spaces.Box(
+            low=-np.inf, high=np.inf, 
+            shape=(self.n_assets * 4,), 
+            dtype=np.float32
+        )
+    
+    def step(self, action):
+        # Execute action, calculate reward, update state
+        # ... implementation details ...
+        return next_state, reward, done, info
+
+# Train DQN agent
+env = DummyVecEnv([lambda: PortfolioEnv(train_data)])
+model = DQN("MlpPolicy", env, verbose=1, learning_rate=0.0001)
+model.learn(total_timesteps=100000)
+
+```
+
+##### Proximal Policy Optimization (PPO)
+
+```{python}
+#| eval: false
+
+from stable_baselines3 import PPO
+
+# PPO for continuous action space
+ppo_model = PPO(
+    "MlpPolicy",
+    env,
+    learning_rate=0.0003,
+    n_steps=2048,
+    batch_size=64,
+    n_epochs=10,
+    gamma=0.99,
+    gae_lambda=0.95,
+    clip_range=0.2,
+    verbose=1
+)
+
+ppo_model.learn(total_timesteps=200000)
+
+```
+
+#### 4.3 Strategy Types
+
+The RL agent learns to implement various strategies:
+
+| Strategy | Description | Trigger Conditions |
+|----------|-------------|-------------------|
+| **Dynamic Rebalancing** | Adjust weights based on forecasts | Deviation > threshold |
+| **Momentum Trading** | Follow price trends | Strong directional signals |
+| **Mean Reversion** | Contrarian positions | Extreme price movements |
+| **Volatility Targeting** | Adjust exposure to volatility | Regime changes detected |
+| **Hedging** | Risk mitigation positions | High uncertainty periods |
+
+---
+
+### Stage 5: Backtesting & Performance Evaluation {#sec-backtesting}
+
+#### 5.1 Backtesting Protocol
+
+::: {.callout-warning}
+## Avoiding Overfitting
+We implement strict protocols to prevent **backtest overfitting**:
+- Out-of-sample testing with unseen data
+- Transaction cost modeling (0.1% per trade)
+- Realistic slippage assumptions
+- No look-ahead bias in feature engineering
+:::
+
+```{r}
+#| eval: false
+#| code-fold: show
+
+library(PerformanceAnalytics)
+
+# Backtesting function
+run_backtest <- function(strategy_weights, returns_data, costs = 0.001) {
+  n_periods <- nrow(returns_data)
+  portfolio_returns <- rep(0, n_periods)
+  
+  for (t in 2:n_periods) {
+    # Calculate portfolio return
+    portfolio_returns[t] <- sum(strategy_weights[t-1, ] * returns_data[t, ])
+    
+    # Subtract transaction costs
+    turnover <- sum(abs(strategy_weights[t, ] - strategy_weights[t-1, ]))
+    portfolio_returns[t] <- portfolio_returns[t] - (costs * turnover)
+  }
+  
+  return(xts(portfolio_returns, order.by = index(returns_data)))
+}
+
+```
+
+#### 5.2 Performance Metrics
+
+##### Risk-Adjusted Returns
+
+| Metric | Formula | Benchmark |
+|--------|---------|-----------|
+| **Sharpe Ratio** | $\frac{E[R_p - R_f]}{\sigma_p}$ | > 1.0 (good), > 2.0 (excellent) |
+| **Sortino Ratio** | $\frac{E[R_p - R_f]}{\sigma_{downside}}$ | Higher is better |
+| **Calmar Ratio** | $\frac{E[R_p]}{\text{Max Drawdown}}$ | > 0.5 (acceptable) |
+| **Information Ratio** | $\frac{E[R_p - R_b]}{\text{TE}}$ | > 0.5 (outperformance) |
+
+##### Drawdown Analysis
+
+```{r}
+#| eval: false
+
+# Maximum drawdown calculation
+calculate_drawdowns <- function(returns) {
+  cumulative_returns <- cumprod(1 + returns)
+  running_max <- cummax(cumulative_returns)
+  drawdown <- (cumulative_returns - running_max) / running_max
+  
+  max_dd <- min(drawdown)
+  max_dd_duration <- max(rle(drawdown < -0.05)$lengths)
+  
+  return(list(
+    max_drawdown = max_dd,
+    avg_drawdown = mean(drawdown[drawdown < 0]),
+    max_duration = max_dd_duration
+  ))
+}
+
+```
+
+#### 5.3 Benchmark Comparisons
+
+We compare our strategies against:
+
+1. **Buy-and-Hold**: Equal-weighted static portfolio
+2. **Mean-Variance (Markowitz)**: Traditional optimization
+3. **Risk Parity**: Equal risk contribution
+4. **1/N Portfolio**: Naïve diversification
+5. **Momentum Strategy**: 12-month momentum signals
+
+```{r}
+#| eval: false
+#| code-fold: show
+
+library(ggplot2)
+
+# Performance comparison plot
+ggplot(performance_data, aes(x = date, y = cumulative_return, color = strategy)) +
+  geom_line(size = 1.2) +
+  scale_color_manual(values = c(
+    "Our Strategy" = "#003d7a",
+    "Buy-Hold" = "#6c757d",
+    "Mean-Variance" = "#28a745",
+    "Risk Parity" = "#ffc107"
+  )) +
+  labs(
+    title = "Cumulative Returns: Strategy Comparison",
+    x = "Date",
+    y = "Cumulative Return",
+    color = "Strategy"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    legend.position = "bottom"
+  )
+
+```
+
+---
+
+### Stage 6: Validation & Robustness Checks {#sec-validation}
+
+#### 6.1 Sensitivity Analysis
+
+Test model robustness under various scenarios:
+
+- **Parameter Sensitivity**: Vary RL hyperparameters (±20%)
+- **Window Length**: Test different training windows (2-5 years)
+- **Transaction Costs**: Evaluate under 0%, 0.05%, 0.1%, 0.2% costs
+- **Market Conditions**: Bull vs. bear vs. sideways markets
+
+#### 6.2 Monte Carlo Simulation
+
+```{r}
+#| eval: false
+
+# Monte Carlo portfolio simulation
+monte_carlo_simulation <- function(n_sim = 10000, n_days = 252) {
+  sim_results <- matrix(0, nrow = n_sim, ncol = n_days)
+  
+  for (i in 1:n_sim) {
+    # Simulate returns based on estimated parameters
+    sim_returns <- rmvnorm(n_days, mean = mu_hat, sigma = Sigma_hat)
+    
+    # Apply strategy
+    sim_results[i, ] <- cumsum(apply_strategy(sim_returns))
+  }
+  
+  # Calculate confidence intervals
+  ci_lower <- apply(sim_results, 2, quantile, probs = 0.05)
+  ci_upper <- apply(sim_results, 2, quantile, probs = 0.95)
+  
+  return(list(paths = sim_results, ci_lower = ci_lower, ci_upper = ci_upper))
+}
+
+```
+
+#### 6.3 Out-of-Sample Validation
+
+::: {.callout-tip}
+## Cross-Validation Strategy
+- **Training**: 2015-2020 (5 years)
+- **Validation**: 2021-2022 (2 years)
+- **Test (Out-of-Sample)**: 2023-2024 (2 years)
+
+**Critical**: Test set is *never* used during model development.
+:::
+
+---
+
+## Expected Outcomes
+
+### Scientific Contributions
+
+1. **Methodological Innovation**
+   - Novel integration of forecasting + optimization + RL
+   - Adaptive portfolio management framework
+   - Regime-aware decision-making
+
+2. **Empirical Insights**
+   - Comprehensive analysis of Brazilian agricultural commodities
+   - Benchmark comparisons across multiple strategies
+   - Real-world applicability assessment
+
+3. **Patent Development**
+   - Unique algorithmic approach to multi-period optimization
+   - Intellectual property documentation
+   - Commercial application potential
+
+### Academic Outputs
+
+::: {.panel-tabset}
+
+## Publications
+
+**Target Journals:**
+
+- European Journal of Operational Research
+
+- Journal of Forecasting
+
+- Quantitative Finance
+
+- Agricultural Economics
+
+- Journal of Commodity Markets
+
+## Conferences
+
+**Presentation Venues:**
+
+- SPPAIC/FAE (Internal Symposium)
+
+- Brazilian Finance Society (SBFin)
+
+- Latin American Finance Network (LAFN)
+
+- International Conference on Operational Research
+
+## Technical Reports
+
+- Quarterly progress reports
+
+- Methodology documentation
+
+- Reproducible code repositories
+
+- Educational materials for students
+
+:::
+
+---
+
+## Technical Stack & Tools
+
+### Programming Languages
+
+```{r}
+#| eval: false
+#| code-fold: show
+
+# R Ecosystem
+library(tidyverse)      # Data manipulation
+library(quantmod)       # Financial data
+library(rugarch)        # GARCH models
+library(MSGARCH)        # Markov-Switching GARCH
+library(PerformanceAnalytics)  # Portfolio analytics
+library(DEoptim)        # Differential Evolution
+library(mco)            # Multi-objective optimization
+
+```
+
+
+```{python}
+#| eval: false
+#| code-fold: show
+
+# Python Ecosystem
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+from stable_baselines3 import PPO, DQN
+import pytorch
+import gym
+from sklearn.preprocessing import StandardScaler
+
+```
+
+### Development Infrastructure
+
+- **Version Control**: GitHub (https://github.com/PAICEconometrics)
+- **IDE**: RStudio / Positron IDE
+- **Documentation**: Quarto Publishing System
+- **Deployment**: GitHub Pages
+- **Collaboration**: Slack + GitHub Projects
+
+---
+
+## Timeline & Milestones
+
+```{mermaid}
+gantt
+    title PAIC Research Project Timeline (2025-2026)
+    dateFormat  YYYY-MM-DD
+    
+    section Phase 1: Setup
+    Data Collection & Infrastructure    :a1, 2025-08-01, 60d
+    Literature Review                   :a2, 2025-08-01, 90d
+    
+    section Phase 2: Modeling
+    Forecasting Models Development      :b1, 2025-10-01, 90d
+    Multi-Objective Optimization        :b2, 2025-11-01, 120d
+    Partial Report 1                    :milestone, m1, 2025-11-15, 1d
+    
+    section Phase 3: RL & Integration
+    RL Environment Setup                :c1, 2026-02-01, 60d
+    Agent Training & Ablation           :c2, 2026-02-15, 75d
+    Partial Report 2                    :milestone, m2, 2026-03-15, 1d
+    
+    section Phase 4: Validation
+    Backtesting & Robustness            :d1, 2026-03-01, 90d
+    Seminar Presentation                :milestone, m3, 2026-04-15, 1d
+    
+    section Phase 5: Publication
+    Article Writing                     :e1, 2026-04-01, 90d
+    Patent Documentation                :e2, 2026-05-01, 60d
+    Final Article Submission            :milestone, m4, 2026-07-15, 1d
+```
+
+---
+
+## Quality Assurance
+
+### Reproducibility Standards
+
+All research outputs follow **FAIR principles** (Findable, Accessible, Interoperable, Reusable):
+
+- ✅ **Code Repository**: Public GitHub with MIT License
+- ✅ **Data Provenance**: Documented sources and timestamps
+- ✅ **Environment Management**: `renv` / `conda` environment files
+- ✅ **Literate Programming**: Quarto documents combining code + narrative
+- ✅ **Version Control**: Semantic versioning for major milestones
+
+### Ethical Considerations
+
+::: {.callout-important}
+## Research Ethics
+- **No Market Manipulation**: Strategies are for academic purposes
+- **Data Privacy**: Only publicly available market data
+- **Transparency**: Full methodology disclosure
+- **Conflict of Interest**: No undisclosed commercial relationships
+:::
+
+---
+
+## Collaboration & Contact
+
+Interested in collaborating or learning more about our methodology?
+
+- **Principal Investigator**: Prof. Rodrigo Hermont Ozon
+- **Email**: rodrigo.ozon@fae.edu
+- **Institution**: FAE Business School, Curitiba, PR, Brazil
+- **GitHub**: [@PAICEconometrics](https://github.com/PAICEconometrics)
+- **LinkedIn**: [FAE Centro Universitário](https://www.linkedin.com/school/fae-centro-universitario/)
+
+---
+
+## References
+
+::: {#refs}
+:::
+```{r}
+#| echo: false
+# This code block will render citations from references.bib
+```
+
+---
+
+*Last updated: 
+
+`r Sys.Date()`
