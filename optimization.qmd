@@ -1,0 +1,1068 @@
+---
+title: "Multi-Objective Framework"
+subtitle: "Advanced Portfolio Optimization for Agricultural Commodities"
+author: "PAIC Econometrics Research Team"
+date: last-modified
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+    toc-depth: 4
+    number-sections: true
+execute:
+  warning: false
+  message: false
+  cache: true
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 7
+)
+```
+
+# Introduction to Multi-Objective Optimization
+
+## The Portfolio Optimization Challenge
+
+Traditional portfolio optimization, pioneered by **Markowitz (1952)**, focuses on a single objective function that balances expected return against risk (variance). However, real-world portfolio management involves multiple, often conflicting objectives:
+
+- **Maximizing Returns**: Seeking the highest possible profit
+- **Minimizing Risk**: Reducing volatility and downside exposure
+- **Maximizing Diversification**: Spreading investments across uncorrelated assets
+- **Liquidity Management**: Ensuring sufficient market depth for position adjustments
+- **Transaction Costs**: Minimizing trading expenses and turnover
+- **Sustainability Criteria**: Incorporating ESG factors (Environmental, Social, Governance)
+
+:::{.callout-important}
+## The Multi-Objective Paradigm Shift
+
+Unlike single-objective optimization that yields a unique optimal solution, **multi-objective optimization** produces a set of **Pareto-optimal solutions** (the Pareto frontier), where no objective can be improved without degrading at least one other objective.
+:::
+
+## Why Multi-Objective Approaches Matter for Commodities
+
+Agricultural commodity markets exhibit unique characteristics that demand multi-objective frameworks:
+
+1. **High Volatility Regimes**: Commodities experience extreme price swings driven by weather, geopolitics, and supply shocks
+2. **Seasonal Patterns**: Production cycles create predictable seasonality requiring dynamic rebalancing
+3. **Correlation Dynamics**: Commodity correlations are non-stationary and regime-dependent
+4. **Liquidity Constraints**: Some contracts have limited depth, constraining position sizes
+5. **Storage Costs**: Physical commodities incur carrying costs affecting optimal holding periods
+
+# Theoretical Framework
+
+## Multi-Objective Portfolio Optimization Problem
+
+### Mathematical Formulation
+
+Consider a portfolio allocation problem with $n$ assets at time $t$. Let $\mathbf{w}_t = (w_{1,t}, w_{2,t}, \ldots, w_{n,t})^T$ represent the portfolio weights, where $\sum_{i=1}^{n} w_{i,t} = 1$ and $w_{i,t} \geq 0$ (long-only constraint).
+
+We define the **multi-objective optimization problem** as:
+
+$$
+\begin{aligned}
+\max_{\mathbf{w}_t} \quad & f_1(\mathbf{w}_t) = \mathbb{E}[R_p(\mathbf{w}_t)] \quad \text{(Expected Return)} \\
+\min_{\mathbf{w}_t} \quad & f_2(\mathbf{w}_t) = \text{Var}[R_p(\mathbf{w}_t)] \quad \text{(Portfolio Variance)} \\
+\max_{\mathbf{w}_t} \quad & f_3(\mathbf{w}_t) = \text{Div}(\mathbf{w}_t) \quad \text{(Diversification Index)} \\
+\text{subject to:} \quad & \sum_{i=1}^{n} w_{i,t} = 1 \\
+& w_{i,t} \geq 0, \quad \forall i
+\end{aligned}
+$$
+
+Where:
+- $R_p(\mathbf{w}_t) = \sum_{i=1}^{n} w_{i,t} R_{i,t}$ is the portfolio return
+- $\text{Div}(\mathbf{w}_t) = 1 - \sqrt{\sum_{i=1}^{n} w_{i,t}^2}$ is the diversification ratio
+
+### Pareto Dominance and Optimality
+
+::: {.callout-note}
+## Pareto Dominance
+
+A solution $\mathbf{w}^A$ **dominates** another solution $\mathbf{w}^B$ (denoted $\mathbf{w}^A \succ \mathbf{w}^B$) if and only if:
+
+$$
+\begin{cases}
+f_i(\mathbf{w}^A) \geq f_i(\mathbf{w}^B), & \forall i \in \{1, 2, \ldots, m\} \\
+\exists j: f_j(\mathbf{w}^A) > f_j(\mathbf{w}^B)
+\end{cases}
+$$
+
+A solution is **Pareto-optimal** if no other feasible solution dominates it.
+:::
+
+The set of all Pareto-optimal solutions forms the **Pareto Frontier** (or Pareto Front), representing the best possible trade-offs among objectives.
+
+## Evolutionary Multi-Objective Algorithms
+
+### NSGA-II (Non-dominated Sorting Genetic Algorithm II)
+
+**NSGA-II** (Deb et al., 2002) is one of the most widely used multi-objective evolutionary algorithms. Key features:
+
+1. **Fast Non-dominated Sorting**: Ranks solutions by dominance levels
+2. **Crowding Distance**: Preserves diversity by favoring solutions in less crowded regions
+3. **Elitism**: Retains best solutions across generations
+
+**Algorithm Steps**:
+
+```{mermaid}
+
+flowchart TD
+    A[Initialize Random Population P_0] --> B[Evaluate Objectives f_1, f_2, ..., f_m]
+    B --> C[Non-dominated Sorting]
+    C --> D[Calculate Crowding Distance]
+    D --> E[Selection Tournament]
+    E --> F[Crossover SBX]
+    F --> G[Polynomial Mutation]
+    G --> H[Create Offspring Q_t]
+    H --> I[Combine P_t ∪ Q_t]
+    I --> J[Non-dominated Sorting of Combined]
+    J --> K[Select Best N Solutions for P_t+1]
+    K --> L{Convergence?}
+    L -->|No| E
+    L -->|Yes| M[Return Pareto Front]
+    
+    style A fill:#003d7a,color:#fff
+    style M fill:#28a745,color:#fff
+    style L fill:#ffc107,color:#000
+    
+```
+
+### Differential Evolution (DE)
+
+**Differential Evolution** is a population-based stochastic optimization algorithm particularly effective for continuous optimization:
+
+$$
+\mathbf{v}_{i,t+1} = \mathbf{x}_{r1,t} + F \cdot (\mathbf{x}_{r2,t} - \mathbf{x}_{r3,t})
+$$
+
+Where:
+- $\mathbf{v}_{i,t+1}$ is the mutant vector
+- $F \in [0,2]$ is the scaling factor
+- $r1, r2, r3$ are randomly selected distinct indices
+
+### Multi-Objective Differential Evolution (MODE)
+
+MODE extends DE to handle multiple objectives using Pareto dominance for selection.
+
+## Dynamic Multi-Period Optimization
+
+### Time-Varying Objectives
+
+In reality, commodity portfolios require **dynamic rebalancing** as market conditions evolve. We extend the framework to multi-period optimization:
+
+$$
+\max_{\{\mathbf{w}_1, \mathbf{w}_2, \ldots, \mathbf{w}_T\}} \sum_{t=1}^{T} \left[ \lambda_t \cdot f_1(\mathbf{w}_t) - \gamma_t \cdot f_2(\mathbf{w}_t) + \delta_t \cdot f_3(\mathbf{w}_t) - \kappa \cdot TC(\mathbf{w}_t, \mathbf{w}_{t-1}) \right]
+$$
+
+Where:
+- $TC(\mathbf{w}_t, \mathbf{w}_{t-1}) = \sum_{i=1}^{n} c_i |w_{i,t} - w_{i,t-1}|$ represents transaction costs
+- $\lambda_t, \gamma_t, \delta_t$ are time-varying preference weights
+
+### Rolling Horizon Approach
+
+We implement a **rolling window strategy**:
+
+```{mermaid}
+
+flowchart LR
+    A["t=1: Train on data 1 to 250"] --> B["Optimize Portfolio w1"]
+    B --> C["t=2: Train on data 2 to 251"]
+    C --> D["Optimize Portfolio w2"]
+    D --> E["t=3: Train on data 3 to 252"]
+    E --> F["..."]
+    F --> G["t=T: Train on data T to T+249"]
+    G --> H["Optimize Portfolio wT"]
+    
+    style A fill:#003d7a,color:#fff
+    style H fill:#28a745,color:#fff
+
+```
+
+# Practical Implementation: Agricultural Commodities Portfolio
+
+## Data Acquisition and Preprocessing
+
+Let's apply the multi-objective framework to a real portfolio of agricultural commodity futures:
+
+```{r load-libraries}
+# Load required packages
+library(quantmod)
+library(PerformanceAnalytics)
+library(tidyverse)
+library(plotly)
+library(mco)          # Multi-criteria optimization
+library(GA)           # Genetic algorithms
+library(DEoptim)      # Differential evolution
+library(RiskPortfolios) # Risk parity and other advanced methods
+library(PortfolioAnalytics) # Comprehensive portfolio optimization
+library(knitr)
+library(kableExtra)
+
+# Set seed for reproducibility
+set.seed(42)
+```
+
+### Fetching Commodity Futures Data
+
+```{r fetch-data}
+# Define commodity tickers
+tickers <- c(
+  "ZC=F",  # Corn Futures
+  "ZW=F",  # Wheat Futures (Chicago)
+  "KE=F",  # KC HRW Wheat Futures (Kansas City)
+  "ZR=F",  # Rough Rice Futures
+  "GF=F",  # Feeder Cattle Futures
+  "ZS=F",  # Soybean Futures
+  "ZM=F",  # Soybean Meal Futures
+  "ZL=F"   # Soybean Oil Futures
+)
+
+# Fetch historical price data
+portfolioPrices <- NULL
+for (Ticker in tickers) {
+  tryCatch({
+    data <- getSymbols.yahoo(
+      Ticker, 
+      from = "2019-01-01", 
+      auto.assign = FALSE
+    )[, 4]  # Close price
+    portfolioPrices <- cbind(portfolioPrices, data)
+  }, error = function(e) {
+    cat("Error fetching", Ticker, ":", e$message, "\n")
+  })
+}
+
+# Remove rows with missing data
+portfolioPrices <- portfolioPrices[complete.cases(portfolioPrices), ]
+
+# Assign meaningful column names
+colnames(portfolioPrices) <- c(
+  "Corn", "Wheat_CHI", "Wheat_KC", "Rice", 
+  "Feeder_Cattle", "Soybeans", "Soy_Meal", "Soy_Oil"
+)
+
+# Display summary
+cat("Data Period:", format(start(portfolioPrices), "%Y-%m-%d"), "to", 
+    format(end(portfolioPrices), "%Y-%m-%d"), "\n")
+cat("Number of Assets:", ncol(portfolioPrices), "\n")
+cat("Number of Observations:", nrow(portfolioPrices), "\n")
+```
+
+```{r display-recent-prices}
+# Display most recent prices
+tail(portfolioPrices) %>%
+  as.data.frame() %>%
+  rownames_to_column("Date") %>%
+  kable(
+    caption = "Recent Commodity Futures Prices (Last 6 Trading Days)",
+    digits = 2,
+    format.args = list(big.mark = ",")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE
+  )
+```
+
+### Calculate Returns and Risk Metrics
+
+```{r calculate-returns}
+# Calculate log returns
+returns <- na.omit(Return.calculate(portfolioPrices, method = "log"))
+
+# Calculate annualized statistics
+annual_returns <- apply(returns, 2, function(x) mean(x, na.rm = TRUE) * 252)
+annual_volatility <- apply(returns, 2, function(x) sd(x, na.rm = TRUE) * sqrt(252))
+sharpe_ratios <- annual_returns / annual_volatility
+
+# Create summary table
+risk_return_summary <- data.frame(
+  Asset = colnames(returns),
+  Annual_Return = round(annual_returns * 100, 2),
+  Annual_Volatility = round(annual_volatility * 100, 2),
+  Sharpe_Ratio = round(sharpe_ratios, 3),
+  Max_Drawdown = round(apply(returns, 2, function(x) 
+    maxDrawdown(x)) * 100, 2)
+)
+
+risk_return_summary %>%
+  arrange(desc(Sharpe_Ratio)) %>%
+  kable(
+    caption = "Risk-Return Profile of Agricultural Commodity Futures",
+    col.names = c("Asset", "Return (%)", "Volatility (%)", 
+                  "Sharpe Ratio", "Max DD (%)")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#003d7a", color = "white")
+```
+
+### Interactive Price Visualization
+
+```{r price-evolution-plotly, fig.height=8}
+# Normalize prices to 100 for comparison
+normalized_prices <- 100 * portfolioPrices / 
+  matrix(rep(as.numeric(portfolioPrices[1, ]), nrow(portfolioPrices)), 
+         nrow = nrow(portfolioPrices), byrow = TRUE)
+
+# Create interactive plot
+plot_ly() %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Corn"]),
+    name = "Corn", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#003d7a', width = 2)
+  ) %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Wheat_CHI"]),
+    name = "Wheat (Chicago)", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#4a90e2', width = 2)
+  ) %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Wheat_KC"]),
+    name = "Wheat (KC)", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#0056b3', width = 2)
+  ) %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Rice"]),
+    name = "Rice", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#28a745', width = 2)
+  ) %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Feeder_Cattle"]),
+    name = "Feeder Cattle", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#ff6b35', width = 2)
+  ) %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Soybeans"]),
+    name = "Soybeans", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#ffc107', width = 2)
+  ) %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Soy_Meal"]),
+    name = "Soybean Meal", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#6c757d', width = 2)
+  ) %>%
+  add_trace(
+    x = index(normalized_prices), 
+    y = as.numeric(normalized_prices[, "Soy_Oil"]),
+    name = "Soybean Oil", 
+    type = 'scatter', 
+    mode = 'lines',
+    line = list(color = '#495057', width = 2)
+  ) %>%
+  layout(
+    title = list(
+      text = "Normalized Price Evolution of Agricultural Commodities (Base 100)",
+      font = list(family = "Montserrat", size = 18, color = "#003d7a")
+    ),
+    xaxis = list(
+      title = "Date",
+      showgrid = TRUE,
+      gridcolor = "#e0e0e0"
+    ),
+    yaxis = list(
+      title = "Normalized Price Index",
+      showgrid = TRUE,
+      gridcolor = "#e0e0e0"
+    ),
+    hovermode = "x unified",
+    legend = list(
+      x = 0.02,
+      y = 0.98,
+      bgcolor = "rgba(255,255,255,0.9)"
+    ),
+    plot_bgcolor = "#f8f9fa",
+    paper_bgcolor = "white"
+  )
+```
+
+### Correlation Analysis
+
+```{r correlation-heatmap}
+# Calculate correlation matrix
+cor_matrix <- cor(returns)
+
+# Create interactive correlation heatmap
+plot_ly(
+  x = colnames(cor_matrix),
+  y = colnames(cor_matrix),
+  z = cor_matrix,
+  type = "heatmap",
+  colors = colorRamp(c("#003d7a", "white", "#ff6b35")),
+  colorbar = list(title = "Correlation")
+) %>%
+  layout(
+    title = list(
+      text = "Correlation Matrix: Agricultural Commodity Returns",
+      font = list(family = "Montserrat", size = 18, color = "#003d7a")
+    ),
+    xaxis = list(title = "", tickangle = -45),
+    yaxis = list(title = ""),
+    plot_bgcolor = "white",
+    paper_bgcolor = "white"
+  )
+```
+
+:::{.callout-tip}
+## Correlation Insights
+
+- **High correlation (> 0.7)**: Wheat varieties, Soybean complex (beans, meal, oil)
+- **Low correlation (< 0.3)**: Feeder Cattle vs. grains → **diversification opportunity**
+- **Negative correlation**: Rice occasionally shows negative correlation with other grains
+:::
+
+## Multi-Objective Portfolio Optimization with NSGA-II
+
+### Define Objective Functions
+
+```{r objective-functions}
+# Calculate expected returns and covariance matrix
+mu <- colMeans(returns)
+Sigma <- cov(returns)
+n_assets <- ncol(returns)
+
+# Objective 1: Maximize Expected Return (Minimize negative return)
+objective_return <- function(weights) {
+  -sum(weights * mu)  # Negative because we minimize
+}
+
+# Objective 2: Minimize Portfolio Variance (Risk)
+objective_variance <- function(weights) {
+  as.numeric(t(weights) %*% Sigma %*% weights)
+}
+
+# Objective 3: Maximize Diversification (Minimize concentration)
+# Using Herfindahl Index: lower is more diversified
+objective_diversification <- function(weights) {
+  sum(weights^2)  # Minimize concentration
+}
+
+# Combined fitness function for NSGA-II
+fitness_function <- function(weights) {
+  # Normalize weights to sum to 1
+  weights <- weights / sum(weights)
+  
+  return(c(
+    objective_return(weights),
+    objective_variance(weights),
+    objective_diversification(weights)
+  ))
+}
+```
+
+### Run NSGA-II Optimization
+
+```{r nsga2-optimization, cache=TRUE}
+# NSGA-II using mco package
+set.seed(42)
+
+# Define bounds (long-only constraints)
+lower_bounds <- rep(0, n_assets)
+upper_bounds <- rep(1, n_assets)
+
+# Run NSGA-II
+nsga2_result <- nsga2(
+  fn = fitness_function,
+  idim = n_assets,        # Number of decision variables
+  odim = 3,               # Number of objectives
+  lower.bounds = lower_bounds,
+  upper.bounds = upper_bounds,
+  popsize = 100,          # Population size
+  generations = 200,      # Number of generations
+  cprob = 0.9,            # Crossover probability
+  cdist = 10,             # Crossover distribution index
+  mprob = 1/n_assets,     # Mutation probability
+  mdist = 20              # Mutation distribution index
+)
+
+cat("NSGA-II Optimization Complete!\n")
+cat("Number of Pareto-optimal solutions:", nrow(nsga2_result$par), "\n")
+```
+
+### Extract and Normalize Pareto-Optimal Solutions
+
+```{r extract-pareto-solutions}
+# Extract Pareto-optimal portfolio weights
+pareto_weights <- nsga2_result$par
+
+# Normalize weights to sum to 1
+pareto_weights_normalized <- t(apply(pareto_weights, 1, function(w) w / sum(w)))
+
+# Extract objective values
+pareto_objectives <- nsga2_result$value
+
+# Convert to dataframe for analysis
+pareto_df <- as.data.frame(pareto_objectives)
+colnames(pareto_df) <- c("Neg_Return", "Variance", "Concentration")
+
+# Convert negative return back to positive
+pareto_df$Expected_Return <- -pareto_df$Neg_Return * 252  # Annualized
+pareto_df$Volatility <- sqrt(pareto_df$Variance) * sqrt(252)  # Annualized
+pareto_df$Diversification_Index <- 1 - pareto_df$Concentration
+
+# Add Sharpe Ratio
+pareto_df$Sharpe_Ratio <- pareto_df$Expected_Return / pareto_df$Volatility
+
+# Display summary statistics
+cat("Pareto Frontier Summary:\n")
+summary(pareto_df[, c("Expected_Return", "Volatility", "Sharpe_Ratio")])
+```
+
+### Visualize 3D Pareto Frontier
+
+```{r pareto-3d-plotly, fig.height=9}
+# Create 3D Pareto frontier plot
+plot_ly(
+  pareto_df,
+  x = ~Expected_Return * 100,
+  y = ~Volatility * 100,
+  z = ~Diversification_Index,
+  type = "scatter3d",
+  mode = "markers",
+  marker = list(
+    size = 5,
+    color = ~Sharpe_Ratio,
+    colorscale = list(
+      c(0, "#003d7a"),
+      c(0.5, "#4a90e2"),
+      c(1, "#28a745")
+    ),
+    colorbar = list(title = "Sharpe<br>Ratio"),
+    line = list(color = "white", width = 1)
+  ),
+  text = ~paste(
+    "Return:", round(Expected_Return * 100, 2), "%<br>",
+    "Volatility:", round(Volatility * 100, 2), "%<br>",
+    "Diversification:", round(Diversification_Index, 3), "<br>",
+    "Sharpe:", round(Sharpe_Ratio, 3)
+  ),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = list(
+      text = "3D Pareto Frontier: Return vs. Risk vs. Diversification",
+      font = list(family = "Montserrat", size = 18, color = "#003d7a")
+    ),
+    scene = list(
+      xaxis = list(title = "Expected Return (%)"),
+      yaxis = list(title = "Volatility (%)"),
+      zaxis = list(title = "Diversification Index"),
+      camera = list(
+        eye = list(x = 1.5, y = 1.5, z = 1.3)
+      )
+    ),
+    paper_bgcolor = "white"
+  )
+```
+
+### 2D Pareto Frontier Projections
+
+```{r pareto-2d-projections}
+# Plot 1: Classic Risk-Return Trade-off
+p1 <- plot_ly(
+  pareto_df,
+  x = ~Volatility * 100,
+  y = ~Expected_Return * 100,
+  type = "scatter",
+  mode = "markers",
+  marker = list(
+    size = 8,
+    color = ~Sharpe_Ratio,
+    colorscale = list(c(0, "#003d7a"), c(1, "#28a745")),
+    colorbar = list(title = "Sharpe"),
+    line = list(color = "white", width = 1)
+  ),
+  text = ~paste("SR:", round(Sharpe_Ratio, 3)),
+  hoverinfo = "x+y+text"
+) %>%
+  layout(
+    title = "Return-Risk Trade-off (Pareto Frontier)",
+    xaxis = list(title = "Volatility (Annual %)"),
+    yaxis = list(title = "Expected Return (Annual %)"),
+    plot_bgcolor = "#f8f9fa"
+  )
+
+# Plot 2: Return vs. Diversification
+p2 <- plot_ly(
+  pareto_df,
+  x = ~Diversification_Index,
+  y = ~Expected_Return * 100,
+  type = "scatter",
+  mode = "markers",
+  marker = list(
+    size = 8,
+    color = ~Volatility * 100,
+    colorscale = list(c(0, "#28a745"), c(1, "#ff6b35")),
+    colorbar = list(title = "Vol (%)"),
+    line = list(color = "white", width = 1)
+  ),
+  hoverinfo = "x+y"
+) %>%
+  layout(
+    title = "Return-Diversification Trade-off",
+    xaxis = list(title = "Diversification Index"),
+    yaxis = list(title = "Expected Return (Annual %)"),
+    plot_bgcolor = "#f8f9fa"
+  )
+
+# Display plots
+p1
+p2
+```
+
+## Selecting Strategic Portfolios from Pareto Frontier
+
+### Identify Key Strategic Allocations
+
+```{r strategic-portfolios}
+# Strategy 1: Maximum Sharpe Ratio Portfolio
+idx_max_sharpe <- which.max(pareto_df$Sharpe_Ratio)
+weights_max_sharpe <- pareto_weights_normalized[idx_max_sharpe, ]
+
+# Strategy 2: Minimum Variance Portfolio
+idx_min_var <- which.min(pareto_df$Variance)
+weights_min_var <- pareto_weights_normalized[idx_min_var, ]
+
+# Strategy 3: Maximum Diversification Portfolio
+idx_max_div <- which.max(pareto_df$Diversification_Index)
+weights_max_div <- pareto_weights_normalized[idx_max_div, ]
+
+# Strategy 4: Maximum Return Portfolio (accepting higher risk)
+idx_max_return <- which.max(pareto_df$Expected_Return)
+weights_max_return <- pareto_weights_normalized[idx_max_return, ]
+
+# Create comparison table
+strategic_portfolios <- data.frame(
+  Portfolio = c("Max Sharpe", "Min Variance", "Max Diversification", "Max Return"),
+  Return_Annual = c(
+    pareto_df$Expected_Return[idx_max_sharpe],
+    pareto_df$Expected_Return[idx_min_var],
+    pareto_df$Expected_Return[idx_max_div],
+    pareto_df$Expected_Return[idx_max_return]
+  ) * 100,
+  Volatility_Annual = c(
+    pareto_df$Volatility[idx_max_sharpe],
+    pareto_df$Volatility[idx_min_var],
+    pareto_df$Volatility[idx_max_div],
+    pareto_df$Volatility[idx_max_return]
+  ) * 100,
+  Sharpe = c(
+    pareto_df$Sharpe_Ratio[idx_max_sharpe],
+    pareto_df$Sharpe_Ratio[idx_min_var],
+    pareto_df$Sharpe_Ratio[idx_max_div],
+    pareto_df$Sharpe_Ratio[idx_max_return]
+  ),
+  Diversification = c(
+    pareto_df$Diversification_Index[idx_max_sharpe],
+    pareto_df$Diversification_Index[idx_min_var],
+    pareto_df$Diversification_Index[idx_max_div],
+    pareto_df$Diversification_Index[idx_max_return]
+  )
+)
+
+strategic_portfolios %>%
+  kable(
+    digits = 3,
+    col.names = c("Strategy", "Return (%)", "Volatility (%)", 
+                  "Sharpe Ratio", "Div. Index"),
+    caption = "Strategic Portfolio Allocations from Pareto Frontier"
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#003d7a", color = "white") %>%
+  row_spec(which.max(strategic_portfolios$Sharpe), 
+           bold = TRUE, background = "#d4edda")
+```
+
+### Visualize Portfolio Allocations
+
+```{r portfolio-allocations-plotly, fig.height=8}
+# Prepare data for stacked bar chart
+allocation_data <- data.frame(
+  Strategy = rep(c("Max Sharpe", "Min Variance", "Max Div", "Max Return"), 
+                 each = n_assets),
+  Asset = rep(colnames(returns), 4),
+  Weight = c(
+    weights_max_sharpe * 100,
+    weights_min_var * 100,
+    weights_max_div * 100,
+    weights_max_return * 100
+  )
+)
+
+# Create color palette matching FAE style
+fae_colors <- c(
+  "#003d7a", "#4a90e2", "#0056b3", "#28a745",
+  "#ff6b35", "#ffc107", "#6c757d", "#495057"
+)
+
+# Create stacked bar chart
+plot_ly(
+  allocation_data,
+  x = ~Strategy,
+  y = ~Weight,
+  color = ~Asset,
+  colors = fae_colors,
+  type = "bar",
+  text = ~paste(Asset, ":", round(Weight, 1), "%"),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = list(
+      text = "Asset Allocation Across Strategic Portfolios",
+      font = list(family = "Montserrat", size = 18, color = "#003d7a")
+    ),
+    xaxis = list(title = "Portfolio Strategy"),
+    yaxis = list(title = "Allocation (%)"),
+    barmode = "stack",
+    showlegend = TRUE,
+    legend = list(
+      title = list(text = "Assets"),
+      orientation = "v",
+      x = 1.02,
+      y = 1
+    ),
+    plot_bgcolor = "#f8f9fa",
+    paper_bgcolor = "white"
+  )
+```
+
+### Detailed Weight Tables
+
+```{r detailed-weights}
+# Create detailed allocation tables
+weights_comparison <- data.frame(
+  Asset = colnames(returns),
+  Max_Sharpe = round(weights_max_sharpe * 100, 2),
+  Min_Variance = round(weights_min_var * 100, 2),
+  Max_Diversification = round(weights_max_div * 100, 2),
+  Max_Return = round(weights_max_return * 100, 2)
+)
+
+weights_comparison %>%
+  kable(
+    caption = "Detailed Portfolio Weights (%) for Each Strategy",
+    col.names = c("Asset", "Max Sharpe", "Min Var", "Max Div", "Max Return")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#003d7a", color = "white") %>%
+  column_spec(1, bold = TRUE)
+```
+
+## Backtesting Multi-Objective Portfolios
+
+### Out-of-Sample Performance Evaluation
+
+```{r backtest-setup}
+# Split data: 70% training, 30% testing
+split_point <- floor(0.7 * nrow(returns))
+returns_train <- returns[1:split_point, ]
+returns_test <- returns[(split_point + 1):nrow(returns), ]
+
+cat("Training period:", format(start(returns_train), "%Y-%m-%d"), "to", 
+    format(end(returns_train), "%Y-%m-%d"), "\n")
+cat("Testing period:", format(start(returns_test), "%Y-%m-%d"), "to", 
+    format(end(returns_test), "%Y-%m-%d"), "\n")
+```
+
+```{r backtest-execution}
+# Calculate portfolio returns for testing period
+portfolio_returns_test <- data.frame(
+  Date = index(returns_test),
+  Max_Sharpe = as.numeric(returns_test %*% weights_max_sharpe),
+  Min_Variance = as.numeric(returns_test %*% weights_min_var),
+  Max_Div = as.numeric(returns_test %*% weights_max_div),
+  Max_Return = as.numeric(returns_test %*% weights_max_return),
+  Equal_Weight = as.numeric(returns_test %*% rep(1/n_assets, n_assets))
+)
+
+# Calculate cumulative returns
+portfolio_cumulative <- portfolio_returns_test %>%
+  mutate(
+    Max_Sharpe_Cum = cumprod(1 + Max_Sharpe),
+    Min_Variance_Cum = cumprod(1 + Min_Variance),
+    Max_Div_Cum = cumprod(1 + Max_Div),
+    Max_Return_Cum = cumprod(1 + Max_Return),
+    Equal_Weight_Cum = cumprod(1 + Equal_Weight)
+  )
+
+# Backtest performance metrics
+backtest_metrics <- data.frame(
+  Strategy = c("Max Sharpe", "Min Variance", "Max Div", "Max Return", "Equal Weight"),
+  Total_Return = c(
+    tail(portfolio_cumulative$Max_Sharpe_Cum, 1) - 1,
+    tail(portfolio_cumulative$Min_Variance_Cum, 1) - 1,
+    tail(portfolio_cumulative$Max_Div_Cum, 1) - 1,
+    tail(portfolio_cumulative$Max_Return_Cum, 1) - 1,
+    tail(portfolio_cumulative$Equal_Weight_Cum, 1) - 1
+  ) * 100,
+  Annual_Volatility = c(
+    sd(portfolio_returns_test$Max_Sharpe) * sqrt(252) * 100,
+    sd(portfolio_returns_test$Min_Variance) * sqrt(252) * 100,
+    sd(portfolio_returns_test$Max_Div) * sqrt(252) * 100,
+    sd(portfolio_returns_test$Max_Return) * sqrt(252) * 100,
+    sd(portfolio_returns_test$Equal_Weight) * sqrt(252) * 100
+  ),
+  Sharpe_Ratio_OOS = c(
+    mean(portfolio_returns_test$Max_Sharpe) / sd(portfolio_returns_test$Max_Sharpe) * sqrt(252),
+    mean(portfolio_returns_test$Min_Variance) / sd(portfolio_returns_test$Min_Variance) * sqrt(252),
+    mean(portfolio_returns_test$Max_Div) / sd(portfolio_returns_test$Max_Div) * sqrt(252),
+    mean(portfolio_returns_test$Max_Return) / sd(portfolio_returns_test$Max_Return) * sqrt(252),
+    mean(portfolio_returns_test$Equal_Weight) / sd(portfolio_returns_test$Equal_Weight) * sqrt(252)
+  ),
+  Max_Drawdown = c(
+    maxDrawdown(portfolio_returns_test$Max_Sharpe) * 100,
+    maxDrawdown(portfolio_returns_test$Min_Variance) * 100,
+    maxDrawdown(portfolio_returns_test$Max_Div) * 100,
+    maxDrawdown(portfolio_returns_test$Max_Return) * 100,
+    maxDrawdown(portfolio_returns_test$Equal_Weight) * 100
+  )
+)
+
+backtest_metrics %>%
+  arrange(desc(Sharpe_Ratio_OOS)) %>%
+  kable(
+    digits = 3,
+    col.names = c("Strategy", "Total Return (%)", "Volatility (%)", 
+                  "Sharpe (OOS)", "Max DD (%)"),
+    caption = "Out-of-Sample Backtest Performance (Testing Period)"
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE
+  ) %>%
+  row_spec(0, bold = TRUE, background = "#003d7a", color = "white") %>%
+  row_spec(which.max(backtest_metrics$Sharpe_Ratio_OOS), 
+           bold = TRUE, background = "#d4edda")
+```
+
+### Cumulative Performance Visualization
+
+```{r cumulative-performance-plotly}
+# Plot cumulative returns
+plot_ly() %>%
+  add_trace(
+    x = portfolio_cumulative$Date,
+    y = (portfolio_cumulative$Max_Sharpe_Cum - 1) * 100,
+    name = "Max Sharpe",
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "#003d7a", width = 3)
+  ) %>%
+  add_trace(
+    x = portfolio_cumulative$Date,
+    y = (portfolio_cumulative$Min_Variance_Cum - 1) * 100,
+    name = "Min Variance",
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "#28a745", width = 2.5)
+  ) %>%
+  add_trace(
+    x = portfolio_cumulative$Date,
+    y = (portfolio_cumulative$Max_Div_Cum - 1) * 100,
+    name = "Max Diversification",
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "#4a90e2", width = 2.5)
+  ) %>%
+  add_trace(
+    x = portfolio_cumulative$Date,
+    y = (portfolio_cumulative$Max_Return_Cum - 1) * 100,
+    name = "Max Return",
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "#ff6b35", width = 2.5)
+  ) %>%
+  add_trace(
+    x = portfolio_cumulative$Date,
+    y = (portfolio_cumulative$Equal_Weight_Cum - 1) * 100,
+    name = "Equal Weight (Benchmark)",
+    type = "scatter",
+    mode = "lines",
+    line = list(color = "#6c757d", width = 2, dash = "dash")
+  ) %>%
+  layout(
+    title = list(
+      text = "Out-of-Sample Cumulative Returns: Multi-Objective Portfolios",
+      font = list(family = "Montserrat", size = 18, color = "#003d7a")
+    ),
+    xaxis = list(title = "Date"),
+    yaxis = list(title = "Cumulative Return (%)"),
+    hovermode = "x unified",
+    legend = list(x = 0.02, y = 0.98),
+    plot_bgcolor = "#f8f9fa",
+    paper_bgcolor = "white"
+  )
+```
+
+## Advanced: Integration with Reinforcement Learning
+
+### Conceptual Framework
+
+The next phase of this research integrates **Reinforcement Learning (RL)** to dynamically select from the Pareto frontier based on evolving market conditions:
+
+```{mermaid}
+
+flowchart TD
+    A["Market State st"] --> B["RL Agent"]
+    B --> C{"Policy π(θ)"}
+    C --> D["Select Portfolio from Pareto Front"]
+    D --> E["Execute Allocation wt"]
+    E --> F["Observe Return rt+1"]
+    F --> G["New Market State st+1"]
+    G --> H["Calculate Reward Rt"]
+    H --> I["Update Policy via Q-Learning or PPO"]
+    I --> B
+    
+    style A fill:#003d7a,color:#fff
+    style B fill:#28a745,color:#fff
+    style H fill:#ffc107,color:#000
+    
+```
+
+### State Space and Action Space
+
+**State Space** $\mathcal{S}$:
+- Historical volatility (rolling window)
+- Momentum indicators (RSI, MACD)
+- Correlation regime (PCA-based)
+- VIX levels (market fear index)
+- Commodity-specific features (seasonality, inventory levels)
+
+**Action Space** $\mathcal{A}$:
+- Discrete: Select from $N$ portfolios on Pareto frontier
+- Or continuous: Preference weights $(\lambda, \gamma, \delta)$ for objectives
+
+**Reward Function** $R_t$:
+
+$$
+R_t = r_{p,t} - \frac{\gamma}{2}\sigma_p^2 + \beta \cdot \text{Div}(w_t) - \kappa \cdot TC_t
+$$
+
+Where $r_{p,t}$ is portfolio return, $\sigma_p^2$ is variance, $\text{Div}$ is diversification, and $TC_t$ are transaction costs.
+
+### Q-Learning for Portfolio Selection
+
+The RL agent learns a **Q-function** $Q(s_t, a_t)$ representing expected cumulative reward:
+
+$$
+Q(s_{t+1}, a_{t+1}) \leftarrow Q(s_t, a_t) + \alpha \left[ R_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) \right]
+$$
+
+:::{.callout-note}
+## Future Implementation
+
+The full RL implementation will be covered in the dedicated **Reinforcement Learning** section of this website, where we demonstrate:
+
+- Deep Q-Networks (DQN) for portfolio selection
+- Proximal Policy Optimization (PPO) for continuous control
+- Multi-agent systems for diversified strategies
+- Integration with the NSGA-II Pareto frontier
+:::
+
+# Conclusions and Key Takeaways
+
+## Summary of Findings
+
+1. **Multi-objective optimization** reveals trade-offs that single-objective approaches miss
+2. **NSGA-II** successfully identified diverse Pareto-optimal portfolios for agricultural commodities
+3. **Max Sharpe Ratio** portfolio provided best risk-adjusted returns in out-of-sample testing
+4. **Diversification** is crucial but often conflicts with maximum return strategies
+5. **Evolutionary algorithms** handle non-convex, multi-modal optimization landscapes effectively
+
+## Advantages of Multi-Objective Frameworks
+
+✅ **Transparency**: Explicit representation of trade-offs among competing objectives  
+✅ **Flexibility**: Decision-makers choose based on risk preferences and market conditions  
+✅ **Robustness**: Diversified set of solutions reduces sensitivity to estimation errors  
+✅ **Adaptability**: Can incorporate ESG, liquidity, and other non-financial objectives  
+✅ **Innovation**: Evolutionary algorithms discover novel allocation strategies  
+
+## Future Research Directions
+
+1. **Dynamic Rebalancing**: Implement rolling-window optimization with transaction costs
+2. **Regime-Switching Models**: Condition objectives on volatility regimes detected by MSGARCH
+3. **Deep Reinforcement Learning**: Train neural network agents to navigate Pareto frontier
+4. **Multi-Period Optimization**: Extend framework to consider inter-temporal dependencies
+5. **Robustness Analysis**: Incorporate estimation uncertainty via robust optimization
+6. **Alternative Objectives**: Include skewness, kurtosis, CVaR, and tail risk measures
+
+## Practical Recommendations
+
+For practitioners implementing multi-objective portfolio optimization:
+
+- Start with **3-4 objectives** (return, risk, diversification, liquidity)
+- Use **ensemble approaches**: Combine NSGA-II, MODE, and MOEA/D
+- **Validate thoroughly**: Out-of-sample testing is essential
+- **Monitor regime shifts**: Reoptimize when market conditions change significantly
+- **Consider transaction costs**: Turnover penalties prevent excessive rebalancing
+- **Integrate domain knowledge**: Constraints on sector exposure, ESG criteria, etc.
+
+---
+
+## References
+
+- Deb, K., Pratap, A., Agarwal, S., & Meyarivan, T. (2002). A fast and elitist multiobjective genetic algorithm: NSGA-II. *IEEE Transactions on Evolutionary Computation*, 6(2), 182-197.
+- Markowitz, H. (1952). Portfolio selection. *The Journal of Finance*, 7(1), 77-91.
+- Storn, R., & Price, K. (1997). Differential evolution: A simple and efficient heuristic for global optimization. *Journal of Global Optimization*, 11, 341-359.
+- Zitzler, E., Laumanns, M., & Thiele, L. (2001). SPEA2: Improving the strength Pareto evolutionary algorithm. *TIK-Report*, 103.
+
+---
+
+:::{.callout-tip}
+## Explore More
+
+- **Next Section**: [Portfolio Algorithms](portfolio_multiobj_opt_algos.qmd) - Deep dive into NSGA-II, MOEA/D, and MODE
+- **Related**: [Pareto Front Reinforcement](pareto_front_reinforcement.qmd) - RL-based dynamic portfolio selection
+- **Data Science**: [Machine Learning Models](machine_learning_models.qmd) - Forecasting returns for optimization inputs
+:::
+
+---
+
+<div style="text-align: center; margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #003d7a 0%, #0056b3 100%); color: white; border-radius: 8px;">
+<h3 style="color: white; margin-bottom: 1rem;">📊 PAIC Econometrics Research</h3>
+<p style="font-size: 0.95rem; opacity: 0.95;">
+Multi-Objective Multi-Period Optimization of Agricultural Commodities Portfolio<br>
+<strong>FAE Business School</strong> | Curitiba, PR, Brazil
+</p>
+<p style="margin-top: 1rem;">
+<a href="https://fae.edu" style="color: #4a90e2; text-decoration: none;">🏫 FAE.edu</a> | 
+<a href="mailto:rodrigo.ozon@fae.edu" style="color: #4a90e2; text-decoration: none;">✉️ Contact</a> | 
+<a href="https://github.com/PAICEconometrics" style="color: #4a90e2; text-decoration: none;">💻 GitHub</a>
+</p>
+</div>

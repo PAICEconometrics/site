@@ -384,591 +384,195 @@
     ]
   },
   {
-    "objectID": "openAI_agent.html",
-    "href": "openAI_agent.html",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "objectID": "optimization.html",
+    "href": "optimization.html",
+    "title": "Multi-Objective Framework",
     "section": "",
-    "text": "Discover how we created a customized GPT agent that automatically searches, filters, and delivers the most relevant scientific articles every week, every Friday at 8 AM.",
+    "text": "Traditional portfolio optimization, pioneered by Markowitz (1952), focuses on a single objective function that balances expected return against risk (variance). However, real-world portfolio management involves multiple, often conflicting objectives:\n\nMaximizing Returns: Seeking the highest possible profit\nMinimizing Risk: Reducing volatility and downside exposure\nMaximizing Diversification: Spreading investments across uncorrelated assets\nLiquidity Management: Ensuring sufficient market depth for position adjustments\nTransaction Costs: Minimizing trading expenses and turnover\nSustainability Criteria: Incorporating ESG factors (Environmental, Social, Governance)\n\n\n\n\n\n\n\nThe Multi-Objective Paradigm Shift\n\n\n\nUnlike single-objective optimization that yields a unique optimal solution, multi-objective optimization produces a set of Pareto-optimal solutions (the Pareto frontier), where no objective can be improved without degrading at least one other objective.\n\n\n\n\n\nAgricultural commodity markets exhibit unique characteristics that demand multi-objective frameworks:\n\nHigh Volatility Regimes: Commodities experience extreme price swings driven by weather, geopolitics, and supply shocks\nSeasonal Patterns: Production cycles create predictable seasonality requiring dynamic rebalancing\nCorrelation Dynamics: Commodity correlations are non-stationary and regime-dependent\nLiquidity Constraints: Some contracts have limited depth, constraining position sizes\nStorage Costs: Physical commodities incur carrying costs affecting optimal holding periods",
     "crumbs": [
       "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "openAI_agent.html#project-overview",
-    "href": "openAI_agent.html#project-overview",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.1 📋 Project Overview",
-    "text": "1.1 📋 Project Overview\nIn the context of an active research project on applied econometrics and multi-period multi-objective optimization, staying updated with the latest literature is fundamental but extremely time-consuming. Every week, dozens of new papers emerge in repositories like arXiv, SSRN, and scientific journals.\nOur solution? Create a personalized intelligent agent in ChatGPT that:\n\n🔍 Automatically searches across multiple scientific databases\n📊 Filters and categorizes articles by relevance\n📧 Delivers weekly structured reports\n⏰ Scheduled delivery: Every Friday at 08:00 AM (Brasília time)",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#paper-hunter-objectives",
-    "href": "openAI_agent.html#paper-hunter-objectives",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.2 🎯 Paper Hunter Objectives",
-    "text": "1.2 🎯 Paper Hunter Objectives\n\n1.2.1 Identified Problem\nResearchers and students face challenges such as:\n\nInformation overload: Hundreds of papers published weekly\nSource dispersion: ArXiv, SSRN, Google Scholar, journals, etc.\nTime constraints: Difficulty keeping up with recent literature\nSharing difficulties: Need for an easy format to disseminate to students\n\n\n\n1.2.2 Implemented Solution\nWe developed Paper Hunter, a customized GPT agent that:\n\nPerforms targeted searches in specific scientific databases\nApplies quality and relevance filters\nGenerates structured reports in shareable format\nOperates completely autonomously",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#how-we-created-paper-hunter",
-    "href": "openAI_agent.html#how-we-created-paper-hunter",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.3 🛠️ How We Created Paper Hunter",
-    "text": "1.3 🛠️ How We Created Paper Hunter\n\n1.3.1 Step 1: GPT Agent Configuration\nWe accessed ChatGPT and created a personalized GPT with the following specifications:\n\n\n\n\n\n\nAccessing GPT Builder\n\n\n\nTo create personalized GPTs, you need a ChatGPT Plus or Team account. Access: Settings → Explore GPTs → Create a GPT\n\n\nMain instructions provided to the agent:\nYou are an agent specialized in weekly scientific curation.\n\nOBJECTIVE:\nSearch weekly for recent scientific articles on:\n- Applied econometrics\n- Multi-period multi-objective optimization\n- Time series forecasting\n- Reinforcement learning applied to finance\n- Commodity volatility modeling\n\nSEARCH SCOPE:\n- Databases: arXiv (econ.EM, q-fin, cs.LG), SSRN, Google Scholar\n- Period: Last 7 days (articles AND preprints)\n- Language: English\n- Focus: Papers with finance/economics applications\n\nDELIVERY FORMAT:\n1. Structured table (Excel-ready)\n2. Columns: Date | Title | Authors | Venue/Type | Link | Summary | Category\n3. Categories: Econometrics, Optimization, RL, Volatility\n4. Direct and functional links\n5. Concise summary (1-2 sentences) in Portuguese\n\nFREQUENCY:\nEvery Friday at 08:00 AM (Brasília time)\n\n\n1.3.2 Step 2: Integration with Search Tools\nPaper Hunter uses multiple search strategies:\n\n1.3.2.1 2.1 ArXiv API\n# Example query on arXiv\nsearch_query = \"multi-objective portfolio optimization\"\ncategories = \"econ.EM OR q-fin.PM OR q-fin.RM OR cs.LG\"\ndate_filter = \"submittedDate:[last_week TO now]\"\n\n\n1.3.2.2 2.2 SSRN Working Papers\n\nSearch by specific keywords\nFilter by publication date\nMetadata extraction\n\n\n\n1.3.2.3 2.3 Google Scholar\n\nTargeted queries with Boolean operators\nTemporal filter: “Since 2025” + sort by date\nPDF availability verification\n\n\n\n1.3.2.4 2.4 Consensus AI\nSpecialized academic search tool that: - Accesses +200M papers - Uses GPT-4 for semantic analysis - Provides automatic insights and citations",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#example-of-weekly-output",
-    "href": "openAI_agent.html#example-of-weekly-output",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.4 📊 Example of Weekly Output",
-    "text": "1.4 📊 Example of Weekly Output\nHere’s a real example of Paper Hunter’s output:\n\n1.4.1 📅 Week of 09/05/2025\n\n\n\nDate\nTitle\nAuthors\nCategory\nLink\n\n\n\n\n2025-09-03\nNeural Lévy SDE for State-Dependent Risk and Density Forecasting\nZ. Wang; S.T. Rachev\nEconometrics; Volatility\narXiv\n\n\n2025-09-03\nMulti-period Asset-Liability Management with RL in Regime-Switching Market\nZ. Gao et al.\nRL; Optimization\narXiv\n\n\n2025-09-01\nControllable Generation of Implied Volatility Surfaces with VAEs\nJ. Wang; S. Liu; C. Vuik\nVolatility\narXiv\n\n\n\nSummaries: - Paper 1: Neural jump-diffusion model for multi-horizon density/risk forecasting; useful for volatility modeling and scenarios in multi-period optimization. - Paper 2: Use of RL in multi-period ALM with regime switching; outperforms classical models in return/risk. - Paper 3: Controllable generation of IV surfaces with no-arbitrage verification; useful for scenario simulations.",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#setting-up-automatic-scheduling",
-    "href": "openAI_agent.html#setting-up-automatic-scheduling",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.5 ⏰ Setting Up Automatic Scheduling",
-    "text": "1.5 ⏰ Setting Up Automatic Scheduling\n\n1.5.1 Method 1: Scheduled Actions in ChatGPT (Recommended)\nChatGPT Team/Enterprise offers native Scheduled Actions:\n\nAccess your personalized GPT\nGo to Settings → Actions\nConfigure:\n\nTrigger: Every Friday at 08:00 AM (America/Sao_Paulo)\nAction: Run research query and send results\nNotification: Email to team members\n\n\n\n\n\n\n\n\nFree Alternative\n\n\n\nIf you don’t have access to ChatGPT Team, you can use Zapier or Make.com to automate calls to the OpenAI API at specific times.\n\n\n\n\n1.5.2 Method 2: Automation via Zapier\nTrigger: Schedule by Zapier\n  - Frequency: Weekly\n  - Day: Friday\n  - Time: 08:00 AM (GMT-3)\n\nAction: OpenAI (GPT-4)\n  - Model: gpt-4\n  - Prompt: \"Run Paper Hunter weekly search\"\n  - Send results to: Email / Slack / Google Sheets",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#generating-shareable-spreadsheets",
-    "href": "openAI_agent.html#generating-shareable-spreadsheets",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.6 📁 Generating Shareable Spreadsheets",
-    "text": "1.6 📁 Generating Shareable Spreadsheets\nTo facilitate sharing via WhatsApp with students, we configured the agent to automatically generate a consolidated Excel spreadsheet:\n\n1.6.1 Spreadsheet Structure\nMaster File: literature_master.xlsx\nSheets: 1. Index - Index of all weeks 2. All - All consolidated articles 3. 2025-09-05 - Articles from specific week 4. 2025-09-12 - Next week 5. (continues…)\n\n\n1.6.2 Table Columns\n\n\n\n\n\n\n\n\nColumn\nDescription\nExample\n\n\n\n\nWeek\nReference Friday\n2025-09-05\n\n\nDate\nSubmission date\n2025-09-03\n\n\nTitle\nArticle title\nNeural Lévy SDE for…\n\n\nAuthors\nAuthors\nZ. Wang; S.T. Rachev\n\n\nVenue/Type\nSource/Type\narXiv / Preprint\n\n\nLink\nDirect URL\nhttps://arxiv.org/…\n\n\nSummary (PT)\nSummary in Portuguese\nNeural jump-diffusion model…\n\n\nCategory\nClassification\nEconometrics; Volatility",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#automatic-categorization",
-    "href": "openAI_agent.html#automatic-categorization",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.7 🎨 Automatic Categorization",
-    "text": "1.7 🎨 Automatic Categorization\nPaper Hunter automatically classifies each article into the following categories:\n\n\n1.7.1 📈 Econometrics\nEconometric models, time series, statistical tests, cointegration, spillovers\n\n\n1.7.2 🎯 Optimization\nMulti-objective optimization, MOO, genetic algorithms, NSGA-II/III, mathematical programming\n\n\n1.7.3 🤖 RL\nReinforcement Learning, Q-learning, Deep RL, optimal policies, simulation environments\n\n\n1.7.4 📊 Volatility\nVolatility modeling, GARCH, implied volatility, risk, VaR, CVaR",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#best-practices-and-lessons-learned",
-    "href": "openAI_agent.html#best-practices-and-lessons-learned",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.8 💡 Best Practices and Lessons Learned",
-    "text": "1.8 💡 Best Practices and Lessons Learned\n\n1.8.1 ✅ What Worked Well\n\nQuery specificity: The more specific the prompt, the better the results\nTemporal filters: Always include 7-day windows to avoid duplicates\nMultiple sources: Combining arXiv + SSRN + Scholar increases coverage\nStructured format: Tables greatly facilitate sharing\n\n\n\n1.8.2 ⚠️ Challenges Faced\n\nFalse positives: Some articles are not as relevant as they seem\nIndexing delay: Very recent papers may not appear\nAccess limitations: Some journals have paywalls\nAmbiguous categorization: Interdisciplinary papers require manual review\n\n\n\n1.8.3 🔧 Future Improvements\n\nImplement automatic relevance score (0-10)\nAdd LLM-generated summaries of abstracts\nCreate alerts for high-impact papers\nIntegrate with Zotero/Mendeley for reference management\nInteractive dashboard with visualizations",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#how-to-replicate-this-system",
-    "href": "openAI_agent.html#how-to-replicate-this-system",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.9 🚀 How to Replicate This System",
-    "text": "1.9 🚀 How to Replicate This System\n\n1.9.1 Detailed Step-by-Step\n\n1.9.1.1 1. Create ChatGPT Plus/Team Account\nAccess chat.openai.com and upgrade\n\n\n1.9.1.2 2. Configure the Personalized GPT\nName: Paper Hunter\nDescription: Weekly scientific curation agent\nInstructions: [Paste the complete prompt provided above]\nTools: Web Browsing + Code Interpreter\n\n\n1.9.1.3 3. Test Manually\nRun a test search:\n\"Search for articles from the past week on portfolio optimization\"\n\n\n1.9.1.4 4. Configure Scheduling\n\nOption A: ChatGPT Scheduled Actions (Team/Enterprise)\nOption B: Zapier + OpenAI API (any plan)\n\n\n\n1.9.1.5 5. Define Output Format\nInstruct the agent to always generate: - Markdown table - .xlsx file for download - Functional links",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#resources-and-references",
-    "href": "openAI_agent.html#resources-and-references",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.10 📚 Resources and References",
-    "text": "1.10 📚 Resources and References\n\n1.10.1 Databases Used\n\narXiv.org - Preprint repository (Physics, Math, CS, Economics)\nSSRN - Social Science Research Network\nGoogle Scholar - Academic search engine\nConsensus AI - AI-powered academic search\n\n\n\n1.10.2 Complementary Tools\n\nSemantic Scholar - Semantic paper search\nConnected Papers - Citation graph\nResearch Rabbit - Literature recommendation\n\n\n\n1.10.3 APIs Used\n# ArXiv API\n# http://export.arxiv.org/api/query\n\n# CrossRef API (DOIs)\n# https://api.crossref.org/\n\n# Semantic Scholar API\n# https://api.semanticscholar.org/",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#usage-statistics",
-    "href": "openAI_agent.html#usage-statistics",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.11 📊 Usage Statistics",
-    "text": "1.11 📊 Usage Statistics\n\n\n\n\n\n\nResults After 2 Months of Operation\n\n\n\n\nPapers scanned: ~450 articles/week\nRelevance rate: 75% of papers are useful\nTime saved: ~6h/week for the team\nSource coverage: 4 main databases + 10+ journals\nTeam satisfaction: 9.2/10",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#research-impact",
-    "href": "openAI_agent.html#research-impact",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.12 🎓 Research Impact",
-    "text": "1.12 🎓 Research Impact\n\n1.12.1 Observed Benefits\n\nConstant updates: We never miss important papers\nDiscovering connections: We find relevant interdisciplinary work\nEfficiency: More time for deep reading, less for searching\nSharing: Students receive quality curation\nOrganized history: Master spreadsheet works as a library\n\n\n\n1.12.2 Team Testimonials\n\n“Paper Hunter transformed our research routine. Before, we spent hours searching for papers, now we receive everything pre-filtered every Friday.”\n— Vanessa Monn, PAIC Scholar\n\n\n“I was able to identify 3 crucial papers for my part of the project thanks to the automated searches.”\n— Jhonathan Athanazio, Volunteer",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#useful-links",
-    "href": "openAI_agent.html#useful-links",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.13 🔗 Useful Links",
-    "text": "1.13 🔗 Useful Links\n\nChatGPT Custom GPTs Documentation\nArXiv API Documentation\nSSRN Author Center\nZapier + OpenAI Tutorial",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#contact-and-collaboration",
-    "href": "openAI_agent.html#contact-and-collaboration",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.14 📞 Contact and Collaboration",
-    "text": "1.14 📞 Contact and Collaboration\nWant to implement a similar system in your research project?\nGet in touch:\n\n📧 Email: rodrigo.ozon@fae.edu\n🔗 LinkedIn: FAE Centro Universitário\n💻 GitHub: @PAICEconometrics\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\nWe are working on version 2.0 of Paper Hunter which will include:\n\nSentiment analysis of abstracts\nAutomatic ranking by relevance\nPersonalized recommendations per researcher\nIntegration with Notion/Obsidian\nReal-time alerts via Telegram\n\nStay tuned for updates!",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "openAI_agent.html#conclusion",
-    "href": "openAI_agent.html#conclusion",
-    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
-    "section": "1.15 📝 Conclusion",
-    "text": "1.15 📝 Conclusion\nPaper Hunter demonstrates how artificial intelligence can be used to increase scientific productivity without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: reading, analyzing, and producing quality knowledge.\nIf you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.\n\n\n📚 PAIC Econometrics | FAE Business School Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization Transforming research through artificial intelligence",
-    "crumbs": [
-      "Home",
-      "📰 Market Intelligence",
-      "AI Agent -- PaperHunter"
-    ]
-  },
-  {
-    "objectID": "mindmap.html",
-    "href": "mindmap.html",
-    "title": "Research Mindmap",
+    "objectID": "optimization.html#the-portfolio-optimization-challenge",
+    "href": "optimization.html#the-portfolio-optimization-challenge",
+    "title": "Multi-Objective Framework",
     "section": "",
-    "text": "Interactive visualization of the methodological structure, official timeline and connections of the project “Innovations in Financial Modeling: AI & Econometrics for Agricultural Commodity Portfolio Optimization”",
+    "text": "Traditional portfolio optimization, pioneered by Markowitz (1952), focuses on a single objective function that balances expected return against risk (variance). However, real-world portfolio management involves multiple, often conflicting objectives:\n\nMaximizing Returns: Seeking the highest possible profit\nMinimizing Risk: Reducing volatility and downside exposure\nMaximizing Diversification: Spreading investments across uncorrelated assets\nLiquidity Management: Ensuring sufficient market depth for position adjustments\nTransaction Costs: Minimizing trading expenses and turnover\nSustainability Criteria: Incorporating ESG factors (Environmental, Social, Governance)\n\n\n\n\n\n\n\nThe Multi-Objective Paradigm Shift\n\n\n\nUnlike single-objective optimization that yields a unique optimal solution, multi-objective optimization produces a set of Pareto-optimal solutions (the Pareto frontier), where no objective can be improved without degrading at least one other objective.",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "Research Mindmap"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "mindmap.html#project-overview",
-    "href": "mindmap.html#project-overview",
-    "title": "Research Mindmap",
-    "section": "1 Project Overview",
-    "text": "1 Project Overview\nThis conceptual map presents the complete architecture of the PAIC 2025/26 research project, visually organizing the three methodological pillars, the six execution stages according to the official schedule and the expected results aligned with the program guidelines.\n\n\n\n\n\n\n💡 How to Use This Mindmap\n\n\n\n\nExplore interactive nodes to understand each methodological component\nFollow colored connections to comprehend relationships between techniques\nIdentify temporal stages in the PAIC 2025/26 timeline flow\nHover over elements to see detailed descriptions\n\n\n\n\n\n\n\n\n\n🎯 Project’s Central Objective\n\n\n\nDevelop an integrated model for analysis and optimization of agricultural commodity portfolios, combining:\n\nAdvanced Forecasting (GARCH/MSGARCH + ML/DL)\nMulti-Objective Optimization (NSGA-II, Differential Evolution)\nReinforcement Learning (PPO, adaptive strategies)\n\nGoal: Create tools for risk management and dynamic allocation in commodity markets, with potential for patent and scientific publications.",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#interactive-mindmap",
-    "href": "mindmap.html#interactive-mindmap",
-    "title": "Research Mindmap",
-    "section": "2 Interactive Mindmap",
-    "text": "2 Interactive Mindmap",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#detailed-project-structure",
-    "href": "mindmap.html#detailed-project-structure",
-    "title": "Research Mindmap",
-    "section": "3 Detailed Project Structure",
-    "text": "3 Detailed Project Structure\n\n3.1 🎯 Three Methodological Pillars\n\n\n3.1.1 PILLAR 1: Forecasting\nObjectives: - Forecast expected returns of agricultural commodities - Estimate conditional volatilities and risk regimes - Capture complex temporal dependencies\nMain Methods: - GARCH/MSGARCH: Volatility modeling with regime changes (Markov-Switching) - Machine Learning: LSTM, MLP, XGBoost, LightGBM - Deep Learning: Deep neural networks for non-linear patterns\nTools: - R: rugarch, MSGARCH, forecast - Python: torch, keras, xgboost, statsmodels\n\n\n3.1.2 PILLAR 2: Multi-Objective Optimization\nObjectives: - Determine efficient portfolio compositions - Balance return, risk, and diversification - Generate Pareto frontier with non-dominated solutions\nMain Methods: - NSGA-II: Non-dominated Sorting Genetic Algorithm II - Differential Evolution: Global evolutionary optimization - SPEA2: Strength Pareto Evolutionary Algorithm 2\nTools: - R: DEoptim, mco, nsga2R - Python: pymoo, DEAP, scipy.optimize\n\n\n3.1.3 PILLAR 3: Reinforcement Learning\nObjectives: - Develop dynamic and adaptive trading strategies - Simulate tactical allocation decisions - Implement reallocation policies under uncertainty\nMain Methods: - PPO: Proximal Policy Optimization - Gym Environment: Market simulation for training - Strategies: Momentum, dynamic hedging, trigger-based rebalancing\nTools: - Python: stable-baselines3, gym, ray[rllib] - R: Integration via reticulate",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#official-paic-202526-timeline",
-    "href": "mindmap.html#official-paic-202526-timeline",
-    "title": "Research Mindmap",
-    "section": "4 📅 Official PAIC 2025/26 Timeline",
-    "text": "4 📅 Official PAIC 2025/26 Timeline\n\n4.1 Stage 1: Setup and Governance (Aug-Sep/2025)\n\n\n\n\n\n\n🔧 Main Activities\n\n\n\n\nPAIC 2025/26 Opening: August 13, 2025\nCommitment Term Signing\nScope review and research questions definition\nComputational environment setup (R/Python + Git/GitHub)\nData source mapping: YahooQuery, Quandl, FAO, B3, CME\nSuccess criteria and risk management definition\n\n\n\nDeliverables: - Detailed work plan - Structured Git repository - Data sources documentation\n\n\n\n4.2 Stage 2: Data Collection and Curation (Sep-Oct/2025)\n\n\n\n\n\n\n📊 Main Activities\n\n\n\n\nHistorical commodity series collection (corn, soybeans, meal, soybean oil)\nData cleaning and normalization (frequencies, outliers, contract adjustments)\nFinancial feature engineering: log-return, volatility, drawdown, technical indicators\nExploratory analysis and descriptive statistics\n\n\n\nDeliverables: - Curated and documented dataset - Complete exploratory data analysis (EDA) - Automated collection scripts\n\n\n\n4.3 Stage 3: Volatility and Return Modeling (Oct-Nov/2025)\n\n\n\n\n\n\n🤖 Main Activities\n\n\n\n\nGARCH/MSGARCH model estimation (asymmetric distributions, regimes)\nML/DL prototype development: LSTM, MLP for forecasting\nPerformance comparison between econometric and ML models\n📝 Partial Report 1: November 24, 2025\n🎤 13th SPPAIC: October 24, 2025\n\n\n\nDeliverables: - Calibrated forecasting models - Partial Report 1 (methodology and preliminary results) - Presentation at 13th PAIC Symposium\n\n\n\n4.4 Stage 4: Optimization and Frontiers (Nov/2025-Jan/2026)\n\n\n\n\n\n\n🎯 Main Activities\n\n\n\n\nNSGA-II and Differential Evolution implementation\nPareto frontier generation (risk-return-diversification trade-offs)\nSensitivity and robustness analysis of solutions\nComparison with benchmarks (buy-and-hold, risk parity, mean-variance)\n\n\n\nDeliverables: - Functional multi-objective optimization algorithms - Efficient portfolios on Pareto frontier - Alternative scenario analyses\n\n\n\n4.5 Stage 5: RL and Backtesting (Jan-Mar/2026)\n\n\n\n\n\n\n🚀 Main Activities\n\n\n\n\nPPO agent training for dynamic strategies\nBacktesting with temporal validation (walk-forward)\nComparison with market benchmarks\n📝 Partial Report 2: March 1, 2026\n🎓 Qualification Seminar: March 15, 2026\n\n\n\nDeliverables: - Trained and validated RL agent - Partial Report 2 (complete results) - Qualification presentation\n\n\n\n4.6 Stage 6: Consolidation and Dissemination (Mar-Jul/2026)\n\n\n\n\n\n\n📄 Main Activities\n\n\n\n\nScientific paper writing (April-June/2026)\n📬 Article submission: July 6, 2026\nPeer review and corrections\nPoster/presentation preparation\n🎤 14th SPPAIC: August 10, 2026\n\n\n\nDeliverables: - Submitted scientific article - Academic poster for SPPAIC - Complementary didactic material - Final project documentation",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#expected-results",
-    "href": "mindmap.html#expected-results",
-    "title": "Research Mindmap",
-    "section": "5 🎯 Expected Results",
-    "text": "5 🎯 Expected Results\n\n5.1 📚 Academic and Scientific\n\n\nPublications: Article in peer-reviewed journal (Quantitative Finance/Applied Econometrics area)\nKnowledge advancement: Unprecedented integration of forecasting, multi-objective optimization, and RL for commodities\nInnovative methodology: Reproducible and scalable framework for portfolio management\nHuman resource training: Scholar capacity building in advanced quantitative methods\n\n\n\n\n5.2 💼 Practical and Applied\n\n\nAnalytical tools: Computational pipeline (R/Python) for decision support\nTrading strategies: Adaptive models with reinforcement learning\nRisk management: Instruments for VaR, ES, and drawdown analysis in portfolios\nApplicability: Solutions for trading companies, agricultural cooperatives, and fund managers\n\n\n\n\n5.3 🔬 Technological Innovation\n\n\nPatent: System/methodology with novelty, inventive activity, and industrial application requirements\nInnovation: Holistic and adaptive integration of advanced techniques (non-obvious to experts)\nDifferential: Temporal multi-objective approach with RL for sequential decisions\nImpact: Positioning Brazil as an innovation hub in applied finance for agribusiness",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#analyzed-commodities",
-    "href": "mindmap.html#analyzed-commodities",
-    "title": "Research Mindmap",
-    "section": "6 🌾 Analyzed Commodities",
-    "text": "6 🌾 Analyzed Commodities\n\n6.1 Grain Market\n\n\n\n\n\n\n\n\nCommodity\nDescription\nMarkets\n\n\n\n\nCorn\nBasic grain for animal feed and ethanol\nCME, B3 (futures contracts)\n\n\nSoybeans\nGrain, meal, and oil - integrated chain\nCME, B3, DCE (China)\n\n\nWheat\nComplement for diversification\nCME, CBOT\n\n\nDerivatives\nSoybean meal, soybean oil\nSpot and futures markets\n\n\n\nData Characteristics: - Daily historical series with sufficient periods for regime analysis - Rolling windows for out-of-sample validation - Futures contract adjustments (rollover) - Technical and fundamental indicators",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#interactive-visual-timeline",
-    "href": "mindmap.html#interactive-visual-timeline",
-    "title": "Research Mindmap",
-    "section": "7 📊 Interactive Visual Timeline",
-    "text": "7 📊 Interactive Visual Timeline\n\n7.1 PAIC 2025/26 Timeline\n\n\n\n\n\ngantt\n    title PAIC 2025/26 - Official FAE Timeline\n    dateFormat YYYY-MM-DD\n    axisFormat %b/%y\n    \n    section Phase 1: Setup\n    PAIC 2025-26 Opening           :milestone, m1, 2025-08-13, 1d\n    Term Signing                   :active, 2025-08-05, 9d\n    Work Plan Preparation          :2025-08-13, 34d\n    Data Infrastructure            :2025-08-20, 41d\n    \n    section Phase 2: Data & Models\n    Collection & Curation          :2025-09-01, 60d\n    GARCH/MSGARCH Modeling         :2025-10-01, 60d\n    ML/DL Prototypes (LSTM)        :2025-10-15, 46d\n    13th SPPAIC                    :milestone, sppaic1, 2025-10-24, 1d\n    Partial Report 1               :milestone, m2, 2025-11-24, 1d\n    \n    section Phase 3: Optimization\n    Multi-Objective Framework      :2025-11-01, 119d\n    NSGA-II/DE Implementation      :2025-11-15, 77d\n    Backtesting & Validation       :2026-01-01, 58d\n    \n    section Phase 4: RL & Strategy\n    RL Environment Setup           :2026-02-01, 58d\n    PPO Agent Training             :2026-02-15, 59d\n    Partial Report 2               :milestone, m3, 2026-03-01, 1d\n    Qualification Seminar          :milestone, m4, 2026-03-15, 1d\n    Strategy Evaluation            :2026-03-01, 60d\n    \n    section Phase 5: Publication\n    Scientific Paper Writing       :2026-04-01, 96d\n    Article Submission             :milestone, m5, 2026-07-06, 1d\n    Peer Review Period             :2026-07-06, 22d\n    Article Corrections            :2026-07-08, 20d\n    Poster Preparation             :2026-07-01, 40d\n    14th SPPAIC                    :milestone, sppaic2, 2026-08-10, 1d",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#connections-between-pillars",
-    "href": "mindmap.html#connections-between-pillars",
-    "title": "Research Mindmap",
-    "section": "8 🔗 Connections Between Pillars",
-    "text": "8 🔗 Connections Between Pillars\n\n8.1 Integrated Methodological Flow\n\n\n\n\n\nflowchart LR\n    A[Historical&lt;br/&gt;Commodity&lt;br/&gt;Data] --&gt; B[PILLAR 1:&lt;br/&gt;Forecasting]\n    B --&gt; C[Return & Risk&lt;br/&gt;Predictions]\n    C --&gt; D[PILLAR 2:&lt;br/&gt;Multi-Objective&lt;br/&gt;Optimization]\n    D --&gt; E[Pareto&lt;br/&gt;Frontier]\n    E --&gt; F[PILLAR 3:&lt;br/&gt;Reinforcement&lt;br/&gt;Learning]\n    F --&gt; G[Dynamic&lt;br/&gt;Strategies]\n    G --&gt; H[Backtesting &&lt;br/&gt;Evaluation]\n    H --&gt; I{Satisfactory&lt;br/&gt;Performance?}\n    I --&gt;|No| B\n    I --&gt;|Yes| J[Publication &&lt;br/&gt;Implementation]\n    \n    style A fill:#f8f9fa,stroke:#003d7a,stroke-width:3px\n    style B fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style D fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style F fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style J fill:#28a745,stroke:#003d7a,stroke-width:3px,color:#fff",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#main-methodological-references",
-    "href": "mindmap.html#main-methodological-references",
-    "title": "Research Mindmap",
-    "section": "9 📖 Main Methodological References",
-    "text": "9 📖 Main Methodological References\n\n\n\n\n\n\n📚 Selected Bibliography\n\n\n\n\n\nForecasting & Volatility: - Ardia et al. (2019) - Markov-Switching GARCH Models in R (MSGARCH Package) - Ramírez & Fadiga (2003) - Forecasting Agricultural Commodity Prices with Asymmetric-Error GARCH Models\nMulti-Objective Optimization: - Zitzler, Laumanns & Thiele (2001) - SPEA2: Improving the Strength Pareto Evolutionary Algorithm - Chen, Weng & Li (2009) - Multiobjective Extremal Optimization for Portfolio Optimization\nReinforcement Learning: - Schulman et al. (2017) - Proximal Policy Optimization Algorithms - Recent applications in quantitative finance and algorithmic trading\nCommodities & Agribusiness: - Guidolin & Pedio (2020) - Forecasting commodity futures returns with stepwise regressions - Zhang et al. (2020) - Forecasting Agricultural Commodity Prices using Model Selection Framework",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#team-and-supervision",
-    "href": "mindmap.html#team-and-supervision",
-    "title": "Research Mindmap",
-    "section": "10 🎓 Team and Supervision",
-    "text": "10 🎓 Team and Supervision\n\n\n10.1 Prof. Dr. Rodrigo Hermont Ozon\nAdvisor / Lead Researcher\n\nEducation: Economist (UFPR), MSc in Economic Development (UFPR)\nPhD: PPGEPS/PUCPR (2022-2026)\nArea: Financial Econometrics, Time Series, Optimization\nInstitution: FAE Business School\n\n\n        \n\n\n\n10.2 PAIC Scholar/Volunteer\nUndergraduate Student\n\nActivities: Data collection, model execution, preliminary analyses\nDevelopment: R/Python programming, quantitative methods\nSupport: Documentation, visualizations, reports\n\nJhonathan, Vanessa, Eduardo PAIC 2025/26",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "mindmap.html#institutional-support",
-    "href": "mindmap.html#institutional-support",
-    "title": "Research Mindmap",
-    "section": "11 🏆 Institutional Support",
-    "text": "11 🏆 Institutional Support\n\n11.0.1 FAE Business School\nThis project is developed within the Support Program for Scientific Initiation (PAIC) of FAE University Center, aligned with strategic areas of:\n\nEnabling Technologies (AI, Big Data, Quantitative Analysis)\nAgribusiness and Applied Finance\nData Science and Econometrics\n\nWebsite: https://fae.edu\nContact: rodrigo.ozon@fae.edu\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\n\nAugust/2025: Official PAIC opening and activity start\nOctober/2025: First presentation at 13th SPPAIC\nNovember/2025: Partial Report 1 delivery\nMarch/2026: Qualification Seminar\nJuly/2026: Scientific article submission\nAugust/2026: Final presentation at 14th SPPAIC\n\n\n\n\n\n\nPAIC Econometrics | FAE Business School Scientific Initiation Project 2025/26 - Curitiba, PR © 2025 All rights reserved",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Research Mindmap"
-    ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About the Project",
+    "objectID": "optimization.html#why-multi-objective-approaches-matter-for-commodities",
+    "href": "optimization.html#why-multi-objective-approaches-matter-for-commodities",
+    "title": "Multi-Objective Framework",
     "section": "",
-    "text": "Advancing Agricultural Finance Through Innovation\nA multidisciplinary team combining expertise in Economics, Data Science, and Quantitative Finance to develop cutting-edge solutions for commodity portfolio management.",
+    "text": "Agricultural commodity markets exhibit unique characteristics that demand multi-objective frameworks:\n\nHigh Volatility Regimes: Commodities experience extreme price swings driven by weather, geopolitics, and supply shocks\nSeasonal Patterns: Production cycles create predictable seasonality requiring dynamic rebalancing\nCorrelation Dynamics: Commodity correlations are non-stationary and regime-dependent\nLiquidity Constraints: Some contracts have limited depth, constraining position sizes\nStorage Costs: Physical commodities incur carrying costs affecting optimal holding periods",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#project-mission",
-    "href": "about.html#project-mission",
-    "title": "About the Project",
-    "section": "1.1 🎯 Project Mission",
-    "text": "1.1 🎯 Project Mission\n\n1.1.1 Our Purpose\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) at FAE Business School represents a strategic evolution of research initiated at PUCPR, now with enhanced objectives:\nCore Mission:\n\nDevelop patentable methodologies for multi-period commodity portfolio optimization\nPublish high-impact scientific research in agricultural finance\nSupport doctoral research on multi-objective optimization\nTrain undergraduate students in advanced quantitative methods\nBridge the gap between academic research and industry applications\n\nResearch Philosophy:\nWe believe in combining rigorous econometric theory with practical machine learning applications, creating solutions that are both academically sound and industrially relevant.",
+    "objectID": "optimization.html#multi-objective-portfolio-optimization-problem",
+    "href": "optimization.html#multi-objective-portfolio-optimization-problem",
+    "title": "Multi-Objective Framework",
+    "section": "2.1 Multi-Objective Portfolio Optimization Problem",
+    "text": "2.1 Multi-Objective Portfolio Optimization Problem\n\n2.1.1 Mathematical Formulation\nConsider a portfolio allocation problem with \\(n\\) assets at time \\(t\\). Let \\(\\mathbf{w}_t = (w_{1,t}, w_{2,t}, \\ldots, w_{n,t})^T\\) represent the portfolio weights, where \\(\\sum_{i=1}^{n} w_{i,t} = 1\\) and \\(w_{i,t} \\geq 0\\) (long-only constraint).\nWe define the multi-objective optimization problem as:\n\\[\n\\begin{aligned}\n\\max_{\\mathbf{w}_t} \\quad & f_1(\\mathbf{w}_t) = \\mathbb{E}[R_p(\\mathbf{w}_t)] \\quad \\text{(Expected Return)} \\\\\n\\min_{\\mathbf{w}_t} \\quad & f_2(\\mathbf{w}_t) = \\text{Var}[R_p(\\mathbf{w}_t)] \\quad \\text{(Portfolio Variance)} \\\\\n\\max_{\\mathbf{w}_t} \\quad & f_3(\\mathbf{w}_t) = \\text{Div}(\\mathbf{w}_t) \\quad \\text{(Diversification Index)} \\\\\n\\text{subject to:} \\quad & \\sum_{i=1}^{n} w_{i,t} = 1 \\\\\n& w_{i,t} \\geq 0, \\quad \\forall i\n\\end{aligned}\n\\]\nWhere: - \\(R_p(\\mathbf{w}_t) = \\sum_{i=1}^{n} w_{i,t} R_{i,t}\\) is the portfolio return - \\(\\text{Div}(\\mathbf{w}_t) = 1 - \\sqrt{\\sum_{i=1}^{n} w_{i,t}^2}\\) is the diversification ratio\n\n\n2.1.2 Pareto Dominance and Optimality\n\n\n\n\n\n\nPareto Dominance\n\n\n\nA solution \\(\\mathbf{w}^A\\) dominates another solution \\(\\mathbf{w}^B\\) (denoted \\(\\mathbf{w}^A \\succ \\mathbf{w}^B\\)) if and only if:\n\\[\n\\begin{cases}\nf_i(\\mathbf{w}^A) \\geq f_i(\\mathbf{w}^B), & \\forall i \\in \\{1, 2, \\ldots, m\\} \\\\\n\\exists j: f_j(\\mathbf{w}^A) &gt; f_j(\\mathbf{w}^B)\n\\end{cases}\n\\]\nA solution is Pareto-optimal if no other feasible solution dominates it.\n\n\nThe set of all Pareto-optimal solutions forms the Pareto Frontier (or Pareto Front), representing the best possible trade-offs among objectives.",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#meet-the-team",
-    "href": "about.html#meet-the-team",
-    "title": "About the Project",
-    "section": "1.2 👥 Meet the Team",
-    "text": "1.2 👥 Meet the Team\n\n\n\n\n1.2.1 Prof. Rodrigo Hermont Ozon\nPrincipal Investigator & Research Advisor\nEconomist (UFPR, 2008) and MSc in Economic Development (UFPR, 2010), currently pursuing a PhD in Production and Systems Engineering (PPGEPS/PUCPR, 2022-2026). His doctoral thesis focuses on multi-objective multi-period optimization of agricultural commodity portfolios using time series forecasting, multi-criteria decision-making, and reinforcement learning.\nResearch Expertise:\n\nEconometric modeling and time series analysis\nMulti-objective optimization algorithms\nAgricultural commodity markets\nQuantitative finance and risk management\nIntegration of R and Python for financial modeling\n\nAcademic Background:\n\n15+ years of experience in econometric research\nPublished research in agricultural economics and quantitative methods\nExtensive experience with Quarto, R, and Python ecosystems\nIndustry consulting in commodity markets\n\nTime Series Forecasting Multi-Objective Optimization R & Python Agricultural Finance\nContact:\n\n              \n\n\n\n\n\n\n1.2.2 Jhonatan [Sobrenome]\nResearch Student | Data Science for Business\nUndergraduate student in Data Science for Business at FAE Business School, specializing in machine learning applications for financial forecasting.\nResearch Focus:\n\nMachine learning model development\nPython programming and data analysis\nNeural network architectures (LSTM, GRU)\nFeature engineering for time series\nModel validation and backtesting\n\nProject Contributions:\n\nDevelopment of predictive ML models for commodity prices\nImplementation of ensemble forecasting techniques\nPython-based data pipeline automation\nModel performance benchmarking\n\nPython Machine Learning Deep Learning Time Series\nAreas of Interest: Quantitative trading, algorithmic finance, artificial intelligence\nContact:\n\n           \n\n\n\n\n\n\n1.2.3 Eduardo [Sobrenome]\nResearch Student | Data Science for Business\nUndergraduate student in Data Science for Business at FAE Business School, focusing on data visualization and web application development.\nResearch Focus:\n\nInteractive dashboard development\nStreamLit application deployment\nData visualization best practices\nWeb-based analytics platforms\nUser interface design for financial tools\n\nProject Contributions:\n\nDevelopment of interactive dashboards for model results\nStreamLit deployment for research demonstrations\nData visualization using Plotly and other libraries\nUser experience optimization for research outputs\n\nPython StreamLit Data Visualization Web Development\nAreas of Interest: FinTech applications, data storytelling, interactive analytics\nContact:\n\n           \n\n\n\n\n\n\n1.2.4 Vanessa Monn\nResearch Student | Economics\nUndergraduate student in Economics at FAE Business School, bringing strong foundations in economic theory and market analysis.\nResearch Focus:\n\nAgricultural commodity market dynamics\nEconomic theory applications in portfolio management\nMarket microstructure analysis\nEconometric modeling\nLiterature review and theoretical frameworks\n\nProject Contributions:\n\nEconomic analysis of commodity markets\nLiterature review on portfolio optimization\nMarket research and data collection\nEconometric model specification\nIntegration of economic theory with quantitative methods\n\nEconomic Theory Econometrics Market Analysis R Programming\nAreas of Interest: Agricultural economics, financial markets, applied econometrics\nContact:",
+    "objectID": "optimization.html#evolutionary-multi-objective-algorithms",
+    "href": "optimization.html#evolutionary-multi-objective-algorithms",
+    "title": "Multi-Objective Framework",
+    "section": "2.2 Evolutionary Multi-Objective Algorithms",
+    "text": "2.2 Evolutionary Multi-Objective Algorithms\n\n2.2.1 NSGA-II (Non-dominated Sorting Genetic Algorithm II)\nNSGA-II (Deb et al., 2002) is one of the most widely used multi-objective evolutionary algorithms. Key features:\n\nFast Non-dominated Sorting: Ranks solutions by dominance levels\nCrowding Distance: Preserves diversity by favoring solutions in less crowded regions\nElitism: Retains best solutions across generations\n\nAlgorithm Steps:\n\n\n\n\n\nflowchart TD\n    A[Initialize Random Population P_0] --&gt; B[Evaluate Objectives f_1, f_2, ..., f_m]\n    B --&gt; C[Non-dominated Sorting]\n    C --&gt; D[Calculate Crowding Distance]\n    D --&gt; E[Selection Tournament]\n    E --&gt; F[Crossover SBX]\n    F --&gt; G[Polynomial Mutation]\n    G --&gt; H[Create Offspring Q_t]\n    H --&gt; I[Combine P_t ∪ Q_t]\n    I --&gt; J[Non-dominated Sorting of Combined]\n    J --&gt; K[Select Best N Solutions for P_t+1]\n    K --&gt; L{Convergence?}\n    L --&gt;|No| E\n    L --&gt;|Yes| M[Return Pareto Front]\n    \n    style A fill:#003d7a,color:#fff\n    style M fill:#28a745,color:#fff\n    style L fill:#ffc107,color:#000\n    \n\n\n\n\n\n\n\n\n2.2.2 Differential Evolution (DE)\nDifferential Evolution is a population-based stochastic optimization algorithm particularly effective for continuous optimization:\n\\[\n\\mathbf{v}_{i,t+1} = \\mathbf{x}_{r1,t} + F \\cdot (\\mathbf{x}_{r2,t} - \\mathbf{x}_{r3,t})\n\\]\nWhere: - \\(\\mathbf{v}_{i,t+1}\\) is the mutant vector - \\(F \\in [0,2]\\) is the scaling factor - \\(r1, r2, r3\\) are randomly selected distinct indices\n\n\n2.2.3 Multi-Objective Differential Evolution (MODE)\nMODE extends DE to handle multiple objectives using Pareto dominance for selection.",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#academic-context",
-    "href": "about.html#academic-context",
-    "title": "About the Project",
-    "section": "1.3 🎓 Academic Context",
-    "text": "1.3 🎓 Academic Context\n\n1.3.1 FAE Business School\n\nFounded in 1957, FAE Centro Universitário is one of Brazil’s most prestigious business schools, located in Curitiba, Paraná. FAE is recognized for:\n\nExcellence in business and economics education\nStrong industry partnerships\nCommitment to scientific research\nModern facilities and technology infrastructure\nStrategic location in one of Brazil’s economic hubs\n\nPAIC Program:\nThe PAIC (Programa de Apoio à Iniciação Científica) is FAE’s scientific initiation program that supports undergraduate research projects, fostering academic excellence and preparing students for graduate studies and professional careers in research.\n\n\n\n1.3.2 Project Lineage\n\n\n\n\n\n\n🔗 Connection to Previous Research\n\n\n\nThis project builds upon and extends research initiated at PUCPR (Pontifícia Universidade Católica do Paraná) under the PIBIC and PIBITI Jr. programs.\nPrevious Project:\nPIBIC AgroFinance - PUCPR\nThe FAE project expands the scope with: - Enhanced multi-objective optimization framework - Integration of reinforcement learning strategies - Focus on patent-ready methodologies - Expanded team with diverse expertise - Broader publication strategy",
+    "objectID": "optimization.html#dynamic-multi-period-optimization",
+    "href": "optimization.html#dynamic-multi-period-optimization",
+    "title": "Multi-Objective Framework",
+    "section": "2.3 Dynamic Multi-Period Optimization",
+    "text": "2.3 Dynamic Multi-Period Optimization\n\n2.3.1 Time-Varying Objectives\nIn reality, commodity portfolios require dynamic rebalancing as market conditions evolve. We extend the framework to multi-period optimization:\n\\[\n\\max_{\\{\\mathbf{w}_1, \\mathbf{w}_2, \\ldots, \\mathbf{w}_T\\}} \\sum_{t=1}^{T} \\left[ \\lambda_t \\cdot f_1(\\mathbf{w}_t) - \\gamma_t \\cdot f_2(\\mathbf{w}_t) + \\delta_t \\cdot f_3(\\mathbf{w}_t) - \\kappa \\cdot TC(\\mathbf{w}_t, \\mathbf{w}_{t-1}) \\right]\n\\]\nWhere: - \\(TC(\\mathbf{w}_t, \\mathbf{w}_{t-1}) = \\sum_{i=1}^{n} c_i |w_{i,t} - w_{i,t-1}|\\) represents transaction costs - \\(\\lambda_t, \\gamma_t, \\delta_t\\) are time-varying preference weights\n\n\n2.3.2 Rolling Horizon Approach\nWe implement a rolling window strategy:\n\n\n\n\n\nflowchart LR\n    A[\"t=1: Train on data 1 to 250\"] --&gt; B[\"Optimize Portfolio w1\"]\n    B --&gt; C[\"t=2: Train on data 2 to 251\"]\n    C --&gt; D[\"Optimize Portfolio w2\"]\n    D --&gt; E[\"t=3: Train on data 3 to 252\"]\n    E --&gt; F[\"...\"]\n    F --&gt; G[\"t=T: Train on data T to T+249\"]\n    G --&gt; H[\"Optimize Portfolio wT\"]\n    \n    style A fill:#003d7a,color:#fff\n    style H fill:#28a745,color:#fff",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#research-methodology",
-    "href": "about.html#research-methodology",
-    "title": "About the Project",
-    "section": "1.4 🔬 Research Methodology",
-    "text": "1.4 🔬 Research Methodology\nOur interdisciplinary approach combines:\n\n1.4.1 📊 Econometric Foundations\n\nClassical time series analysis (ARIMA, VAR)\nVolatility modeling (GARCH family)\nBayesian econometrics\nCointegration and causality testing\n\n\n\n1.4.2 🤖 Machine Learning Integration\n\nSupervised learning for prediction\nDeep learning for complex patterns\nEnsemble methods for robustness\nFeature importance analysis\n\n\n\n1.4.3 🎯 Optimization Techniques\n\nMulti-objective evolutionary algorithms\nPareto frontier exploration\nFuzzy multi-criteria decision making\nDynamic programming approaches\n\n\n\n1.4.4 🧠 Reinforcement Learning\n\nQ-Learning and DQN for portfolio selection\nPolicy gradient methods\nMulti-agent systems\nAdaptive strategy development",
+    "objectID": "optimization.html#data-acquisition-and-preprocessing",
+    "href": "optimization.html#data-acquisition-and-preprocessing",
+    "title": "Multi-Objective Framework",
+    "section": "3.1 Data Acquisition and Preprocessing",
+    "text": "3.1 Data Acquisition and Preprocessing\nLet’s apply the multi-objective framework to a real portfolio of agricultural commodity futures:\n\n\nCode\n# Load required packages\nlibrary(quantmod)\nlibrary(PerformanceAnalytics)\nlibrary(tidyverse)\nlibrary(plotly)\nlibrary(mco)          # Multi-criteria optimization\nlibrary(GA)           # Genetic algorithms\nlibrary(DEoptim)      # Differential evolution\nlibrary(RiskPortfolios) # Risk parity and other advanced methods\nlibrary(PortfolioAnalytics) # Comprehensive portfolio optimization\nlibrary(knitr)\nlibrary(kableExtra)\n\n# Set seed for reproducibility\nset.seed(42)\n\n\n\n3.1.1 Fetching Commodity Futures Data\n\n\nCode\n# Define commodity tickers\ntickers &lt;- c(\n  \"ZC=F\",  # Corn Futures\n  \"ZW=F\",  # Wheat Futures (Chicago)\n  \"KE=F\",  # KC HRW Wheat Futures (Kansas City)\n  \"ZR=F\",  # Rough Rice Futures\n  \"GF=F\",  # Feeder Cattle Futures\n  \"ZS=F\",  # Soybean Futures\n  \"ZM=F\",  # Soybean Meal Futures\n  \"ZL=F\"   # Soybean Oil Futures\n)\n\n# Fetch historical price data\nportfolioPrices &lt;- NULL\nfor (Ticker in tickers) {\n  tryCatch({\n    data &lt;- getSymbols.yahoo(\n      Ticker, \n      from = \"2019-01-01\", \n      auto.assign = FALSE\n    )[, 4]  # Close price\n    portfolioPrices &lt;- cbind(portfolioPrices, data)\n  }, error = function(e) {\n    cat(\"Error fetching\", Ticker, \":\", e$message, \"\\n\")\n  })\n}\n\n# Remove rows with missing data\nportfolioPrices &lt;- portfolioPrices[complete.cases(portfolioPrices), ]\n\n# Assign meaningful column names\ncolnames(portfolioPrices) &lt;- c(\n  \"Corn\", \"Wheat_CHI\", \"Wheat_KC\", \"Rice\", \n  \"Feeder_Cattle\", \"Soybeans\", \"Soy_Meal\", \"Soy_Oil\"\n)\n\n# Display summary\ncat(\"Data Period:\", format(start(portfolioPrices), \"%Y-%m-%d\"), \"to\", \n    format(end(portfolioPrices), \"%Y-%m-%d\"), \"\\n\")\n\n\nData Period: 2019-01-02 to 2025-10-21 \n\n\nCode\ncat(\"Number of Assets:\", ncol(portfolioPrices), \"\\n\")\n\n\nNumber of Assets: 8 \n\n\nCode\ncat(\"Number of Observations:\", nrow(portfolioPrices), \"\\n\")\n\n\nNumber of Observations: 1712 \n\n\n\n\nCode\n# Display most recent prices\ntail(portfolioPrices) %&gt;%\n  as.data.frame() %&gt;%\n  rownames_to_column(\"Date\") %&gt;%\n  kable(\n    caption = \"Recent Commodity Futures Prices (Last 6 Trading Days)\",\n    digits = 2,\n    format.args = list(big.mark = \",\")\n  ) %&gt;%\n  kable_styling(\n    bootstrap_options = c(\"striped\", \"hover\", \"condensed\"),\n    full_width = FALSE\n  )\n\n\n\nRecent Commodity Futures Prices (Last 6 Trading Days)\n\n\nDate\nCorn\nWheat_CHI\nWheat_KC\nRice\nFeeder_Cattle\nSoybeans\nSoy_Meal\nSoy_Oil\n\n\n\n\n2025-10-14\n413.00\n500.25\n488.50\n1,072.5\n380.17\n1,006.50\n267.0\n49.92\n\n\n2025-10-15\n416.75\n498.75\n488.25\n1,058.5\n379.73\n1,006.50\n275.9\n50.80\n\n\n2025-10-16\n421.75\n502.50\n488.75\n1,069.0\n379.67\n1,010.75\n276.9\n50.87\n\n\n2025-10-17\n422.50\n503.75\n491.50\n1,062.0\n371.95\n1,019.50\n281.0\n51.13\n\n\n2025-10-20\n423.25\n504.75\n490.00\n1,048.0\n372.95\n1,031.75\n285.0\n51.31\n\n\n2025-10-21\n419.75\n500.25\n485.00\n1,047.0\n372.92\n1,030.75\n286.9\n50.65\n\n\n\n\n\n\n\n3.1.2 Calculate Returns and Risk Metrics\n\n\nCode\n# Calculate log returns\nreturns &lt;- na.omit(Return.calculate(portfolioPrices, method = \"log\"))\n\n# Calculate annualized statistics\nannual_returns &lt;- apply(returns, 2, function(x) mean(x, na.rm = TRUE) * 252)\nannual_volatility &lt;- apply(returns, 2, function(x) sd(x, na.rm = TRUE) * sqrt(252))\nsharpe_ratios &lt;- annual_returns / annual_volatility\n\n# Create summary table\nrisk_return_summary &lt;- data.frame(\n  Asset = colnames(returns),\n  Annual_Return = round(annual_returns * 100, 2),\n  Annual_Volatility = round(annual_volatility * 100, 2),\n  Sharpe_Ratio = round(sharpe_ratios, 3),\n  Max_Drawdown = round(apply(returns, 2, function(x) \n    maxDrawdown(x)) * 100, 2)\n)\n\nrisk_return_summary %&gt;%\n  arrange(desc(Sharpe_Ratio)) %&gt;%\n  kable(\n    caption = \"Risk-Return Profile of Agricultural Commodity Futures\",\n    col.names = c(\"Asset\", \"Return (%)\", \"Volatility (%)\", \n                  \"Sharpe Ratio\", \"Max DD (%)\")\n  ) %&gt;%\n  kable_styling(\n    bootstrap_options = c(\"striped\", \"hover\"),\n    full_width = FALSE\n  ) %&gt;%\n  row_spec(0, bold = TRUE, background = \"#003d7a\", color = \"white\")\n\n\n\nRisk-Return Profile of Agricultural Commodity Futures\n\n\n\nAsset\nReturn (%)\nVolatility (%)\nSharpe Ratio\nMax DD (%)\n\n\n\n\nFeeder_Cattle\nFeeder_Cattle\n13.62\n18.54\n0.734\n30.56\n\n\nSoy_Oil\nSoy_Oil\n8.78\n29.56\n0.297\n62.47\n\n\nSoybeans\nSoybeans\n2.08\n20.78\n0.100\n50.09\n\n\nCorn\nCorn\n1.63\n27.67\n0.059\n60.56\n\n\nRice\nRice\n0.55\n253.14\n0.002\n1600.48\n\n\nWheat_CHI\nWheat_CHI\n-0.19\n32.89\n-0.006\n71.81\n\n\nWheat_KC\nWheat_KC\n-0.23\n31.83\n-0.007\n70.26\n\n\nSoy_Meal\nSoy_Meal\n-1.19\n27.09\n-0.044\n57.27\n\n\n\n\n\n\n\n3.1.3 Interactive Price Visualization\n\n\nCode\n# Normalize prices to 100 for comparison\nnormalized_prices &lt;- 100 * portfolioPrices / \n  matrix(rep(as.numeric(portfolioPrices[1, ]), nrow(portfolioPrices)), \n         nrow = nrow(portfolioPrices), byrow = TRUE)\n\n# Create interactive plot\nplot_ly() %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Corn\"]),\n    name = \"Corn\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#003d7a', width = 2)\n  ) %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Wheat_CHI\"]),\n    name = \"Wheat (Chicago)\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#4a90e2', width = 2)\n  ) %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Wheat_KC\"]),\n    name = \"Wheat (KC)\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#0056b3', width = 2)\n  ) %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Rice\"]),\n    name = \"Rice\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#28a745', width = 2)\n  ) %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Feeder_Cattle\"]),\n    name = \"Feeder Cattle\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#ff6b35', width = 2)\n  ) %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Soybeans\"]),\n    name = \"Soybeans\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#ffc107', width = 2)\n  ) %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Soy_Meal\"]),\n    name = \"Soybean Meal\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#6c757d', width = 2)\n  ) %&gt;%\n  add_trace(\n    x = index(normalized_prices), \n    y = as.numeric(normalized_prices[, \"Soy_Oil\"]),\n    name = \"Soybean Oil\", \n    type = 'scatter', \n    mode = 'lines',\n    line = list(color = '#495057', width = 2)\n  ) %&gt;%\n  layout(\n    title = list(\n      text = \"Normalized Price Evolution of Agricultural Commodities (Base 100)\",\n      font = list(family = \"Montserrat\", size = 18, color = \"#003d7a\")\n    ),\n    xaxis = list(\n      title = \"Date\",\n      showgrid = TRUE,\n      gridcolor = \"#e0e0e0\"\n    ),\n    yaxis = list(\n      title = \"Normalized Price Index\",\n      showgrid = TRUE,\n      gridcolor = \"#e0e0e0\"\n    ),\n    hovermode = \"x unified\",\n    legend = list(\n      x = 0.02,\n      y = 0.98,\n      bgcolor = \"rgba(255,255,255,0.9)\"\n    ),\n    plot_bgcolor = \"#f8f9fa\",\n    paper_bgcolor = \"white\"\n  )\n\n\n\n\n\n\n\n\n3.1.4 Correlation Analysis\n\n\nCode\n# Calculate correlation matrix\ncor_matrix &lt;- cor(returns)\n\n# Create interactive correlation heatmap\nplot_ly(\n  x = colnames(cor_matrix),\n  y = colnames(cor_matrix),\n  z = cor_matrix,\n  type = \"heatmap\",\n  colors = colorRamp(c(\"#003d7a\", \"white\", \"#ff6b35\")),\n  colorbar = list(title = \"Correlation\")\n) %&gt;%\n  layout(\n    title = list(\n      text = \"Correlation Matrix: Agricultural Commodity Returns\",\n      font = list(family = \"Montserrat\", size = 18, color = \"#003d7a\")\n    ),\n    xaxis = list(title = \"\", tickangle = -45),\n    yaxis = list(title = \"\"),\n    plot_bgcolor = \"white\",\n    paper_bgcolor = \"white\"\n  )\n\n\n\n\n\n\n\n\n\n\n\n\nCorrelation Insights\n\n\n\n\nHigh correlation (&gt; 0.7): Wheat varieties, Soybean complex (beans, meal, oil)\nLow correlation (&lt; 0.3): Feeder Cattle vs. grains → diversification opportunity\nNegative correlation: Rice occasionally shows negative correlation with other grains",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#technical-infrastructure",
-    "href": "about.html#technical-infrastructure",
-    "title": "About the Project",
-    "section": "1.5 🛠️ Technical Infrastructure",
-    "text": "1.5 🛠️ Technical Infrastructure\n\n1.5.1 Tools & Technologies\nDevelopment Environment:\n\nIDEs: RStudio, Positron, VS Code, Jupyter\nLanguages: R (primary), Python (secondary), SQL\nDocumentation: Quarto publishing system\nVersion Control: Git/GitHub\nDeployment: GitHub Pages\n\nKey R Packages:\ntidyverse • forecast • rugarch • quantmod • PerformanceAnalytics • portfolioAnalytics • DEoptim • mco • bayesforecast\nKey Python Libraries:\npandas • numpy • scikit-learn • tensorflow • pytorch • stable-baselines3 • gym • plotly • streamlit\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ commodity indices\nUSDA agricultural reports\nNews APIs (for sentiment analysis)",
+    "objectID": "optimization.html#multi-objective-portfolio-optimization-with-nsga-ii",
+    "href": "optimization.html#multi-objective-portfolio-optimization-with-nsga-ii",
+    "title": "Multi-Objective Framework",
+    "section": "3.2 Multi-Objective Portfolio Optimization with NSGA-II",
+    "text": "3.2 Multi-Objective Portfolio Optimization with NSGA-II\n\n3.2.1 Define Objective Functions\n\n\nCode\n# Calculate expected returns and covariance matrix\nmu &lt;- colMeans(returns)\nSigma &lt;- cov(returns)\nn_assets &lt;- ncol(returns)\n\n# Objective 1: Maximize Expected Return (Minimize negative return)\nobjective_return &lt;- function(weights) {\n  -sum(weights * mu)  # Negative because we minimize\n}\n\n# Objective 2: Minimize Portfolio Variance (Risk)\nobjective_variance &lt;- function(weights) {\n  as.numeric(t(weights) %*% Sigma %*% weights)\n}\n\n# Objective 3: Maximize Diversification (Minimize concentration)\n# Using Herfindahl Index: lower is more diversified\nobjective_diversification &lt;- function(weights) {\n  sum(weights^2)  # Minimize concentration\n}\n\n# Combined fitness function for NSGA-II\nfitness_function &lt;- function(weights) {\n  # Normalize weights to sum to 1\n  weights &lt;- weights / sum(weights)\n  \n  return(c(\n    objective_return(weights),\n    objective_variance(weights),\n    objective_diversification(weights)\n  ))\n}\n\n\n\n\n3.2.2 Run NSGA-II Optimization\n\n\nCode\n# NSGA-II using mco package\nset.seed(42)\n\n# Define bounds (long-only constraints)\nlower_bounds &lt;- rep(0, n_assets)\nupper_bounds &lt;- rep(1, n_assets)\n\n# Run NSGA-II\nnsga2_result &lt;- nsga2(\n  fn = fitness_function,\n  idim = n_assets,        # Number of decision variables\n  odim = 3,               # Number of objectives\n  lower.bounds = lower_bounds,\n  upper.bounds = upper_bounds,\n  popsize = 100,          # Population size\n  generations = 200,      # Number of generations\n  cprob = 0.9,            # Crossover probability\n  cdist = 10,             # Crossover distribution index\n  mprob = 1/n_assets,     # Mutation probability\n  mdist = 20              # Mutation distribution index\n)\n\ncat(\"NSGA-II Optimization Complete!\\n\")\n\n\nNSGA-II Optimization Complete!\n\n\nCode\ncat(\"Number of Pareto-optimal solutions:\", nrow(nsga2_result$par), \"\\n\")\n\n\nNumber of Pareto-optimal solutions: 100 \n\n\n\n\n3.2.3 Extract and Normalize Pareto-Optimal Solutions\n\n\nCode\n# Extract Pareto-optimal portfolio weights\npareto_weights &lt;- nsga2_result$par\n\n# Normalize weights to sum to 1\npareto_weights_normalized &lt;- t(apply(pareto_weights, 1, function(w) w / sum(w)))\n\n# Extract objective values\npareto_objectives &lt;- nsga2_result$value\n\n# Convert to dataframe for analysis\npareto_df &lt;- as.data.frame(pareto_objectives)\ncolnames(pareto_df) &lt;- c(\"Neg_Return\", \"Variance\", \"Concentration\")\n\n# Convert negative return back to positive\npareto_df$Expected_Return &lt;- -pareto_df$Neg_Return * 252  # Annualized\npareto_df$Volatility &lt;- sqrt(pareto_df$Variance) * sqrt(252)  # Annualized\npareto_df$Diversification_Index &lt;- 1 - pareto_df$Concentration\n\n# Add Sharpe Ratio\npareto_df$Sharpe_Ratio &lt;- pareto_df$Expected_Return / pareto_df$Volatility\n\n# Display summary statistics\ncat(\"Pareto Frontier Summary:\\n\")\n\n\nPareto Frontier Summary:\n\n\nCode\nsummary(pareto_df[, c(\"Expected_Return\", \"Volatility\", \"Sharpe_Ratio\")])\n\n\n Expected_Return     Volatility      Sharpe_Ratio    \n Min.   :0.03118   Min.   :0.1296   Min.   :0.08726  \n 1st Qu.:0.06458   1st Qu.:0.1608   1st Qu.:0.23108  \n Median :0.09383   Median :0.1945   Median :0.51266  \n Mean   :0.09128   Mean   :0.2222   Mean   :0.48721  \n 3rd Qu.:0.11997   3rd Qu.:0.2776   3rd Qu.:0.76006  \n Max.   :0.13582   Max.   :0.3872   Max.   :0.78527  \n\n\n\n\n3.2.4 Visualize 3D Pareto Frontier\n\n\nCode\n# Create 3D Pareto frontier plot\nplot_ly(\n  pareto_df,\n  x = ~Expected_Return * 100,\n  y = ~Volatility * 100,\n  z = ~Diversification_Index,\n  type = \"scatter3d\",\n  mode = \"markers\",\n  marker = list(\n    size = 5,\n    color = ~Sharpe_Ratio,\n    colorscale = list(\n      c(0, \"#003d7a\"),\n      c(0.5, \"#4a90e2\"),\n      c(1, \"#28a745\")\n    ),\n    colorbar = list(title = \"Sharpe&lt;br&gt;Ratio\"),\n    line = list(color = \"white\", width = 1)\n  ),\n  text = ~paste(\n    \"Return:\", round(Expected_Return * 100, 2), \"%&lt;br&gt;\",\n    \"Volatility:\", round(Volatility * 100, 2), \"%&lt;br&gt;\",\n    \"Diversification:\", round(Diversification_Index, 3), \"&lt;br&gt;\",\n    \"Sharpe:\", round(Sharpe_Ratio, 3)\n  ),\n  hoverinfo = \"text\"\n) %&gt;%\n  layout(\n    title = list(\n      text = \"3D Pareto Frontier: Return vs. Risk vs. Diversification\",\n      font = list(family = \"Montserrat\", size = 18, color = \"#003d7a\")\n    ),\n    scene = list(\n      xaxis = list(title = \"Expected Return (%)\"),\n      yaxis = list(title = \"Volatility (%)\"),\n      zaxis = list(title = \"Diversification Index\"),\n      camera = list(\n        eye = list(x = 1.5, y = 1.5, z = 1.3)\n      )\n    ),\n    paper_bgcolor = \"white\"\n  )\n\n\n\n\n\n\n\n\n3.2.5 2D Pareto Frontier Projections\n\n\nCode\n# Plot 1: Classic Risk-Return Trade-off\np1 &lt;- plot_ly(\n  pareto_df,\n  x = ~Volatility * 100,\n  y = ~Expected_Return * 100,\n  type = \"scatter\",\n  mode = \"markers\",\n  marker = list(\n    size = 8,\n    color = ~Sharpe_Ratio,\n    colorscale = list(c(0, \"#003d7a\"), c(1, \"#28a745\")),\n    colorbar = list(title = \"Sharpe\"),\n    line = list(color = \"white\", width = 1)\n  ),\n  text = ~paste(\"SR:\", round(Sharpe_Ratio, 3)),\n  hoverinfo = \"x+y+text\"\n) %&gt;%\n  layout(\n    title = \"Return-Risk Trade-off (Pareto Frontier)\",\n    xaxis = list(title = \"Volatility (Annual %)\"),\n    yaxis = list(title = \"Expected Return (Annual %)\"),\n    plot_bgcolor = \"#f8f9fa\"\n  )\n\n# Plot 2: Return vs. Diversification\np2 &lt;- plot_ly(\n  pareto_df,\n  x = ~Diversification_Index,\n  y = ~Expected_Return * 100,\n  type = \"scatter\",\n  mode = \"markers\",\n  marker = list(\n    size = 8,\n    color = ~Volatility * 100,\n    colorscale = list(c(0, \"#28a745\"), c(1, \"#ff6b35\")),\n    colorbar = list(title = \"Vol (%)\"),\n    line = list(color = \"white\", width = 1)\n  ),\n  hoverinfo = \"x+y\"\n) %&gt;%\n  layout(\n    title = \"Return-Diversification Trade-off\",\n    xaxis = list(title = \"Diversification Index\"),\n    yaxis = list(title = \"Expected Return (Annual %)\"),\n    plot_bgcolor = \"#f8f9fa\"\n  )\n\n# Display plots\np1\n\n\n\n\n\n\nCode\np2",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#research-timeline",
-    "href": "about.html#research-timeline",
-    "title": "About the Project",
-    "section": "1.6 📚 Research Timeline",
-    "text": "1.6 📚 Research Timeline\n\n\n\n\n\ngantt\n    title PAIC 2025/26 - Official Timeline\n    dateFormat YYYY-MM-DD\n    axisFormat %b/%y\n    \n    section Phase 1 Setup\n    Opening PAIC 2025-26           :milestone, m1, 2025-08-13, 1d\n    Term Signing                   :active, 2025-08-05, 9d\n    Work Plan Preparation          :2025-08-13, 34d\n    Data Infrastructure            :2025-08-20, 41d\n    \n    section Phase 2 Data Models\n    Data Collection Curation       :2025-09-01, 60d\n    GARCH MSGARCH Modeling         :2025-10-01, 60d\n    ML DL Prototypes LSTM          :2025-10-15, 46d\n    Partial Report 1               :milestone, m2, 2025-11-24, 1d\n    \n    section Phase 3 Optimization\n    Multi-Objective Framework      :2025-11-01, 119d\n    NSGA-II DE Implementation      :2025-11-15, 77d\n    Backtesting Validation         :2026-01-01, 58d\n    Partial Report 2               :milestone, m3, 2026-03-01, 1d\n    \n    section Phase 4 RL Strategy\n    RL Environment Setup           :2026-02-01, 58d\n    Agent Training PPO             :2026-02-15, 59d\n    Qualification Seminar          :milestone, m4, 2026-03-15, 1d\n    Strategy Evaluation            :2026-03-01, 60d\n    \n    section Phase 5 Publication\n    Scientific Paper Writing       :2026-04-01, 96d\n    Article Submission             :milestone, m5, 2026-07-06, 1d\n    Peer Review Period             :2026-07-06, 22d\n    Article Corrections            :2026-07-08, 20d\n    Poster Preparation             :2026-07-01, 40d\n    \n    section Deliverables\n    13th SPPAIC Symposium          :milestone, m6, 2025-10-24, 1d\n    14th SPPAIC Symposium          :milestone, m7, 2026-08-10, 1d\n    Final Article Delivery         :milestone, m8, 2026-07-06, 1d",
+    "objectID": "optimization.html#selecting-strategic-portfolios-from-pareto-frontier",
+    "href": "optimization.html#selecting-strategic-portfolios-from-pareto-frontier",
+    "title": "Multi-Objective Framework",
+    "section": "3.3 Selecting Strategic Portfolios from Pareto Frontier",
+    "text": "3.3 Selecting Strategic Portfolios from Pareto Frontier\n\n3.3.1 Identify Key Strategic Allocations\n\n\nCode\n# Strategy 1: Maximum Sharpe Ratio Portfolio\nidx_max_sharpe &lt;- which.max(pareto_df$Sharpe_Ratio)\nweights_max_sharpe &lt;- pareto_weights_normalized[idx_max_sharpe, ]\n\n# Strategy 2: Minimum Variance Portfolio\nidx_min_var &lt;- which.min(pareto_df$Variance)\nweights_min_var &lt;- pareto_weights_normalized[idx_min_var, ]\n\n# Strategy 3: Maximum Diversification Portfolio\nidx_max_div &lt;- which.max(pareto_df$Diversification_Index)\nweights_max_div &lt;- pareto_weights_normalized[idx_max_div, ]\n\n# Strategy 4: Maximum Return Portfolio (accepting higher risk)\nidx_max_return &lt;- which.max(pareto_df$Expected_Return)\nweights_max_return &lt;- pareto_weights_normalized[idx_max_return, ]\n\n# Create comparison table\nstrategic_portfolios &lt;- data.frame(\n  Portfolio = c(\"Max Sharpe\", \"Min Variance\", \"Max Diversification\", \"Max Return\"),\n  Return_Annual = c(\n    pareto_df$Expected_Return[idx_max_sharpe],\n    pareto_df$Expected_Return[idx_min_var],\n    pareto_df$Expected_Return[idx_max_div],\n    pareto_df$Expected_Return[idx_max_return]\n  ) * 100,\n  Volatility_Annual = c(\n    pareto_df$Volatility[idx_max_sharpe],\n    pareto_df$Volatility[idx_min_var],\n    pareto_df$Volatility[idx_max_div],\n    pareto_df$Volatility[idx_max_return]\n  ) * 100,\n  Sharpe = c(\n    pareto_df$Sharpe_Ratio[idx_max_sharpe],\n    pareto_df$Sharpe_Ratio[idx_min_var],\n    pareto_df$Sharpe_Ratio[idx_max_div],\n    pareto_df$Sharpe_Ratio[idx_max_return]\n  ),\n  Diversification = c(\n    pareto_df$Diversification_Index[idx_max_sharpe],\n    pareto_df$Diversification_Index[idx_min_var],\n    pareto_df$Diversification_Index[idx_max_div],\n    pareto_df$Diversification_Index[idx_max_return]\n  )\n)\n\nstrategic_portfolios %&gt;%\n  kable(\n    digits = 3,\n    col.names = c(\"Strategy\", \"Return (%)\", \"Volatility (%)\", \n                  \"Sharpe Ratio\", \"Div. Index\"),\n    caption = \"Strategic Portfolio Allocations from Pareto Frontier\"\n  ) %&gt;%\n  kable_styling(\n    bootstrap_options = c(\"striped\", \"hover\"),\n    full_width = FALSE\n  ) %&gt;%\n  row_spec(0, bold = TRUE, background = \"#003d7a\", color = \"white\") %&gt;%\n  row_spec(which.max(strategic_portfolios$Sharpe), \n           bold = TRUE, background = \"#d4edda\")\n\n\n\nStrategic Portfolio Allocations from Pareto Frontier\n\n\nStrategy\nReturn (%)\nVolatility (%)\nSharpe Ratio\nDiv. Index\n\n\n\n\nMax Sharpe\n12.569\n16.006\n0.785\n0.318\n\n\nMin Variance\n7.888\n12.956\n0.609\n0.701\n\n\nMax Diversification\n3.118\n35.731\n0.087\n0.875\n\n\nMax Return\n13.582\n18.479\n0.735\n0.007\n\n\n\n\n\n\n\n3.3.2 Visualize Portfolio Allocations\n\n\nCode\n# Prepare data for stacked bar chart\nallocation_data &lt;- data.frame(\n  Strategy = rep(c(\"Max Sharpe\", \"Min Variance\", \"Max Div\", \"Max Return\"), \n                 each = n_assets),\n  Asset = rep(colnames(returns), 4),\n  Weight = c(\n    weights_max_sharpe * 100,\n    weights_min_var * 100,\n    weights_max_div * 100,\n    weights_max_return * 100\n  )\n)\n\n# Create color palette matching FAE style\nfae_colors &lt;- c(\n  \"#003d7a\", \"#4a90e2\", \"#0056b3\", \"#28a745\",\n  \"#ff6b35\", \"#ffc107\", \"#6c757d\", \"#495057\"\n)\n\n# Create stacked bar chart\nplot_ly(\n  allocation_data,\n  x = ~Strategy,\n  y = ~Weight,\n  color = ~Asset,\n  colors = fae_colors,\n  type = \"bar\",\n  text = ~paste(Asset, \":\", round(Weight, 1), \"%\"),\n  hoverinfo = \"text\"\n) %&gt;%\n  layout(\n    title = list(\n      text = \"Asset Allocation Across Strategic Portfolios\",\n      font = list(family = \"Montserrat\", size = 18, color = \"#003d7a\")\n    ),\n    xaxis = list(title = \"Portfolio Strategy\"),\n    yaxis = list(title = \"Allocation (%)\"),\n    barmode = \"stack\",\n    showlegend = TRUE,\n    legend = list(\n      title = list(text = \"Assets\"),\n      orientation = \"v\",\n      x = 1.02,\n      y = 1\n    ),\n    plot_bgcolor = \"#f8f9fa\",\n    paper_bgcolor = \"white\"\n  )\n\n\n\n\n\n\n\n\n3.3.3 Detailed Weight Tables\n\n\nCode\n# Create detailed allocation tables\nweights_comparison &lt;- data.frame(\n  Asset = colnames(returns),\n  Max_Sharpe = round(weights_max_sharpe * 100, 2),\n  Min_Variance = round(weights_min_var * 100, 2),\n  Max_Diversification = round(weights_max_div * 100, 2),\n  Max_Return = round(weights_max_return * 100, 2)\n)\n\nweights_comparison %&gt;%\n  kable(\n    caption = \"Detailed Portfolio Weights (%) for Each Strategy\",\n    col.names = c(\"Asset\", \"Max Sharpe\", \"Min Var\", \"Max Div\", \"Max Return\")\n  ) %&gt;%\n  kable_styling(\n    bootstrap_options = c(\"striped\", \"hover\", \"condensed\"),\n    full_width = FALSE\n  ) %&gt;%\n  row_spec(0, bold = TRUE, background = \"#003d7a\", color = \"white\") %&gt;%\n  column_spec(1, bold = TRUE)\n\n\n\nDetailed Portfolio Weights (%) for Each Strategy\n\n\nAsset\nMax Sharpe\nMin Var\nMax Div\nMax Return\n\n\n\n\nCorn\n1.40\n8.42\n12.76\n0.01\n\n\nWheat_CHI\n0.01\n5.44\n12.50\n0.01\n\n\nWheat_KC\n0.02\n3.18\n12.48\n0.05\n\n\nRice\n0.04\n0.00\n12.51\n0.07\n\n\nFeeder_Cattle\n80.57\n50.19\n12.64\n99.66\n\n\nSoybeans\n0.02\n9.62\n12.54\n0.04\n\n\nSoy_Meal\n0.01\n13.03\n12.51\n0.04\n\n\nSoy_Oil\n17.93\n10.12\n12.06\n0.13",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#expected-outcomes",
-    "href": "about.html#expected-outcomes",
-    "title": "About the Project",
-    "section": "1.7 🎯 Expected Outcomes",
-    "text": "1.7 🎯 Expected Outcomes\n\n1.7.1 Academic Deliverables\nPartial Report 1 (November 24, 2025)\n\nCurated datasets and data infrastructure\nInitial GARCH/MSGARCH volatility models\nPreliminary ML/DL forecasting results\nValidation metrics and benchmarks\n\nPartial Report 2 (March 2026)\n\nComplete Pareto frontier analysis\nMulti-objective optimization results\nRL agent implementation and training\nComprehensive backtesting results\n\nQualification Seminar (March-April 2026)\n\nProject methodology presentation\nPreliminary findings discussion\nPeer feedback integration\nRefinement of research direction\n\nScientific Article (July 6, 2026)\n\nFull methodology documentation\nComprehensive results and analysis\nReproducible code repository\nSubmission to peer-reviewed journal\n\nConference Presentations\n\n13th SPPAIC Symposium (October 24-25, 2025): Project proposal and initial results\n14th SPPAIC Symposium (August 10, 2026): Final results and poster presentation\n\n\n\n1.7.2 Technical Deliverables\n\nReproducible Research Repository\n\nComplete R/Python codebase\nDocumentation and tutorials\nJupyter/Quarto notebooks\nData processing pipelines\n\nEducational Materials\n\nTutorial notebooks for students\nBest practices documentation\nReplication guides\nOpen-source contributions\n\nPractical Applications\n\nPortfolio optimization framework\nRisk management dashboards\nTrading strategy backtests\nIndustry-ready tools\n\n\n\n\n1.7.3 Student Development\n\nAdvanced technical skills in R and Python\nExperience with scientific research methodology\nPortfolio of demonstrable projects\nPublication track record\nProfessional networking opportunities",
+    "objectID": "optimization.html#backtesting-multi-objective-portfolios",
+    "href": "optimization.html#backtesting-multi-objective-portfolios",
+    "title": "Multi-Objective Framework",
+    "section": "3.4 Backtesting Multi-Objective Portfolios",
+    "text": "3.4 Backtesting Multi-Objective Portfolios\n\n3.4.1 Out-of-Sample Performance Evaluation\n\n\nCode\n# Split data: 70% training, 30% testing\nsplit_point &lt;- floor(0.7 * nrow(returns))\nreturns_train &lt;- returns[1:split_point, ]\nreturns_test &lt;- returns[(split_point + 1):nrow(returns), ]\n\ncat(\"Training period:\", format(start(returns_train), \"%Y-%m-%d\"), \"to\", \n    format(end(returns_train), \"%Y-%m-%d\"), \"\\n\")\n\n\nTraining period: 2019-01-03 to 2023-10-04 \n\n\nCode\ncat(\"Testing period:\", format(start(returns_test), \"%Y-%m-%d\"), \"to\", \n    format(end(returns_test), \"%Y-%m-%d\"), \"\\n\")\n\n\nTesting period: 2023-10-05 to 2025-10-21 \n\n\n\n\nCode\n# Calculate portfolio returns for testing period\nportfolio_returns_test &lt;- data.frame(\n  Date = index(returns_test),\n  Max_Sharpe = as.numeric(returns_test %*% weights_max_sharpe),\n  Min_Variance = as.numeric(returns_test %*% weights_min_var),\n  Max_Div = as.numeric(returns_test %*% weights_max_div),\n  Max_Return = as.numeric(returns_test %*% weights_max_return),\n  Equal_Weight = as.numeric(returns_test %*% rep(1/n_assets, n_assets))\n)\n\n# Calculate cumulative returns\nportfolio_cumulative &lt;- portfolio_returns_test %&gt;%\n  mutate(\n    Max_Sharpe_Cum = cumprod(1 + Max_Sharpe),\n    Min_Variance_Cum = cumprod(1 + Min_Variance),\n    Max_Div_Cum = cumprod(1 + Max_Div),\n    Max_Return_Cum = cumprod(1 + Max_Return),\n    Equal_Weight_Cum = cumprod(1 + Equal_Weight)\n  )\n\n# Backtest performance metrics\nbacktest_metrics &lt;- data.frame(\n  Strategy = c(\"Max Sharpe\", \"Min Variance\", \"Max Div\", \"Max Return\", \"Equal Weight\"),\n  Total_Return = c(\n    tail(portfolio_cumulative$Max_Sharpe_Cum, 1) - 1,\n    tail(portfolio_cumulative$Min_Variance_Cum, 1) - 1,\n    tail(portfolio_cumulative$Max_Div_Cum, 1) - 1,\n    tail(portfolio_cumulative$Max_Return_Cum, 1) - 1,\n    tail(portfolio_cumulative$Equal_Weight_Cum, 1) - 1\n  ) * 100,\n  Annual_Volatility = c(\n    sd(portfolio_returns_test$Max_Sharpe) * sqrt(252) * 100,\n    sd(portfolio_returns_test$Min_Variance) * sqrt(252) * 100,\n    sd(portfolio_returns_test$Max_Div) * sqrt(252) * 100,\n    sd(portfolio_returns_test$Max_Return) * sqrt(252) * 100,\n    sd(portfolio_returns_test$Equal_Weight) * sqrt(252) * 100\n  ),\n  Sharpe_Ratio_OOS = c(\n    mean(portfolio_returns_test$Max_Sharpe) / sd(portfolio_returns_test$Max_Sharpe) * sqrt(252),\n    mean(portfolio_returns_test$Min_Variance) / sd(portfolio_returns_test$Min_Variance) * sqrt(252),\n    mean(portfolio_returns_test$Max_Div) / sd(portfolio_returns_test$Max_Div) * sqrt(252),\n    mean(portfolio_returns_test$Max_Return) / sd(portfolio_returns_test$Max_Return) * sqrt(252),\n    mean(portfolio_returns_test$Equal_Weight) / sd(portfolio_returns_test$Equal_Weight) * sqrt(252)\n  ),\n  Max_Drawdown = c(\n    maxDrawdown(portfolio_returns_test$Max_Sharpe) * 100,\n    maxDrawdown(portfolio_returns_test$Min_Variance) * 100,\n    maxDrawdown(portfolio_returns_test$Max_Div) * 100,\n    maxDrawdown(portfolio_returns_test$Max_Return) * 100,\n    maxDrawdown(portfolio_returns_test$Equal_Weight) * 100\n  )\n)\n\nbacktest_metrics %&gt;%\n  arrange(desc(Sharpe_Ratio_OOS)) %&gt;%\n  kable(\n    digits = 3,\n    col.names = c(\"Strategy\", \"Total Return (%)\", \"Volatility (%)\", \n                  \"Sharpe (OOS)\", \"Max DD (%)\"),\n    caption = \"Out-of-Sample Backtest Performance (Testing Period)\"\n  ) %&gt;%\n  kable_styling(\n    bootstrap_options = c(\"striped\", \"hover\"),\n    full_width = FALSE\n  ) %&gt;%\n  row_spec(0, bold = TRUE, background = \"#003d7a\", color = \"white\") %&gt;%\n  row_spec(which.max(backtest_metrics$Sharpe_Ratio_OOS), \n           bold = TRUE, background = \"#d4edda\")\n\n\n\nOut-of-Sample Backtest Performance (Testing Period)\n\n\nStrategy\nTotal Return (%)\nVolatility (%)\nSharpe (OOS)\nMax DD (%)\n\n\n\n\nMax Return\n46.734\n15.035\n1.326\n16.921\n\n\nMax Sharpe\n32.573\n13.803\n1.071\n15.524\n\n\nMin Variance\n10.100\n11.263\n0.475\n14.548\n\n\nMax Div\n-45.030\n59.946\n-0.120\n61.731\n\n\nEqual Weight\n-45.004\n59.886\n-0.120\n61.669\n\n\n\n\n\n\n\n3.4.2 Cumulative Performance Visualization\n\n\nCode\n# Plot cumulative returns\nplot_ly() %&gt;%\n  add_trace(\n    x = portfolio_cumulative$Date,\n    y = (portfolio_cumulative$Max_Sharpe_Cum - 1) * 100,\n    name = \"Max Sharpe\",\n    type = \"scatter\",\n    mode = \"lines\",\n    line = list(color = \"#003d7a\", width = 3)\n  ) %&gt;%\n  add_trace(\n    x = portfolio_cumulative$Date,\n    y = (portfolio_cumulative$Min_Variance_Cum - 1) * 100,\n    name = \"Min Variance\",\n    type = \"scatter\",\n    mode = \"lines\",\n    line = list(color = \"#28a745\", width = 2.5)\n  ) %&gt;%\n  add_trace(\n    x = portfolio_cumulative$Date,\n    y = (portfolio_cumulative$Max_Div_Cum - 1) * 100,\n    name = \"Max Diversification\",\n    type = \"scatter\",\n    mode = \"lines\",\n    line = list(color = \"#4a90e2\", width = 2.5)\n  ) %&gt;%\n  add_trace(\n    x = portfolio_cumulative$Date,\n    y = (portfolio_cumulative$Max_Return_Cum - 1) * 100,\n    name = \"Max Return\",\n    type = \"scatter\",\n    mode = \"lines\",\n    line = list(color = \"#ff6b35\", width = 2.5)\n  ) %&gt;%\n  add_trace(\n    x = portfolio_cumulative$Date,\n    y = (portfolio_cumulative$Equal_Weight_Cum - 1) * 100,\n    name = \"Equal Weight (Benchmark)\",\n    type = \"scatter\",\n    mode = \"lines\",\n    line = list(color = \"#6c757d\", width = 2, dash = \"dash\")\n  ) %&gt;%\n  layout(\n    title = list(\n      text = \"Out-of-Sample Cumulative Returns: Multi-Objective Portfolios\",\n      font = list(family = \"Montserrat\", size = 18, color = \"#003d7a\")\n    ),\n    xaxis = list(title = \"Date\"),\n    yaxis = list(title = \"Cumulative Return (%)\"),\n    hovermode = \"x unified\",\n    legend = list(x = 0.02, y = 0.98),\n    plot_bgcolor = \"#f8f9fa\",\n    paper_bgcolor = \"white\"\n  )",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#collaboration-opportunities",
-    "href": "about.html#collaboration-opportunities",
-    "title": "About the Project",
-    "section": "1.8 🤝 Collaboration Opportunities",
-    "text": "1.8 🤝 Collaboration Opportunities\nWe welcome collaboration from:\n\n\n🎓 Academic Partners\nUniversities and research centers interested in joint research projects, student exchanges, or co-authored publications.\n\n\n💼 Industry Partners\nFinancial institutions, trading companies, and agricultural cooperatives seeking innovative solutions.\n\n\n🏛️ Government Agencies\nPublic institutions interested in agricultural market intelligence and policy analysis.\n\n\n🚀 Technology Companies\nFinTech and AgTech companies developing data-driven solutions for commodity markets.",
+    "objectID": "optimization.html#advanced-integration-with-reinforcement-learning",
+    "href": "optimization.html#advanced-integration-with-reinforcement-learning",
+    "title": "Multi-Objective Framework",
+    "section": "3.5 Advanced: Integration with Reinforcement Learning",
+    "text": "3.5 Advanced: Integration with Reinforcement Learning\n\n3.5.1 Conceptual Framework\nThe next phase of this research integrates Reinforcement Learning (RL) to dynamically select from the Pareto frontier based on evolving market conditions:\n\n\n\n\n\nflowchart TD\n    A[\"Market State st\"] --&gt; B[\"RL Agent\"]\n    B --&gt; C{\"Policy π(θ)\"}\n    C --&gt; D[\"Select Portfolio from Pareto Front\"]\n    D --&gt; E[\"Execute Allocation wt\"]\n    E --&gt; F[\"Observe Return rt+1\"]\n    F --&gt; G[\"New Market State st+1\"]\n    G --&gt; H[\"Calculate Reward Rt\"]\n    H --&gt; I[\"Update Policy via Q-Learning or PPO\"]\n    I --&gt; B\n    \n    style A fill:#003d7a,color:#fff\n    style B fill:#28a745,color:#fff\n    style H fill:#ffc107,color:#000\n    \n\n\n\n\n\n\n\n\n3.5.2 State Space and Action Space\nState Space \\(\\mathcal{S}\\): - Historical volatility (rolling window) - Momentum indicators (RSI, MACD) - Correlation regime (PCA-based) - VIX levels (market fear index) - Commodity-specific features (seasonality, inventory levels)\nAction Space \\(\\mathcal{A}\\): - Discrete: Select from \\(N\\) portfolios on Pareto frontier - Or continuous: Preference weights \\((\\lambda, \\gamma, \\delta)\\) for objectives\nReward Function \\(R_t\\):\n\\[\nR_t = r_{p,t} - \\frac{\\gamma}{2}\\sigma_p^2 + \\beta \\cdot \\text{Div}(w_t) - \\kappa \\cdot TC_t\n\\]\nWhere \\(r_{p,t}\\) is portfolio return, \\(\\sigma_p^2\\) is variance, \\(\\text{Div}\\) is diversification, and \\(TC_t\\) are transaction costs.\n\n\n3.5.3 Q-Learning for Portfolio Selection\nThe RL agent learns a Q-function \\(Q(s_t, a_t)\\) representing expected cumulative reward:\n\\[\nQ(s_{t+1}, a_{t+1}) \\leftarrow Q(s_t, a_t) + \\alpha \\left[ R_t + \\gamma \\max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) \\right]\n\\]\n\n\n\n\n\n\nFuture Implementation\n\n\n\nThe full RL implementation will be covered in the dedicated Reinforcement Learning section of this website, where we demonstrate:\n\nDeep Q-Networks (DQN) for portfolio selection\nProximal Policy Optimization (PPO) for continuous control\nMulti-agent systems for diversified strategies\nIntegration with the NSGA-II Pareto frontier",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#contact-information",
-    "href": "about.html#contact-information",
-    "title": "About the Project",
-    "section": "1.9 📞 Contact Information",
-    "text": "1.9 📞 Contact Information\n\n\n\n\n\n\nGet in Touch\n\n\n\nPrincipal Investigator:\nProf. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution:\nFAE Business School\nCuritiba, Paraná, Brazil\nWebsite: fae.edu\nProject Links:\n\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário\nPrevious Project: PIBIC AgroFinance (PUCPR)",
+    "objectID": "optimization.html#summary-of-findings",
+    "href": "optimization.html#summary-of-findings",
+    "title": "Multi-Objective Framework",
+    "section": "4.1 Summary of Findings",
+    "text": "4.1 Summary of Findings\n\nMulti-objective optimization reveals trade-offs that single-objective approaches miss\nNSGA-II successfully identified diverse Pareto-optimal portfolios for agricultural commodities\nMax Sharpe Ratio portfolio provided best risk-adjusted returns in out-of-sample testing\nDiversification is crucial but often conflicts with maximum return strategies\nEvolutionary algorithms handle non-convex, multi-modal optimization landscapes effectively",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "about.html#acknowledgments",
-    "href": "about.html#acknowledgments",
-    "title": "About the Project",
-    "section": "1.10 🙏 Acknowledgments",
-    "text": "1.10 🙏 Acknowledgments\nWe thank:\n\nFAE Business School for supporting this research through the PAIC program\nDepartment of Economics for institutional support and resources\nDepartment of Data Science for technical infrastructure\nPUCPR for the foundation laid in previous research phases\nResearch community for valuable feedback and collaboration\n\n\n\nPAIC Econometrics Research Project | FAE Business School | Est. 2024\n\nLast updated:\n\n\nCode\nformat(Sys.Date(), '%B %d, %Y')\n\n\n[1] \"outubro 22, 2025\"",
+    "objectID": "optimization.html#advantages-of-multi-objective-frameworks",
+    "href": "optimization.html#advantages-of-multi-objective-frameworks",
+    "title": "Multi-Objective Framework",
+    "section": "4.2 Advantages of Multi-Objective Frameworks",
+    "text": "4.2 Advantages of Multi-Objective Frameworks\n✅ Transparency: Explicit representation of trade-offs among competing objectives\n✅ Flexibility: Decision-makers choose based on risk preferences and market conditions\n✅ Robustness: Diversified set of solutions reduces sensitivity to estimation errors\n✅ Adaptability: Can incorporate ESG, liquidity, and other non-financial objectives\n✅ Innovation: Evolutionary algorithms discover novel allocation strategies",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "About the Team"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "PAIC Econometrics Research",
-    "section": "",
-    "text": "Integrating Time Series Forecasting, Multi-Objective Decision Making & Reinforcement Learning\nAn innovative research initiative at FAE Business School developing patent-ready methodologies for agricultural commodities portfolio optimization through advanced econometric and machine learning techniques.\n\nExplore Our Research → View Publications →",
+    "objectID": "optimization.html#future-research-directions",
+    "href": "optimization.html#future-research-directions",
+    "title": "Multi-Objective Framework",
+    "section": "4.3 Future Research Directions",
+    "text": "4.3 Future Research Directions\n\nDynamic Rebalancing: Implement rolling-window optimization with transaction costs\nRegime-Switching Models: Condition objectives on volatility regimes detected by MSGARCH\nDeep Reinforcement Learning: Train neural network agents to navigate Pareto frontier\nMulti-Period Optimization: Extend framework to consider inter-temporal dependencies\nRobustness Analysis: Incorporate estimation uncertainty via robust optimization\nAlternative Objectives: Include skewness, kurtosis, CVaR, and tail risk measures",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "Project Overview"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "index.html#research-vision",
-    "href": "index.html#research-vision",
-    "title": "PAIC Econometrics Research",
-    "section": "1.1 🎯 Research Vision",
-    "text": "1.1 🎯 Research Vision\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) represents the continuation and evolution of pioneering work initiated at PUCPR, now advancing at FAE Business School with enhanced scope and objectives.\n\n1.1.1 🎓 Academic Goals\nPrimary Objectives:\n\nPatent Development: Create innovative methodologies for multi-period portfolio optimization\nScientific Publications: Contribute to academic literature on agricultural finance\nDoctoral Research Integration: Support ongoing PhD thesis development\nUndergraduate Excellence: Train students in cutting-edge quantitative finance\n\nInstitutional Context:\nThis project builds upon the foundation established at PUCPR (visit the previous project site) while expanding into new frontiers of agricultural commodity portfolio management.",
+    "objectID": "optimization.html#practical-recommendations",
+    "href": "optimization.html#practical-recommendations",
+    "title": "Multi-Objective Framework",
+    "section": "4.4 Practical Recommendations",
+    "text": "4.4 Practical Recommendations\nFor practitioners implementing multi-objective portfolio optimization:\n\nStart with 3-4 objectives (return, risk, diversification, liquidity)\nUse ensemble approaches: Combine NSGA-II, MODE, and MOEA/D\nValidate thoroughly: Out-of-sample testing is essential\nMonitor regime shifts: Reoptimize when market conditions change significantly\nConsider transaction costs: Turnover penalties prevent excessive rebalancing\nIntegrate domain knowledge: Constraints on sector exposure, ESG criteria, etc.",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "Project Overview"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
-    "objectID": "index.html#core-research-framework",
-    "href": "index.html#core-research-framework",
-    "title": "PAIC Econometrics Research",
-    "section": "1.2 🔬 Core Research Framework",
-    "text": "1.2 🔬 Core Research Framework\nOur methodology integrates three fundamental pillars:\n\n\n1.2.1 📈 Time Series Forecasting\nAdvanced predictive modeling for commodity prices using:\n\nARIMA/GARCH family models\nBayesian structural time series\nLSTM and GRU neural networks\nEnsemble forecasting methods\nHawkes processes for news impact\n\nEconometrics Deep Learning Bayesian Methods\n\n\n1.2.2 🎯 Multi-Objective Optimization\nPortfolio optimization considering multiple conflicting objectives:\n\nReturn maximization\nRisk minimization\nLiquidity management\nSustainability criteria\nDynamic rebalancing strategies\n\nEvolutionary Algorithms Pareto Optimization Fuzzy Logic\n\n\n1.2.3 🤖 Reinforcement Learning\nAdaptive decision-making strategies:\n\nQ-Learning for portfolio selection\nDeep Q-Networks (DQN)\nPolicy gradient methods\nMulti-agent systems\nDynamic strategy adaptation\n\nRL Algorithms Adaptive Systems Decision Theory",
+    "objectID": "optimization.html#references",
+    "href": "optimization.html#references",
+    "title": "Multi-Objective Framework",
+    "section": "4.5 References",
+    "text": "4.5 References\n\nDeb, K., Pratap, A., Agarwal, S., & Meyarivan, T. (2002). A fast and elitist multiobjective genetic algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), 182-197.\nMarkowitz, H. (1952). Portfolio selection. The Journal of Finance, 7(1), 77-91.\nStorn, R., & Price, K. (1997). Differential evolution: A simple and efficient heuristic for global optimization. Journal of Global Optimization, 11, 341-359.\nZitzler, E., Laumanns, M., & Thiele, L. (2001). SPEA2: Improving the strength Pareto evolutionary algorithm. TIK-Report, 103.\n\n\n\n\n\n\n\n\nExplore More\n\n\n\n\nNext Section: Portfolio Algorithms - Deep dive into NSGA-II, MOEA/D, and MODE\nRelated: Pareto Front Reinforcement - RL-based dynamic portfolio selection\nData Science: Machine Learning Models - Forecasting returns for optimization inputs\n\n\n\n\n\n\n📊 PAIC Econometrics Research\n\n\nMulti-Objective Multi-Period Optimization of Agricultural Commodities Portfolio FAE Business School | Curitiba, PR, Brazil\n\n\n🏫 FAE.edu | ✉️ Contact | 💻 GitHub",
     "crumbs": [
       "Home",
-      "📘 Introduction",
-      "Project Overview"
-    ]
-  },
-  {
-    "objectID": "index.html#key-commodities-focus",
-    "href": "index.html#key-commodities-focus",
-    "title": "PAIC Econometrics Research",
-    "section": "1.3 📊 Key Commodities Focus",
-    "text": "1.3 📊 Key Commodities Focus\nOur research concentrates on Brazilian agricultural grain commodities:",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Project Overview"
-    ]
-  },
-  {
-    "objectID": "index.html#technical-stack",
-    "href": "index.html#technical-stack",
-    "title": "PAIC Econometrics Research",
-    "section": "1.4 🛠️ Technical Stack",
-    "text": "1.4 🛠️ Technical Stack\n\n1.4.1 Development Environment\nProgramming & Analysis:\n\nR Ecosystem: tidyverse, forecast, rugarch, quantmod, PerformanceAnalytics\nPython Ecosystem: pandas, numpy, scikit-learn, tensorflow, pytorch, stable-baselines3\nIntegration: Quarto for reproducible research combining R and Python\n\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ price indices\nUSDA agricultural reports\nNews APIs for sentiment analysis\n\nInfrastructure:\n\nVersion control: Git/GitHub\nCollaboration: RStudio/Positron IDE\nDeployment: GitHub Pages\nDocumentation: Quarto publishing system",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Project Overview"
-    ]
-  },
-  {
-    "objectID": "index.html#research-methodology-workflow",
-    "href": "index.html#research-methodology-workflow",
-    "title": "PAIC Econometrics Research",
-    "section": "1.5 📈 Research Methodology Workflow",
-    "text": "1.5 📈 Research Methodology Workflow\n\n\n\n\n\nflowchart TD\n    A[Data Collection] --&gt; B[Data Preprocessing]\n    B --&gt; C[Exploratory Analysis]\n    C --&gt; D[Feature Engineering]\n    D --&gt; E[Model Development]\n    E --&gt; F{Model Type}\n    F --&gt;|Time Series| G[ARIMA/GARCH/LSTM]\n    F --&gt;|Optimization| H[Multi-Objective Algorithms]\n    F --&gt;|RL| I[Agent Training]\n    G --&gt; J[Model Validation]\n    H --&gt; J\n    I --&gt; J\n    J --&gt; K[Backtesting]\n    K --&gt; L[Performance Evaluation]\n    L --&gt; M{Satisfactory?}\n    M --&gt;|No| E\n    M --&gt;|Yes| N[Documentation & Publication]\n    N --&gt; O[Patent Application]\n    \n    style A fill:#003d7a,color:#fff\n    style N fill:#28a745,color:#fff\n    style O fill:#ff6b35,color:#fff",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Project Overview"
-    ]
-  },
-  {
-    "objectID": "index.html#educational-impact",
-    "href": "index.html#educational-impact",
-    "title": "PAIC Econometrics Research",
-    "section": "1.6 🎓 Educational Impact",
-    "text": "1.6 🎓 Educational Impact\n\n\n\n\n\n\nStudent Development\n\n\n\nThis project provides undergraduate students with:\n\nPractical Experience: Real-world application of econometric and ML techniques\nResearch Skills: Scientific methodology and academic writing\nTechnical Proficiency: Advanced programming in R and Python\nCareer Preparation: Skills highly valued in quantitative finance and data science\nPublication Opportunities: Co-authorship in scientific papers",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Project Overview"
-    ]
-  },
-  {
-    "objectID": "index.html#expected-deliverables",
-    "href": "index.html#expected-deliverables",
-    "title": "PAIC Econometrics Research",
-    "section": "1.7 📚 Expected Deliverables",
-    "text": "1.7 📚 Expected Deliverables\n\n1.7.1 Phase 1 (Current - 6 months)\n\n✅ Project website and documentation\n📊 Literature review and theoretical framework\n🔧 Data infrastructure setup\n📈 Initial predictive models\n\n\n\n1.7.2 Phase 2 (6-12 months)\n\n🎯 Multi-objective optimization framework\n🤖 Reinforcement learning agent development\n📄 First scientific paper draft\n🔬 Patent methodology documentation\n\n\n\n1.7.3 Phase 3 (12-18 months)\n\n📖 Scientific publications submission\n🏆 Patent application filing\n🎤 Conference presentations\n📊 Final comprehensive report",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Project Overview"
-    ]
-  },
-  {
-    "objectID": "index.html#collaboration-partnerships",
-    "href": "index.html#collaboration-partnerships",
-    "title": "PAIC Econometrics Research",
-    "section": "1.8 🤝 Collaboration & Partnerships",
-    "text": "1.8 🤝 Collaboration & Partnerships\nWe actively seek collaboration with:\n\nAcademic institutions researching quantitative finance\nFinancial industry professionals\nAgricultural cooperatives and traders\nTechnology companies developing FinTech solutions\nGovernment agencies interested in agricultural market intelligence\n\n\n\n\n\n\n\n📞 Get Involved\n\n\n\nInterested in collaborating or learning more?\n\nPrincipal Investigator: Prof. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution: FAE Business School, Curitiba, PR\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Project Overview"
-    ]
-  },
-  {
-    "objectID": "index.html#quick-links",
-    "href": "index.html#quick-links",
-    "title": "PAIC Econometrics Research",
-    "section": "1.9 🔗 Quick Links",
-    "text": "1.9 🔗 Quick Links\n\n\n🎓 About Us\nMeet the team →\n\n\n📊 Research\nView our work →\n\n\n📰 News\nMarket updates →\n\n\n🏫 FAE\nVisit FAE.edu →\n\n\n\n\nPAIC - Programa de Apoio à Iniciação Científica | FAE Business School | Curitiba, Paraná, Brazil\n\nLast updated:\noutubro 22, 2025",
-    "crumbs": [
-      "Home",
-      "📘 Introduction",
-      "Project Overview"
+      "🎯 Optimization",
+      "Multi-Objective Framework"
     ]
   },
   {
@@ -1221,6 +825,594 @@
       "Home",
       "🎯 Optimization",
       "Portfolio Algorithms"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "PAIC Econometrics Research",
+    "section": "",
+    "text": "Integrating Time Series Forecasting, Multi-Objective Decision Making & Reinforcement Learning\nAn innovative research initiative at FAE Business School developing patent-ready methodologies for agricultural commodities portfolio optimization through advanced econometric and machine learning techniques.\n\nExplore Our Research → View Publications →",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#research-vision",
+    "href": "index.html#research-vision",
+    "title": "PAIC Econometrics Research",
+    "section": "1.1 🎯 Research Vision",
+    "text": "1.1 🎯 Research Vision\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) represents the continuation and evolution of pioneering work initiated at PUCPR, now advancing at FAE Business School with enhanced scope and objectives.\n\n1.1.1 🎓 Academic Goals\nPrimary Objectives:\n\nPatent Development: Create innovative methodologies for multi-period portfolio optimization\nScientific Publications: Contribute to academic literature on agricultural finance\nDoctoral Research Integration: Support ongoing PhD thesis development\nUndergraduate Excellence: Train students in cutting-edge quantitative finance\n\nInstitutional Context:\nThis project builds upon the foundation established at PUCPR (visit the previous project site) while expanding into new frontiers of agricultural commodity portfolio management.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#core-research-framework",
+    "href": "index.html#core-research-framework",
+    "title": "PAIC Econometrics Research",
+    "section": "1.2 🔬 Core Research Framework",
+    "text": "1.2 🔬 Core Research Framework\nOur methodology integrates three fundamental pillars:\n\n\n1.2.1 📈 Time Series Forecasting\nAdvanced predictive modeling for commodity prices using:\n\nARIMA/GARCH family models\nBayesian structural time series\nLSTM and GRU neural networks\nEnsemble forecasting methods\nHawkes processes for news impact\n\nEconometrics Deep Learning Bayesian Methods\n\n\n1.2.2 🎯 Multi-Objective Optimization\nPortfolio optimization considering multiple conflicting objectives:\n\nReturn maximization\nRisk minimization\nLiquidity management\nSustainability criteria\nDynamic rebalancing strategies\n\nEvolutionary Algorithms Pareto Optimization Fuzzy Logic\n\n\n1.2.3 🤖 Reinforcement Learning\nAdaptive decision-making strategies:\n\nQ-Learning for portfolio selection\nDeep Q-Networks (DQN)\nPolicy gradient methods\nMulti-agent systems\nDynamic strategy adaptation\n\nRL Algorithms Adaptive Systems Decision Theory",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#key-commodities-focus",
+    "href": "index.html#key-commodities-focus",
+    "title": "PAIC Econometrics Research",
+    "section": "1.3 📊 Key Commodities Focus",
+    "text": "1.3 📊 Key Commodities Focus\nOur research concentrates on Brazilian agricultural grain commodities:",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#technical-stack",
+    "href": "index.html#technical-stack",
+    "title": "PAIC Econometrics Research",
+    "section": "1.4 🛠️ Technical Stack",
+    "text": "1.4 🛠️ Technical Stack\n\n1.4.1 Development Environment\nProgramming & Analysis:\n\nR Ecosystem: tidyverse, forecast, rugarch, quantmod, PerformanceAnalytics\nPython Ecosystem: pandas, numpy, scikit-learn, tensorflow, pytorch, stable-baselines3\nIntegration: Quarto for reproducible research combining R and Python\n\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ price indices\nUSDA agricultural reports\nNews APIs for sentiment analysis\n\nInfrastructure:\n\nVersion control: Git/GitHub\nCollaboration: RStudio/Positron IDE\nDeployment: GitHub Pages\nDocumentation: Quarto publishing system",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#research-methodology-workflow",
+    "href": "index.html#research-methodology-workflow",
+    "title": "PAIC Econometrics Research",
+    "section": "1.5 📈 Research Methodology Workflow",
+    "text": "1.5 📈 Research Methodology Workflow\n\n\n\n\n\nflowchart TD\n    A[Data Collection] --&gt; B[Data Preprocessing]\n    B --&gt; C[Exploratory Analysis]\n    C --&gt; D[Feature Engineering]\n    D --&gt; E[Model Development]\n    E --&gt; F{Model Type}\n    F --&gt;|Time Series| G[ARIMA/GARCH/LSTM]\n    F --&gt;|Optimization| H[Multi-Objective Algorithms]\n    F --&gt;|RL| I[Agent Training]\n    G --&gt; J[Model Validation]\n    H --&gt; J\n    I --&gt; J\n    J --&gt; K[Backtesting]\n    K --&gt; L[Performance Evaluation]\n    L --&gt; M{Satisfactory?}\n    M --&gt;|No| E\n    M --&gt;|Yes| N[Documentation & Publication]\n    N --&gt; O[Patent Application]\n    \n    style A fill:#003d7a,color:#fff\n    style N fill:#28a745,color:#fff\n    style O fill:#ff6b35,color:#fff",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#educational-impact",
+    "href": "index.html#educational-impact",
+    "title": "PAIC Econometrics Research",
+    "section": "1.6 🎓 Educational Impact",
+    "text": "1.6 🎓 Educational Impact\n\n\n\n\n\n\nStudent Development\n\n\n\nThis project provides undergraduate students with:\n\nPractical Experience: Real-world application of econometric and ML techniques\nResearch Skills: Scientific methodology and academic writing\nTechnical Proficiency: Advanced programming in R and Python\nCareer Preparation: Skills highly valued in quantitative finance and data science\nPublication Opportunities: Co-authorship in scientific papers",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#expected-deliverables",
+    "href": "index.html#expected-deliverables",
+    "title": "PAIC Econometrics Research",
+    "section": "1.7 📚 Expected Deliverables",
+    "text": "1.7 📚 Expected Deliverables\n\n1.7.1 Phase 1 (Current - 6 months)\n\n✅ Project website and documentation\n📊 Literature review and theoretical framework\n🔧 Data infrastructure setup\n📈 Initial predictive models\n\n\n\n1.7.2 Phase 2 (6-12 months)\n\n🎯 Multi-objective optimization framework\n🤖 Reinforcement learning agent development\n📄 First scientific paper draft\n🔬 Patent methodology documentation\n\n\n\n1.7.3 Phase 3 (12-18 months)\n\n📖 Scientific publications submission\n🏆 Patent application filing\n🎤 Conference presentations\n📊 Final comprehensive report",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#collaboration-partnerships",
+    "href": "index.html#collaboration-partnerships",
+    "title": "PAIC Econometrics Research",
+    "section": "1.8 🤝 Collaboration & Partnerships",
+    "text": "1.8 🤝 Collaboration & Partnerships\nWe actively seek collaboration with:\n\nAcademic institutions researching quantitative finance\nFinancial industry professionals\nAgricultural cooperatives and traders\nTechnology companies developing FinTech solutions\nGovernment agencies interested in agricultural market intelligence\n\n\n\n\n\n\n\n📞 Get Involved\n\n\n\nInterested in collaborating or learning more?\n\nPrincipal Investigator: Prof. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution: FAE Business School, Curitiba, PR\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#quick-links",
+    "href": "index.html#quick-links",
+    "title": "PAIC Econometrics Research",
+    "section": "1.9 🔗 Quick Links",
+    "text": "1.9 🔗 Quick Links\n\n\n🎓 About Us\nMeet the team →\n\n\n📊 Research\nView our work →\n\n\n📰 News\nMarket updates →\n\n\n🏫 FAE\nVisit FAE.edu →\n\n\n\n\nPAIC - Programa de Apoio à Iniciação Científica | FAE Business School | Curitiba, Paraná, Brazil\n\nLast updated:\noutubro 22, 2025",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About the Project",
+    "section": "",
+    "text": "Advancing Agricultural Finance Through Innovation\nA multidisciplinary team combining expertise in Economics, Data Science, and Quantitative Finance to develop cutting-edge solutions for commodity portfolio management.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#project-mission",
+    "href": "about.html#project-mission",
+    "title": "About the Project",
+    "section": "1.1 🎯 Project Mission",
+    "text": "1.1 🎯 Project Mission\n\n1.1.1 Our Purpose\nThis Scientific Initiation Project (PAIC - Programa de Apoio à Iniciação Científica) at FAE Business School represents a strategic evolution of research initiated at PUCPR, now with enhanced objectives:\nCore Mission:\n\nDevelop patentable methodologies for multi-period commodity portfolio optimization\nPublish high-impact scientific research in agricultural finance\nSupport doctoral research on multi-objective optimization\nTrain undergraduate students in advanced quantitative methods\nBridge the gap between academic research and industry applications\n\nResearch Philosophy:\nWe believe in combining rigorous econometric theory with practical machine learning applications, creating solutions that are both academically sound and industrially relevant.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#meet-the-team",
+    "href": "about.html#meet-the-team",
+    "title": "About the Project",
+    "section": "1.2 👥 Meet the Team",
+    "text": "1.2 👥 Meet the Team\n\n\n\n\n1.2.1 Prof. Rodrigo Hermont Ozon\nPrincipal Investigator & Research Advisor\nEconomist (UFPR, 2008) and MSc in Economic Development (UFPR, 2010), currently pursuing a PhD in Production and Systems Engineering (PPGEPS/PUCPR, 2022-2026). His doctoral thesis focuses on multi-objective multi-period optimization of agricultural commodity portfolios using time series forecasting, multi-criteria decision-making, and reinforcement learning.\nResearch Expertise:\n\nEconometric modeling and time series analysis\nMulti-objective optimization algorithms\nAgricultural commodity markets\nQuantitative finance and risk management\nIntegration of R and Python for financial modeling\n\nAcademic Background:\n\n15+ years of experience in econometric research\nPublished research in agricultural economics and quantitative methods\nExtensive experience with Quarto, R, and Python ecosystems\nIndustry consulting in commodity markets\n\nTime Series Forecasting Multi-Objective Optimization R & Python Agricultural Finance\nContact:\n\n              \n\n\n\n\n\n\n1.2.2 Jhonatan [Sobrenome]\nResearch Student | Data Science for Business\nUndergraduate student in Data Science for Business at FAE Business School, specializing in machine learning applications for financial forecasting.\nResearch Focus:\n\nMachine learning model development\nPython programming and data analysis\nNeural network architectures (LSTM, GRU)\nFeature engineering for time series\nModel validation and backtesting\n\nProject Contributions:\n\nDevelopment of predictive ML models for commodity prices\nImplementation of ensemble forecasting techniques\nPython-based data pipeline automation\nModel performance benchmarking\n\nPython Machine Learning Deep Learning Time Series\nAreas of Interest: Quantitative trading, algorithmic finance, artificial intelligence\nContact:\n\n           \n\n\n\n\n\n\n1.2.3 Eduardo [Sobrenome]\nResearch Student | Data Science for Business\nUndergraduate student in Data Science for Business at FAE Business School, focusing on data visualization and web application development.\nResearch Focus:\n\nInteractive dashboard development\nStreamLit application deployment\nData visualization best practices\nWeb-based analytics platforms\nUser interface design for financial tools\n\nProject Contributions:\n\nDevelopment of interactive dashboards for model results\nStreamLit deployment for research demonstrations\nData visualization using Plotly and other libraries\nUser experience optimization for research outputs\n\nPython StreamLit Data Visualization Web Development\nAreas of Interest: FinTech applications, data storytelling, interactive analytics\nContact:\n\n           \n\n\n\n\n\n\n1.2.4 Vanessa Monn\nResearch Student | Economics\nUndergraduate student in Economics at FAE Business School, bringing strong foundations in economic theory and market analysis.\nResearch Focus:\n\nAgricultural commodity market dynamics\nEconomic theory applications in portfolio management\nMarket microstructure analysis\nEconometric modeling\nLiterature review and theoretical frameworks\n\nProject Contributions:\n\nEconomic analysis of commodity markets\nLiterature review on portfolio optimization\nMarket research and data collection\nEconometric model specification\nIntegration of economic theory with quantitative methods\n\nEconomic Theory Econometrics Market Analysis R Programming\nAreas of Interest: Agricultural economics, financial markets, applied econometrics\nContact:",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#academic-context",
+    "href": "about.html#academic-context",
+    "title": "About the Project",
+    "section": "1.3 🎓 Academic Context",
+    "text": "1.3 🎓 Academic Context\n\n1.3.1 FAE Business School\n\nFounded in 1957, FAE Centro Universitário is one of Brazil’s most prestigious business schools, located in Curitiba, Paraná. FAE is recognized for:\n\nExcellence in business and economics education\nStrong industry partnerships\nCommitment to scientific research\nModern facilities and technology infrastructure\nStrategic location in one of Brazil’s economic hubs\n\nPAIC Program:\nThe PAIC (Programa de Apoio à Iniciação Científica) is FAE’s scientific initiation program that supports undergraduate research projects, fostering academic excellence and preparing students for graduate studies and professional careers in research.\n\n\n\n1.3.2 Project Lineage\n\n\n\n\n\n\n🔗 Connection to Previous Research\n\n\n\nThis project builds upon and extends research initiated at PUCPR (Pontifícia Universidade Católica do Paraná) under the PIBIC and PIBITI Jr. programs.\nPrevious Project:\nPIBIC AgroFinance - PUCPR\nThe FAE project expands the scope with: - Enhanced multi-objective optimization framework - Integration of reinforcement learning strategies - Focus on patent-ready methodologies - Expanded team with diverse expertise - Broader publication strategy",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#research-methodology",
+    "href": "about.html#research-methodology",
+    "title": "About the Project",
+    "section": "1.4 🔬 Research Methodology",
+    "text": "1.4 🔬 Research Methodology\nOur interdisciplinary approach combines:\n\n1.4.1 📊 Econometric Foundations\n\nClassical time series analysis (ARIMA, VAR)\nVolatility modeling (GARCH family)\nBayesian econometrics\nCointegration and causality testing\n\n\n\n1.4.2 🤖 Machine Learning Integration\n\nSupervised learning for prediction\nDeep learning for complex patterns\nEnsemble methods for robustness\nFeature importance analysis\n\n\n\n1.4.3 🎯 Optimization Techniques\n\nMulti-objective evolutionary algorithms\nPareto frontier exploration\nFuzzy multi-criteria decision making\nDynamic programming approaches\n\n\n\n1.4.4 🧠 Reinforcement Learning\n\nQ-Learning and DQN for portfolio selection\nPolicy gradient methods\nMulti-agent systems\nAdaptive strategy development",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#technical-infrastructure",
+    "href": "about.html#technical-infrastructure",
+    "title": "About the Project",
+    "section": "1.5 🛠️ Technical Infrastructure",
+    "text": "1.5 🛠️ Technical Infrastructure\n\n1.5.1 Tools & Technologies\nDevelopment Environment:\n\nIDEs: RStudio, Positron, VS Code, Jupyter\nLanguages: R (primary), Python (secondary), SQL\nDocumentation: Quarto publishing system\nVersion Control: Git/GitHub\nDeployment: GitHub Pages\n\nKey R Packages:\ntidyverse • forecast • rugarch • quantmod • PerformanceAnalytics • portfolioAnalytics • DEoptim • mco • bayesforecast\nKey Python Libraries:\npandas • numpy • scikit-learn • tensorflow • pytorch • stable-baselines3 • gym • plotly • streamlit\nData Sources:\n\nBloomberg Terminal\nB3 (Brasil, Bolsa, Balcão)\nCEPEA/ESALQ commodity indices\nUSDA agricultural reports\nNews APIs (for sentiment analysis)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#research-timeline",
+    "href": "about.html#research-timeline",
+    "title": "About the Project",
+    "section": "1.6 📚 Research Timeline",
+    "text": "1.6 📚 Research Timeline\n\n\n\n\n\ngantt\n    title PAIC 2025/26 - Official Timeline\n    dateFormat YYYY-MM-DD\n    axisFormat %b/%y\n    \n    section Phase 1 Setup\n    Opening PAIC 2025-26           :milestone, m1, 2025-08-13, 1d\n    Term Signing                   :active, 2025-08-05, 9d\n    Work Plan Preparation          :2025-08-13, 34d\n    Data Infrastructure            :2025-08-20, 41d\n    \n    section Phase 2 Data Models\n    Data Collection Curation       :2025-09-01, 60d\n    GARCH MSGARCH Modeling         :2025-10-01, 60d\n    ML DL Prototypes LSTM          :2025-10-15, 46d\n    Partial Report 1               :milestone, m2, 2025-11-24, 1d\n    \n    section Phase 3 Optimization\n    Multi-Objective Framework      :2025-11-01, 119d\n    NSGA-II DE Implementation      :2025-11-15, 77d\n    Backtesting Validation         :2026-01-01, 58d\n    Partial Report 2               :milestone, m3, 2026-03-01, 1d\n    \n    section Phase 4 RL Strategy\n    RL Environment Setup           :2026-02-01, 58d\n    Agent Training PPO             :2026-02-15, 59d\n    Qualification Seminar          :milestone, m4, 2026-03-15, 1d\n    Strategy Evaluation            :2026-03-01, 60d\n    \n    section Phase 5 Publication\n    Scientific Paper Writing       :2026-04-01, 96d\n    Article Submission             :milestone, m5, 2026-07-06, 1d\n    Peer Review Period             :2026-07-06, 22d\n    Article Corrections            :2026-07-08, 20d\n    Poster Preparation             :2026-07-01, 40d\n    \n    section Deliverables\n    13th SPPAIC Symposium          :milestone, m6, 2025-10-24, 1d\n    14th SPPAIC Symposium          :milestone, m7, 2026-08-10, 1d\n    Final Article Delivery         :milestone, m8, 2026-07-06, 1d",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#expected-outcomes",
+    "href": "about.html#expected-outcomes",
+    "title": "About the Project",
+    "section": "1.7 🎯 Expected Outcomes",
+    "text": "1.7 🎯 Expected Outcomes\n\n1.7.1 Academic Deliverables\nPartial Report 1 (November 24, 2025)\n\nCurated datasets and data infrastructure\nInitial GARCH/MSGARCH volatility models\nPreliminary ML/DL forecasting results\nValidation metrics and benchmarks\n\nPartial Report 2 (March 2026)\n\nComplete Pareto frontier analysis\nMulti-objective optimization results\nRL agent implementation and training\nComprehensive backtesting results\n\nQualification Seminar (March-April 2026)\n\nProject methodology presentation\nPreliminary findings discussion\nPeer feedback integration\nRefinement of research direction\n\nScientific Article (July 6, 2026)\n\nFull methodology documentation\nComprehensive results and analysis\nReproducible code repository\nSubmission to peer-reviewed journal\n\nConference Presentations\n\n13th SPPAIC Symposium (October 24-25, 2025): Project proposal and initial results\n14th SPPAIC Symposium (August 10, 2026): Final results and poster presentation\n\n\n\n1.7.2 Technical Deliverables\n\nReproducible Research Repository\n\nComplete R/Python codebase\nDocumentation and tutorials\nJupyter/Quarto notebooks\nData processing pipelines\n\nEducational Materials\n\nTutorial notebooks for students\nBest practices documentation\nReplication guides\nOpen-source contributions\n\nPractical Applications\n\nPortfolio optimization framework\nRisk management dashboards\nTrading strategy backtests\nIndustry-ready tools\n\n\n\n\n1.7.3 Student Development\n\nAdvanced technical skills in R and Python\nExperience with scientific research methodology\nPortfolio of demonstrable projects\nPublication track record\nProfessional networking opportunities",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#collaboration-opportunities",
+    "href": "about.html#collaboration-opportunities",
+    "title": "About the Project",
+    "section": "1.8 🤝 Collaboration Opportunities",
+    "text": "1.8 🤝 Collaboration Opportunities\nWe welcome collaboration from:\n\n\n🎓 Academic Partners\nUniversities and research centers interested in joint research projects, student exchanges, or co-authored publications.\n\n\n💼 Industry Partners\nFinancial institutions, trading companies, and agricultural cooperatives seeking innovative solutions.\n\n\n🏛️ Government Agencies\nPublic institutions interested in agricultural market intelligence and policy analysis.\n\n\n🚀 Technology Companies\nFinTech and AgTech companies developing data-driven solutions for commodity markets.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#contact-information",
+    "href": "about.html#contact-information",
+    "title": "About the Project",
+    "section": "1.9 📞 Contact Information",
+    "text": "1.9 📞 Contact Information\n\n\n\n\n\n\nGet in Touch\n\n\n\nPrincipal Investigator:\nProf. Rodrigo Hermont Ozon\nEmail: rodrigo.ozon@fae.edu\nInstitution:\nFAE Business School\nCuritiba, Paraná, Brazil\nWebsite: fae.edu\nProject Links:\n\nGitHub: @PAICEconometrics\nLinkedIn: FAE Centro Universitário\nPrevious Project: PIBIC AgroFinance (PUCPR)",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "about.html#acknowledgments",
+    "href": "about.html#acknowledgments",
+    "title": "About the Project",
+    "section": "1.10 🙏 Acknowledgments",
+    "text": "1.10 🙏 Acknowledgments\nWe thank:\n\nFAE Business School for supporting this research through the PAIC program\nDepartment of Economics for institutional support and resources\nDepartment of Data Science for technical infrastructure\nPUCPR for the foundation laid in previous research phases\nResearch community for valuable feedback and collaboration\n\n\n\nPAIC Econometrics Research Project | FAE Business School | Est. 2024\n\nLast updated:\n\n\nCode\nformat(Sys.Date(), '%B %d, %Y')\n\n\n[1] \"outubro 22, 2025\"",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "About the Team"
+    ]
+  },
+  {
+    "objectID": "mindmap.html",
+    "href": "mindmap.html",
+    "title": "Research Mindmap",
+    "section": "",
+    "text": "Interactive visualization of the methodological structure, official timeline and connections of the project “Innovations in Financial Modeling: AI & Econometrics for Agricultural Commodity Portfolio Optimization”",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#project-overview",
+    "href": "mindmap.html#project-overview",
+    "title": "Research Mindmap",
+    "section": "1 Project Overview",
+    "text": "1 Project Overview\nThis conceptual map presents the complete architecture of the PAIC 2025/26 research project, visually organizing the three methodological pillars, the six execution stages according to the official schedule and the expected results aligned with the program guidelines.\n\n\n\n\n\n\n💡 How to Use This Mindmap\n\n\n\n\nExplore interactive nodes to understand each methodological component\nFollow colored connections to comprehend relationships between techniques\nIdentify temporal stages in the PAIC 2025/26 timeline flow\nHover over elements to see detailed descriptions\n\n\n\n\n\n\n\n\n\n🎯 Project’s Central Objective\n\n\n\nDevelop an integrated model for analysis and optimization of agricultural commodity portfolios, combining:\n\nAdvanced Forecasting (GARCH/MSGARCH + ML/DL)\nMulti-Objective Optimization (NSGA-II, Differential Evolution)\nReinforcement Learning (PPO, adaptive strategies)\n\nGoal: Create tools for risk management and dynamic allocation in commodity markets, with potential for patent and scientific publications.",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#interactive-mindmap",
+    "href": "mindmap.html#interactive-mindmap",
+    "title": "Research Mindmap",
+    "section": "2 Interactive Mindmap",
+    "text": "2 Interactive Mindmap",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#detailed-project-structure",
+    "href": "mindmap.html#detailed-project-structure",
+    "title": "Research Mindmap",
+    "section": "3 Detailed Project Structure",
+    "text": "3 Detailed Project Structure\n\n3.1 🎯 Three Methodological Pillars\n\n\n3.1.1 PILLAR 1: Forecasting\nObjectives: - Forecast expected returns of agricultural commodities - Estimate conditional volatilities and risk regimes - Capture complex temporal dependencies\nMain Methods: - GARCH/MSGARCH: Volatility modeling with regime changes (Markov-Switching) - Machine Learning: LSTM, MLP, XGBoost, LightGBM - Deep Learning: Deep neural networks for non-linear patterns\nTools: - R: rugarch, MSGARCH, forecast - Python: torch, keras, xgboost, statsmodels\n\n\n3.1.2 PILLAR 2: Multi-Objective Optimization\nObjectives: - Determine efficient portfolio compositions - Balance return, risk, and diversification - Generate Pareto frontier with non-dominated solutions\nMain Methods: - NSGA-II: Non-dominated Sorting Genetic Algorithm II - Differential Evolution: Global evolutionary optimization - SPEA2: Strength Pareto Evolutionary Algorithm 2\nTools: - R: DEoptim, mco, nsga2R - Python: pymoo, DEAP, scipy.optimize\n\n\n3.1.3 PILLAR 3: Reinforcement Learning\nObjectives: - Develop dynamic and adaptive trading strategies - Simulate tactical allocation decisions - Implement reallocation policies under uncertainty\nMain Methods: - PPO: Proximal Policy Optimization - Gym Environment: Market simulation for training - Strategies: Momentum, dynamic hedging, trigger-based rebalancing\nTools: - Python: stable-baselines3, gym, ray[rllib] - R: Integration via reticulate",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#official-paic-202526-timeline",
+    "href": "mindmap.html#official-paic-202526-timeline",
+    "title": "Research Mindmap",
+    "section": "4 📅 Official PAIC 2025/26 Timeline",
+    "text": "4 📅 Official PAIC 2025/26 Timeline\n\n4.1 Stage 1: Setup and Governance (Aug-Sep/2025)\n\n\n\n\n\n\n🔧 Main Activities\n\n\n\n\nPAIC 2025/26 Opening: August 13, 2025\nCommitment Term Signing\nScope review and research questions definition\nComputational environment setup (R/Python + Git/GitHub)\nData source mapping: YahooQuery, Quandl, FAO, B3, CME\nSuccess criteria and risk management definition\n\n\n\nDeliverables: - Detailed work plan - Structured Git repository - Data sources documentation\n\n\n\n4.2 Stage 2: Data Collection and Curation (Sep-Oct/2025)\n\n\n\n\n\n\n📊 Main Activities\n\n\n\n\nHistorical commodity series collection (corn, soybeans, meal, soybean oil)\nData cleaning and normalization (frequencies, outliers, contract adjustments)\nFinancial feature engineering: log-return, volatility, drawdown, technical indicators\nExploratory analysis and descriptive statistics\n\n\n\nDeliverables: - Curated and documented dataset - Complete exploratory data analysis (EDA) - Automated collection scripts\n\n\n\n4.3 Stage 3: Volatility and Return Modeling (Oct-Nov/2025)\n\n\n\n\n\n\n🤖 Main Activities\n\n\n\n\nGARCH/MSGARCH model estimation (asymmetric distributions, regimes)\nML/DL prototype development: LSTM, MLP for forecasting\nPerformance comparison between econometric and ML models\n📝 Partial Report 1: November 24, 2025\n🎤 13th SPPAIC: October 24, 2025\n\n\n\nDeliverables: - Calibrated forecasting models - Partial Report 1 (methodology and preliminary results) - Presentation at 13th PAIC Symposium\n\n\n\n4.4 Stage 4: Optimization and Frontiers (Nov/2025-Jan/2026)\n\n\n\n\n\n\n🎯 Main Activities\n\n\n\n\nNSGA-II and Differential Evolution implementation\nPareto frontier generation (risk-return-diversification trade-offs)\nSensitivity and robustness analysis of solutions\nComparison with benchmarks (buy-and-hold, risk parity, mean-variance)\n\n\n\nDeliverables: - Functional multi-objective optimization algorithms - Efficient portfolios on Pareto frontier - Alternative scenario analyses\n\n\n\n4.5 Stage 5: RL and Backtesting (Jan-Mar/2026)\n\n\n\n\n\n\n🚀 Main Activities\n\n\n\n\nPPO agent training for dynamic strategies\nBacktesting with temporal validation (walk-forward)\nComparison with market benchmarks\n📝 Partial Report 2: March 1, 2026\n🎓 Qualification Seminar: March 15, 2026\n\n\n\nDeliverables: - Trained and validated RL agent - Partial Report 2 (complete results) - Qualification presentation\n\n\n\n4.6 Stage 6: Consolidation and Dissemination (Mar-Jul/2026)\n\n\n\n\n\n\n📄 Main Activities\n\n\n\n\nScientific paper writing (April-June/2026)\n📬 Article submission: July 6, 2026\nPeer review and corrections\nPoster/presentation preparation\n🎤 14th SPPAIC: August 10, 2026\n\n\n\nDeliverables: - Submitted scientific article - Academic poster for SPPAIC - Complementary didactic material - Final project documentation",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#expected-results",
+    "href": "mindmap.html#expected-results",
+    "title": "Research Mindmap",
+    "section": "5 🎯 Expected Results",
+    "text": "5 🎯 Expected Results\n\n5.1 📚 Academic and Scientific\n\n\nPublications: Article in peer-reviewed journal (Quantitative Finance/Applied Econometrics area)\nKnowledge advancement: Unprecedented integration of forecasting, multi-objective optimization, and RL for commodities\nInnovative methodology: Reproducible and scalable framework for portfolio management\nHuman resource training: Scholar capacity building in advanced quantitative methods\n\n\n\n\n5.2 💼 Practical and Applied\n\n\nAnalytical tools: Computational pipeline (R/Python) for decision support\nTrading strategies: Adaptive models with reinforcement learning\nRisk management: Instruments for VaR, ES, and drawdown analysis in portfolios\nApplicability: Solutions for trading companies, agricultural cooperatives, and fund managers\n\n\n\n\n5.3 🔬 Technological Innovation\n\n\nPatent: System/methodology with novelty, inventive activity, and industrial application requirements\nInnovation: Holistic and adaptive integration of advanced techniques (non-obvious to experts)\nDifferential: Temporal multi-objective approach with RL for sequential decisions\nImpact: Positioning Brazil as an innovation hub in applied finance for agribusiness",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#analyzed-commodities",
+    "href": "mindmap.html#analyzed-commodities",
+    "title": "Research Mindmap",
+    "section": "6 🌾 Analyzed Commodities",
+    "text": "6 🌾 Analyzed Commodities\n\n6.1 Grain Market\n\n\n\n\n\n\n\n\nCommodity\nDescription\nMarkets\n\n\n\n\nCorn\nBasic grain for animal feed and ethanol\nCME, B3 (futures contracts)\n\n\nSoybeans\nGrain, meal, and oil - integrated chain\nCME, B3, DCE (China)\n\n\nWheat\nComplement for diversification\nCME, CBOT\n\n\nDerivatives\nSoybean meal, soybean oil\nSpot and futures markets\n\n\n\nData Characteristics: - Daily historical series with sufficient periods for regime analysis - Rolling windows for out-of-sample validation - Futures contract adjustments (rollover) - Technical and fundamental indicators",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#interactive-visual-timeline",
+    "href": "mindmap.html#interactive-visual-timeline",
+    "title": "Research Mindmap",
+    "section": "7 📊 Interactive Visual Timeline",
+    "text": "7 📊 Interactive Visual Timeline\n\n7.1 PAIC 2025/26 Timeline\n\n\n\n\n\ngantt\n    title PAIC 2025/26 - Official FAE Timeline\n    dateFormat YYYY-MM-DD\n    axisFormat %b/%y\n    \n    section Phase 1: Setup\n    PAIC 2025-26 Opening           :milestone, m1, 2025-08-13, 1d\n    Term Signing                   :active, 2025-08-05, 9d\n    Work Plan Preparation          :2025-08-13, 34d\n    Data Infrastructure            :2025-08-20, 41d\n    \n    section Phase 2: Data & Models\n    Collection & Curation          :2025-09-01, 60d\n    GARCH/MSGARCH Modeling         :2025-10-01, 60d\n    ML/DL Prototypes (LSTM)        :2025-10-15, 46d\n    13th SPPAIC                    :milestone, sppaic1, 2025-10-24, 1d\n    Partial Report 1               :milestone, m2, 2025-11-24, 1d\n    \n    section Phase 3: Optimization\n    Multi-Objective Framework      :2025-11-01, 119d\n    NSGA-II/DE Implementation      :2025-11-15, 77d\n    Backtesting & Validation       :2026-01-01, 58d\n    \n    section Phase 4: RL & Strategy\n    RL Environment Setup           :2026-02-01, 58d\n    PPO Agent Training             :2026-02-15, 59d\n    Partial Report 2               :milestone, m3, 2026-03-01, 1d\n    Qualification Seminar          :milestone, m4, 2026-03-15, 1d\n    Strategy Evaluation            :2026-03-01, 60d\n    \n    section Phase 5: Publication\n    Scientific Paper Writing       :2026-04-01, 96d\n    Article Submission             :milestone, m5, 2026-07-06, 1d\n    Peer Review Period             :2026-07-06, 22d\n    Article Corrections            :2026-07-08, 20d\n    Poster Preparation             :2026-07-01, 40d\n    14th SPPAIC                    :milestone, sppaic2, 2026-08-10, 1d",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#connections-between-pillars",
+    "href": "mindmap.html#connections-between-pillars",
+    "title": "Research Mindmap",
+    "section": "8 🔗 Connections Between Pillars",
+    "text": "8 🔗 Connections Between Pillars\n\n8.1 Integrated Methodological Flow\n\n\n\n\n\nflowchart LR\n    A[Historical&lt;br/&gt;Commodity&lt;br/&gt;Data] --&gt; B[PILLAR 1:&lt;br/&gt;Forecasting]\n    B --&gt; C[Return & Risk&lt;br/&gt;Predictions]\n    C --&gt; D[PILLAR 2:&lt;br/&gt;Multi-Objective&lt;br/&gt;Optimization]\n    D --&gt; E[Pareto&lt;br/&gt;Frontier]\n    E --&gt; F[PILLAR 3:&lt;br/&gt;Reinforcement&lt;br/&gt;Learning]\n    F --&gt; G[Dynamic&lt;br/&gt;Strategies]\n    G --&gt; H[Backtesting &&lt;br/&gt;Evaluation]\n    H --&gt; I{Satisfactory&lt;br/&gt;Performance?}\n    I --&gt;|No| B\n    I --&gt;|Yes| J[Publication &&lt;br/&gt;Implementation]\n    \n    style A fill:#f8f9fa,stroke:#003d7a,stroke-width:3px\n    style B fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style D fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style F fill:#0056b3,stroke:#003d7a,stroke-width:2px,color:#fff\n    style J fill:#28a745,stroke:#003d7a,stroke-width:3px,color:#fff",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#main-methodological-references",
+    "href": "mindmap.html#main-methodological-references",
+    "title": "Research Mindmap",
+    "section": "9 📖 Main Methodological References",
+    "text": "9 📖 Main Methodological References\n\n\n\n\n\n\n📚 Selected Bibliography\n\n\n\n\n\nForecasting & Volatility: - Ardia et al. (2019) - Markov-Switching GARCH Models in R (MSGARCH Package) - Ramírez & Fadiga (2003) - Forecasting Agricultural Commodity Prices with Asymmetric-Error GARCH Models\nMulti-Objective Optimization: - Zitzler, Laumanns & Thiele (2001) - SPEA2: Improving the Strength Pareto Evolutionary Algorithm - Chen, Weng & Li (2009) - Multiobjective Extremal Optimization for Portfolio Optimization\nReinforcement Learning: - Schulman et al. (2017) - Proximal Policy Optimization Algorithms - Recent applications in quantitative finance and algorithmic trading\nCommodities & Agribusiness: - Guidolin & Pedio (2020) - Forecasting commodity futures returns with stepwise regressions - Zhang et al. (2020) - Forecasting Agricultural Commodity Prices using Model Selection Framework",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#team-and-supervision",
+    "href": "mindmap.html#team-and-supervision",
+    "title": "Research Mindmap",
+    "section": "10 🎓 Team and Supervision",
+    "text": "10 🎓 Team and Supervision\n\n\n10.1 Prof. Dr. Rodrigo Hermont Ozon\nAdvisor / Lead Researcher\n\nEducation: Economist (UFPR), MSc in Economic Development (UFPR)\nPhD: PPGEPS/PUCPR (2022-2026)\nArea: Financial Econometrics, Time Series, Optimization\nInstitution: FAE Business School\n\n\n        \n\n\n\n10.2 PAIC Scholar/Volunteer\nUndergraduate Student\n\nActivities: Data collection, model execution, preliminary analyses\nDevelopment: R/Python programming, quantitative methods\nSupport: Documentation, visualizations, reports\n\nJhonathan, Vanessa, Eduardo PAIC 2025/26",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "mindmap.html#institutional-support",
+    "href": "mindmap.html#institutional-support",
+    "title": "Research Mindmap",
+    "section": "11 🏆 Institutional Support",
+    "text": "11 🏆 Institutional Support\n\n11.0.1 FAE Business School\nThis project is developed within the Support Program for Scientific Initiation (PAIC) of FAE University Center, aligned with strategic areas of:\n\nEnabling Technologies (AI, Big Data, Quantitative Analysis)\nAgribusiness and Applied Finance\nData Science and Econometrics\n\nWebsite: https://fae.edu\nContact: rodrigo.ozon@fae.edu\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\n\nAugust/2025: Official PAIC opening and activity start\nOctober/2025: First presentation at 13th SPPAIC\nNovember/2025: Partial Report 1 delivery\nMarch/2026: Qualification Seminar\nJuly/2026: Scientific article submission\nAugust/2026: Final presentation at 14th SPPAIC\n\n\n\n\n\n\nPAIC Econometrics | FAE Business School Scientific Initiation Project 2025/26 - Curitiba, PR © 2025 All rights reserved",
+    "crumbs": [
+      "Home",
+      "📘 Introduction",
+      "Research Mindmap"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html",
+    "href": "openAI_agent.html",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "",
+    "text": "Discover how we created a customized GPT agent that automatically searches, filters, and delivers the most relevant scientific articles every week, every Friday at 8 AM.",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#project-overview",
+    "href": "openAI_agent.html#project-overview",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.1 📋 Project Overview",
+    "text": "1.1 📋 Project Overview\nIn the context of an active research project on applied econometrics and multi-period multi-objective optimization, staying updated with the latest literature is fundamental but extremely time-consuming. Every week, dozens of new papers emerge in repositories like arXiv, SSRN, and scientific journals.\nOur solution? Create a personalized intelligent agent in ChatGPT that:\n\n🔍 Automatically searches across multiple scientific databases\n📊 Filters and categorizes articles by relevance\n📧 Delivers weekly structured reports\n⏰ Scheduled delivery: Every Friday at 08:00 AM (Brasília time)",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#paper-hunter-objectives",
+    "href": "openAI_agent.html#paper-hunter-objectives",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.2 🎯 Paper Hunter Objectives",
+    "text": "1.2 🎯 Paper Hunter Objectives\n\n1.2.1 Identified Problem\nResearchers and students face challenges such as:\n\nInformation overload: Hundreds of papers published weekly\nSource dispersion: ArXiv, SSRN, Google Scholar, journals, etc.\nTime constraints: Difficulty keeping up with recent literature\nSharing difficulties: Need for an easy format to disseminate to students\n\n\n\n1.2.2 Implemented Solution\nWe developed Paper Hunter, a customized GPT agent that:\n\nPerforms targeted searches in specific scientific databases\nApplies quality and relevance filters\nGenerates structured reports in shareable format\nOperates completely autonomously",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#how-we-created-paper-hunter",
+    "href": "openAI_agent.html#how-we-created-paper-hunter",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.3 🛠️ How We Created Paper Hunter",
+    "text": "1.3 🛠️ How We Created Paper Hunter\n\n1.3.1 Step 1: GPT Agent Configuration\nWe accessed ChatGPT and created a personalized GPT with the following specifications:\n\n\n\n\n\n\nAccessing GPT Builder\n\n\n\nTo create personalized GPTs, you need a ChatGPT Plus or Team account. Access: Settings → Explore GPTs → Create a GPT\n\n\nMain instructions provided to the agent:\nYou are an agent specialized in weekly scientific curation.\n\nOBJECTIVE:\nSearch weekly for recent scientific articles on:\n- Applied econometrics\n- Multi-period multi-objective optimization\n- Time series forecasting\n- Reinforcement learning applied to finance\n- Commodity volatility modeling\n\nSEARCH SCOPE:\n- Databases: arXiv (econ.EM, q-fin, cs.LG), SSRN, Google Scholar\n- Period: Last 7 days (articles AND preprints)\n- Language: English\n- Focus: Papers with finance/economics applications\n\nDELIVERY FORMAT:\n1. Structured table (Excel-ready)\n2. Columns: Date | Title | Authors | Venue/Type | Link | Summary | Category\n3. Categories: Econometrics, Optimization, RL, Volatility\n4. Direct and functional links\n5. Concise summary (1-2 sentences) in Portuguese\n\nFREQUENCY:\nEvery Friday at 08:00 AM (Brasília time)\n\n\n1.3.2 Step 2: Integration with Search Tools\nPaper Hunter uses multiple search strategies:\n\n1.3.2.1 2.1 ArXiv API\n# Example query on arXiv\nsearch_query = \"multi-objective portfolio optimization\"\ncategories = \"econ.EM OR q-fin.PM OR q-fin.RM OR cs.LG\"\ndate_filter = \"submittedDate:[last_week TO now]\"\n\n\n1.3.2.2 2.2 SSRN Working Papers\n\nSearch by specific keywords\nFilter by publication date\nMetadata extraction\n\n\n\n1.3.2.3 2.3 Google Scholar\n\nTargeted queries with Boolean operators\nTemporal filter: “Since 2025” + sort by date\nPDF availability verification\n\n\n\n1.3.2.4 2.4 Consensus AI\nSpecialized academic search tool that: - Accesses +200M papers - Uses GPT-4 for semantic analysis - Provides automatic insights and citations",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#example-of-weekly-output",
+    "href": "openAI_agent.html#example-of-weekly-output",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.4 📊 Example of Weekly Output",
+    "text": "1.4 📊 Example of Weekly Output\nHere’s a real example of Paper Hunter’s output:\n\n1.4.1 📅 Week of 09/05/2025\n\n\n\nDate\nTitle\nAuthors\nCategory\nLink\n\n\n\n\n2025-09-03\nNeural Lévy SDE for State-Dependent Risk and Density Forecasting\nZ. Wang; S.T. Rachev\nEconometrics; Volatility\narXiv\n\n\n2025-09-03\nMulti-period Asset-Liability Management with RL in Regime-Switching Market\nZ. Gao et al.\nRL; Optimization\narXiv\n\n\n2025-09-01\nControllable Generation of Implied Volatility Surfaces with VAEs\nJ. Wang; S. Liu; C. Vuik\nVolatility\narXiv\n\n\n\nSummaries: - Paper 1: Neural jump-diffusion model for multi-horizon density/risk forecasting; useful for volatility modeling and scenarios in multi-period optimization. - Paper 2: Use of RL in multi-period ALM with regime switching; outperforms classical models in return/risk. - Paper 3: Controllable generation of IV surfaces with no-arbitrage verification; useful for scenario simulations.",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#setting-up-automatic-scheduling",
+    "href": "openAI_agent.html#setting-up-automatic-scheduling",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.5 ⏰ Setting Up Automatic Scheduling",
+    "text": "1.5 ⏰ Setting Up Automatic Scheduling\n\n1.5.1 Method 1: Scheduled Actions in ChatGPT (Recommended)\nChatGPT Team/Enterprise offers native Scheduled Actions:\n\nAccess your personalized GPT\nGo to Settings → Actions\nConfigure:\n\nTrigger: Every Friday at 08:00 AM (America/Sao_Paulo)\nAction: Run research query and send results\nNotification: Email to team members\n\n\n\n\n\n\n\n\nFree Alternative\n\n\n\nIf you don’t have access to ChatGPT Team, you can use Zapier or Make.com to automate calls to the OpenAI API at specific times.\n\n\n\n\n1.5.2 Method 2: Automation via Zapier\nTrigger: Schedule by Zapier\n  - Frequency: Weekly\n  - Day: Friday\n  - Time: 08:00 AM (GMT-3)\n\nAction: OpenAI (GPT-4)\n  - Model: gpt-4\n  - Prompt: \"Run Paper Hunter weekly search\"\n  - Send results to: Email / Slack / Google Sheets",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#generating-shareable-spreadsheets",
+    "href": "openAI_agent.html#generating-shareable-spreadsheets",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.6 📁 Generating Shareable Spreadsheets",
+    "text": "1.6 📁 Generating Shareable Spreadsheets\nTo facilitate sharing via WhatsApp with students, we configured the agent to automatically generate a consolidated Excel spreadsheet:\n\n1.6.1 Spreadsheet Structure\nMaster File: literature_master.xlsx\nSheets: 1. Index - Index of all weeks 2. All - All consolidated articles 3. 2025-09-05 - Articles from specific week 4. 2025-09-12 - Next week 5. (continues…)\n\n\n1.6.2 Table Columns\n\n\n\n\n\n\n\n\nColumn\nDescription\nExample\n\n\n\n\nWeek\nReference Friday\n2025-09-05\n\n\nDate\nSubmission date\n2025-09-03\n\n\nTitle\nArticle title\nNeural Lévy SDE for…\n\n\nAuthors\nAuthors\nZ. Wang; S.T. Rachev\n\n\nVenue/Type\nSource/Type\narXiv / Preprint\n\n\nLink\nDirect URL\nhttps://arxiv.org/…\n\n\nSummary (PT)\nSummary in Portuguese\nNeural jump-diffusion model…\n\n\nCategory\nClassification\nEconometrics; Volatility",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#automatic-categorization",
+    "href": "openAI_agent.html#automatic-categorization",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.7 🎨 Automatic Categorization",
+    "text": "1.7 🎨 Automatic Categorization\nPaper Hunter automatically classifies each article into the following categories:\n\n\n1.7.1 📈 Econometrics\nEconometric models, time series, statistical tests, cointegration, spillovers\n\n\n1.7.2 🎯 Optimization\nMulti-objective optimization, MOO, genetic algorithms, NSGA-II/III, mathematical programming\n\n\n1.7.3 🤖 RL\nReinforcement Learning, Q-learning, Deep RL, optimal policies, simulation environments\n\n\n1.7.4 📊 Volatility\nVolatility modeling, GARCH, implied volatility, risk, VaR, CVaR",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#best-practices-and-lessons-learned",
+    "href": "openAI_agent.html#best-practices-and-lessons-learned",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.8 💡 Best Practices and Lessons Learned",
+    "text": "1.8 💡 Best Practices and Lessons Learned\n\n1.8.1 ✅ What Worked Well\n\nQuery specificity: The more specific the prompt, the better the results\nTemporal filters: Always include 7-day windows to avoid duplicates\nMultiple sources: Combining arXiv + SSRN + Scholar increases coverage\nStructured format: Tables greatly facilitate sharing\n\n\n\n1.8.2 ⚠️ Challenges Faced\n\nFalse positives: Some articles are not as relevant as they seem\nIndexing delay: Very recent papers may not appear\nAccess limitations: Some journals have paywalls\nAmbiguous categorization: Interdisciplinary papers require manual review\n\n\n\n1.8.3 🔧 Future Improvements\n\nImplement automatic relevance score (0-10)\nAdd LLM-generated summaries of abstracts\nCreate alerts for high-impact papers\nIntegrate with Zotero/Mendeley for reference management\nInteractive dashboard with visualizations",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#how-to-replicate-this-system",
+    "href": "openAI_agent.html#how-to-replicate-this-system",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.9 🚀 How to Replicate This System",
+    "text": "1.9 🚀 How to Replicate This System\n\n1.9.1 Detailed Step-by-Step\n\n1.9.1.1 1. Create ChatGPT Plus/Team Account\nAccess chat.openai.com and upgrade\n\n\n1.9.1.2 2. Configure the Personalized GPT\nName: Paper Hunter\nDescription: Weekly scientific curation agent\nInstructions: [Paste the complete prompt provided above]\nTools: Web Browsing + Code Interpreter\n\n\n1.9.1.3 3. Test Manually\nRun a test search:\n\"Search for articles from the past week on portfolio optimization\"\n\n\n1.9.1.4 4. Configure Scheduling\n\nOption A: ChatGPT Scheduled Actions (Team/Enterprise)\nOption B: Zapier + OpenAI API (any plan)\n\n\n\n1.9.1.5 5. Define Output Format\nInstruct the agent to always generate: - Markdown table - .xlsx file for download - Functional links",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#resources-and-references",
+    "href": "openAI_agent.html#resources-and-references",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.10 📚 Resources and References",
+    "text": "1.10 📚 Resources and References\n\n1.10.1 Databases Used\n\narXiv.org - Preprint repository (Physics, Math, CS, Economics)\nSSRN - Social Science Research Network\nGoogle Scholar - Academic search engine\nConsensus AI - AI-powered academic search\n\n\n\n1.10.2 Complementary Tools\n\nSemantic Scholar - Semantic paper search\nConnected Papers - Citation graph\nResearch Rabbit - Literature recommendation\n\n\n\n1.10.3 APIs Used\n# ArXiv API\n# http://export.arxiv.org/api/query\n\n# CrossRef API (DOIs)\n# https://api.crossref.org/\n\n# Semantic Scholar API\n# https://api.semanticscholar.org/",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#usage-statistics",
+    "href": "openAI_agent.html#usage-statistics",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.11 📊 Usage Statistics",
+    "text": "1.11 📊 Usage Statistics\n\n\n\n\n\n\nResults After 2 Months of Operation\n\n\n\n\nPapers scanned: ~450 articles/week\nRelevance rate: 75% of papers are useful\nTime saved: ~6h/week for the team\nSource coverage: 4 main databases + 10+ journals\nTeam satisfaction: 9.2/10",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#research-impact",
+    "href": "openAI_agent.html#research-impact",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.12 🎓 Research Impact",
+    "text": "1.12 🎓 Research Impact\n\n1.12.1 Observed Benefits\n\nConstant updates: We never miss important papers\nDiscovering connections: We find relevant interdisciplinary work\nEfficiency: More time for deep reading, less for searching\nSharing: Students receive quality curation\nOrganized history: Master spreadsheet works as a library\n\n\n\n1.12.2 Team Testimonials\n\n“Paper Hunter transformed our research routine. Before, we spent hours searching for papers, now we receive everything pre-filtered every Friday.”\n— Vanessa Monn, PAIC Scholar\n\n\n“I was able to identify 3 crucial papers for my part of the project thanks to the automated searches.”\n— Jhonathan Athanazio, Volunteer",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#useful-links",
+    "href": "openAI_agent.html#useful-links",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.13 🔗 Useful Links",
+    "text": "1.13 🔗 Useful Links\n\nChatGPT Custom GPTs Documentation\nArXiv API Documentation\nSSRN Author Center\nZapier + OpenAI Tutorial",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#contact-and-collaboration",
+    "href": "openAI_agent.html#contact-and-collaboration",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.14 📞 Contact and Collaboration",
+    "text": "1.14 📞 Contact and Collaboration\nWant to implement a similar system in your research project?\nGet in touch:\n\n📧 Email: rodrigo.ozon@fae.edu\n🔗 LinkedIn: FAE Centro Universitário\n💻 GitHub: @PAICEconometrics\n\n\n\n\n\n\n\n\n💡 Next Steps\n\n\n\nWe are working on version 2.0 of Paper Hunter which will include:\n\nSentiment analysis of abstracts\nAutomatic ranking by relevance\nPersonalized recommendations per researcher\nIntegration with Notion/Obsidian\nReal-time alerts via Telegram\n\nStay tuned for updates!",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
+    ]
+  },
+  {
+    "objectID": "openAI_agent.html#conclusion",
+    "href": "openAI_agent.html#conclusion",
+    "title": "Paper Hunter: Intelligent Weekly Research Curation Agent",
+    "section": "1.15 📝 Conclusion",
+    "text": "1.15 📝 Conclusion\nPaper Hunter demonstrates how artificial intelligence can be used to increase scientific productivity without replacing the critical role of the researcher. By automating repetitive search and curation tasks, we free up time for what really matters: reading, analyzing, and producing quality knowledge.\nIf you are in an active research project, consider implementing a similar system. The return on time investment is extremely high.\n\n\n📚 PAIC Econometrics | FAE Business School Innovations in Financial Modeling: AI & Econometrics for Portfolio Optimization Transforming research through artificial intelligence",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "AI Agent -- PaperHunter"
     ]
   },
   {
