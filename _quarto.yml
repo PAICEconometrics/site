@@ -67,7 +67,7 @@ website:
         contents:
           - text: "Commodities News"
             href: news.qmd
-          - text: "AI News Agent"
+          - text: "AI Agent -- PaperHunter"
             href: openAI_agent.qmd
       
       - section: "📊 Predictive Modeling"
