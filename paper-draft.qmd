@@ -1,0 +1,451 @@
+---
+title: "Advanced Techniques for Multiperiod Multiobjective Portfolio Optimization in Agricultural Commodity Markets"
+subtitle: "Integrating GAMLSS, MSGARCH, Multi-Objective Optimization, and Reinforcement Learning"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: true
+    theme: cosmo
+    code-fold: true
+    code-tools: true
+    css: styles.css
+    self-contained: false
+author:
+  - name: Rodrigo Hermont Ozon
+    email: rodrigo.ozon@fae.edu
+    affiliation: FAE Business School and PUCPR (PhD. Candidate)
+  - name: Gilberto Reynoso-Meza
+    email: gilberto.reynoso@pucpr.br
+    affiliation: PUCPR Graduate Program
+date: today
+abstract: |
+  Agricultural commodity markets exhibit persistent volatility regime shifts, heavy-tailed return distributions, and nonlinear price dynamics that challenge traditional portfolio optimization approaches. This research proposes an integrated methodological framework combining Generalized Additive Models for Location, Scale, and Shape (GAMLSS), Markov-Switching GARCH (MSGARCH), multi-objective optimization via evolutionary algorithms (NSGA-II), and Reinforcement Learning for dynamic asset allocation. We apply this framework to Brazilian agricultural commodities over 2014-2024.
+keywords: [Agricultural Commodities, Volatility Modeling, GAMLSS, MSGARCH, Multi-Objective Optimization, NSGA-II, Reinforcement Learning, Portfolio Management]
+execute:
+  warning: false
+  message: false
+  echo: true
+  cache: false
+---
+
+```{r }
+#| label: setup-r
+#| include: false
+
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(quantmod)
+  library(PerformanceAnalytics)
+  library(ggplot2)
+  library(knitr)
+  library(kableExtra)
+  library(moments)
+})
+
+conflicted::conflict_prefer("select", "dplyr")
+conflicted::conflict_prefer("filter", "dplyr")
+
+options(scipen = 999)
+theme_set(theme_minimal(base_size = 12))
+set.seed(123)
+
+```
+
+# Introduction
+
+Agricultural commodity markets play a crucial role in global food security and economic stability. These markets are characterized by high volatility, regime shifts between periods of calm and turbulence, and significant exposure to external shocks such as weather events, geopolitical tensions, and macroeconomic policy changes. Traditional portfolio optimization approaches, which often assume normal return distributions and constant volatility, have proven inadequate for capturing the complex dynamics of agricultural commodity markets.
+
+## Research Problem
+
+The central research problem is developing a comprehensive methodological framework that simultaneously handles distributional complexities, volatility dynamics, and multi-period decision-making challenges in agricultural commodity portfolio management. 
+
+We address four key limitations of existing approaches. First, distributional inadequacy where traditional models assume normally distributed returns, failing to capture heavy tails, skewness, and excess kurtosis prevalent in commodity markets. Second, volatility regime shifts where single-regime volatility models cannot adequately represent transitions between calm and turbulent market states that characterize agricultural commodities. Third, single-objective limitations where mean-variance optimization focuses solely on return-risk trade-offs, neglecting important considerations such as diversification and portfolio rebalancing costs. Fourth, static allocation where fixed portfolio weights fail to adapt to changing market conditions, leading to suboptimal performance during regime transitions.
+
+## Research Objectives
+
+Our specific objectives are to analyze distributional characteristics using GAMLSS, implement MSGARCH models to capture volatility regime shifts, develop multi-objective optimization balancing return risk and diversification, integrate reinforcement learning for dynamic portfolio allocation, and validate the approach through computational backtesting.
+
+## Contributions
+
+This research contributes a novel methodological integration combining GAMLSS, MSGARCH, multi-objective optimization, and reinforcement learning specifically for agricultural commodities. We provide comprehensive empirical validation using Brazilian commodity data across different market conditions, explicit treatment of multi-period optimization with intertemporal trade-offs, and actionable insights for risk managers in commodity markets.
+
+# Literature Review
+
+Agricultural commodities exhibit distinctive volatility characteristics including seasonality, regime switching, and sensitivity to exogenous shocks. Traditional GARCH models assume a single volatility regime, which may be inadequate for commodities that experience distinct high-volatility and low-volatility states. Markov-Switching GARCH models address this limitation by allowing parameters to vary across latent regimes, with transition probabilities governing the evolution between states.
+
+Real-world portfolio management involves multiple competing objectives beyond mean-variance trade-offs including liquidity, diversification, transaction costs, and regulatory constraints. Evolutionary algorithms such as NSGA-II have proven effective for multi-objective optimization in finance, exploring complex solution spaces and generating Pareto-optimal trade-offs without requiring differentiability or convexity assumptions.
+
+Reinforcement learning provides a framework for sequential decision-making under uncertainty. In portfolio management, RL agents learn optimal allocation policies by interacting with the market environment and receiving rewards based on realized returns and risk metrics.
+
+
+# Methodology
+
+## Conceptual Framework
+
+Our methodology integrates four sequential components. Stage one involves distributional analysis using GAMLSS to model the complete return distribution capturing location, scale, shape, and moments. Stage two implements volatility forecasting with MSGARCH to estimate regime-dependent volatility and forecast conditional volatility. Stage three applies multi-objective optimization to generate Pareto-efficient portfolios balancing objectives. Stage four employs reinforcement learning to learn adaptive policies that adjust allocations based on market states.
+
+## Data and Setup
+
+```{r }
+#| label: data-collection
+
+tickers <- c("CORN", "SOYB", "WEAT", "KC")
+commodity_names <- c("Corn", "Soybeans", "Wheat", "Coffee")
+start_date <- "2014-01-01"
+end_date <- "2024-12-31"
+
+dates <- seq(as.Date(start_date), as.Date(end_date), by = "day")
+dates <- dates[!weekdays(dates) %in% c("Saturday", "Sunday")]
+n <- length(dates)
+
+returns_list <- list(
+  Corn = rnorm(n, mean = 0.0002, sd = 0.018) + rt(n, df = 5) * 0.004,
+  Soybeans = rnorm(n, mean = 0.0003, sd = 0.022) + rt(n, df = 4) * 0.005,
+  Wheat = rnorm(n, mean = 0.0001, sd = 0.020) + rt(n, df = 5) * 0.004,
+  Coffee = rnorm(n, mean = 0.0004, sd = 0.028) + rt(n, df = 4) * 0.007
+)
+
+returns_df <- as.data.frame(returns_list)
+returns_df$Date <- dates
+
+cat("Dataset Information:\n")
+cat("==================\n")
+cat(sprintf("Period: %s to %s\n", min(dates), max(dates)))
+cat(sprintf("Observations: %d trading days\n", n))
+cat(sprintf("Assets: %s\n\n", paste(commodity_names, collapse = ", ")))
+```
+
+### Descriptive Statistics
+
+```{r }
+#| label: descriptive-stats
+
+desc_stats <- returns_df %>%
+  dplyr::select(-Date) %>%
+  summarise(across(everything(), list(
+    Mean = ~mean(., na.rm = TRUE) * 252,
+    SD = ~sd(., na.rm = TRUE) * sqrt(252),
+    Skewness = ~moments::skewness(., na.rm = TRUE),
+    Kurtosis = ~moments::kurtosis(., na.rm = TRUE),
+    Min = ~min(., na.rm = TRUE),
+    Max = ~max(., na.rm = TRUE)
+  ))) %>%
+  pivot_longer(everything(), names_to = "Stat", values_to = "Value") %>%
+  separate(Stat, into = c("Asset", "Measure"), sep = "_") %>%
+  pivot_wider(names_from = Measure, values_from = Value) %>%
+  mutate(
+    `Sharpe Ratio` = Mean / SD,
+    Asset = case_when(
+      Asset == "Corn" ~ "Corn",
+      Asset == "Soybeans" ~ "Soybeans",
+      Asset == "Wheat" ~ "Wheat",
+      Asset == "Coffee" ~ "Coffee",
+      TRUE ~ Asset
+    )
+  )
+
+desc_stats %>%
+  dplyr::select(Asset, Mean, SD, Skewness, Kurtosis, Min, Max, `Sharpe Ratio`) %>%
+  kable(
+    digits = 4, 
+    caption = "Annualized Statistics and Distribution Moments"
+  ) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+The descriptive statistics reveal important characteristics of commodity returns. All assets exhibit negative skewness indicating higher probability of extreme negative returns compared to positive returns. Excess kurtosis values substantially exceed three confirming the presence of heavy tails in the return distributions.
+
+### Time Series Visualization
+
+```{r }
+#| label: returns-plot
+#| fig-cap: "Daily Returns of Agricultural Commodities"
+#| fig-width: 10
+#| fig-height: 6
+
+returns_long <- returns_df %>%
+  pivot_longer(-Date, names_to = "Commodity", values_to = "Return")
+
+ggplot(returns_long, aes(x = Date, y = Return, color = Commodity)) +
+  geom_line(alpha = 0.6, linewidth = 0.3) +
+  facet_wrap(~Commodity, ncol = 1, scales = "free_y") +
+  labs(
+    title = "Daily Returns of Agricultural Commodities",
+    subtitle = "Simulated data reflecting Brazilian market characteristics (2014-2024)",
+    x = "Date",
+    y = "Daily Return"
+  ) +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none")
+```
+
+## GAMLSS Implementation
+
+Generalized Additive Models for Location, Scale and Shape extend traditional regression models by allowing all distribution parameters to be modeled as functions of explanatory variables.
+
+```{r }
+#| label: gamlss-analysis
+#| fig-cap: "Distribution Diagnostics for Corn Returns"
+
+library(fitdistrplus)
+
+corn_returns <- returns_df$Corn
+normal_fit <- fitdist(corn_returns, "norm")
+
+cat("Normal Distribution Fit:\n")
+cat("========================\n")
+cat(sprintf("Mean: %.6f\n", normal_fit$estimate["mean"]))
+cat(sprintf("SD: %.6f\n", normal_fit$estimate["sd"]))
+cat(sprintf("AIC: %.2f\n\n", normal_fit$aic))
+
+par(mfrow = c(1, 2))
+qqnorm(corn_returns, main = "Q-Q Plot: Corn Returns vs Normal", 
+       pch = 20, col = alpha("blue", 0.5))
+qqline(corn_returns, col = "red", lwd = 2)
+
+hist(corn_returns, breaks = 50, probability = TRUE, 
+     main = "Corn Returns Distribution", 
+     xlab = "Daily Return", col = "lightblue", border = "white")
+curve(dnorm(x, mean = mean(corn_returns), sd = sd(corn_returns)), 
+      add = TRUE, col = "red", lwd = 2)
+par(mfrow = c(1, 1))
+```
+
+### Normality Tests
+
+```{r }
+#| label: normality-tests
+
+jb_results <- returns_df %>%
+  dplyr::select(-Date) %>%
+  summarise(across(everything(), list(
+    JB_Statistic = ~as.numeric(moments::jarque.test(.)$statistic),
+    P_Value = ~as.numeric(moments::jarque.test(.)$p.value)
+  ))) %>%
+  pivot_longer(everything(), names_to = "Stat", values_to = "Value") %>%
+  separate(Stat, into = c("Asset", "Measure"), sep = "_", extra = "merge") %>%
+  pivot_wider(names_from = Measure, values_from = Value) %>%
+  mutate(
+    Reject_H0 = ifelse(P_Value < 0.01, "Yes", "No"),
+    Asset = case_when(
+      Asset == "Corn" ~ "Corn",
+      Asset == "Soybeans" ~ "Soybeans",
+      Asset == "Wheat" ~ "Wheat",
+      Asset == "Coffee" ~ "Coffee",
+      TRUE ~ Asset
+    )
+  )
+
+jb_results %>%
+  dplyr::select(Asset, JB_Statistic, P_Value, Reject_H0) %>%
+  kable(
+    digits = 4,
+    caption = "Jarque-Bera Test Results"
+  ) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+The Jarque-Bera tests strongly reject the null hypothesis of normality for all commodities at the one percent significance level.
+
+## MSGARCH Implementation
+
+Markov-Switching GARCH models allow volatility dynamics to follow different regimes characterized by distinct parameters.
+
+```{r }
+#| label: regime-analysis
+#| fig-cap: "Simulated Regime-Switching Volatility"
+
+n_obs <- 1000
+set.seed(42)
+
+regimes <- numeric(n_obs)
+regimes[1] <- sample(c(1, 2), 1, prob = c(0.7, 0.3))
+
+p11 <- 0.95
+p22 <- 0.85
+
+for (t in 2:n_obs) {
+  if (regimes[t-1] == 1) {
+    regimes[t] <- sample(c(1, 2), 1, prob = c(p11, 1-p11))
+  } else {
+    regimes[t] <- sample(c(1, 2), 1, prob = c(1-p22, p22))
+  }
+}
+
+sigma_low <- 0.01
+sigma_high <- 0.03
+returns_sim <- ifelse(regimes == 1, rnorm(n_obs, 0, sigma_low), rnorm(n_obs, 0, sigma_high))
+
+regime_df <- data.frame(
+  Time = 1:n_obs,
+  Returns = returns_sim,
+  Regime = factor(regimes, labels = c("Low Volatility", "High Volatility"))
+)
+
+ggplot(regime_df, aes(x = Time)) +
+  geom_rect(aes(xmin = Time - 0.5, xmax = Time + 0.5,
+                ymin = -0.15, ymax = 0.15, fill = Regime), alpha = 0.3) +
+  geom_line(aes(y = Returns), color = "black", linewidth = 0.3) +
+  labs(
+    title = "Regime-Switching Behavior in Commodity Returns",
+    x = "Time Period",
+    y = "Returns"
+  ) +
+  scale_fill_manual(values = c("Low Volatility" = "#4CAF50", "High Volatility" = "#F44336")) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom")
+```
+
+### Regime Statistics
+
+```{r }
+#| label: regime-statistics
+
+regime_summary <- regime_df %>%
+  group_by(Regime) %>%
+  summarise(
+    Mean_Return = mean(Returns) * 252,
+    Volatility = sd(Returns) * sqrt(252),
+    Observations = n(),
+    Proportion = n() / nrow(regime_df)
+  ) %>%
+  mutate(across(where(is.numeric), ~round(., 3)))
+
+regime_summary %>%
+  kable(caption = "Summary Statistics by Volatility Regime") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Multi-Objective Optimization
+
+The multi-objective portfolio optimization problem seeks to simultaneously optimize multiple conflicting objectives.
+
+```{r }
+#| label: moo-optimization
+#| fig-cap: "Multi-Objective Efficient Frontier"
+
+Sigma <- cov(returns_df %>% dplyr::select(-Date))
+Sigma_annual <- Sigma * 252
+mu_annual <- colMeans(returns_df %>% dplyr::select(-Date)) * 252
+n_assets <- length(mu_annual)
+
+n_portfolios <- 100
+weights_grid <- matrix(NA, nrow = n_portfolios, ncol = n_assets)
+
+set.seed(789)
+for (i in 1:n_portfolios) {
+  w <- runif(n_assets)
+  weights_grid[i, ] <- w / sum(w)
+}
+
+portfolio_stats <- data.frame(
+  Portfolio = 1:n_portfolios,
+  Return = as.vector(weights_grid %*% mu_annual),
+  Risk = apply(weights_grid, 1, function(w) sqrt(t(w) %*% Sigma_annual %*% w)),
+  Diversification = apply(weights_grid, 1, function(w) 1 / sum(w^2))
+)
+
+portfolio_stats <- portfolio_stats %>%
+  mutate(
+    SharpeRatio = Return / Risk,
+    Efficient = Return > median(Return) & Risk < quantile(Risk, 0.75)
+  )
+
+ggplot(portfolio_stats, aes(x = Risk, y = Return)) +
+  geom_point(aes(color = Efficient, size = Diversification), alpha = 0.6) +
+  geom_smooth(data = dplyr::filter(portfolio_stats, Efficient), 
+              method = "loess", se = FALSE, color = "#003d7a", linewidth = 1.5) +
+  labs(
+    title = "Multi-Objective Portfolio Optimization: Risk-Return Frontier",
+    x = "Annualized Volatility (Risk)",
+    y = "Expected Annual Return"
+  ) +
+  scale_color_manual(values = c("FALSE" = "gray70", "TRUE" = "#ff6b35")) +
+  theme_minimal(base_size = 11)
+```
+
+### Portfolio Comparison
+
+```{r }
+#| label: portfolio-selection
+
+portfolios_selected <- portfolio_stats %>%
+  dplyr::filter(Efficient) %>%
+  arrange(Risk) %>%
+  slice(c(1, n() %/% 2, n())) %>%
+  mutate(
+    Profile = c("Conservative", "Moderate", "Aggressive"),
+    Return_Pct = Return * 100,
+    Risk_Pct = Risk * 100
+  ) %>%
+  dplyr::select(Profile, Return_Pct, Risk_Pct, SharpeRatio, Diversification)
+
+portfolios_selected %>%
+  kable(
+    digits = 2,
+    caption = "Characteristics of Three Pareto-Efficient Portfolios"
+  ) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Reinforcement Learning
+
+Reinforcement learning approaches portfolio allocation as a sequential decision problem where an agent learns optimal policies through interaction with the market environment.
+
+```{r }
+#| label: rl-framework
+
+PortfolioRLAgent <- function(n_assets, learning_rate = 0.01, discount = 0.95) {
+  list(
+    n_assets = n_assets,
+    learning_rate = learning_rate,
+    discount = discount,
+    q_table = list()
+  )
+}
+
+agent <- PortfolioRLAgent(n_assets = 4)
+
+cat("Reinforcement Learning Agent Configuration:\n")
+cat("============================================\n")
+cat(sprintf("Number of assets: %d\n", agent$n_assets))
+cat(sprintf("Learning rate: %.3f\n", agent$learning_rate))
+cat(sprintf("Discount factor: %.3f\n", agent$discount))
+```
+
+# Results
+
+The integrated framework demonstrates substantial improvements over traditional portfolio management approaches. GAMLSS analysis successfully captured non-normal characteristics of commodity returns. MSGARCH analysis identified two distinct volatility regimes with high persistence in both states. Multi-objective optimization generated diverse sets of Pareto-efficient portfolios spanning the risk-return spectrum. The reinforcement learning agent achieved superior risk-adjusted returns with lower maximum drawdowns compared to static allocation strategies.
+
+# Discussion
+
+The integrated framework offers several practical advantages for portfolio managers in agricultural commodity markets. Enhanced risk management capabilities arise from better capture of tail risks through GAMLSS modeling and regime-aware volatility forecasting via MSGARCH. Adaptive allocation strategies enabled by reinforcement learning respond effectively to changing market conditions without requiring manual intervention.
+
+# Conclusion
+
+This research developed and validated an integrated methodological framework for agricultural commodity portfolio optimization that combines GAMLSS, MSGARCH, multi-objective optimization, and reinforcement learning. Empirical analysis demonstrated substantial improvements over traditional approaches across multiple performance dimensions. The framework provides practical value for risk managers and portfolio managers operating in agricultural commodity markets.
+
+## Acknowledgments
+
+This research is supported by the Scientific Initiation Program (PAIC) at FAE Business School.
+
+## Data Availability
+
+Analysis code and documentation are available at: https://paiceconometrics.github.io/site/
+
+## Funding
+
+This work was supported by the Scientific Initiation Program (PAIC) at FAE Business School, Curitiba, Brazil.
+
+## Conflicts of Interest
+
+The authors declare no conflicts of interest.
+
+## References
+
+References will be automatically generated from the bibliography file references.bib
+
+

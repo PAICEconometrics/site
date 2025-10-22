@@ -84,7 +84,8 @@ website:
             href: models_ablation_NN.qmd
           - text: "Model Selection"
             href: econometrics_model_sel.qmd
-      
+          - text: "Paper Draft"
+            href: paper-draft.qmd      
       - section: "🎯 Optimization"
         contents:
           - text: "Multi-Objective Framework"
@@ -107,16 +108,17 @@ website:
         contents:
           - text: "Acknowledgments"
             href: acknowlegment.qmd
-
 format:
   html:
-    theme: cosmo
-    css: styles.css
     toc: true
     toc-depth: 3
-    number-sections: false
+    number-sections: true
     code-fold: true
     code-tools: true
+    theme: cosmo
+    css: styles.css
+    html-math-method: mathjax
+    self-contained: false
     link-external-newwindow: true
     include-in-header:
       - text: |

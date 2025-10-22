@@ -1,0 +1,468 @@
+---
+title: "Publication Plan"
+subtitle: "Strategic Dissemination of Research Outputs | PAIC 2025-2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    css: styles.css
+---
+
+::: {.hero-section}
+# Research Dissemination Strategy
+
+Our publication plan aligns with FAE Business School's commitment to academic excellence and innovation. This strategic roadmap outlines our planned contributions to the scientific community through journal articles, conference presentations, and patent applications.
+:::
+
+## Publication Timeline Overview
+
+The PAIC 2025/2026 cycle encompasses a comprehensive research and publication strategy spanning from August 2025 to August 2026. Our dissemination plan is designed to maximize academic impact while ensuring rigorous validation of methodologies.
+
+```{mermaid}
+%%| fig-width: 100%
+gantt
+    title PAIC 2025/2026 Publication Timeline
+    dateFormat YYYY-MM-DD
+    section Research Phases
+    Data Collection & Preparation     :2025-08-01, 2025-11-30
+    Model Development (GARCH/ML)      :2025-10-01, 2026-02-28
+    Multi-Objective Optimization      :2025-11-01, 2026-03-31
+    Reinforcement Learning Framework  :2026-02-01, 2026-04-30
+    
+    section Academic Outputs
+    Conference Paper 1 (SPPAIC Oct)   :milestone, 2025-10-24, 0d
+    Partial Report 1                  :milestone, 2025-11-24, 0d
+    Partial Report 2                  :milestone, 2026-03-01, 0d
+    Qualification Seminar             :milestone, 2026-03-15, 0d
+    Journal Article - Submission      :crit, 2026-06-15, 2026-07-06
+    Conference Paper 2 (SPPAIC Aug)   :milestone, 2026-08-10, 0d
+    Patent Application                :crit, 2026-07-15, 2026-08-31
+```
+
+---
+
+## 📊 Planned Publications by Type
+
+### 🎓 Journal Articles
+
+Our research aims to contribute to high-impact journals in the fields of agricultural finance, econometrics, and computational intelligence. We target journals with strong reputations in quantitative finance and agricultural commodities research.
+
+---
+
+#### **Article 1: Multi-Period Portfolio Optimization with MSGARCH and Reinforcement Learning**
+
+::: {.info-box}
+**📌 Provisional Title**  
+*"Dynamic Portfolio Management of Agricultural Commodities: Integrating Markov-Switching GARCH Models with Multi-Agent Reinforcement Learning"*
+
+**🎯 Research Objectives**
+
+- Develop a novel framework combining MSGARCH volatility forecasting with multi-period portfolio optimization
+- Implement Deep Q-Network (DQN) agents for dynamic rebalancing strategies
+- Compare performance against traditional mean-variance optimization under regime-switching conditions
+- Validate the methodology using Brazilian agricultural commodity data (corn, soy, wheat, coffee, sugar)
+
+**📐 Methodology Summary**
+
+The proposed research integrates three interconnected methodological pillars. First, we employ Markov-Switching GARCH models to capture volatility regime transitions in commodity returns, explicitly modeling the time-varying nature of agricultural market volatility. Second, we implement multi-objective optimization using NSGA-II and Differential Evolution algorithms to generate Pareto-efficient portfolios balancing return maximization, risk minimization, and liquidity considerations. Third, we deploy reinforcement learning agents trained to select optimal portfolio weights dynamically across different market regimes, learning adaptive rebalancing strategies through interaction with historical market data.
+
+**📊 Expected Contributions**
+
+- **Methodological Innovation**: First integration of MSGARCH with multi-agent RL for commodity portfolio management
+- **Practical Application**: Actionable framework for agricultural portfolio managers and trading desks
+- **Theoretical Advancement**: Extension of regime-switching models to multi-period optimization contexts
+- **Empirical Validation**: Comprehensive backtesting on 10+ years of Brazilian commodity data
+
+**🎯 Target Journals** (in order of preference)
+
+1. **Journal of Economic Dynamics and Control** (Elsevier) - Q1, IF: 1.9
+2. **Quantitative Finance** (Taylor & Francis) - Q1, IF: 1.5  
+3. **Journal of Commodity Markets** (Elsevier) - Q2, IF: 3.7
+4. **Computational Economics** (Springer) - Q2, IF: 2.0
+
+**📅 Timeline & Milestones**
+
+| **Phase** | **Period** | **Deliverable** | **Status** |
+|-----------|-----------|-----------------|------------|
+| Literature Review | Aug-Sep 2025 | Comprehensive review of MSGARCH & RL applications | ⏳ Planned |
+| Data Infrastructure | Aug-Oct 2025 | Bloomberg/B3 data pipeline, preprocessing | ⏳ Planned |
+| MSGARCH Implementation | Oct-Dec 2025 | Model estimation, regime identification | ⏳ Planned |
+| Multi-Objective Framework | Nov 2025-Feb 2026 | NSGA-II/DE optimization engine | ⏳ Planned |
+| RL Agent Development | Feb-Apr 2026 | DQN training, hyperparameter tuning | ⏳ Planned |
+| Backtesting & Validation | Apr-May 2026 | Out-of-sample testing, robustness checks | ⏳ Planned |
+| Manuscript Preparation | May-Jun 2026 | Full draft, co-author review | ⏳ Planned |
+| Submission | **July 6, 2026** | Initial journal submission | 🎯 Target |
+| Revision & Resubmission | Aug-Oct 2026 | Address reviewer comments (if applicable) | ⏳ Planned |
+
+**👥 Authorship**
+
+- **Principal Author**: Student Researcher (PAIC)
+- **Co-Author & Advisor**: Prof. Rodrigo Hermont Ozon, PhD (FAE Business School)
+- **Collaborators**: TBD (potential co-authors from PUCPR or international partners)
+
+**🔑 Keywords**
+
+Agricultural Commodities, Portfolio Optimization, Markov-Switching GARCH, Reinforcement Learning, Multi-Objective Optimization, Brazilian Markets, Dynamic Asset Allocation, Regime-Switching Models
+:::
+
+---
+
+### 📢 Conference Papers
+
+Conference presentations serve as critical venues for receiving early feedback, networking with domain experts, and disseminating preliminary findings. We target both institutional and international conferences.
+
+---
+
+#### **Conference Paper 1: 13th Research Symposium (SPPAIC 2025)**
+
+::: {.info-box}
+**📌 Event Information**  
+**13º Simpósio de Pesquisa e 19º Seminário de Iniciação Científica (SPPAIC)**  
+**Date**: October 24-25, 2025  
+**Location**: FAE Business School, Curitiba, PR  
+**Format**: Oral Presentation + Poster Session  
+
+**📊 Provisional Title**  
+*"Time Series Forecasting for Agricultural Commodities: A Comparative Study of GARCH Family Models and Deep Learning Approaches"*
+
+**🎯 Research Focus**
+
+This presentation will report on the first phase of our research, comparing the forecasting performance of traditional econometric models (GARCH, EGARCH, GJR-GARCH, MSGARCH) against modern deep learning architectures (LSTM, GRU, Temporal Convolutional Networks) for Brazilian agricultural commodity price prediction.
+
+**📐 Methodology Overview**
+
+We implement a comprehensive forecasting horse race using daily price data for five major Brazilian commodities (corn, soybeans, wheat, coffee, sugar) from 2014-2025. Models are evaluated using rolling-window cross-validation with multiple performance metrics including RMSE, MAE, directional accuracy, and quantile loss functions. Special attention is given to regime-switching behavior and volatility clustering typical of agricultural markets.
+
+**📊 Expected Results**
+
+- Performance ranking of 10+ forecasting models across multiple commodities
+- Identification of regime-dependent forecasting superiority patterns
+- Computational efficiency benchmarks for real-time trading applications
+- Recommendations for model ensemble strategies
+
+**📅 Key Dates**
+
+- **Abstract Submission**: September 15, 2025
+- **Full Paper Submission**: October 10, 2025
+- **Presentation Date**: October 24-25, 2025
+- **Proceedings Publication**: November 2025
+
+**👥 Authors**
+
+- Student Researcher (PAIC)
+- Prof. Rodrigo Hermont Ozon (Advisor, FAE)
+
+**🎤 Presentation Format**
+
+- 15-minute oral presentation with Q&A
+- A0-size scientific poster for exhibition
+- Digital proceedings publication (FAE repository)
+:::
+
+---
+
+#### **Conference Paper 2: 14th Research Symposium (SPPAIC 2026)**
+
+::: {.info-box}
+**📌 Event Information**  
+**14º Simpósio de Pesquisa e 20º Seminário de Iniciação Científica (SPPAIC)**  
+**Date**: August 10, 2026  
+**Location**: FAE Business School, Curitiba, PR  
+**Format**: Final Project Presentation  
+
+**📊 Provisional Title**  
+*"Reinforcement Learning for Dynamic Portfolio Rebalancing: A Multi-Objective Approach to Agricultural Commodity Investment"*
+
+**🎯 Research Focus**
+
+This final presentation will showcase the complete PAIC research project, emphasizing the reinforcement learning framework for dynamic portfolio management. The presentation will demonstrate how RL agents learn optimal rebalancing strategies under multiple objectives (return, risk, liquidity) and regime-switching volatility conditions.
+
+**📐 Key Components**
+
+- **RL Architecture**: Deep Q-Networks (DQN) with experience replay and target networks
+- **State Space Design**: Market features, volatility regime indicators, portfolio metrics
+- **Action Space**: Discrete rebalancing decisions across commodity allocations
+- **Reward Function**: Multi-objective utility combining Sharpe ratio, maximum drawdown, and turnover costs
+- **Training Protocol**: Episodic learning over historical market cycles with validation on held-out test periods
+
+**📊 Expected Demonstrations**
+
+- Interactive dashboard showing RL agent decision-making in real-time market simulations
+- Performance comparison: RL portfolios vs. traditional buy-and-hold and rebalancing strategies
+- Visualization of learned Q-values and policy evolution across market regimes
+- Backtested results with transaction costs and realistic trading constraints
+
+**📅 Timeline**
+
+- **Abstract Submission**: July 15, 2026
+- **Full Paper Submission**: July 31, 2026
+- **Presentation Date**: August 10, 2026
+- **Final Proceedings**: August 30, 2026
+
+**👥 Authors**
+
+- Student Researcher (PAIC)
+- Prof. Rodrigo Hermont Ozon (Advisor, FAE)
+
+**🎤 Presentation Requirements**
+
+- 20-minute comprehensive project presentation
+- Scientific poster summarizing entire PAIC cycle
+- Demonstration of computational implementation (Jupyter notebooks, dashboards)
+:::
+
+---
+
+### 🏆 Patent Application
+
+Beyond academic publications, our research aims to generate intellectual property with commercial potential through a patent application protecting the novel methodological framework.
+
+---
+
+#### **Patent: Intelligent System for Multi-Period Portfolio Optimization**
+
+::: {.info-box}
+**📌 Patent Information**  
+**Provisional Title**: *"Intelligent System and Method for Multi-Period Portfolio Optimization of Agricultural Commodities Using Regime-Switching Models and Reinforcement Learning"*
+
+**🎯 Innovation Description**
+
+This patent protects a comprehensive computational system that combines econometric modeling, multi-objective optimization, and reinforcement learning to generate dynamic investment strategies for agricultural commodity portfolios. The innovation lies in the integrated architecture that enables real-time adaptation to volatility regime changes while optimizing across multiple conflicting objectives.
+
+**🔬 Technical Innovation Claims**
+
+1. **Regime-Aware Forecasting Module**
+   - Method for detecting volatility regime transitions using MSGARCH models
+   - Automatic calibration of regime-switching parameters using Bayesian inference
+   - Real-time regime probability estimation for portfolio rebalancing signals
+
+2. **Multi-Objective Optimization Engine**
+   - Pareto-efficient frontier generation balancing return, risk, and liquidity
+   - Integration of fuzzy logic for subjective preference articulation
+   - Dynamic constraint handling for regulatory and operational limits
+
+3. **Adaptive Reinforcement Learning System**
+   - Deep Q-Network architecture specifically designed for financial decision-making
+   - Experience replay mechanism with regime-weighted sampling
+   - Multi-agent framework enabling diversified strategy exploration
+
+4. **Integrated Decision Support Platform**
+   - Real-time data pipeline from Bloomberg/B3 APIs
+   - Interactive dashboard for portfolio monitoring and what-if scenario analysis
+   - Explainable AI features showing rationale behind portfolio recommendations
+
+**💼 Commercial Applications**
+
+- **Asset Management Firms**: Hedge funds and commodity trading advisors specializing in agricultural markets
+- **Agribusiness Corporations**: Companies managing price risk exposure across multiple commodities
+- **Banks and Financial Institutions**: Structured products and derivatives desks focused on agricultural sectors
+- **Institutional Investors**: Pension funds and endowments seeking alternative investment strategies
+- **Technology Providers**: FinTech platforms offering algorithmic portfolio management services
+
+**🌍 Market Potential**
+
+The global agricultural commodities market exceeds $2 trillion annually, with growing demand for sophisticated risk management tools. Brazilian agribusiness alone represents over $100 billion in annual exports, creating substantial domestic market opportunities for intelligent portfolio optimization systems.
+
+**📋 Patent Filing Strategy**
+
+| **Phase** | **Timeline** | **Actions** | **Responsible Party** |
+|-----------|-------------|-------------|----------------------|
+| Prior Art Search | May-Jun 2026 | Comprehensive patent database search | FAE Legal/Innovation Office |
+| Provisional Application | Jul 2026 | Draft filing with USPTO/INPI (Brazil) | Patent Attorney + Research Team |
+| Full Application | Jul 2026-Aug 2027 | Detailed technical claims, drawings | Patent Attorney + Prof. Ozon |
+| International Filing (PCT) | Aug 2027 | Optional PCT application if funded | FAE Administration |
+| Examination & Response | 2027-2029 | Address examiner queries, amendments | Patent Attorney |
+| Grant (Estimated) | 2029-2030 | Patent issuance and publication | N/A |
+
+**👥 Inventors**
+
+- **Primary Inventor**: Student Researcher (PAIC)
+- **Co-Inventor**: Prof. Rodrigo Hermont Ozon, PhD
+- **Institutional Owner**: FAE Centro Universitário (as per institutional IP policy)
+
+**📅 Key Milestones**
+
+- **May 1, 2026**: Begin prior art search and novelty assessment
+- **June 15, 2026**: Complete technical documentation and system architecture diagrams
+- **July 15, 2026**: Submit provisional patent application (INPI/Brazil)
+- **August 31, 2026**: Finalize full specification document
+
+**🔐 Confidentiality & IP Protection**
+
+All research code, data, and documentation are maintained under strict confidentiality agreements. Publication of academic articles will be strategically timed to occur after provisional patent filing to preserve patentability while disseminating scientific contributions.
+
+**💡 Licensing Potential**
+
+Upon patent grant, FAE Business School may pursue licensing arrangements with financial services firms, technology companies, or establish a spin-off startup to commercialize the system. Revenue-sharing agreements will follow institutional IP policies while ensuring appropriate recognition for student and faculty inventors.
+:::
+
+---
+
+## 📚 Supporting Academic Outputs
+
+In addition to primary publications, the PAIC project will generate several supporting academic materials:
+
+### 📖 Technical Reports
+
+1. **Partial Report 1** (November 24, 2025)
+   - Literature review synthesis
+   - Data collection and preprocessing methodology
+   - Initial GARCH model implementations
+   - Preliminary forecasting results
+
+2. **Partial Report 2** (March 1, 2026)
+   - Multi-objective optimization framework
+   - Pareto frontier analysis results
+   - Reinforcement learning environment design
+   - Interim backtesting performance
+
+3. **Final Comprehensive Report** (July 2026)
+   - Complete methodology documentation
+   - Full experimental results and analysis
+   - Lessons learned and future research directions
+   - Technical appendices (code, data documentation)
+
+### 🎓 Qualification Seminar
+
+**Date**: March-April 2026  
+**Format**: 45-minute presentation + Q&A with faculty panel  
+**Purpose**: Validate research progress, receive expert feedback, demonstrate methodological rigor
+
+**Expected Outcomes**:
+- Approval to proceed with final research phases
+- Refinement of journal article structure
+- Identification of additional validation experiments
+- Strengthening of theoretical contributions
+
+### 💻 Open-Source Code Repositories
+
+To promote reproducible research and scientific transparency, selected code components will be made publicly available:
+
+- **GitHub Repository**: [https://github.com/PAICEconometrics](https://github.com/PAICEconometrics)
+- **Documentation**: Comprehensive tutorials and vignettes
+- **License**: MIT License (permissive open-source)
+- **Components**:
+  - Data preprocessing pipelines
+  - MSGARCH implementation in R/Python
+  - Multi-objective optimization algorithms
+  - Reinforcement learning training scripts
+  - Backtesting framework
+  - Visualization and reporting tools
+
+**Note**: Core proprietary algorithms subject to patent application will be released after IP protection is secured.
+
+---
+
+## 🎯 Alignment with FAE Research Excellence
+
+This publication strategy directly supports FAE Business School's strategic research priorities:
+
+::: {.project-info}
+### 🏛️ Institutional Research Goals
+
+**Innovation & Impact**
+- Generate patent-ready intellectual property with commercial potential
+- Develop cutting-edge methodologies applicable to Brazilian agribusiness sector
+- Establish FAE as a regional hub for quantitative finance and agricultural economics research
+
+**Student Development**
+- Provide undergraduate researchers with publication experience
+- Build technical skills in econometrics, machine learning, and financial modeling
+- Prepare students for graduate studies and industry careers in quantitative finance
+
+**Academic Excellence**
+- Target high-impact journals recognized by CAPES/CNPq evaluation systems
+- Present at national and international conferences
+- Contribute to FAE's research productivity metrics and institutional rankings
+
+**Industry Partnerships**
+- Engage with commodity trading firms, asset managers, and agribusiness corporations
+- Explore collaborative research opportunities and consultancy projects
+- Create pathways for technology transfer and commercialization
+:::
+
+---
+
+## 📊 Publication Metrics & Impact Goals
+
+We establish clear targets for measuring the success and impact of our research dissemination efforts:
+
+| **Metric** | **Target** | **Measurement Period** |
+|-----------|-----------|----------------------|
+| **Journal Articles Submitted** | 1 | July 2026 |
+| **Conference Papers Presented** | 2 | Oct 2025 & Aug 2026 |
+| **Patent Applications Filed** | 1 | July 2026 |
+| **Technical Reports Completed** | 3 | Nov 2025, Mar 2026, Jul 2026 |
+| **GitHub Repository Stars** | 50+ | By Dec 2026 |
+| **Research Blog Posts** | 6-8 | Throughout PAIC cycle |
+| **Estimated Journal Impact Factor** | 1.5+ | Target venue IF |
+| **Conference Attendance** | 30-50 peers | SPPAIC events |
+| **Citation Target (by 2028)** | 5-10 | Post-publication tracking |
+
+---
+
+## 🤝 Collaboration & Co-Authorship
+
+We actively seek collaboration with researchers and practitioners who can enhance the quality and impact of our work:
+
+::: {.info-box}
+### Potential Collaborators
+
+**Academic Partners**
+- **PUCPR (Pontifícia Universidade Católica do Paraná)**: Continuing collaboration from previous PIBIC project
+- **UFPR (Universidade Federal do Paraná)**: Econometrics and agricultural economics faculty
+- **International Researchers**: Co-authors with expertise in RL, MSGARCH, or agricultural finance
+
+**Industry Partners**
+- **Commodity Trading Firms**: Practitioners providing market insights and data
+- **Asset Management Companies**: Portfolio managers testing and validating methodologies
+- **Agricultural Cooperatives**: Domain experts on Brazilian commodity markets
+- **Technology Companies**: Software engineers and data scientists
+
+**Co-Authorship Criteria**
+- Substantial intellectual contribution to research design or analysis
+- Participation in manuscript preparation and revision
+- Agreement with publication content and authorship order
+- Compliance with FAE ethical guidelines and authorship standards
+:::
+
+---
+
+## 📞 Contact & Inquiries
+
+For questions about our research, collaboration opportunities, or publication status:
+
+**Principal Investigator**  
+Prof. Rodrigo Hermont Ozon, PhD  
+📧 [rodrigo.ozon@fae.edu](mailto:rodrigo.ozon@fae.edu)  
+🏛️ FAE Business School  
+📍 Curitiba, Paraná, Brazil  
+
+**Project Website**  
+🌐 [https://paiceconometrics.github.io/site/](https://paiceconometrics.github.io/site/)
+
+**Social Media & Professional Networks**  
+🔗 [LinkedIn - FAE Centro Universitário](https://www.linkedin.com/school/fae-centro-universitario/)  
+💻 [GitHub - @PAICEconometrics](https://github.com/PAICEconometrics)
+
+---
+
+::: {.callout-note}
+## 📝 Living Document Notice
+
+This publication plan is a living document that will be updated throughout the PAIC 2025/2026 cycle as research progresses. Status updates, new publications, and revised timelines will be posted on this page regularly.
+
+**Last Updated**: October 21, 2025  
+**Next Review**: December 1, 2025
+:::
+
+---
+
+::: {style="text-align: center; margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, var(--fae-blue-dark) 0%, var(--fae-blue) 100%); color: white; border-radius: 8px;"}
+## 🚀 Advancing Agricultural Finance Through Innovation
+
+*This research is proudly supported by FAE Business School's commitment to academic excellence, innovation, and practical impact in Brazilian agribusiness.*
+
+[**↗ Visit FAE Centro Universitário**](https://fae.edu/) | [**↗ Explore Our Research**](research.qmd) | [**↗ Meet the Team**](about.qmd)
+:::
