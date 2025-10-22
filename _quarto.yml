@@ -91,7 +91,7 @@ website:
           - text: "Multi-Objective Framework"
             href: optimization.qmd
           - text: "Portfolio Algorithms"
-            href: portfolio_multiobj_opt_algos.qmd
+            href: multiperiod_multiobjective_portfolio_optimization.qmd
           - text: "Scenario Simulation"
             href: scenario_simulation_fuzzy_multicriteria.qmd
           - text: "Jupyter Integration"
