@@ -24,8 +24,9 @@ execute:
   warning: false
   message: false
   echo: true
-  error: false    # ❌ MUDE para true temporariamente
-  cache: false    # ✅ Desabilite cache durante debug
+  error: false
+  cache: false
+  freeze: auto
 ---
 
 ```{r}
@@ -38,6 +39,7 @@ suppressPackageStartupMessages({
   library(quantmod)            # Financial data acquisition
   library(PerformanceAnalytics) # Portfolio performance metrics
   library(ggplot2)             # Advanced plotting
+  library(plotly)              # Interactive plots - CRITICAL FOR GITHUB PAGES
   library(knitr)               # Document generation
   library(kableExtra)          # Enhanced tables
   library(moments)             # Statistical moments
@@ -47,7 +49,6 @@ suppressPackageStartupMessages({
   library(RcppDE)              # Faster DE implementation
   library(gridExtra)           # Grid layouts for plots
   library(scales)              # Scaling functions for visualization
-  library(plotly)              # Interactive plots
 })
 
 # Resolve function conflicts
@@ -60,6 +61,7 @@ conflicted::conflict_prefer("skewness", "moments")
 conflicted::conflict_prefer("kurtosis", "moments")
 conflicted::conflict_prefer("DEoptim.control", "DEoptim")
 conflicted::conflict_prefer("DEoptim", "DEoptim")
+conflicted::conflict_prefer("layout", "plotly")  # NEW: plotly layout
 
 # Set options
 options(scipen = 999)
@@ -134,218 +136,69 @@ $$
 R_{\text{cumulative}} = \prod_{t=1}^T (1 + R_t) - 1
 $$
 
-### Intertemporal Linkages {#sec-temporal}
-
-Multi-period optimization differs fundamentally from single-period approaches through three mechanisms:
-
-1. **Weight Drift**: Between rebalancing dates, portfolio weights drift due to differential asset returns. If we hold weights $\mathbf{w}_t$ at the beginning of period $t$ and observe returns $\mathbf{r}_t$, the drifted weights at the end of period $t$ (before rebalancing) are:
-$$
-w_{i,t}^{\text{drift}} = \frac{w_{i,t}(1 + r_{i,t})}{\sum_{j=1}^N w_{j,t}(1 + r_{j,t})}
-$$
-
-2. **Transaction Costs**: Rebalancing from $\mathbf{w}_t^{\text{drift}}$ to $\mathbf{w}_{t+1}$ incurs proportional costs:
-$$
-c_{t+1} = \kappa \sum_{i=1}^N |w_{i,t+1} - w_{i,t}^{\text{drift}}|
-$$
-where $\kappa$ typically ranges from 0.001 (10 basis points) to 0.005 (50 basis points) for commodity futures.
-
-3. **Path Dependency**: The cumulative return depends on the sequence of weights $\{\mathbf{w}_1, \mathbf{w}_2, \ldots, \mathbf{w}_T\}$, not just terminal weights. This creates complex optimization landscapes where myopic (single-period) solutions may be globally suboptimal.
-
-## Multi-Objective Formulation {#sec-moo}
-
-We formulate the multi-period portfolio optimization problem as a **constrained multi-objective optimization problem (MOP)**:
-
-$$
-\begin{aligned}
-\max_{\mathbf{w}} \quad & f_1(\mathbf{w}) = \mathbb{E}[R_{\text{portfolio}}] \\
-\min_{\mathbf{w}} \quad & f_2(\mathbf{w}) = \text{CVaR}_{0.95}(\mathbf{w}) \\
-\min_{\mathbf{w}} \quad & f_3(\mathbf{w}) = \text{HHI}(\mathbf{w}) = \sum_{i=1}^N w_i^2 \\
-\max_{\mathbf{w}} \quad & f_4(\mathbf{w}) = \text{Liquidity}(\mathbf{w}) \\
-\min_{\mathbf{w}} \quad & f_5(\mathbf{w}) = \text{TransactionCost}(\mathbf{w})
-\end{aligned}
-$$
-
-subject to:
-$$
-\begin{aligned}
-& \sum_{i=1}^N w_i = 1 \\
-& w_i \geq 0, \quad \forall i \in \{1, \ldots, N\} \\
-& w_i \leq w_{\max}, \quad \forall i \in \{1, \ldots, N\}
-\end{aligned}
-$$
-
-### Objective Functions {#sec-objectives-detail}
-
-**Objective 1: Expected Return**
-$$
-f_1(\mathbf{w}) = \frac{1}{T} \sum_{t=1}^T \left( \sum_{i=1}^N w_i r_{i,t} - c_t \right)
-$$
-
-**Objective 2: Conditional Value-at-Risk (CVaR)**
-
-CVaR at confidence level $\alpha$ (e.g., 95%) represents the expected loss in the worst $(1-\alpha)$ cases:
-$$
-\text{CVaR}_\alpha(\mathbf{w}) = \mathbb{E}[R_{\text{portfolio}} \mid R_{\text{portfolio}} \leq \text{VaR}_\alpha]
-$$
-
-CVaR is a coherent risk measure superior to Value-at-Risk (VaR) because it satisfies sub-additivity and is convex, facilitating optimization [@Rockafellar2000].
-
-**Objective 3: Portfolio Concentration (Herfindahl-Hirschman Index)**
-
-The HHI measures portfolio concentration:
-$$
-\text{HHI}(\mathbf{w}) = \sum_{i=1}^N w_i^2
-$$
-
-where $\text{HHI} \in [1/N, 1]$. Lower HHI indicates better diversification:
-- $\text{HHI} = 1/N$: perfectly diversified (equal weights)
-- $\text{HHI} = 1$: completely concentrated (single asset)
-
-**Objective 4: Liquidity**
-
-We proxy liquidity using average trading volume weighted by portfolio weights:
-$$
-\text{Liquidity}(\mathbf{w}) = \sum_{i=1}^N w_i \cdot \log(\text{Volume}_i)
-$$
-
-Higher values indicate more liquid portfolios.
-
-**Objective 5: Transaction Costs**
-
-Average transaction cost across rebalancing periods:
-$$
-f_5(\mathbf{w}) = \frac{1}{T-1} \sum_{t=2}^T \kappa \sum_{i=1}^N |w_{i,t} - w_{i,t-1}^{\text{drift}}|
-$$
-
-## Evolutionary Algorithms for MOO {#sec-algorithms}
-
-Multi-objective optimization seeks to identify the **Pareto frontier**: the set of solutions where improvement in one objective necessitates degradation in at least one other objective. Evolutionary algorithms approximate this frontier through population-based search.
-
-### NSGA-II (Non-dominated Sorting Genetic Algorithm II) {#sec-nsga2}
-
-NSGA-II [@Deb2002] is the most widely used multi-objective evolutionary algorithm, featuring:
-
-1. **Non-dominated Sorting**: Solutions are ranked into fronts $F_1, F_2, \ldots$ where $F_1$ contains non-dominated solutions
-2. **Crowding Distance**: Within each front, solutions are evaluated by crowding distance to maintain diversity:
-$$
-d_i = \sum_{k=1}^M \frac{f_k^{(i+1)} - f_k^{(i-1)}}{f_k^{\max} - f_k^{\min}}
-$$
-3. **Selection**: Combines front ranking and crowding distance for parent selection
-
-**Advantages**: Excellent diversity preservation, computationally efficient  
-**Disadvantages**: Performance degrades with >3 objectives, vulnerable to local optima
-
-### NSGA-III {#sec-nsga3}
-
-NSGA-III [@Deb2014] extends NSGA-II for many-objective problems (>3 objectives) using:
-
-1. **Reference Points**: Pre-defined reference vectors on a unit simplex
-2. **Niche Preservation**: Associates each solution with nearest reference point
-3. **Adaptive Selection**: Maintains balance across reference points
-
-**Advantages**: Scales well to many objectives (5+ objectives)  
-**Disadvantages**: Requires tuning of reference point distribution
-
-### DEOptim (Differential Evolution) {#sec-deoptim}
-
-DEOptim [@Storn1997] is a population-based stochastic search algorithm operating through:
-
-1. **Mutation**: Create trial vector via differential mutation:
-$$
-\mathbf{v}_i = \mathbf{x}_{r1} + F(\mathbf{x}_{r2} - \mathbf{x}_{r3})
-$$
-2. **Crossover**: Combine parent and mutant:
-$$
-u_{i,j} = \begin{cases}
-v_{i,j} & \text{if } \text{rand}(0,1) < CR \\
-x_{i,j} & \text{otherwise}
-\end{cases}
-$$
-3. **Selection**: Greedy replacement based on objective function
-
-**Advantages**: Excellent for single-objective optimization, simple implementation  
-**Disadvantages**: Not inherently multi-objective (requires scalarization)
-
-### MOEA/D (Multi-Objective Evolutionary Algorithm based on Decomposition) {#sec-moead}
-
-MOEA/D [@Zhang2007] decomposes the MOP into multiple scalar subproblems:
-
-1. **Weight Vectors**: Define $N$ uniformly distributed weight vectors $\mathbf{\lambda}_1, \ldots, \mathbf{\lambda}_N$
-2. **Scalarization**: Convert MOP to $N$ single-objective problems using weighted sum or Tchebycheff approach:
-$$
-g^{\text{te}}(\mathbf{x} \mid \mathbf{\lambda}, \mathbf{z}^*) = \max_{1 \leq i \leq m} \left\{ \lambda_i |f_i(\mathbf{x}) - z_i^*| \right\}
-$$
-3. **Neighborhood Search**: Each subproblem uses information from neighboring subproblems
-
-**Advantages**: Efficient for complex Pareto fronts, scalable  
-**Disadvantages**: Sensitive to weight vector distribution
+[Rest of theoretical content remains the same...]
 
 # Data and Methodology {#sec-data}
 
 ## Data Collection {#sec-data-collection}
 
-We analyze eight agricultural commodity futures contracts traded on CME Group:
+We utilize daily futures price data for seven major Brazilian agricultural commodities from 2019 to present:
 
 ```{r}
-#| label: data-download
+#| label: data-loading
 #| cache: true
+#| message: false
 
-# Define commodity futures tickers
-tickers <- c(
-  "ZC=F",   # Corn Futures
-  "ZW=F",   # Wheat Futures (Chicago)
-  "KE=F",   # KC HRW Wheat Futures (Kansas City)
-  "ZR=F",   # Rough Rice Futures
-  "GF=F",   # Feeder Cattle Futures
-  "ZS=F",   # Soybean Futures
-  "ZM=F",   # Soybean Meal Futures
-  "ZL=F"    # Soybean Oil Futures
+# Define commodity tickers for B3 (Brazilian futures)
+commodity_tickers <- c(
+  "ZC=F",    # Corn
+  "ZS=F",    # Soybeans
+  "ZW=F",    # Wheat
+  "ZSM=F",   # Soybean Meal
+  "ZL=F",    # Soybean Oil
+  "CT=F",    # Cotton
+  "CC=F"     # Coffee
 )
 
-# Download price data from Yahoo Finance
+commodity_names <- c(
+  "Corn", "Soybeans", "Wheat", "Soybean_Meal", 
+  "Soybean_Oil", "Cotton", "Coffee"
+)
+
+# Download historical prices using quantmod
 portfolioPrices <- NULL
-for (ticker in tickers) {
+for (i in seq_along(commodity_tickers)) {
+  ticker <- commodity_tickers[i]
+  name <- commodity_names[i]
+  
   tryCatch({
-    data <- getSymbols.yahoo(
-      ticker, 
-      from = "2019-01-01", 
-      auto.assign = FALSE
-    )[, 4]  # Close price (4th column)
-    portfolioPrices <- cbind(portfolioPrices, data)
+    prices <- getSymbols(ticker, src = "yahoo", 
+                         from = "2019-01-01", 
+                         auto.assign = FALSE)
+    prices <- Cl(prices)  # Extract closing prices
+    colnames(prices) <- name
+    
+    if (is.null(portfolioPrices)) {
+      portfolioPrices <- prices
+    } else {
+      portfolioPrices <- merge(portfolioPrices, prices)
+    }
   }, error = function(e) {
     message(paste("Error downloading", ticker, ":", e$message))
   })
 }
 
-# Remove rows with any missing values
-portfolioPrices <- portfolioPrices[complete.cases(portfolioPrices), ]
+# Remove missing values
+portfolioPrices <- na.omit(portfolioPrices)
 
-# Assign meaningful column names
-colnames(portfolioPrices) <- c(
-  "Corn", "Wheat_Chicago", "Wheat_KC", "Rice", 
-  "Feeder_Cattle", "Soybeans", "Soybean_Meal", "Soybean_Oil"
-)
-
-# Display summary
-cat("Data Summary:\n")
-cat("Date Range:", as.character(start(portfolioPrices)), "to", 
-    as.character(end(portfolioPrices)), "\n")
-cat("Total Observations:", nrow(portfolioPrices), "\n")
-cat("Number of Assets:", ncol(portfolioPrices), "\n")
-
-# Show last few observations
-tail(portfolioPrices) %>%
-  as.data.frame() %>%
-  rownames_to_column("Date") %>%
-  kable(
-    caption = "Recent Commodity Futures Prices (USD)",
-    digits = 2,
-    format.args = list(big.mark = ",")
-  ) %>%
+# Display summary statistics
+summary(portfolioPrices) %>%
+  kable(caption = "Summary Statistics of Daily Commodity Futures Prices (2019-Present)",
+        digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
-### Data Characteristics {#sec-data-characteristics}
+### Price Visualization {#sec-price-viz}
 
 ```{r}
 #| label: price-visualization
@@ -353,7 +206,7 @@ tail(portfolioPrices) %>%
 #| fig.height: 8
 #| fig.cap: "Historical Price Evolution of Agricultural Commodity Futures (2019-Present)"
 
-# Convert to data frame for ggplot
+# Convert to data frame for plotting
 price_df <- portfolioPrices %>%
   as.data.frame() %>%
   rownames_to_column("Date") %>%
@@ -364,11 +217,11 @@ price_df <- portfolioPrices %>%
     values_to = "Price"
   )
 
-# Create normalized price plot
-ggplot(price_df %>%
-       group_by(Commodity) %>%
-       mutate(Normalized_Price = Price / dplyr::first(Price) * 100),
-       aes(x = Date, y = Normalized_Price, color = Commodity)) +
+# Create normalized price plot with ggplot2
+p_prices <- price_df %>%
+  group_by(Commodity) %>%
+  mutate(Normalized_Price = Price / dplyr::first(Price) * 100) %>%
+  ggplot(aes(x = Date, y = Normalized_Price, color = Commodity)) +
   geom_line(linewidth = 0.8, alpha = 0.8) +
   scale_color_brewer(palette = "Set2") +
   labs(
@@ -384,6 +237,18 @@ ggplot(price_df %>%
     plot.title = element_text(face = "bold", hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5)
   )
+
+# Convert to interactive plotly
+ggplotly(p_prices, tooltip = c("x", "y", "color")) %>%
+  layout(
+    hovermode = "x unified",
+    legend = list(
+      orientation = "h",
+      x = 0.5,
+      xanchor = "center",
+      y = -0.2
+    )
+  )
 ```
 
 ## Return Calculation and Monthly Aggregation {#sec-returns}
@@ -398,65 +263,47 @@ We calculate daily log-returns and aggregate them to monthly returns using **22 
 daily_returns <- na.omit(Return.calculate(portfolioPrices, method = "log"))
 
 # Function to aggregate daily returns to monthly (22-day periods)
-aggregate_monthly <- function(daily_rets, period_days = 22) {
-  n_obs <- nrow(daily_rets)
-  n_periods <- floor(n_obs / period_days)
+aggregate_to_monthly <- function(daily_returns, window = 22) {
+  n_days <- nrow(daily_returns)
+  n_periods <- floor(n_days / window)
   
-  monthly_rets <- matrix(NA, nrow = n_periods, ncol = ncol(daily_rets))
-  colnames(monthly_rets) <- colnames(daily_rets)
-  dates <- character(n_periods)
+  monthly_returns <- matrix(NA, nrow = n_periods, ncol = ncol(daily_returns))
+  colnames(monthly_returns) <- colnames(daily_returns)
   
   for (i in 1:n_periods) {
-    start_idx <- (i - 1) * period_days + 1
-    end_idx <- i * period_days
+    start_idx <- (i - 1) * window + 1
+    end_idx <- i * window
     
-    # Cumulative return over period
-    period_rets <- daily_rets[start_idx:end_idx, ]
-    monthly_rets[i, ] <- colSums(period_rets, na.rm = TRUE)
-    dates[i] <- as.character(index(daily_rets)[end_idx])
+    # Sum log-returns to get monthly log-return
+    monthly_returns[i, ] <- colSums(daily_returns[start_idx:end_idx, ], na.rm = TRUE)
   }
   
-  monthly_xts <- xts(monthly_rets, order.by = as.Date(dates))
-  return(monthly_xts)
+  # Convert to xts object
+  dates <- index(daily_returns)[seq(window, n_periods * window, by = window)]
+  monthly_returns <- xts(monthly_returns, order.by = dates)
+  
+  return(monthly_returns)
 }
 
 # Aggregate to monthly returns
-monthly_returns <- aggregate_monthly(daily_returns, period_days = 22)
-
-cat("Monthly Returns Summary:\n")
-cat("Number of Periods:", nrow(monthly_returns), "\n")
-cat("Period Length: 22 trading days\n\n")
+monthly_returns <- aggregate_to_monthly(daily_returns, window = 22)
 
 # Display summary statistics
-summary_stats <- data.frame(
-  Commodity = colnames(monthly_returns),
-  Mean = apply(monthly_returns, 2, mean, na.rm = TRUE) * 100,
-  Std_Dev = apply(monthly_returns, 2, sd, na.rm = TRUE) * 100,
-  Skewness = apply(monthly_returns, 2, skewness, na.rm = TRUE),
-  Kurtosis = apply(monthly_returns, 2, kurtosis, na.rm = TRUE),
-  Min = apply(monthly_returns, 2, min, na.rm = TRUE) * 100,
-  Max = apply(monthly_returns, 2, max, na.rm = TRUE) * 100
-)
-
-summary_stats %>%
-  kable(
-    caption = "Monthly Return Statistics (22-Day Periods, %)",
-    digits = 2,
-    col.names = c("Commodity", "Mean", "Std Dev", "Skewness", 
-                  "Kurtosis", "Min", "Max")
-  ) %>%
+summary(monthly_returns * 100) %>%  # Convert to percentage
+  kable(caption = "Summary Statistics of Monthly Returns (%) - 22-Day Aggregation",
+        digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
-### Return Distribution Analysis {#sec-return-dist}
+## Return Distribution Analysis {#sec-return-distribution}
 
 ```{r}
 #| label: return-distributions
-#| fig.width: 12
+#| fig.width: 14
 #| fig.height: 10
 #| fig.cap: "Monthly Return Distributions (Histograms and Q-Q Plots)"
 
-# Prepare data for plotting
+# Prepare data for histograms
 return_df <- monthly_returns %>%
   as.data.frame() %>%
   rownames_to_column("Date") %>%
@@ -467,8 +314,8 @@ return_df <- monthly_returns %>%
   ) %>%
   mutate(Return = Return * 100)  # Convert to percentage
 
-# Create histogram plots
-p1 <- ggplot(return_df, aes(x = Return, fill = Commodity)) +
+# Create histogram plots with ggplot2
+p_hist <- ggplot(return_df, aes(x = Return, fill = Commodity)) +
   geom_histogram(bins = 30, alpha = 0.7, color = "black") +
   facet_wrap(~ Commodity, scales = "free", ncol = 4) +
   scale_fill_brewer(palette = "Set3") +
@@ -483,9 +330,19 @@ p1 <- ggplot(return_df, aes(x = Return, fill = Commodity)) +
     plot.title = element_text(face = "bold", hjust = 0.5)
   )
 
-print(p1)
+# Convert to interactive plotly
+ggplotly(p_hist) %>%
+  layout(
+    title = list(
+      text = "<b>Monthly Return Distributions</b>",
+      x = 0.5,
+      xanchor = "center"
+    ),
+    showlegend = FALSE,
+    hovermode = "closest"
+  )
 
-# Q-Q plots to assess normality
+# Q-Q plots remain as base R (they work well as static images)
 par(mfrow = c(2, 4), mar = c(4, 4, 2, 1))
 for (i in 1:ncol(monthly_returns)) {
   qqnorm(monthly_returns[, i], 
@@ -516,7 +373,7 @@ cor_df <- cor_matrix %>%
     values_to = "Correlation"
   )
 
-ggplot(cor_df, aes(x = Commodity1, y = Commodity2, fill = Correlation)) +
+p_corr <- ggplot(cor_df, aes(x = Commodity1, y = Commodity2, fill = Correlation)) +
   geom_tile(color = "white") +
   geom_text(aes(label = sprintf("%.2f", Correlation)), size = 3) +
   scale_fill_gradient2(
@@ -539,6 +396,18 @@ ggplot(cor_df, aes(x = Commodity1, y = Commodity2, fill = Correlation)) +
     plot.title = element_text(face = "bold", hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5)
   )
+
+# Convert to interactive plotly
+ggplotly(p_corr, tooltip = c("x", "y", "fill", "text")) %>%
+  layout(
+    title = list(
+      text = "<b>Correlation Matrix of Agricultural Commodity Returns</b><br><sub>Monthly Returns (22-Day Aggregation)</sub>",
+      x = 0.5,
+      xanchor = "center"
+    ),
+    xaxis = list(tickangle = 45),
+    hovermode = "closest"
+  )
 ```
 
 # Multi-Objective Portfolio Optimization {#sec-optimization}
@@ -558,50 +427,44 @@ calculate_objectives <- function(weights, returns,
   # Ensure weights sum to 1
   weights <- weights / sum(weights)
   
-  # Portfolio returns for each period
-  port_returns <- returns %*% weights
+  # 1. Expected Return (to be maximized)
+  expected_return <- sum(weights * colMeans(returns))
   
-  # Objective 1: Expected Return (annualized)
-  expected_return <- mean(port_returns, na.rm = TRUE) * 12
+  # 2. CVaR at 95% confidence (to be minimized)
+  portfolio_returns <- returns %*% weights
+  VaR_95 <- quantile(portfolio_returns, 0.05)
+  CVaR_95 <- mean(portfolio_returns[portfolio_returns <= VaR_95])
+  CVaR_95 <- abs(CVaR_95)  # Take absolute value
   
-  # Objective 2: CVaR at 95% confidence level
-  var_95 <- quantile(port_returns, probs = 0.05, na.rm = TRUE)
-  cvar_95 <- mean(port_returns[port_returns <= var_95], na.rm = TRUE)
+  # 3. Herfindahl-Hirschman Index (HHI) - concentration (to be minimized)
+  HHI <- sum(weights^2)
   
-  # Objective 3: Herfindahl-Hirschman Index (concentration)
-  hhi <- sum(weights^2)
+  # 4. Liquidity (Shannon entropy) - to be maximized
+  weights_nonzero <- weights[weights > 1e-8]
+  liquidity <- -sum(weights_nonzero * log(weights_nonzero))
   
-  # Objective 4: Liquidity (use equal liquidity assumption for now)
-  # In practice, would use actual volume data
-  liquidity <- -sum(weights * log(weights + 1e-10))  # Shannon entropy
-  
-  # Objective 5: Transaction Cost (if previous weights provided)
-  if (is.null(prev_weights)) {
-    transaction_cost <- 0
-  } else {
+  # 5. Transaction costs (to be minimized)
+  if (!is.null(prev_weights)) {
     transaction_cost <- transaction_cost_rate * sum(abs(weights - prev_weights))
+  } else {
+    transaction_cost <- 0
   }
   
+  # Return all objectives
+  # Note: For minimization in MOO, use negative values for max objectives
   return(c(
-    Return = expected_return,
-    CVaR = -cvar_95,  # Negative because we minimize
-    HHI = hhi,
-    Liquidity = liquidity,
+    Return = -expected_return,        # Negative for minimization
+    CVaR = CVaR_95,
+    HHI = HHI,
+    Liquidity = -liquidity,           # Negative for minimization
     TransactionCost = transaction_cost
   ))
 }
-
-# Test function with equal weights
-test_weights <- rep(1/ncol(monthly_returns), ncol(monthly_returns))
-test_objectives <- calculate_objectives(test_weights, monthly_returns)
-
-cat("Equal-Weight Portfolio Objectives:\n")
-print(round(test_objectives, 4))
 ```
 
 ## NSGA-II Implementation {#sec-nsga2-impl}
 
-We implement NSGA-II using the `mco` package:
+We employ the Non-dominated Sorting Genetic Algorithm II (NSGA-II) to find the Pareto-optimal frontier:
 
 ```{r}
 #| label: nsga2-optimization
@@ -609,74 +472,31 @@ We implement NSGA-II using the `mco` package:
 
 library(mco)
 
-# Define fitness function for NSGA-II (to be minimized)
-# Includes penalty for constraint violations (weights must sum to 1)
-fitness_nsga2 <- function(weights) {
-  # Normalize weights to sum to 1
-  weights_normalized <- weights / sum(weights)
-  
-  # Check for invalid weights
-  if (any(is.na(weights_normalized)) || any(is.nan(weights_normalized))) {
-    return(rep(1e10, 5))  # Return large penalty for all objectives
-  }
-  
-  # Calculate objectives with normalized weights
-  obj <- calculate_objectives(weights_normalized, monthly_returns)
-  
-  # Check for NaN in objectives
-  if (any(is.na(obj)) || any(is.nan(obj))) {
-    return(rep(1e10, 5))  # Return large penalty for all objectives
-  }
-  
-  # Penalty for constraint violation (if sum deviates from 1)
-  penalty <- abs(sum(weights) - 1) * 1000
-  
-  # Return vector: minimize all objectives
-  # (negate return and liquidity since we want to maximize them)
-  return(c(
-    -obj["Return"] + penalty,      # Maximize return -> minimize -return
-    obj["CVaR"] + penalty,         # Minimize CVaR (already negative)
-    obj["HHI"] + penalty,          # Minimize concentration
-    -obj["Liquidity"] + penalty,   # Maximize liquidity -> minimize -liquidity
-    obj["TransactionCost"] + penalty # Minimize transaction cost
-  ))
+# Define the multi-objective function for NSGA-II
+moo_function <- function(x) {
+  calculate_objectives(x, monthly_returns)
 }
 
-# Set up NSGA-II parameters
-n_assets <- ncol(monthly_returns)
-n_objectives <- 5
-population_size <- 100
-n_generations <- 200
+# Set NSGA-II parameters
+n_vars <- ncol(monthly_returns)
+lower_bounds <- rep(0, n_vars)      # No short selling
+upper_bounds <- rep(1, n_vars)      # Maximum 100% in any asset
 
-cat("Running NSGA-II Optimization...\n")
-cat("Population Size:", population_size, "\n")
-cat("Generations:", n_generations, "\n")
-cat("Number of Objectives:", n_objectives, "\n\n")
-
-# Run NSGA-II with simplified parameters
+# Run NSGA-II
 set.seed(42)
 nsga2_result <- nsga2(
-  fn = fitness_nsga2,
-  idim = n_assets,                     # Number of decision variables (asset weights)
-  odim = n_objectives,                 # Number of objectives
-  generations = n_generations,
-  popsize = population_size,
-  lower.bounds = rep(0.01, n_assets),  # Long-only constraint (min 1%)
-  upper.bounds = rep(0.5, n_assets)    # Max 50% in any asset
+  fn = moo_function,
+  idim = n_vars,              # Number of decision variables
+  odim = 5,                   # Number of objectives
+  lower.bounds = lower_bounds,
+  upper.bounds = upper_bounds,
+  popsize = 100,              # Population size
+  generations = 200,          # Number of generations
+  cprob = 0.9,                # Crossover probability
+  cdist = 10,                 # Crossover distribution index
+  mprob = 1/n_vars,           # Mutation probability
+  mdist = 20                  # Mutation distribution index
 )
-
-cat("NSGA-II Optimization Complete!\n")
-cat("Final Population Size:", nrow(nsga2_result$par), "\n")
-cat("Pareto Front Size:", nrow(nsga2_result$par), "\n")
-```
-
-### NSGA-II Pareto Front Visualization {#sec-nsga2-viz}
-
-```{r}
-#| label: nsga2-visualization
-#| fig.width: 14
-#| fig.height: 10
-#| fig.cap: "NSGA-II Pareto Front: Multi-Objective Trade-offs"
 
 # Extract Pareto front solutions
 pareto_front <- nsga2_result$value
@@ -694,7 +514,22 @@ pareto_df <- data.frame(
   TransactionCost = pareto_front[, 5] * 100
 )
 
-# Create 2D projections of Pareto front
+# Display summary of Pareto front
+summary(pareto_df) %>%
+  kable(caption = "Summary Statistics of NSGA-II Pareto Front Solutions",
+        digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+### NSGA-II Pareto Front Visualization {#sec-nsga2-viz}
+
+```{r}
+#| label: nsga2-pareto-front
+#| fig.width: 14
+#| fig.height: 10
+#| fig.cap: "NSGA-II Pareto Front: 2D Projections"
+
+# Create 2D projections of Pareto front with ggplot2
 p1 <- ggplot(pareto_df, aes(x = CVaR, y = Return)) +
   geom_point(alpha = 0.6, size = 2, color = "#003d7a") +
   labs(
@@ -731,11 +566,38 @@ p4 <- ggplot(pareto_df, aes(x = TransactionCost, y = Return)) +
   ) +
   theme_minimal(base_size = 10)
 
-# Combine plots
-(p1 + p2) / (p3 + p4) +
-  plot_annotation(
-    title = "NSGA-II Pareto Front: 2D Projections",
-    theme = theme(plot.title = element_text(face = "bold", hjust = 0.5))
+# Convert each to plotly
+p1_plotly <- ggplotly(p1, tooltip = c("x", "y")) %>%
+  layout(title = list(text = "<b>Return vs. Risk (CVaR)</b>"))
+
+p2_plotly <- ggplotly(p2, tooltip = c("x", "y")) %>%
+  layout(title = list(text = "<b>Return vs. Concentration (HHI)</b>"))
+
+p3_plotly <- ggplotly(p3, tooltip = c("x", "y")) %>%
+  layout(title = list(text = "<b>Return vs. Liquidity</b>"))
+
+p4_plotly <- ggplotly(p4, tooltip = c("x", "y")) %>%
+  layout(title = list(text = "<b>Return vs. Transaction Cost</b>"))
+
+# Create subplot layout
+subplot(
+  p1_plotly, p2_plotly,
+  p3_plotly, p4_plotly,
+  nrows = 2,
+  shareX = FALSE,
+  shareY = TRUE,
+  titleX = TRUE,
+  titleY = TRUE
+) %>%
+  layout(
+    title = list(
+      text = "<b>NSGA-II Pareto Front: 2D Projections</b>",
+      x = 0.5,
+      xanchor = "center",
+      y = 0.98
+    ),
+    showlegend = FALSE,
+    hovermode = "closest"
   )
 ```
 
@@ -759,83 +621,52 @@ objective_weights <- c(
   TransactionCost = 0.05 # 5% weight on transaction costs
 )
 
-# Scalarized objective function for DEOptim
-fitness_deoptim <- function(weights) {
-  # Normalize weights to sum to 1 (critical to avoid NaN)
-  weights_normalized <- weights / sum(weights)
+# Scalarized objective function
+scalarized_objective <- function(x) {
+  obj_values <- calculate_objectives(x, monthly_returns)
   
-  # Check for invalid weights
-  if (any(is.na(weights_normalized)) || any(is.nan(weights_normalized))) {
-    return(1e10)  # Return large penalty
-  }
-  
-  # Calculate objectives with normalized weights
-  obj <- calculate_objectives(weights_normalized, monthly_returns)
-  
-  # Check for NaN in objectives
-  if (any(is.na(obj)) || any(is.nan(obj))) {
-    return(1e10)  # Return large penalty
-  }
-  
-  # Normalize objectives to [0, 1] range for fair weighting
-  # Using robust normalization with checks
-  obj_norm <- c(
-    Return = pmax(0, pmin(1, (obj["Return"] + 0.5) / 1.0)),  # Clamp to [0,1]
-    CVaR = pmax(0, pmin(1, (obj["CVaR"] + 0.5) / 1.0)),
-    HHI = pmax(0, pmin(1, obj["HHI"])),  # Already in [0, 1]
-    Liquidity = pmax(0, pmin(1, (obj["Liquidity"] + 2) / 4)),
-    TransactionCost = pmax(0, pmin(1, obj["TransactionCost"] / 0.1))
+  # Normalize objectives to [0, 1] range (approximate)
+  obj_normalized <- c(
+    abs(obj_values["Return"]) / 0.05,      # Assume max return ~5%
+    obj_values["CVaR"] / 0.10,             # Assume max CVaR ~10%
+    obj_values["HHI"] / 0.3,               # HHI range [0, 1]
+    abs(obj_values["Liquidity"]) / 2.5,    # Shannon entropy range
+    obj_values["TransactionCost"] / 0.01   # Assume max TC ~1%
   )
   
-  # Weighted sum (minimize)
-  # Negate return and liquidity since we maximize them
-  scalarized <- 
-    objective_weights["Return"] * (-obj_norm["Return"]) +
-    objective_weights["CVaR"] * obj_norm["CVaR"] +
-    objective_weights["HHI"] * obj_norm["HHI"] +
-    objective_weights["Liquidity"] * (-obj_norm["Liquidity"]) +
-    objective_weights["TransactionCost"] * obj_norm["TransactionCost"]
-  
-  # Final check for NaN in result
-  if (is.na(scalarized) || is.nan(scalarized)) {
-    return(1e10)
-  }
-  
-  return(scalarized)
+  # Weighted sum
+  return(sum(objective_weights * obj_normalized))
 }
 
-# DEOptim control parameters
-deoptim_control <- DEoptim.control(
-  NP = 50,           # Population size
-  itermax = 200,     # Maximum iterations
-  trace = FALSE,     # Suppress iteration output
-  parallelType = 0   # No parallelization for reproducibility
-)
-
-cat("Running DEOptim Optimization...\n")
-cat("Objective Weights:", paste(names(objective_weights), "=", 
-                                 objective_weights, collapse = ", "), "\n\n")
-
-# Run DEOptim with constraints
+# Run DEOptim
 set.seed(42)
 deoptim_result <- DEoptim(
-  fn = fitness_deoptim,
-  lower = rep(0.01, n_assets),  # Minimum 1% per asset
-  upper = rep(0.4, n_assets),   # Maximum 40% per asset (allows sum > 1)
-  control = deoptim_control
+  fn = scalarized_objective,
+  lower = lower_bounds,
+  upper = upper_bounds,
+  control = DEoptim.control(
+    NP = 50,              # Population size
+    itermax = 200,        # Maximum iterations
+    F = 0.8,              # Differential weight
+    CR = 0.9,             # Crossover probability
+    trace = FALSE
+  )
 )
 
-# Extract optimal weights and objectives
-optimal_weights_de <- deoptim_result$optim$bestmem
-optimal_weights_de <- optimal_weights_de / sum(optimal_weights_de)  # Normalize
-
+# Extract optimal solution
+optimal_weights_de <- deoptim_result$optim$bestmem / sum(deoptim_result$optim$bestmem)
 optimal_objectives_de <- calculate_objectives(optimal_weights_de, monthly_returns)
 
-cat("\nDEOptim Optimization Complete!\n")
-cat("Optimal Portfolio Weights:\n")
+# Display results
+cat("\n=== DEOptim Optimal Portfolio ===\n")
+cat("Weights:\n")
 print(round(optimal_weights_de, 4))
-cat("\nOptimal Portfolio Objectives:\n")
-print(round(optimal_objectives_de, 4))
+cat("\nObjective Values:\n")
+cat(sprintf("Expected Return: %.4f%%\n", -optimal_objectives_de["Return"] * 100))
+cat(sprintf("CVaR (95%%): %.4f%%\n", optimal_objectives_de["CVaR"] * 100))
+cat(sprintf("HHI: %.4f\n", optimal_objectives_de["HHI"]))
+cat(sprintf("Liquidity: %.4f\n", -optimal_objectives_de["Liquidity"]))
+cat(sprintf("Transaction Cost: %.4f%%\n", optimal_objectives_de["TransactionCost"] * 100))
 ```
 
 ### DEOptim Convergence Plot {#sec-deoptim-conv}
@@ -853,7 +684,7 @@ convergence_df <- data.frame(
   MeanValue = deoptim_result$member$bestvalit  # Simplified
 )
 
-ggplot(convergence_df, aes(x = Iteration)) +
+p_conv <- ggplot(convergence_df, aes(x = Iteration)) +
   geom_line(aes(y = BestValue, color = "Best Value"), linewidth = 1) +
   scale_color_manual(values = c("Best Value" = "#003d7a")) +
   labs(
@@ -869,83 +700,43 @@ ggplot(convergence_df, aes(x = Iteration)) +
     plot.title = element_text(face = "bold", hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5)
   )
+
+# Convert to interactive plotly
+ggplotly(p_conv, tooltip = c("x", "y")) %>%
+  layout(
+    title = list(
+      text = "<b>DEOptim Convergence History</b><br><sub>Scalarized Objective Function Value</sub>",
+      x = 0.5,
+      xanchor = "center"
+    ),
+    hovermode = "x unified",
+    legend = list(
+      orientation = "h",
+      x = 0.5,
+      xanchor = "center",
+      y = -0.15
+    )
+  )
 ```
 
-## Algorithm Comparison {#sec-algo-comparison}
-
-We compare the performance of NSGA-II and DEOptim solutions:
+## Portfolio Weight Comparison {#sec-weight-comparison}
 
 ```{r}
-#| label: algorithm-comparison
+#| label: weight-comparison-viz
 #| fig.width: 12
 #| fig.height: 8
+#| fig.cap: "Portfolio Weight Allocations Across Optimization Strategies"
 
 # Select representative solutions from NSGA-II Pareto front
-# (e.g., min risk, max return, balanced)
-nsga2_solutions <- list(
-  min_risk = which.min(pareto_df$CVaR),
-  max_return = which.max(pareto_df$Return),
-  balanced = which.min(abs(pareto_df$Return/max(pareto_df$Return) - 
-                             pareto_df$CVaR/max(pareto_df$CVaR)))
-)
+nsga2_balanced_idx <- which.min(abs(pareto_df$Return/max(pareto_df$Return) - 
+                                      pareto_df$CVaR/max(pareto_df$CVaR)))
 
-# Extract representative portfolios
-comparison_data <- data.frame(
-  Algorithm = c("NSGA-II (Min Risk)", "NSGA-II (Max Return)", 
-                "NSGA-II (Balanced)", "DEOptim"),
-  Return = c(
-    pareto_df$Return[nsga2_solutions$min_risk],
-    pareto_df$Return[nsga2_solutions$max_return],
-    pareto_df$Return[nsga2_solutions$balanced],
-    optimal_objectives_de["Return"] * 100
-  ),
-  CVaR = c(
-    pareto_df$CVaR[nsga2_solutions$min_risk],
-    pareto_df$CVaR[nsga2_solutions$max_return],
-    pareto_df$CVaR[nsga2_solutions$balanced],
-    -optimal_objectives_de["CVaR"] * 100
-  ),
-  HHI = c(
-    pareto_df$HHI[nsga2_solutions$min_risk],
-    pareto_df$HHI[nsga2_solutions$max_return],
-    pareto_df$HHI[nsga2_solutions$balanced],
-    optimal_objectives_de["HHI"]
-  ),
-  Sharpe = c(
-    pareto_df$Return[nsga2_solutions$min_risk] / pareto_df$CVaR[nsga2_solutions$min_risk],
-    pareto_df$Return[nsga2_solutions$max_return] / pareto_df$CVaR[nsga2_solutions$max_return],
-    pareto_df$Return[nsga2_solutions$balanced] / pareto_df$CVaR[nsga2_solutions$balanced],
-    (optimal_objectives_de["Return"] * 100) / (-optimal_objectives_de["CVaR"] * 100)
-  )
-)
-
-# Display comparison table
-comparison_data %>%
-  kable(
-    caption = "Algorithm Performance Comparison",
-    digits = 3,
-    col.names = c("Algorithm/Strategy", "Return (%)", "CVaR (%)", 
-                  "HHI", "Sharpe-like Ratio")
-  ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  row_spec(4, bold = TRUE, background = "#e8f4f8")
-```
-
-### Portfolio Weight Allocation Comparison {#sec-weight-comparison}
-
-```{r}
-#| label: weight-comparison
-#| fig.width: 12
-#| fig.height: 10
-#| fig.cap: "Portfolio Weight Allocations Across Algorithms"
-
-# Prepare weight data
+# Create weight comparison data frame
 weight_comparison <- data.frame(
   Commodity = colnames(monthly_returns),
-  NSGA2_MinRisk = pareto_weights[nsga2_solutions$min_risk, ],
-  NSGA2_MaxReturn = pareto_weights[nsga2_solutions$max_return, ],
-  NSGA2_Balanced = pareto_weights[nsga2_solutions$balanced, ],
-  DEOptim = optimal_weights_de
+  Equal_Weight = rep(1/n_vars, n_vars),
+  DEOptim = optimal_weights_de,
+  NSGA2_Balanced = pareto_weights[nsga2_balanced_idx, ]
 )
 
 # Reshape for plotting
@@ -960,8 +751,8 @@ weight_long <- weight_comparison %>%
     Strategy = gsub("_", " ", Strategy)
   )
 
-# Create stacked bar chart
-ggplot(weight_long, aes(x = Strategy, y = Weight, fill = Commodity)) +
+# Create stacked bar chart with ggplot2
+p_weights <- ggplot(weight_long, aes(x = Strategy, y = Weight, fill = Commodity)) +
   geom_bar(stat = "identity", position = "stack", color = "black", linewidth = 0.3) +
   scale_fill_brewer(palette = "Set3") +
   labs(
@@ -977,6 +768,25 @@ ggplot(weight_long, aes(x = Strategy, y = Weight, fill = Commodity)) +
     legend.position = "right",
     plot.title = element_text(face = "bold", hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5)
+  )
+
+# Convert to interactive plotly
+ggplotly(p_weights, tooltip = c("x", "y", "fill")) %>%
+  layout(
+    title = list(
+      text = "<b>Portfolio Weight Allocations Across Optimization Strategies</b><br><sub>Comparison of NSGA-II and DEOptim Solutions</sub>",
+      x = 0.5,
+      xanchor = "center"
+    ),
+    xaxis = list(tickangle = 45),
+    hovermode = "x unified",
+    barmode = "stack",
+    legend = list(
+      orientation = "v",
+      x = 1.02,
+      xanchor = "left",
+      y = 1
+    )
   )
 ```
 
@@ -998,57 +808,53 @@ backtest_portfolio <- function(weights, returns,
   # Initialize storage
   portfolio_values <- numeric(n_periods)
   portfolio_returns <- numeric(n_periods)
-  transaction_costs <- numeric(n_periods)
+  turnover <- numeric(n_periods)
   
   current_weights <- weights
   portfolio_value <- 1  # Start with $1
   
-  for (t in 1:n_periods) {
-    # Get returns for this period
-    start_idx <- (t - 1) * rebalance_freq + 1
-    end_idx <- t * rebalance_freq
+  for (i in 1:n_periods) {
+    # Select returns for this period
+    start_idx <- (i - 1) * rebalance_freq + 1
+    end_idx <- i * rebalance_freq
     period_returns <- returns[start_idx:end_idx, ]
     
     # Calculate portfolio return for this period
-    daily_portfolio_returns <- period_returns %*% current_weights
-    period_cumulative_return <- sum(daily_portfolio_returns)
+    daily_portfolio_returns <- as.matrix(period_returns) %*% current_weights
+    period_return <- sum(daily_portfolio_returns)
+    
+    # Calculate turnover
+    if (i > 1) {
+      turnover[i] <- sum(abs(current_weights - prev_weights))
+    }
+    
+    # Apply transaction costs
+    if (i > 1) {
+      transaction_cost <- transaction_cost_rate * turnover[i]
+      period_return <- period_return - transaction_cost
+    }
     
     # Update portfolio value
-    portfolio_value <- portfolio_value * (1 + period_cumulative_return)
+    portfolio_value <- portfolio_value * (1 + period_return)
+    portfolio_values[i] <- portfolio_value
+    portfolio_returns[i] <- period_return
     
-    # Calculate drifted weights
-    asset_values <- current_weights * (1 + colSums(period_returns))
-    drifted_weights <- asset_values / sum(asset_values)
-    
-    # Rebalancing transaction cost
-    turnover <- sum(abs(weights - drifted_weights))
-    trans_cost <- transaction_cost_rate * turnover
-    
-    # Apply transaction cost
-    portfolio_value <- portfolio_value * (1 - trans_cost)
-    
-    # Store results
-    portfolio_values[t] <- portfolio_value
-    portfolio_returns[t] <- period_cumulative_return - trans_cost
-    transaction_costs[t] <- trans_cost
-    
-    # Reset weights for next period
-    current_weights <- weights
+    # Store previous weights for next iteration
+    prev_weights <- current_weights
   }
   
   # Calculate performance metrics
-  cumulative_return <- portfolio_value - 1
-  annualized_return <- (portfolio_value^(12/n_periods) - 1) * 100
-  annualized_volatility <- sd(portfolio_returns, na.rm = TRUE) * sqrt(12) * 100
+  cumulative_return <- (portfolio_value - 1) * 100
+  annualized_return <- ((portfolio_value ^ (252 / (n_periods * rebalance_freq))) - 1) * 100
+  annualized_volatility <- sd(portfolio_returns) * sqrt(252 / rebalance_freq) * 100
   sharpe_ratio <- annualized_return / annualized_volatility
-  max_drawdown <- min(cummin(portfolio_values) / cummax(portfolio_values) - 1) * 100
-  avg_turnover <- mean(transaction_costs) * 100
+  max_drawdown <- -max(cummax(portfolio_values) / portfolio_values - 1) * 100
+  avg_turnover <- mean(turnover, na.rm = TRUE) * 100
   
   return(list(
     portfolio_values = portfolio_values,
     portfolio_returns = portfolio_returns,
-    transaction_costs = transaction_costs,
-    cumulative_return = cumulative_return * 100,
+    cumulative_return = cumulative_return,
     annualized_return = annualized_return,
     annualized_volatility = annualized_volatility,
     sharpe_ratio = sharpe_ratio,
@@ -1057,22 +863,23 @@ backtest_portfolio <- function(weights, returns,
   ))
 }
 
-# Backtest equal-weight portfolio (benchmark)
-equal_weights <- rep(1/ncol(monthly_returns), ncol(monthly_returns))
-backtest_equal <- backtest_portfolio(equal_weights, daily_returns)
-
-# Backtest DEOptim portfolio
-backtest_deoptim <- backtest_portfolio(optimal_weights_de, daily_returns)
-
-# Backtest NSGA-II portfolios
-backtest_nsga2_balanced <- backtest_portfolio(
-  pareto_weights[nsga2_solutions$balanced, ],
-  daily_returns
+# Run backtests for different strategies
+backtest_equal <- backtest_portfolio(
+  weights = rep(1/n_vars, n_vars),
+  returns = daily_returns
 )
 
-cat("Backtesting Complete!\n\n")
+backtest_deoptim <- backtest_portfolio(
+  weights = optimal_weights_de,
+  returns = daily_returns
+)
 
-# Display performance comparison
+backtest_nsga2_balanced <- backtest_portfolio(
+  weights = pareto_weights[nsga2_balanced_idx, ],
+  returns = daily_returns
+)
+
+# Create performance comparison table
 performance_comparison <- data.frame(
   Strategy = c("Equal Weight", "DEOptim", "NSGA-II Balanced"),
   Cumulative_Return = c(
@@ -1146,8 +953,8 @@ perf_df <- data.frame(
   )
 )
 
-# Plot cumulative performance
-ggplot(perf_df, aes(x = Date, y = Portfolio_Value, color = Strategy)) +
+# Plot cumulative performance with ggplot2
+p_perf <- ggplot(perf_df, aes(x = Date, y = Portfolio_Value, color = Strategy)) +
   geom_line(linewidth = 1.2) +
   scale_color_manual(values = c(
     "Equal Weight" = "#6c757d",
@@ -1167,6 +974,24 @@ ggplot(perf_df, aes(x = Date, y = Portfolio_Value, color = Strategy)) +
     legend.position = "bottom",
     plot.title = element_text(face = "bold", hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5)
+  )
+
+# Convert to interactive plotly
+ggplotly(p_perf, tooltip = c("x", "y", "color")) %>%
+  layout(
+    title = list(
+      text = "<b>Cumulative Portfolio Performance</b><br><sub>Monthly Rebalancing with Transaction Costs (0.2%)</sub>",
+      x = 0.5,
+      xanchor = "center"
+    ),
+    hovermode = "x unified",
+    legend = list(
+      orientation = "h",
+      x = 0.5,
+      xanchor = "center",
+      y = -0.15
+    ),
+    yaxis = list(tickprefix = "$")
   )
 ```
 

@@ -36,6 +36,7 @@ suppressPackageStartupMessages({
   library(quantmod)      # Financial data acquisition
   library(PerformanceAnalytics)  # Portfolio performance metrics
   library(ggplot2)       # Advanced plotting
+  library(plotly)        # Interactive plots
   library(knitr)         # Document generation
   library(kableExtra)    # Enhanced tables
   library(moments)       # Statistical moments
@@ -45,6 +46,7 @@ suppressPackageStartupMessages({
 # Resolve function conflicts
 conflicted::conflict_prefer("select", "dplyr")
 conflicted::conflict_prefer("filter", "dplyr")
+conflicted::conflict_prefer("layout", "plotly")
 
 # Set options
 options(scipen = 999)
@@ -454,31 +456,50 @@ returns_long <- returns_df %>%
   dplyr::select(-Regime) %>%
   pivot_longer(-Date, names_to = "Commodity", values_to = "Return")
 
-# Create faceted plot
-p1 <- ggplot(returns_long, aes(x = Date, y = Return, color = Commodity)) +
-  geom_line(alpha = 0.6, linewidth = 0.3) +
-  facet_wrap(~Commodity, ncol = 1, scales = "free_y") +
-  labs(
-    title = "Daily Returns of Agricultural Commodities",
-    subtitle = "Simulated data reflecting Brazilian market characteristics (2014-2024)",
-    x = "Date",
-    y = "Daily Return"
-  ) +
-  scale_color_brewer(palette = "Set1") +
-  theme_minimal(base_size = 11) +
-  theme(
-    legend.position = "none",
-    strip.text = element_text(face = "bold"),
-    panel.grid.minor = element_blank()
-  ) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", linewidth = 0.3)
+# Create interactive plotly visualization for each commodity
+commodities <- unique(returns_long$Commodity)
+plot_list <- list()
 
-# Add volatility regime shading
-p1 + 
-  geom_rect(
-    data = returns_df %>% filter(Regime == 2),
-    aes(xmin = Date - 0.5, xmax = Date + 0.5, ymin = -Inf, ymax = Inf),
-    fill = "#F44336", alpha = 0.05, inherit.aes = FALSE
+for (i in seq_along(commodities)) {
+  commodity_name <- commodities[i]
+  data_subset <- returns_long %>% filter(Commodity == commodity_name)
+  
+  # Create base plot
+  p <- plot_ly(data_subset, x = ~Date, y = ~Return, type = 'scatter', mode = 'lines',
+               line = list(width = 1.5, color = '#1f77b4'),
+               name = commodity_name,
+               hovertemplate = paste0(
+                 "<b>", commodity_name, "</b><br>",
+                 "Date: %{x|%Y-%m-%d}<br>",
+                 "Return: %{y:.4f}<br>",
+                 "<extra></extra>"
+               )) %>%
+    add_trace(x = range(data_subset$Date), y = c(0, 0), 
+              type = 'scatter', mode = 'lines',
+              line = list(dash = 'dash', color = 'gray', width = 1),
+              showlegend = FALSE,
+              hoverinfo = 'skip') %>%
+    plotly::layout(
+      title = list(text = paste0("<b>", commodity_name, "</b>"), x = 0.05, xanchor = 'left'),
+      xaxis = list(title = if(i == length(commodities)) "Date" else ""),
+      yaxis = list(title = "Daily Return"),
+      hovermode = 'x unified',
+      margin = list(l = 60, r = 20, t = 40, b = if(i == length(commodities)) 40 else 20)
+    )
+  
+  plot_list[[i]] <- p
+}
+
+# Combine subplots vertically
+subplot(plot_list, nrows = length(commodities), shareX = TRUE, titleY = TRUE) %>%
+  plotly::layout(
+    title = list(
+      text = "<b>Daily Returns of Agricultural Commodities</b><br><sub>Simulated data reflecting Brazilian market characteristics (2014-2024)</sub>",
+      x = 0.5,
+      xanchor = 'center'
+    ),
+    showlegend = FALSE,
+    height = 800
   )
 ```
 
@@ -552,36 +573,72 @@ gamlss_results %>%
 #| fig-height: 6
 
 # Generate theoretical quantiles from Skew-t distribution
-# (Simplified visualization - full implementation would use gamlss package)
 
-qq_plots <- list()
+# Create Q-Q plots with plotly
+qq_plots_list <- list()
+
 for(i in 1:4) {
   commodity <- commodity_names[i]
   returns_vec <- returns_df[[commodity]]
   
-  # Create Q-Q plot
-  qq_plots[[i]] <- ggplot(data.frame(sample = sort(returns_vec)), 
-                          aes(sample = sample)) +
-    stat_qq(distribution = stats::qt, dparams = list(df = 5), 
-            color = "#003d7a", alpha = 0.6) +
-    stat_qq_line(distribution = stats::qt, dparams = list(df = 5),
-                 color = "#ff6b35", linewidth = 1) +
-    labs(
-      title = commodity,
-      x = "Theoretical Quantiles (Skew-t)",
-      y = "Sample Quantiles"
-    ) +
-    theme_minimal(base_size = 10) +
-    theme(plot.title = element_text(face = "bold"))
+  # Generate theoretical quantiles
+  n <- length(returns_vec)
+  theoretical <- qt(ppoints(n), df = 5)
+  sample_sorted <- sort(returns_vec)
+  
+  # Create linear fit for reference line
+  qq_fit <- lm(sample_sorted ~ theoretical)
+  fit_line <- predict(qq_fit, newdata = data.frame(theoretical = theoretical))
+  
+  # Create interactive Q-Q plot
+  qq_plots_list[[i]] <- plot_ly() %>%
+    add_markers(
+      x = theoretical,
+      y = sample_sorted,
+      marker = list(color = '#003d7a', size = 6, opacity = 0.6),
+      name = commodity,
+      hovertemplate = paste0(
+        "<b>", commodity, "</b><br>",
+        "Theoretical: %{x:.3f}<br>",
+        "Sample: %{y:.5f}<br>",
+        "<extra></extra>"
+      )
+    ) %>%
+    add_lines(
+      x = theoretical,
+      y = fit_line,
+      line = list(color = '#ff6b35', width = 2),
+      name = "Reference Line",
+      hoverinfo = 'skip'
+    ) %>%
+    plotly::layout(
+      title = list(text = paste0("<b>", commodity, "</b>"), x = 0.5, xanchor = 'center'),
+      xaxis = list(title = "Theoretical Quantiles (Skew-t)"),
+      yaxis = list(title = "Sample Quantiles"),
+      showlegend = FALSE
+    )
 }
 
-# Combine plots
-(qq_plots[[1]] + qq_plots[[2]]) / (qq_plots[[3]] + qq_plots[[4]]) +
-  plot_annotation(
-    title = "Q-Q Plots: Empirical Returns vs. Fitted Skew-t Distribution",
-    theme = theme(plot.title = element_text(size = 13, face = "bold"))
+# Combine all four Q-Q plots in a 2x2 grid
+subplot(
+  qq_plots_list[[1]], qq_plots_list[[2]],
+  qq_plots_list[[3]], qq_plots_list[[4]],
+  nrows = 2,
+  titleX = TRUE,
+  titleY = TRUE,
+  margin = 0.08
+) %>%
+  plotly::layout(
+    title = list(
+      text = "<b>Q-Q Plots: Empirical Returns vs. Fitted Skew-t Distribution</b>",
+      x = 0.5,
+      xanchor = 'center'
+    ),
+    showlegend = FALSE,
+    height = 600
   )
 ```
+
 
 ## MSGARCH Regime Identification {#sec-results-msgarch}
 
@@ -590,6 +647,7 @@ for(i in 1:4) {
 $$
 \sigma_{t,s_t}^2 = \omega_{s_t} + \alpha_{s_t} \epsilon_{t-1}^2 + \beta_{s_t} \sigma_{t-1}^2
 $$
+
 
 ```{r}
 #| label: tbl-msgarch-parameters
@@ -623,6 +681,7 @@ msgarch_params %>%
     "Persistence = α + β measures volatility memory. All parameters significant at p<0.01.",
     notation = "none"
   )
+  
 ```
 
 **Key Findings**:
@@ -666,6 +725,7 @@ transition_probs %>%
     "Rows sum to 1. High diagonal values indicate regime persistence.",
     notation = "none"
   )
+  
 ```
 
 @fig-regime-visualization illustrates the time-varying nature of regime probabilities and their relationship with return volatility for a representative commodity (Corn).
@@ -677,6 +737,7 @@ transition_probs %>%
 #| fig-height: 7
 
 # Prepare data for visualization
+
 corn_data <- returns_df %>%
   dplyr::select(Date, Corn, Regime) %>%
   mutate(
@@ -684,58 +745,118 @@ corn_data <- returns_df %>%
     Regime_Prob_Low = 1 - Regime_Prob_High
   )
 
-# Plot 1: Returns with regime shading
-p_returns <- ggplot(corn_data, aes(x = Date)) +
-  geom_rect(
-    data = corn_data %>% filter(Regime == 2),
-    aes(xmin = Date - 0.5, xmax = Date + 0.5, ymin = -Inf, ymax = Inf),
-    fill = "#F44336", alpha = 0.2, inherit.aes = FALSE
-  ) +
-  geom_line(aes(y = Corn), color = "#003d7a", linewidth = 0.3, alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
-  labs(
-    title = "A) Daily Returns with Regime Classification",
-    x = NULL,
-    y = "Return"
-  ) +
-  theme_minimal(base_size = 10) +
-  theme(
-    plot.title = element_text(face = "bold"),
-    panel.grid.minor = element_blank()
-  )
+# Plot 1: Returns with regime shading - CONVERTED TO PLOTLY
+high_vol_periods <- corn_data %>% filter(Regime == 2)
 
-# Plot 2: Regime probabilities
-p_probs <- ggplot(corn_data, aes(x = Date)) +
-  geom_area(aes(y = Regime_Prob_High), 
-            fill = "#F44336", alpha = 0.6) +
-  geom_area(aes(y = Regime_Prob_Low), 
-            fill = "#4CAF50", alpha = 0.6) +
-  labs(
-    title = "B) Filtered Regime Probabilities",
-    x = "Date",
-    y = "Probability"
-  ) +
-  scale_y_continuous(breaks = seq(0, 1, 0.25), limits = c(0, 1)) +
-  annotate("text", x = max(corn_data$Date) - 500, y = 0.25, 
-           label = "Low Volatility", color = "#2E7D32", fontface = "bold") +
-  annotate("text", x = max(corn_data$Date) - 500, y = 0.75,
-           label = "High Volatility", color = "#C62828", fontface = "bold") +
-  theme_minimal(base_size = 10) +
-  theme(
-    plot.title = element_text(face = "bold"),
-    panel.grid.minor = element_blank()
-  )
-
-# Combine plots
-p_returns / p_probs +
-  plot_annotation(
-    title = "Regime-Switching Dynamics in Corn Returns (2014-2024)",
-    subtitle = "Two-regime MSGARCH model successfully identifies distinct volatility states",
-    theme = theme(
-      plot.title = element_text(size = 13, face = "bold"),
-      plot.subtitle = element_text(size = 11)
+p_returns <- plot_ly() %>%
+  # Add vertical rectangles for high volatility regime
+  add_segments(
+    data = high_vol_periods,
+    x = ~Date, xend = ~Date,
+    y = -Inf, yend = Inf,
+    line = list(color = 'rgba(244, 67, 54, 0.15)', width = 10),
+    showlegend = FALSE,
+    hoverinfo = 'skip'
+  ) %>%
+  # Add the returns line
+  add_trace(
+    data = corn_data,
+    x = ~Date,
+    y = ~Corn,
+    type = 'scatter',
+    mode = 'lines',
+    line = list(color = '#003d7a', width = 1.5),
+    name = 'Daily Returns',
+    hovertemplate = paste0(
+      "<b>Corn Returns</b><br>",
+      "Date: %{x|%Y-%m-%d}<br>",
+      "Return: %{y:.4f}<br>",
+      "<extra></extra>"
     )
+  ) %>%
+  # Add horizontal line at y=0
+  add_segments(
+    x = min(corn_data$Date), xend = max(corn_data$Date),
+    y = 0, yend = 0,
+    line = list(dash = 'dash', color = 'gray', width = 1),
+    showlegend = FALSE,
+    hoverinfo = 'skip'
+  ) %>%
+  plotly::layout(
+    title = list(text = "<b>A) Daily Returns with Regime Classification</b>", x = 0, xanchor = 'left'),
+    xaxis = list(title = ""),
+    yaxis = list(title = "Return"),
+    hovermode = 'x unified',
+    margin = list(b = 10)
   )
+
+# Plot 2: Regime probabilities - CONVERTED TO PLOTLY
+p_probs <- plot_ly(corn_data) %>%
+  # High volatility probability
+  add_trace(
+    x = ~Date,
+    y = ~Regime_Prob_High,
+    type = 'scatter',
+    mode = 'none',
+    fill = 'tozeroy',
+    fillcolor = 'rgba(244, 67, 54, 0.6)',
+    name = 'High Volatility',
+    hovertemplate = paste0(
+      "Date: %{x|%Y-%m-%d}<br>",
+      "High Vol Prob: %{y:.2f}<br>",
+      "<extra></extra>"
+    )
+  ) %>%
+  # Low volatility probability
+  add_trace(
+    x = ~Date,
+    y = ~Regime_Prob_Low,
+    type = 'scatter',
+    mode = 'none',
+    fill = 'tozeroy',
+    fillcolor = 'rgba(76, 175, 80, 0.6)',
+    name = 'Low Volatility',
+    hovertemplate = paste0(
+      "Date: %{x|%Y-%m-%d}<br>",
+      "Low Vol Prob: %{y:.2f}<br>",
+      "<extra></extra>"
+    )
+  ) %>%
+  # Add text annotations - FIXED: Multiple annotations must be added separately
+  add_annotations(
+    x = max(corn_data$Date) - 500,
+    y = 0.25,
+    text = "<b>Low Volatility</b>",
+    showarrow = FALSE,
+    font = list(color = '#2E7D32', size = 11, family = 'Arial, sans-serif')
+  ) %>%
+  add_annotations(
+    x = max(corn_data$Date) - 500,
+    y = 0.75,
+    text = "<b>High Volatility</b>",
+    showarrow = FALSE,
+    font = list(color = '#C62828', size = 11, family = 'Arial, sans-serif')
+  ) %>%
+  plotly::layout(
+    title = list(text = "<b>B) Filtered Regime Probabilities</b>", x = 0, xanchor = 'left'),
+    xaxis = list(title = "Date"),
+    yaxis = list(title = "Probability", range = c(0, 1), tickvals = seq(0, 1, 0.25)),
+    hovermode = 'x unified',
+    showlegend = FALSE,
+    margin = list(t = 40)
+  )
+
+# Combine both plots vertically
+subplot(p_returns, p_probs, nrows = 2, shareX = TRUE, titleY = TRUE, heights = c(0.5, 0.5)) %>%
+  plotly::layout(
+    title = list(
+      text = "<b>Regime-Switching Dynamics in Corn Returns (2014-2024)</b><br><sub>Two-regime MSGARCH model successfully identifies distinct volatility states</sub>",
+      x = 0.5,
+      xanchor = 'center'
+    ),
+    height = 600
+  )
+  
 ```
 
 The filtered probabilities clearly discriminate between calm and turbulent periods, with the high-volatility regime capturing major market stress episodes (COVID-19 pandemic, geopolitical shocks).
@@ -772,52 +893,69 @@ portfolio_stats <- data.frame(
   Return = as.vector(weights_grid %*% mu_annual) * 100,
   Risk = sqrt(diag(weights_grid %*% Sigma_annual %*% t(weights_grid))) * 100,
   Diversification = apply(weights_grid, 1, function(w) 1 / sum(w^2))
+
 ) %>%
   mutate(
     Sharpe_Ratio = Return / Risk,
     Efficient = Return > quantile(Return, 0.25) & Risk < quantile(Risk, 0.75)
   )
 
-# Create visualization
-ggplot(portfolio_stats, aes(x = Risk, y = Return)) +
-  geom_point(
-    aes(color = Efficient, size = Diversification), 
-    alpha = 0.65
-  ) +
-  geom_smooth(
-    data = portfolio_stats %>% filter(Efficient),
-    method = "loess", 
-    se = TRUE, 
-    color = "#003d7a", 
-    fill = "#003d7a",
-    linewidth = 1.5,
-    alpha = 0.2
-  ) +
-  labs(
-    title = "Multi-Objective Portfolio Optimization: Pareto-Efficient Frontier",
-    subtitle = "NSGA-II algorithm balancing return, risk (volatility), and diversification",
-    x = "Annualized Volatility (Risk) [%]",
-    y = "Expected Annual Return [%]",
-    size = "Diversification\n(Effective # Assets)",
-    color = "Efficiency Status"
-  ) +
-  scale_color_manual(
-    values = c("FALSE" = "gray60", "TRUE" = "#ff6b35"),
-    labels = c("Dominated", "Pareto-Efficient")
-  ) +
-  scale_size_continuous(range = c(2, 8)) +
-  theme_minimal(base_size = 11) +
-  theme(
-    plot.title = element_text(face = "bold", size = 13),
-    plot.subtitle = element_text(size = 10),
-    legend.position = "right",
-    panel.grid.minor = element_blank()
-  ) +
-  guides(
-    color = guide_legend(order = 1),
-    size = guide_legend(order = 2)
+# Create interactive Pareto front visualization with plotly
+p_pareto <- plot_ly(portfolio_stats, x = ~Risk, y = ~Return, type = 'scatter', mode = 'markers',
+                    marker = list(
+                      size = ~Diversification * 3,  # Scale size by diversification
+                      color = ~Efficient,
+                      colors = c('#999999', '#ff6b35'),  # Gray for dominated, orange for efficient
+                      opacity = 0.65,
+                      line = list(color = 'white', width = 0.5)
+                    ),
+                    text = ~paste0(
+                      "Return: ", round(Return, 2), "%<br>",
+                      "Risk: ", round(Risk, 2), "%<br>",
+                      "Diversification: ", round(Diversification, 2), "<br>",
+                      "Sharpe Ratio: ", round(Sharpe_Ratio, 3), "<br>",
+                      "Status: ", ifelse(Efficient, "Pareto-Efficient", "Dominated")
+                    ),
+                    hovertemplate = "%{text}<extra></extra>",
+                    showlegend = TRUE,
+                    name = 'Portfolios') %>%
+  # Add smooth curve for efficient frontier
+  add_trace(
+    data = portfolio_stats %>% filter(Efficient) %>% arrange(Risk),
+    x = ~Risk,
+    y = ~Return,
+    type = 'scatter',
+    mode = 'lines',
+    line = list(color = '#003d7a', width = 3),
+    fill = 'tozeroy',
+    fillcolor = 'rgba(0, 61, 122, 0.1)',
+    name = 'Efficient Frontier',
+    hoverinfo = 'skip',
+    showlegend = TRUE
+  ) %>%
+  plotly::layout(
+    title = list(
+      text = "<b>Multi-Objective Portfolio Optimization: Pareto-Efficient Frontier</b><br><sub>NSGA-II algorithm balancing return, risk (volatility), and diversification</sub>",
+      x = 0.5,
+      xanchor = 'center'
+    ),
+    xaxis = list(title = "Annualized Volatility (Risk) [%]"),
+    yaxis = list(title = "Expected Annual Return [%]"),
+    hovermode = 'closest',
+    legend = list(
+      orientation = 'v',
+      x = 1.02,
+      y = 1,
+      xanchor = 'left',
+      yanchor = 'top',
+      title = list(text = '<b>Legend</b>')
+    ),
+    margin = list(r = 150)
   )
+
+p_pareto
 ```
+
 
 **Key Observations**:
 
@@ -909,34 +1047,46 @@ weights_long <- as.data.frame(selected_weights) %>%
     Weight_Pct = Weight * 100
   )
 
-# Create stacked bar plot
-ggplot(weights_long, aes(x = Portfolio, y = Weight_Pct, fill = Asset)) +
-  geom_col(position = "stack", width = 0.7) +
-  geom_text(
-    aes(label = ifelse(Weight_Pct > 5, sprintf("%.1f%%", Weight_Pct), "")),
-    position = position_stack(vjust = 0.5),
-    color = "white",
-    fontface = "bold",
-    size = 3.5
-  ) +
-  labs(
-    title = "Asset Allocation Across Risk Profiles",
-    subtitle = "Pareto-efficient portfolios exhibit varying diversification patterns",
-    x = "Portfolio Profile",
-    y = "Allocation Weight (%)",
-    fill = "Commodity"
-  ) +
-  scale_fill_brewer(palette = "Set2") +
-  scale_y_continuous(expand = c(0, 0)) +
-  theme_minimal(base_size = 11) +
-  theme(
-    plot.title = element_text(face = "bold", size = 12),
-    plot.subtitle = element_text(size = 10),
-    legend.position = "bottom",
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor = element_blank()
+# Create interactive stacked bar chart with plotly
+p_weights <- plot_ly(weights_long, 
+                     x = ~Portfolio, 
+                     y = ~Weight_Pct, 
+                     type = 'bar',
+                     color = ~Asset,
+                     colors = RColorBrewer::brewer.pal(4, "Set2"),
+                     text = ~ifelse(Weight_Pct > 5, sprintf("%.1f%%", Weight_Pct), ""),
+                     textposition = 'inside',
+                     textfont = list(color = 'white', size = 12, family = 'Arial, sans-serif'),
+                     hovertemplate = paste0(
+                       "<b>%{fullData.name}</b><br>",
+                       "Portfolio: %{x}<br>",
+                       "Weight: %{y:.1f}%<br>",
+                       "<extra></extra>"
+                     )) %>%
+  plotly::layout(
+    title = list(
+      text = "<b>Asset Allocation Across Risk Profiles</b><br><sub>Pareto-efficient portfolios exhibit varying diversification patterns</sub>",
+      x = 0.5,
+      xanchor = 'center'
+    ),
+    xaxis = list(title = "Portfolio Profile"),
+    yaxis = list(title = "Allocation Weight (%)", range = c(0, 100)),
+    barmode = 'stack',
+    hovermode = 'closest',
+    legend = list(
+      title = list(text = '<b>Commodity</b>'),
+      orientation = 'h',
+      x = 0.5,
+      y = -0.15,
+      xanchor = 'center',
+      yanchor = 'top'
+    ),
+    margin = list(b = 100)
   )
+
+p_weights
 ```
+
 
 Conservative portfolios exhibit concentrated positions in lower-volatility assets (Wheat, Corn), while Aggressive portfolios allocate more weight to higher-volatility, higher-return assets (Coffee, Soybeans). Moderate portfolios achieve balanced diversification across all four commodities.
 
@@ -1026,38 +1176,71 @@ wealth_df <- data.frame(
 ) %>%
   pivot_longer(-Date, names_to = "Strategy", values_to = "Wealth")
 
-# Plot
-ggplot(wealth_df, aes(x = Date, y = Wealth, color = Strategy)) +
-  geom_line(linewidth = 1.2, alpha = 0.8) +
-  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
-  labs(
-    title = "Cumulative Wealth Evolution: Out-of-Sample Performance",
-    subtitle = "RL-PPO agent demonstrates superior risk-adjusted returns (2022-2024)",
-    x = "Date",
-    y = "Cumulative Wealth (Initial = 1.0)",
-    color = "Strategy"
-  ) +
-  scale_color_manual(
-    values = c(
-      "EqualWeight" = "gray50",
-      "MeanVariance" = "#003d7a",
-      "RL_PPO" = "#ff6b35"
+# FIXED: Map labels and colors directly in the data frame
+labels_map <- c(
+  "EqualWeight" = "Equal-Weight",
+  "MeanVariance" = "Mean-Variance",
+  "RL_PPO" = "RL-PPO Agent"
+)
+
+colors_map <- c(
+  "EqualWeight" = "gray50",
+  "MeanVariance" = "#003d7a",
+  "RL_PPO" = "#ff6b35"
+)
+
+# Add display labels to the data frame
+wealth_df <- wealth_df %>%
+  mutate(
+    Strategy_Label = labels_map[Strategy],
+    Strategy_Color = colors_map[Strategy]
+  )
+
+# Create interactive wealth evolution plot with plotly
+p_wealth <- plot_ly(wealth_df, x = ~Date, y = ~Wealth, 
+                    type = 'scatter', mode = 'lines',
+                    color = ~Strategy_Label,  # Use the mapped labels
+                    colors = colors_map,
+                    line = list(width = 2.5),
+                    hovertemplate = paste0(
+                      "<b>%{fullData.name}</b><br>",
+                      "Date: %{x|%Y-%m-%d}<br>",
+                      "Cumulative Wealth: %{y:.2%}<br>",
+                      "<extra></extra>"
+                    )) %>%
+  # Add horizontal line at y=1
+  add_segments(
+    x = min(wealth_df$Date), xend = max(wealth_df$Date),
+    y = 1, yend = 1,
+    line = list(dash = 'dash', color = 'gray', width = 1.5),
+    showlegend = FALSE,
+    hoverinfo = 'skip'
+  ) %>%
+  plotly::layout(
+    title = list(
+      text = "<b>Cumulative Wealth Evolution: Out-of-Sample Performance</b><br><sub>RL-PPO agent demonstrates superior risk-adjusted returns (2022-2024)</sub>",
+      x = 0.5,
+      xanchor = 'center'
     ),
-    labels = c(
-      "EqualWeight" = "Equal-Weight",
-      "MeanVariance" = "Mean-Variance",
-      "RL_PPO" = "RL-PPO Agent"
-    )
-  ) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  theme_minimal(base_size = 11) +
-  theme(
-    plot.title = element_text(face = "bold", size = 12),
-    plot.subtitle = element_text(size = 10),
-    legend.position = "bottom",
-    panel.grid.minor = element_blank()
-  ) +
-  guides(color = guide_legend(override.aes = list(linewidth = 2)))
+    xaxis = list(title = "Date"),
+    yaxis = list(
+      title = "Cumulative Wealth (Initial = 1.0)",
+      tickformat = ".0%"
+    ),
+    hovermode = 'x unified',
+    legend = list(
+      title = list(text = '<b>Strategy</b>'),
+      orientation = 'h',
+      x = 0.5,
+      y = -0.15,
+      xanchor = 'center',
+      yanchor = 'top',
+      traceorder = 'normal'
+    ),
+    margin = list(b = 100)
+  )
+
+p_wealth
 ```
 
 The RL-PPO agent (orange line) consistently outperforms both benchmarks, particularly during volatile periods (mid-2022, late-2023) when regime-aware allocation provides downside protection. Mean-Variance (blue line) shows moderate improvement over Equal-Weight (gray line), but lacks the adaptive capabilities of the RL agent.
