@@ -856,3 +856,110 @@ nav ul a,
   color: var(--white);
 }
 
+/* Reduzir tamanho da fonte do TOC "On this page" */
+#TOC,
+nav#TOC,
+.sidebar.toc-right,
+nav[role="doc-toc"] {
+  font-size: 0.75rem !important;
+}
+
+#TOC a,
+nav#TOC a,
+.sidebar.toc-right a,
+nav[role="doc-toc"] a {
+  font-size: 0.75rem !important;
+  line-height: 1.4 !important;
+}
+
+#TOC ul ul a,
+nav#TOC ul ul a,
+.sidebar.toc-right ul ul a,
+nav[role="doc-toc"] ul ul a {
+  font-size: 0.7rem !important;
+}
+
+/* Título "On this page" também menor */
+#toc-title,
+nav#TOC > h2,
+.sidebar.toc-right > h2,
+nav[role="doc-toc"] > h2 {
+  font-size: 0.8rem !important;
+}
+
+/* Mostrar apenas a seção ativa no TOC "On this page" */
+#TOC ul ul,
+nav#TOC ul ul,
+.sidebar.toc-right ul ul,
+nav[role="doc-toc"] ul ul {
+  display: none;
+}
+
+/* Mostrar sub-itens quando o item pai está ativo */
+#TOC li.active > ul,
+nav#TOC li.active > ul,
+.sidebar.toc-right li.active > ul,
+nav[role="doc-toc"] li.active > ul {
+  display: block !important;
+}
+
+/* Mostrar sub-itens quando algum filho está ativo */
+#TOC li:has(li.active) > ul,
+nav#TOC li:has(li.active) > ul,
+.sidebar.toc-right li:has(li.active) > ul,
+nav[role="doc-toc"] li:has(li.active) > ul {
+  display: block !important;
+}
+
+/* Transição suave ao expandir/colapsar */
+#TOC ul ul,
+nav#TOC ul ul,
+.sidebar.toc-right ul ul,
+nav[role="doc-toc"] ul ul {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Delimitar largura do conteúdo principal para não sobrepor o TOC */
+@media (min-width: 6692px) {
+  main.content,
+  #quarto-content,
+  #quarto-document-content,
+  .column-body {
+    max-width: calc(100vw - 800px) !important;
+    margin-right: auto !important;
+    padding-right: 3rem !important;
+  }
+  
+  /* Garantir que o container principal tenha espaçamento adequado */
+  .page-columns {
+    max-width: 1600px !important;
+    margin: 0 auto !important;
+    padding: 0 2rem !important;
+  }
+  
+  /* TOC mantém posição fixa à direita */
+  #TOC,
+  nav[role="doc-toc"] {
+    position: fixed !important;
+    right: 2rem !important;
+    width: 280px !important;
+    max-width: 280px !important;
+  }
+}
+
+/* Garantir que elementos internos respeitem o limite */
+main.content > *,
+#quarto-content > *,
+#quarto-document-content > * {
+  max-width: 100% !important;
+}
+
+/* Figuras, tabelas e diagramas Mermaid */
+main.content figure,
+main.content table,
+main.content .mermaid,
+main.content pre,
+main.content .plotly {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
