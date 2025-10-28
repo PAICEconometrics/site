@@ -65,6 +65,8 @@ website:
       
       - section: "📰 Market Intelligence"
         contents:
+          - text: "Data Exploration & Analysis"
+            href: data-exploration.qmd
           - text: "Commodities News"
             href: news.qmd
           - text: "AI Agent -- PaperHunter"
