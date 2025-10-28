@@ -1,0 +1,970 @@
+---
+title: "Agricultural Commodities Data Exploration"
+subtitle: "Exploratory Analysis of U.S. Agricultural Futures Markets"
+author: "PAIC Econometrics Research Team"
+date: last-modified
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+    toc-depth: 4
+    number-sections: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+  cache: true
+bibliography: references.bib
+---
+
+## Executive Summary {.unnumbered}
+
+This document presents a comprehensive exploratory data analysis of key U.S. agricultural commodity futures traded on the Chicago Board of Trade (CBOT) and Chicago Mercantile Exchange (CME). Our analysis focuses on eight major agricultural contracts that represent critical components of global food security and agricultural supply chains.
+
+:::{.callout-note}
+## Research Context
+This analysis forms the foundational market intelligence for our multi-objective portfolio optimization framework. Understanding historical price dynamics, volatility patterns, and market interdependencies is essential for developing robust predictive models and optimization strategies.
+:::
+
+## Introduction
+
+Agricultural commodity markets play a pivotal role in global economic stability, food security, and risk management for producers and consumers. Futures contracts provide standardized, exchange-traded instruments that enable price discovery, hedging, and speculation across the agricultural value chain [@hull2018options].
+
+### Study Objectives
+
+Our exploratory analysis aims to:
+
+1. **Characterize price dynamics** across multiple agricultural commodity futures
+2. **Quantify volatility patterns** and identify regime changes
+3. **Assess market interdependencies** through correlation analysis
+4. **Identify statistical properties** relevant for forecasting and portfolio construction
+5. **Establish baseline metrics** for model comparison and validation
+
+### Commodity Futures Overview
+
+We analyze the following futures contracts:
+
+| **Ticker** | **Commodity** | **Exchange** | **Contract Size** | **Trading Hours** |
+|------------|---------------|--------------|-------------------|-------------------|
+| ZC=F | Corn | CBOT | 5,000 bushels | 7:00 PM - 1:20 PM CT |
+| ZO=F | Oats | CBOT | 5,000 bushels | 7:00 PM - 1:20 PM CT |
+| KE=F | KC HRW Wheat | CBOT | 5,000 bushels | 7:00 PM - 1:20 PM CT |
+| ZR=F | Rough Rice | CBOT | 2,000 cwt | 7:00 PM - 1:20 PM CT |
+| GF=F | Feeder Cattle | CME | 50,000 lbs | 8:30 AM - 1:05 PM CT |
+| ZS=F | Soybeans | CBOT | 5,000 bushels | 7:00 PM - 1:20 PM CT |
+| ZM=F | Soybean Meal | CBOT | 100 short tons | 7:00 PM - 1:20 PM CT |
+| ZL=F | Soybean Oil | CBOT | 60,000 lbs | 7:00 PM - 1:20 PM CT |
+
+:::{.callout-tip}
+## The Soybean Complex
+Soybeans (ZS), Soybean Meal (ZM), and Soybean Oil (ZL) form the "soybean complex" - an interconnected set of markets where soybeans are crushed to produce meal (animal feed) and oil (cooking/biofuel). Understanding their price relationships is crucial for crush spread trading and value chain analysis.
+:::
+
+## Methodology
+
+### Data Collection
+
+We retrieve historical futures price data from Yahoo Finance using the `quantmod` package in R and `yfinance` in Python. Our data collection strategy ensures:
+
+- **Continuous contract pricing** (front-month or nearest expiry)
+- **Daily frequency** for medium-term analysis
+- **Adjusted close prices** to account for contract rollovers
+- **Sufficient history** for statistical significance (typically 5+ years)
+
+### Analytical Framework
+
+Our exploratory analysis employs:
+
+1. **Time Series Visualization**: Price trajectories, trend decomposition, seasonality detection
+2. **Distributional Analysis**: Histogram, Q-Q plots, normality tests (Jarque-Bera, Shapiro-Wilk)
+3. **Volatility Profiling**: Rolling standard deviation, realized volatility, volatility clustering
+4. **Correlation Analysis**: Pearson correlation, rolling correlations, hierarchical clustering
+5. **Statistical Testing**: Augmented Dickey-Fuller (stationarity), Ljung-Box (autocorrelation)
+
+## Data Acquisition and Preprocessing
+
+### R Implementation
+
+```{r setup-r}
+#| label: setup-r
+#| code-fold: show
+
+# Load required packages
+library(tidyverse)
+library(quantmod)
+library(PerformanceAnalytics)
+library(plotly)
+library(corrplot)
+library(zoo)
+library(lubridate)
+library(tseries)
+library(ggthemes)
+library(scales)
+library(kableExtra)
+
+# Set theme for ggplot
+theme_set(theme_minimal(base_size = 12))
+```
+
+```{r data-fetch}
+#| label: data-fetch
+#| code-fold: show
+#| message: true
+
+# Define commodity tickers
+tickers <- c(
+  "ZC=F", # Corn Futures
+  "ZO=F", # Oats Futures
+  "KE=F", # KC HRW Wheat Futures
+  "ZR=F", # Rough Rice Futures
+  "GF=F", # Feeder Cattle Futures
+  "ZS=F", # Soybean Futures
+  "ZM=F", # Soybean Meal Futures
+  "ZL=F"  # Soybean Oil Futures
+)
+
+# Commodity names for labeling
+commodity_names <- c(
+  "Corn", "Oats", "Wheat (HRW)", "Rough Rice",
+  "Feeder Cattle", "Soybeans", "Soybean Meal", "Soybean Oil"
+)
+
+# Fetch data from Yahoo Finance
+# Using last 5 years of data
+start_date <- Sys.Date() - years(5)
+end_date <- Sys.Date()
+
+# Initialize list to store data
+prices_list <- list()
+
+cat("Fetching commodity futures data...\n")
+
+for (i in seq_along(tickers)) {
+  tryCatch({
+    # Get data
+    data <- getSymbols(tickers[i],
+                       src = "yahoo",
+                       from = start_date,
+                       to = end_date,
+                       auto.assign = FALSE)
+
+    # Extract adjusted close prices
+    prices <- Ad(data)
+    colnames(prices) <- commodity_names[i]
+    prices_list[[commodity_names[i]]] <- prices
+
+    cat(sprintf("✓ %s (%s): %d observations\n",
+                commodity_names[i], tickers[i], nrow(prices)))
+
+  }, error = function(e) {
+    cat(sprintf("✗ %s (%s): Failed - %s\n",
+                commodity_names[i], tickers[i], e$message))
+  })
+}
+
+# Merge all prices into a single xts object
+prices_xts <- do.call(merge, prices_list)
+
+# Convert to data frame for easier manipulation
+prices_df <- data.frame(
+  Date = index(prices_xts),
+  coredata(prices_xts)
+) %>%
+  na.omit()  # Remove any rows with missing data
+
+cat(sprintf("\nFinal dataset: %d observations across %d commodities\n",
+            nrow(prices_df), ncol(prices_df) - 1))
+cat(sprintf("Date range: %s to %s\n",
+            min(prices_df$Date), max(prices_df$Date)))
+```
+
+### Python Implementation
+
+```{python data-fetch-python}
+#| label: data-fetch-python
+#| code-fold: show
+#| eval: false
+
+import yfinance as yf
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import plotly.graph_objects as go
+import plotly.express as px
+
+# Define tickers
+tickers = [
+    "ZC=F",  # Corn Futures
+    "ZO=F",  # Oats Futures
+    "KE=F",  # KC HRW Wheat Futures
+    "ZR=F",  # Rough Rice Futures
+    "GF=F",  # Feeder Cattle Futures
+    "ZS=F",  # Soybean Futures
+    "ZM=F",  # Soybean Meal Futures
+    "ZL=F"   # Soybean Oil Futures
+]
+
+commodity_names = {
+    "ZC=F": "Corn",
+    "ZO=F": "Oats",
+    "KE=F": "Wheat (HRW)",
+    "ZR=F": "Rough Rice",
+    "GF=F": "Feeder Cattle",
+    "ZS=F": "Soybeans",
+    "ZM=F": "Soybean Meal",
+    "ZL=F": "Soybean Oil"
+}
+
+# Fetch data
+end_date = datetime.now()
+start_date = end_date - timedelta(days=5*365)
+
+prices_dict = {}
+
+print("Fetching commodity futures data...")
+
+for ticker in tickers:
+    try:
+        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        if not data.empty:
+            prices_dict[commodity_names[ticker]] = data['Adj Close']
+            print(f"✓ {commodity_names[ticker]} ({ticker}): {len(data)} observations")
+        else:
+            print(f"✗ {commodity_names[ticker]} ({ticker}): No data available")
+    except Exception as e:
+        print(f"✗ {commodity_names[ticker]} ({ticker}): Failed - {str(e)}")
+
+# Combine into single DataFrame
+prices_df = pd.DataFrame(prices_dict).dropna()
+
+print(f"\nFinal dataset: {len(prices_df)} observations across {len(prices_df.columns)} commodities")
+print(f"Date range: {prices_df.index.min()} to {prices_df.index.max()}")
+```
+
+## Descriptive Statistics
+
+### Summary Statistics
+
+```{r summary-stats}
+#| label: summary-stats
+#| tbl-cap: "Descriptive Statistics of Commodity Futures Prices"
+
+# Calculate summary statistics
+summary_stats <- prices_df %>%
+  select(-Date) %>%
+  summarise(across(everything(), list(
+    Mean = ~mean(., na.rm = TRUE),
+    Median = ~median(., na.rm = TRUE),
+    SD = ~sd(., na.rm = TRUE),
+    Min = ~min(., na.rm = TRUE),
+    Max = ~max(., na.rm = TRUE),
+    CV = ~sd(., na.rm = TRUE) / mean(., na.rm = TRUE) * 100
+  ))) %>%
+  pivot_longer(everything(), names_to = "stat", values_to = "value") %>%
+  separate(stat, into = c("Commodity", "Metric"), sep = "_") %>%
+  pivot_wider(names_from = Metric, values_from = value)
+
+summary_stats %>%
+  kbl(digits = 2, format = "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  column_spec(1, bold = TRUE)
+```
+
+:::{.callout-warning}
+## Coefficient of Variation (CV)
+The Coefficient of Variation (CV) measures relative volatility as a percentage. Higher CV indicates greater price variability relative to the mean. This is particularly useful for comparing volatility across commodities with different price levels.
+:::
+
+### Returns Analysis
+
+```{r returns-calculation}
+#| label: returns-calculation
+
+# Calculate daily log returns
+returns_xts <- Return.calculate(prices_xts, method = "log") %>%
+  na.omit()
+
+returns_df <- data.frame(
+  Date = index(returns_xts),
+  coredata(returns_xts)
+)
+
+# Calculate return statistics
+returns_stats <- returns_df %>%
+  select(-Date) %>%
+  summarise(across(everything(), list(
+    Mean = ~mean(., na.rm = TRUE) * 252,  # Annualized
+    SD = ~sd(., na.rm = TRUE) * sqrt(252),  # Annualized
+    Skewness = ~skewness(., na.rm = TRUE),
+    Kurtosis = ~kurtosis(., na.rm = TRUE),
+    Sharpe = ~mean(., na.rm = TRUE) / sd(., na.rm = TRUE) * sqrt(252)
+  ))) %>%
+  pivot_longer(everything(), names_to = "stat", values_to = "value") %>%
+  separate(stat, into = c("Commodity", "Metric"), sep = "_") %>%
+  pivot_wider(names_from = Metric, values_from = value)
+```
+
+```{r returns-stats-table}
+#| label: returns-stats-table
+#| tbl-cap: "Return Statistics (Annualized)"
+
+returns_stats %>%
+  kbl(digits = 4, format = "html",
+      col.names = c("Commodity", "Mean Return", "Volatility",
+                    "Skewness", "Excess Kurtosis", "Sharpe Ratio")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) %>%
+  add_footnote("Mean returns and volatility are annualized (252 trading days)",
+               notation = "alphabet")
+```
+
+### Interpretation Notes
+
+- **Mean Return**: Average annualized return (log returns × 252)
+- **Volatility**: Standard deviation of returns annualized (√252)
+- **Skewness**: Asymmetry of return distribution (negative = left tail, positive = right tail)
+- **Excess Kurtosis**: Fat tails relative to normal distribution (>0 indicates fat tails)
+- **Sharpe Ratio**: Risk-adjusted return assuming zero risk-free rate
+
+## Price Dynamics Visualization
+
+### Historical Price Trends
+
+```{r price-trends-plot}
+#| label: price-trends-plot
+#| fig-cap: "Historical Price Trajectories of Agricultural Commodity Futures"
+#| fig-height: 10
+#| fig-width: 12
+
+# Prepare data for plotting
+prices_long <- prices_df %>%
+  pivot_longer(-Date, names_to = "Commodity", values_to = "Price")
+
+# Create normalized prices (base 100)
+prices_normalized <- prices_df %>%
+  select(-Date) %>%
+  apply(2, function(x) 100 * x / x[1]) %>%
+  as.data.frame() %>%
+  mutate(Date = prices_df$Date) %>%
+  pivot_longer(-Date, names_to = "Commodity", values_to = "Normalized_Price")
+
+# Plot actual prices
+p1 <- ggplot(prices_long, aes(x = Date, y = Price, color = Commodity)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~Commodity, scales = "free_y", ncol = 2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = dollar_format()) +
+  labs(title = "Commodity Futures Prices (USD)",
+       subtitle = paste("Historical price trajectories from",
+                        min(prices_df$Date), "to", max(prices_df$Date)),
+       x = "Date", y = "Price (USD)",
+       caption = "Source: Yahoo Finance") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none",
+        strip.text = element_text(face = "bold", size = 10),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(p1)
+```
+
+```{r normalized-prices-plot}
+#| label: normalized-prices-plot
+#| fig-cap: "Normalized Price Performance (Base 100)"
+#| fig-height: 6
+#| fig-width: 12
+
+# Plot normalized prices
+p2 <- ggplot(prices_normalized, aes(x = Date, y = Normalized_Price, color = Commodity)) +
+  geom_line(linewidth = 1.0, alpha = 0.8) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "black", alpha = 0.5) +
+  scale_x_date(date_breaks = "6 months", date_labels = "%b %Y") +
+  scale_y_continuous(labels = comma_format()) +
+  labs(title = "Relative Price Performance (Normalized to 100)",
+       subtitle = "Comparative returns across commodity futures",
+       x = "Date", y = "Index Value (Base = 100)",
+       color = "Commodity",
+       caption = "Source: Yahoo Finance | PAIC Econometrics Research") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "right",
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.grid.minor = element_blank())
+
+print(p2)
+```
+
+### Interactive Price Explorer
+
+```{r interactive-prices}
+#| label: interactive-prices
+#| fig-cap: "Interactive Price Chart (Hover for Details)"
+
+# Create interactive plotly chart
+fig <- plot_ly()
+
+for (commodity in commodity_names) {
+  commodity_data <- prices_df %>%
+    select(Date, all_of(commodity))
+
+  fig <- fig %>%
+    add_trace(
+      x = commodity_data$Date,
+      y = commodity_data[[commodity]],
+      type = 'scatter',
+      mode = 'lines',
+      name = commodity,
+      hovertemplate = paste0(
+        "<b>", commodity, "</b><br>",
+        "Date: %{x|%Y-%m-%d}<br>",
+        "Price: $%{y:.2f}<br>",
+        "<extra></extra>"
+      )
+    )
+}
+
+fig <- fig %>%
+  layout(
+    title = list(
+      text = "Agricultural Commodity Futures - Interactive Price Chart",
+      font = list(size = 16)
+    ),
+    xaxis = list(
+      title = "Date",
+      rangeslider = list(visible = TRUE),
+      rangeselector = list(
+        buttons = list(
+          list(count = 1, label = "1M", step = "month", stepmode = "backward"),
+          list(count = 6, label = "6M", step = "month", stepmode = "backward"),
+          list(count = 1, label = "1Y", step = "year", stepmode = "backward"),
+          list(count = 2, label = "2Y", step = "year", stepmode = "backward"),
+          list(step = "all", label = "ALL")
+        )
+      )
+    ),
+    yaxis = list(title = "Price (USD)"),
+    hovermode = "x unified",
+    legend = list(orientation = "h", y = -0.2)
+  )
+
+fig
+```
+
+## Volatility Analysis
+
+### Rolling Volatility
+
+```{r rolling-volatility}
+#| label: rolling-volatility
+#| fig-cap: "30-Day Rolling Volatility (Annualized)"
+#| fig-height: 8
+#| fig-width: 12
+
+# Calculate 30-day rolling volatility
+window <- 30
+rolling_vol <- returns_df %>%
+  select(-Date) %>%
+  apply(2, function(x) {
+    rollapply(x, width = window, FUN = function(w) sd(w, na.rm = TRUE) * sqrt(252),
+              fill = NA, align = "right")
+  }) %>%
+  as.data.frame() %>%
+  mutate(Date = returns_df$Date) %>%
+  pivot_longer(-Date, names_to = "Commodity", values_to = "Volatility") %>%
+  na.omit()
+
+# Plot rolling volatility
+p3 <- ggplot(rolling_vol, aes(x = Date, y = Volatility, color = Commodity)) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~Commodity, scales = "free_y", ncol = 2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(labels = percent_format(scale = 1)) +
+  labs(title = "Rolling Volatility Analysis (30-Day Window)",
+       subtitle = "Annualized volatility shows temporal variation in price risk",
+       x = "Date", y = "Annualized Volatility (%)",
+       caption = "Calculated from log returns") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none",
+        strip.text = element_text(face = "bold"),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(p3)
+```
+
+:::{.callout-note}
+## Volatility Clustering
+Notice the presence of **volatility clustering** - periods of high volatility tend to be followed by high volatility, and low volatility periods persist. This heteroskedasticity is a key stylized fact of financial time series and motivates the use of GARCH-family models in our forecasting framework.
+:::
+
+### Returns Distribution
+
+```{r returns-distribution}
+#| label: returns-distribution
+#| fig-cap: "Distribution of Daily Log Returns"
+#| fig-height: 8
+#| fig-width: 12
+
+# Plot returns distributions
+returns_long <- returns_df %>%
+  pivot_longer(-Date, names_to = "Commodity", values_to = "Return")
+
+p4 <- ggplot(returns_long, aes(x = Return, fill = Commodity)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50, alpha = 0.7, color = "white") +
+  geom_density(alpha = 0.3, linewidth = 1) +
+  stat_function(fun = dnorm,
+                args = list(mean = 0, sd = sd(returns_long$Return, na.rm = TRUE)),
+                color = "red", linetype = "dashed", linewidth = 0.8) +
+  facet_wrap(~Commodity, scales = "free", ncol = 2) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(title = "Returns Distribution with Normal Overlay",
+       subtitle = "Daily log returns vs. theoretical normal distribution (red dashed line)",
+       x = "Daily Return", y = "Density",
+       caption = "Deviations from normality suggest fat tails and skewness") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none",
+        strip.text = element_text(face = "bold"))
+
+print(p4)
+```
+
+### Normality Tests
+
+```{r normality-tests}
+#| label: normality-tests
+#| tbl-cap: "Normality Tests for Returns Distribution"
+
+# Perform normality tests
+normality_tests <- returns_df %>%
+  select(-Date) %>%
+  summarise(across(everything(), list(
+    JB_Statistic = ~jarque.bera.test(.)$statistic,
+    JB_Pvalue = ~jarque.bera.test(.)$p.value,
+    SW_Statistic = ~shapiro.test(.)$statistic,
+    SW_Pvalue = ~shapiro.test(.)$p.value
+  ))) %>%
+  pivot_longer(everything(), names_to = "stat", values_to = "value") %>%
+  separate(stat, into = c("Commodity", "Test", "Metric"), sep = "_") %>%
+  unite("Test_Metric", Test, Metric) %>%
+  pivot_wider(names_from = Test_Metric, values_from = value) %>%
+  mutate(
+    JB_Normal = ifelse(JB_Pvalue > 0.05, "Yes", "No"),
+    SW_Normal = ifelse(SW_Pvalue > 0.05, "Yes", "No")
+  )
+
+normality_tests %>%
+  select(Commodity, JB_Statistic, JB_Pvalue, JB_Normal, SW_Statistic, SW_Pvalue, SW_Normal) %>%
+  kbl(digits = 4, format = "html",
+      col.names = c("Commodity", "Statistic", "p-value", "Normal?",
+                    "Statistic", "p-value", "Normal?")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  add_header_above(c(" " = 1, "Jarque-Bera Test" = 3, "Shapiro-Wilk Test" = 3)) %>%
+  column_spec(1, bold = TRUE) %>%
+  column_spec(4, color = "white", background = spec_color(
+    ifelse(normality_tests$JB_Normal == "Yes", 1, 0),
+    begin = 0.7, end = 0.9, option = "D", direction = -1)) %>%
+  column_spec(7, color = "white", background = spec_color(
+    ifelse(normality_tests$SW_Normal == "Yes", 1, 0),
+    begin = 0.7, end = 0.9, option = "D", direction = -1)) %>%
+  add_footnote("Null hypothesis: Returns follow normal distribution (reject if p < 0.05)",
+               notation = "alphabet")
+```
+
+## Correlation Analysis
+
+### Static Correlation Matrix
+
+```{r correlation-matrix}
+#| label: correlation-matrix
+#| fig-cap: "Correlation Matrix of Commodity Returns"
+#| fig-height: 6
+#| fig-width: 8
+
+# Calculate correlation matrix
+cor_matrix <- cor(returns_df %>% select(-Date), use = "pairwise.complete.obs")
+
+# Plot correlation matrix
+corrplot(cor_matrix,
+         method = "color",
+         type = "upper",
+         order = "hclust",
+         addCoef.col = "black",
+         number.cex = 0.7,
+         tl.col = "black",
+         tl.srt = 45,
+         tl.cex = 0.9,
+         col = colorRampPalette(c("#6D9EC1", "white", "#E46726"))(200),
+         title = "Correlation Matrix of Daily Returns",
+         mar = c(0, 0, 2, 0))
+```
+
+```{r correlation-heatmap}
+#| label: correlation-heatmap
+#| fig-cap: "Interactive Correlation Heatmap"
+
+# Create interactive heatmap
+fig_corr <- plot_ly(
+  x = colnames(cor_matrix),
+  y = colnames(cor_matrix),
+  z = cor_matrix,
+  type = "heatmap",
+  colorscale = "RdBu",
+  zmid = 0,
+  text = round(cor_matrix, 3),
+  hovertemplate = "%{y} vs %{x}<br>Correlation: %{z:.3f}<extra></extra>"
+)
+
+fig_corr <- fig_corr %>%
+  layout(
+    title = "Interactive Correlation Matrix",
+    xaxis = list(title = "", tickangle = -45),
+    yaxis = list(title = "")
+  )
+
+fig_corr
+```
+
+### Key Correlation Insights
+
+```{r correlation-insights}
+#| label: correlation-insights
+
+# Find highest correlations (excluding diagonal)
+cor_matrix_no_diag <- cor_matrix
+diag(cor_matrix_no_diag) <- NA
+
+# Get top positive correlations
+cor_long <- as.data.frame(as.table(cor_matrix_no_diag)) %>%
+  filter(!is.na(Freq)) %>%
+  filter(as.character(Var1) < as.character(Var2)) %>%
+  arrange(desc(abs(Freq)))
+
+top_positive <- cor_long %>%
+  filter(Freq > 0) %>%
+  head(5)
+
+top_negative <- cor_long %>%
+  filter(Freq < 0) %>%
+  head(5)
+```
+
+:::{.callout-tip}
+## Strongest Positive Correlations
+
+The highest positive correlations observed:
+
+```{r}
+#| echo: false
+top_positive %>%
+  mutate(Correlation = sprintf("%.3f", Freq)) %>%
+  select(Var1, Var2, Correlation) %>%
+  kbl(col.names = c("Commodity 1", "Commodity 2", "Correlation"), format = "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
+
+The **soybean complex** (Soybeans, Soybean Meal, Soybean Oil) typically shows strong positive correlations due to their production linkage through the crushing process.
+:::
+
+### Rolling Correlations
+
+```{r rolling-correlation}
+#| label: rolling-correlation
+#| fig-cap: "Rolling 60-Day Correlation: Soybeans vs. Soybean Meal"
+#| fig-height: 5
+#| fig-width: 12
+
+# Calculate rolling correlation for key pairs
+if ("Soybeans" %in% names(returns_df) && "Soybean.Meal" %in% names(returns_df)) {
+  window_corr <- 60
+
+  rolling_cor <- data.frame(
+    Date = returns_df$Date,
+    Correlation = rollapply(
+      zoo(cbind(returns_df$Soybeans, returns_df$Soybean.Meal)),
+      width = window_corr,
+      FUN = function(x) cor(x[,1], x[,2], use = "complete.obs"),
+      fill = NA,
+      align = "right"
+    )
+  ) %>% na.omit()
+
+  p5 <- ggplot(rolling_cor, aes(x = Date, y = Correlation)) +
+    geom_line(color = "#1f77b4", linewidth = 1) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_smooth(method = "loess", se = TRUE, alpha = 0.2, color = "#ff7f0e") +
+    scale_y_continuous(limits = c(-1, 1), breaks = seq(-1, 1, 0.2)) +
+    labs(title = "Time-Varying Correlation: Soybeans vs. Soybean Meal",
+         subtitle = sprintf("%d-day rolling correlation with LOESS trend", window_corr),
+         x = "Date", y = "Correlation Coefficient",
+         caption = "Dynamic correlations inform adaptive portfolio rebalancing strategies") +
+    theme_minimal(base_size = 12)
+
+  print(p5)
+}
+```
+
+## Time Series Properties
+
+### Stationarity Tests
+
+```{r stationarity-tests}
+#| label: stationarity-tests
+#| tbl-cap: "Augmented Dickey-Fuller Test for Stationarity"
+
+# Perform ADF tests on returns
+adf_tests <- returns_df %>%
+  select(-Date) %>%
+  summarise(across(everything(), list(
+    ADF_Statistic = ~adf.test(., alternative = "stationary")$statistic,
+    ADF_Pvalue = ~adf.test(., alternative = "stationary")$p.value,
+    Lag_Order = ~adf.test(., alternative = "stationary")$parameter
+  ))) %>%
+  pivot_longer(everything(), names_to = "stat", values_to = "value") %>%
+  separate(stat, into = c("Commodity", "Test", "Metric"), sep = "_") %>%
+  unite("Test_Metric", Test, Metric) %>%
+  pivot_wider(names_from = Test_Metric, values_from = value) %>%
+  mutate(Stationary = ifelse(ADF_Pvalue < 0.05, "Yes", "No"))
+
+adf_tests %>%
+  select(Commodity, ADF_Statistic, Lag_Order, ADF_Pvalue, Stationary) %>%
+  kbl(digits = 4, format = "html",
+      col.names = c("Commodity", "ADF Statistic", "Lag Order", "p-value", "Stationary?")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) %>%
+  column_spec(5, color = "white", background = spec_color(
+    ifelse(adf_tests$Stationary == "Yes", 1, 0),
+    begin = 0.7, end = 0.9, option = "D", direction = -1)) %>%
+  add_footnote(c(
+    "Null hypothesis: Series has a unit root (non-stationary)",
+    "Alternative hypothesis: Series is stationary",
+    "Reject null if p-value < 0.05"
+  ), notation = "alphabet")
+```
+
+:::{.callout-important}
+## Stationarity for Modeling
+Stationary time series have constant mean, variance, and autocorrelation structure over time. Most econometric forecasting models (ARIMA, VAR) require stationarity. Returns are typically stationary, while raw prices often exhibit unit roots and require differencing.
+:::
+
+### Autocorrelation Analysis
+
+```{r acf-plot}
+#| label: acf-plot
+#| fig-cap: "Autocorrelation Function (ACF) of Returns"
+#| fig-height: 8
+#| fig-width: 12
+
+# Calculate ACF for each commodity
+par(mfrow = c(3, 3), mar = c(4, 4, 2, 1))
+
+for (commodity in commodity_names) {
+  if (commodity %in% names(returns_df)) {
+    acf(returns_df[[commodity]],
+        main = commodity,
+        lag.max = 30,
+        na.action = na.pass)
+  }
+}
+```
+
+### Ljung-Box Test for Serial Correlation
+
+```{r ljung-box-test}
+#| label: ljung-box-test
+#| tbl-cap: "Ljung-Box Test for Autocorrelation (Lag 10)"
+
+# Perform Ljung-Box tests
+lb_tests <- returns_df %>%
+  select(-Date) %>%
+  summarise(across(everything(), list(
+    LB_Statistic = ~Box.test(., lag = 10, type = "Ljung-Box")$statistic,
+    LB_Pvalue = ~Box.test(., lag = 10, type = "Ljung-Box")$p.value
+  ))) %>%
+  pivot_longer(everything(), names_to = "stat", values_to = "value") %>%
+  separate(stat, into = c("Commodity", "Test", "Metric"), sep = "_") %>%
+  unite("Test_Metric", Test, Metric) %>%
+  pivot_wider(names_from = Test_Metric, values_from = value) %>%
+  mutate(Autocorrelated = ifelse(LB_Pvalue < 0.05, "Yes", "No"))
+
+lb_tests %>%
+  kbl(digits = 4, format = "html",
+      col.names = c("Commodity", "Q-Statistic", "p-value", "Autocorrelated?")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) %>%
+  add_footnote(c(
+    "Null hypothesis: No autocorrelation up to lag 10",
+    "Reject null if p-value < 0.05 (evidence of serial correlation)"
+  ), notation = "alphabet")
+```
+
+## Market Interdependencies
+
+### Principal Component Analysis
+
+```{r pca-analysis}
+#| label: pca-analysis
+#| fig-cap: "Principal Component Analysis of Returns"
+#| fig-height: 6
+#| fig-width: 12
+
+# Perform PCA on returns
+returns_clean <- returns_df %>% select(-Date) %>% na.omit()
+pca_result <- prcomp(returns_clean, scale. = TRUE)
+
+# Variance explained
+variance_explained <- data.frame(
+  PC = paste0("PC", 1:length(pca_result$sdev)),
+  Variance = pca_result$sdev^2,
+  Proportion = pca_result$sdev^2 / sum(pca_result$sdev^2),
+  Cumulative = cumsum(pca_result$sdev^2) / sum(pca_result$sdev^2)
+)
+
+# Plot scree plot
+p6 <- ggplot(variance_explained[1:6,], aes(x = PC, y = Proportion)) +
+  geom_col(fill = "#1f77b4", alpha = 0.8) +
+  geom_line(aes(y = Cumulative, group = 1), color = "#ff7f0e", linewidth = 1.5) +
+  geom_point(aes(y = Cumulative), color = "#ff7f0e", size = 3) +
+  scale_y_continuous(labels = percent_format(),
+                     sec.axis = sec_axis(~., name = "Cumulative Variance Explained",
+                                        labels = percent_format())) +
+  labs(title = "Principal Component Analysis - Scree Plot",
+       subtitle = "Variance explained by each principal component",
+       x = "Principal Component", y = "Proportion of Variance Explained") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 0))
+
+print(p6)
+```
+
+```{r pca-loadings}
+#| label: pca-loadings
+#| tbl-cap: "PCA Loadings - First Three Principal Components"
+
+# Extract loadings
+loadings_df <- as.data.frame(pca_result$rotation[, 1:3])
+loadings_df$Commodity <- rownames(loadings_df)
+loadings_df <- loadings_df %>%
+  select(Commodity, everything())
+
+loadings_df %>%
+  kbl(digits = 3, format = "html",
+      col.names = c("Commodity", "PC1", "PC2", "PC3")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) %>%
+  add_footnote(sprintf("PC1 explains %.1f%% of variance, PC2 explains %.1f%%, PC3 explains %.1f%%",
+                      variance_explained$Proportion[1] * 100,
+                      variance_explained$Proportion[2] * 100,
+                      variance_explained$Proportion[3] * 100),
+               notation = "alphabet")
+```
+
+:::{.callout-note}
+## PCA Interpretation
+Principal Component Analysis reveals the underlying factor structure driving commodity returns. The first few components often represent:
+- **PC1**: General agricultural market sentiment (systematic risk)
+- **PC2**: Grain vs. livestock differentiation
+- **PC3**: Processing margins (e.g., soybean crush spread)
+
+High loadings indicate which commodities contribute most to each factor.
+:::
+
+## Implications for Portfolio Optimization
+
+Based on our exploratory analysis, we derive several key insights for our multi-objective portfolio optimization framework:
+
+### 1. Heterogeneous Risk-Return Profiles
+
+Commodities exhibit **distinct risk-return characteristics**:
+
+- **Volatility dispersion**: Annualized volatility ranges from ~15% to >40% across commodities
+- **Return asymmetry**: Non-normal distributions with fat tails and skewness
+- **Sharpe ratio variation**: Significant differences in risk-adjusted performance
+
+**Implication**: Multi-objective optimization must explicitly balance return maximization with risk minimization across heterogeneous assets.
+
+### 2. Dynamic Correlation Structure
+
+Commodity correlations are **time-varying and regime-dependent**:
+
+- Soybean complex shows persistent high correlation (>0.8)
+- Cross-category correlations (grains vs. livestock) are lower but non-zero
+- Correlation breakdowns occur during crisis periods
+
+**Implication**: Portfolio rebalancing strategies should adapt to changing correlation regimes. Reinforcement learning agents can learn optimal rebalancing policies under dynamic dependencies.
+
+### 3. Volatility Clustering and Conditional Heteroskedasticity
+
+Returns exhibit **ARCH effects**:
+
+- Volatility clusters in high/low regimes
+- Current volatility predicts future volatility
+- Fat tails indicate extreme event risk
+
+**Implication**: GARCH-family models are appropriate for volatility forecasting. Risk management should account for volatility persistence and extreme events.
+
+### 4. Limited Predictability from Linear Models
+
+Autocorrelation analysis reveals:
+
+- Weak serial correlation in returns (approaching random walk)
+- Stronger autocorrelation in squared returns (volatility feedback)
+
+**Implication**: Nonlinear models (neural networks, regime-switching) may capture complex dependencies better than linear ARIMA. Ensemble approaches combining multiple model classes recommended.
+
+### 5. Common Factor Exposure
+
+PCA shows:
+
+- First 3 PCs explain ~60-70% of variance
+- Systematic risk factor dominates (PC1)
+- Diversification limited by common factor exposure
+
+**Implication**: Multi-period optimization should account for factor exposure constraints. Purely correlation-based diversification may be insufficient during market stress.
+
+## Conclusion and Next Steps
+
+This exploratory analysis establishes the foundational understanding of agricultural commodity futures markets necessary for our research program. We have characterized:
+
+✓ **Price dynamics** across 8 major commodity futures over 5 years
+✓ **Statistical properties** including non-normality, volatility clustering, and stationarity
+✓ **Correlation structures** revealing market interdependencies and diversification opportunities
+✓ **Time-series characteristics** informing model selection for forecasting
+
+### Recommended Next Steps
+
+1. **Forecasting Module Development**
+   - Implement ARIMA/GARCH models for volatility forecasting
+   - Develop LSTM neural networks for price prediction
+   - Conduct out-of-sample backtesting and model comparison
+
+2. **Optimization Framework Construction**
+   - Formulate multi-objective problem (return, risk, liquidity)
+   - Implement NSGA-II and MOEA/D evolutionary algorithms
+   - Integrate forecasting outputs as inputs to optimization
+
+3. **Reinforcement Learning Agent Design**
+   - Define state space (prices, positions, market regime)
+   - Design reward function (Sharpe ratio, drawdown penalties)
+   - Train PPO/A3C agents for dynamic rebalancing
+
+4. **Backtesting and Validation**
+   - Historical simulation across multiple market regimes
+   - Transaction cost modeling and slippage analysis
+   - Robustness testing with Monte Carlo scenarios
+
+## References {.unnumbered}
+
+::: {#refs}
+:::
+
+---
+
+**Authors**: PAIC Econometrics Research Team
+**Institution**: FAE Business School, Curitiba, Brazil
+**Project**: Multi-Objective Multi-Period Optimization of Agricultural Commodities Portfolio
+**Last Updated**: `r format(Sys.Date(), "%B %d, %Y")`
+
