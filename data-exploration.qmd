@@ -124,11 +124,20 @@ tickers <- c(
   "ZL=F"  # Soybean Oil Futures
 )
 
-# Commodity names for labeling
+# Commodity names for labeling (R-safe names without special characters)
 commodity_names <- c(
+  "Corn", "Oats", "Wheat_HRW", "Rough_Rice",
+  "Feeder_Cattle", "Soybeans", "Soybean_Meal", "Soybean_Oil"
+)
+
+# Display names for charts and tables
+commodity_labels <- c(
   "Corn", "Oats", "Wheat (HRW)", "Rough Rice",
   "Feeder Cattle", "Soybeans", "Soybean Meal", "Soybean Oil"
 )
+
+# Create a mapping for display
+names(commodity_labels) <- commodity_names
 
 # Fetch data from Yahoo Finance
 # Using last 5 years of data
@@ -408,15 +417,18 @@ for (commodity in commodity_names) {
   commodity_data <- prices_df %>%
     select(Date, all_of(commodity))
 
+  # Use the display label for the chart
+  display_name <- commodity_labels[commodity]
+
   fig <- fig %>%
     add_trace(
       x = commodity_data$Date,
       y = commodity_data[[commodity]],
       type = 'scatter',
       mode = 'lines',
-      name = commodity,
+      name = display_name,
       hovertemplate = paste0(
-        "<b>", commodity, "</b><br>",
+        "<b>", display_name, "</b><br>",
         "Date: %{x|%Y-%m-%d}<br>",
         "Price: $%{y:.2f}<br>",
         "<extra></extra>"
@@ -675,13 +687,13 @@ The **soybean complex** (Soybeans, Soybean Meal, Soybean Oil) typically shows st
 #| fig-width: 12
 
 # Calculate rolling correlation for key pairs
-if ("Soybeans" %in% names(returns_df) && "Soybean.Meal" %in% names(returns_df)) {
+if ("Soybeans" %in% names(returns_df) && "Soybean_Meal" %in% names(returns_df)) {
   window_corr <- 60
 
   rolling_cor <- data.frame(
     Date = returns_df$Date,
     Correlation = rollapply(
-      zoo(cbind(returns_df$Soybeans, returns_df$Soybean.Meal)),
+      zoo(cbind(returns_df$Soybeans, returns_df$Soybean_Meal)),
       width = window_corr,
       FUN = function(x) cor(x[,1], x[,2], use = "complete.obs"),
       fill = NA,
