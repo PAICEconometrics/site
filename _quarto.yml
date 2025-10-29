@@ -101,6 +101,8 @@ website:
       
       - section: "🤖 Reinforcement Learning"
         contents:
+          - text: "Deep Q-Learning Portfolio"
+            href: deep_q_learning_portfolio.qmd
           - text: "Pareto Front Strategy"
             href: pareto_front_reinforcement.qmd
           - text: "RL Decision Algorithms"
