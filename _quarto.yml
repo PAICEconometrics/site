@@ -71,7 +71,8 @@ website:
             href: news.qmd
           - text: "AI Agent -- PaperHunter"
             href: openAI_agent.qmd
-      
+          - text: "RAG Research Assistant"
+            href: rag_research_assistant.qmd     
       - section: "📊 Predictive Modeling"
         contents:
           - text: "Time Series Portfolio"

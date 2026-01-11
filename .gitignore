@@ -249,3 +249,5 @@ database.yml
 *_token*
 *_api_key*
 *_secret*
+
+**/*.quarto_ipynb

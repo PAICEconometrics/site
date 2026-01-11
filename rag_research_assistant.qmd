@@ -1,0 +1,356 @@
+---
+title: "RAG Research Assistant"
+subtitle: "Building a Local Knowledge Base Chatbot for Scientific Literature"
+author: "PAIC Econometrics Team"
+date: last-modified
+categories: [RAG, NLP, Python, Research Tools]
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+    toc-depth: 3
+---
+
+::: {.hero-section}
+# RAG Research Assistant
+
+**Retrieval-Augmented Generation for Scientific Literature Analysis**
+
+A comprehensive guide to building an intelligent research assistant that can query your local collection of scientific papers, spreadsheets, and documents using state-of-the-art AI techniques.
+:::
+
+## 1 Introduction
+
+In the era of information overload, researchers face an increasingly challenging task: efficiently navigating through vast collections of scientific literature, extracting relevant insights, and synthesizing knowledge across multiple documents. Traditional keyword-based search methods often fall short when dealing with complex, nuanced research questions that require understanding context and semantic relationships.
+
+**Retrieval-Augmented Generation (RAG)** emerges as a powerful solution to this challenge. By combining the strengths of information retrieval systems with large language models (LLMs), RAG enables researchers to interact with their document collections through natural language conversations, receiving contextually relevant and well-grounded responses.
+
+::: {.callout-tip}
+### Why RAG for Research?
+
+RAG systems offer several advantages for academic research:
+
+- **Grounded responses**: Answers are based on your actual documents, reducing hallucinations
+- **Source attribution**: Every response can be traced back to specific documents
+- **Domain specificity**: Works with your specialized literature collection
+- **Privacy**: Local implementation keeps sensitive research data secure
+- **Cost-effective**: Uses free, open-source components
+:::
+
+### 1.1 Architecture Overview
+
+Our RAG system follows a modular architecture designed for flexibility and scalability:
+
+```{mermaid}
+%%| fig-width: 8
+flowchart TB
+    subgraph Input["📁 Document Sources"]
+        A1[PDF Articles]
+        A2[Excel/CSV Data]
+        A3[Word Documents]
+        A4[Text Files]
+    end
+    
+    subgraph Processing["⚙️ Document Processing"]
+        B1[Text Extraction]
+        B2[Chunking]
+        B3[Embedding Generation]
+    end
+    
+    subgraph Storage["💾 Vector Database"]
+        C1[(ChromaDB)]
+    end
+    
+    subgraph Query["🔍 Query Pipeline"]
+        D1[User Question]
+        D2[Query Embedding]
+        D3[Similarity Search]
+        D4[Context Retrieval]
+    end
+    
+    subgraph Generation["🤖 Response Generation"]
+        E1[LLM - Flan-T5]
+        E2[Contextualized Answer]
+    end
+    
+    A1 & A2 & A3 & A4 --> B1
+    B1 --> B2 --> B3 --> C1
+    D1 --> D2 --> D3
+    C1 --> D3 --> D4
+    D4 --> E1 --> E2
+    
+    style Input fill:#003d7a,color:#fff
+    style Storage fill:#28a745,color:#fff
+    style Generation fill:#ff6b35,color:#fff
+```
+
+## 2 Environment Setup
+
+### 2.1 Required Libraries
+
+```bash
+# Install dependencies
+pip install sentence-transformers transformers torch numpy gradio
+pip install pypdf python-docx openpyxl pandas
+```
+
+### 2.2 Import Libraries
+
+```python
+import os
+import re
+from pathlib import Path
+from typing import List, Dict, Any
+import warnings
+warnings.filterwarnings('ignore')
+
+import pandas as pd
+from pypdf import PdfReader
+from docx import Document as DocxDocument
+from sentence_transformers import SentenceTransformer
+from transformers import pipeline
+import numpy as np
+```
+
+## 3 Document Processing Pipeline
+
+### 3.1 Document Loaders
+
+```python
+class DocumentLoader:
+    """
+    Multi-format document loader for research materials.
+    Supports: PDF, DOCX, XLSX, CSV, TXT, MD
+    """
+    
+    def __init__(self, base_paths: List[str]):
+        self.base_paths = [Path(p) for p in base_paths]
+    
+    def _load_pdf(self, file_path: Path) -> str:
+        try:
+            reader = PdfReader(str(file_path))
+            texts = []
+            for page in reader.pages:
+                text = page.extract_text()
+                if text:
+                    texts.append(text)
+            return " ".join(texts)
+        except:
+            return ""
+    
+    def _load_docx(self, file_path: Path) -> str:
+        try:
+            doc = DocxDocument(str(file_path))
+            paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
+            return "\n\n".join(paragraphs)
+        except:
+            return ""
+    
+    def _load_excel(self, file_path: Path) -> str:
+        try:
+            df = pd.read_excel(file_path)
+            return df.to_string(index=False)
+        except:
+            return ""
+    
+    def scan(self) -> List[Dict[str, Any]]:
+        loaders = {
+            '.pdf': self._load_pdf,
+            '.docx': self._load_docx,
+            '.xlsx': self._load_excel,
+        }
+        
+        documents = []
+        for base in self.base_paths:
+            if not Path(base).exists():
+                continue
+            for f in Path(base).rglob("*"):
+                if f.is_file() and f.suffix.lower() in loaders:
+                    content = loaders[f.suffix.lower()](f)
+                    if content:
+                        documents.append({
+                            'content': content,
+                            'filename': f.name
+                        })
+        return documents
+```
+
+### 3.2 Text Chunking
+
+```python
+class TextChunker:
+    """Intelligent text chunking with overlap for context preservation."""
+    
+    def __init__(self, chunk_size: int = 800, chunk_overlap: int = 100):
+        self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
+    
+    def chunk(self, documents: List[Dict]) -> List[Dict]:
+        chunks = []
+        for doc in documents:
+            text = doc['content']
+            start = 0
+            idx = 0
+            while start < len(text):
+                chunk_text = text[start:start + self.chunk_size]
+                if chunk_text.strip():
+                    chunks.append({
+                        'content': chunk_text,
+                        'filename': doc['filename'],
+                        'chunk_id': idx
+                    })
+                    idx += 1
+                start += self.chunk_size - self.chunk_overlap
+        return chunks
+```
+
+## 4 Vector Store & Embeddings
+
+### 4.1 Creating Embeddings
+
+We use the `all-MiniLM-L6-v2` model from Sentence Transformers for generating embeddings:
+
+```python
+from sentence_transformers import SentenceTransformer
+
+# Initialize embedding model
+embedder = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Generate embeddings
+texts = [chunk['content'] for chunk in chunks]
+embeddings = embedder.encode(texts, show_progress_bar=True)
+
+print(f"Generated {len(embeddings)} embeddings")
+print(f"Embedding dimension: {embeddings.shape[1]}")  # 384
+```
+
+### 4.2 Semantic Search
+
+```python
+import numpy as np
+
+def search(query: str, embeddings: np.ndarray, chunks: List[Dict], top_k: int = 5):
+    """Search for most relevant chunks using cosine similarity."""
+    query_emb = embedder.encode(query)
+    
+    similarities = np.dot(embeddings, query_emb) / (
+        np.linalg.norm(embeddings, axis=1) * np.linalg.norm(query_emb)
+    )
+    
+    top_idx = np.argsort(similarities)[-top_k:][::-1]
+    
+    results = []
+    for idx in top_idx:
+        results.append({
+            'content': chunks[idx]['content'],
+            'filename': chunks[idx]['filename'],
+            'score': float(similarities[idx])
+        })
+    return results
+```
+
+## 5 Complete RAG System
+
+Here's the complete RAG class used in our deployment:
+
+```python
+class RAGSystem:
+    def __init__(self):
+        print("Loading embedding model...")
+        self.embedder = SentenceTransformer('all-MiniLM-L6-v2')
+        
+        print("Loading language model...")
+        self.generator = pipeline(
+            "text2text-generation",
+            model="google/flan-t5-base",
+            max_length=300
+        )
+        
+        self.chunks = []
+        self.embeddings = None
+    
+    def index(self, documents):
+        """Index documents for retrieval."""
+        self.chunks = documents
+        texts = [c['content'] for c in self.chunks]
+        self.embeddings = self.embedder.encode(texts)
+        print(f"Indexed {len(self.chunks)} chunks")
+    
+    def search(self, query: str, top_k: int = 3):
+        """Search for relevant chunks."""
+        query_emb = self.embedder.encode(query)
+        similarities = np.dot(self.embeddings, query_emb) / (
+            np.linalg.norm(self.embeddings, axis=1) * np.linalg.norm(query_emb)
+        )
+        top_idx = np.argsort(similarities)[-top_k:][::-1]
+        
+        return [{
+            'content': self.chunks[idx]['content'],
+            'filename': self.chunks[idx]['filename'],
+            'score': float(similarities[idx])
+        } for idx in top_idx]
+    
+    def query(self, question: str) -> str:
+        """Answer a question using RAG."""
+        results = self.search(question, top_k=3)
+        
+        context = " ".join([r['content'] for r in results])
+        prompt = f"Answer based on this context: {context}\n\nQuestion: {question}\n\nAnswer:"
+        
+        response = self.generator(prompt)[0]['generated_text']
+        
+        sources = "\n".join([f"- {r['filename']} ({int(r['score']*100)}%)" for r in results])
+        
+        return f"{response}\n\n**Sources:**\n{sources}"
+```
+
+## 6 Deployment
+
+::: {.callout-note}
+### Quick Start
+
+```bash
+# Install dependencies
+pip install sentence-transformers transformers torch gradio
+
+# Run the chatbot
+python rag_chatbot.py
+```
+:::
+
+### Hardware Requirements
+
+| Configuration | RAM | GPU | Notes |
+|--------------|-----|-----|-------|
+| Flan-T5-base | 4GB | None | Recommended - runs on CPU |
+| Flan-T5-large | 8GB | None | Better quality responses |
+| Local LLM | 16GB+ | Optional | For offline use |
+
+---
+
+## 🤖 Interactive Research Assistant
+
+Try our AI-powered research assistant! Ask questions about multi-objective optimization, reinforcement learning, GARCH models, and more.
+
+```{=html}
+<iframe 
+  src="https://rhozon-rag-research-assistant.hf.space" 
+  width="100%" 
+  height="650px"
+  frameborder="0"
+  style="border-radius: 10px; border: 1px solid #ccc;">
+</iframe>
+```
+
+::: {.callout-note}
+This is a demo with sample documents about portfolio optimization and reinforcement learning. The full local version indexes your complete research library with 79+ documents and 29,000+ chunks.
+:::
+
+---
+
+::: {.fae-brand-bar}
+**PAIC - Programa de Apoio à Iniciação Científica** | FAE Business School | Curitiba, Paraná, Brazil
+:::
+
+*Last updated: January 2025*

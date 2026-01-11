@@ -2,7 +2,7 @@
 title: "Deep Q-Learning for Portfolio Allocation"
 subtitle: "Adaptive Decision-Making in Agricultural Commodities Markets"
 author: "PAIC Econometrics Research Team"
-date: "`r Sys.Date()`"
+date: last-modified
 format:
   html:
     code-fold: true
@@ -15,6 +15,7 @@ format:
 execute:
   warning: false
   message: false
+  freeze: auto
 ---
 
 # Introduction
@@ -89,8 +90,8 @@ library(lubridate)
 library(reticulate)
 library(plotly)
 library(gt)
-library(moments)  # For skewness and kurtosis
-library(gridExtra)  # For arranging plots
+library(moments)
+library(gridExtra)
 
 # Set theme for plots
 theme_set(theme_minimal(base_size = 12))
@@ -128,10 +129,9 @@ We'll use R's `tidyquant` package to fetch historical price data for major agric
 
 ```{r data-fetch}
 #| label: fetch-data
-#| cache: true
 
 # Define commodity tickers (using ETFs as proxies)
-tickers <- c("CORN", "WEAT", "SOYB")  # Agricultural commodity ETFs
+tickers <- c("CORN", "WEAT", "SOYB")
 ticker_names <- c("Corn", "Wheat", "Soybean")
 
 # Fetch data from 2018 to present
@@ -666,7 +666,6 @@ print("✅ DQN Agent class created")
 
 ```{python train-agent}
 #| label: train-agent
-#| cache: true
 
 # Split data into train/test
 train_size = int(0.8 * len(returns_array))
@@ -740,8 +739,9 @@ for episode in range(n_episodes):
 
 print("\n✅ Training completed!")
 
-# Convert training history to DataFrame for R
+# Convert training history to DataFrame and store as global variable
 training_history_df = pd.DataFrame(agent.training_history)
+print(f"✅ Training history saved: {len(training_history_df)} episodes")
 ```
 
 ### Training Performance Visualization
@@ -751,36 +751,48 @@ training_history_df = pd.DataFrame(agent.training_history)
 #| fig-width: 12
 #| fig-height: 8
 
-# Get training history from Python
-training_hist <- py$training_history_df
-
-# Plot training metrics
-p1 <- training_hist %>%
-  ggplot(aes(x = episode, y = reward)) +
-  geom_line(color = "#2E86AB", linewidth = 1) +
-  geom_smooth(method = "loess", se = TRUE, color = "#A23B72", fill = "#A23B72", alpha = 0.2) +
-  labs(title = "Episode Rewards During Training",
-       x = "Episode", y = "Total Reward") +
-  theme_minimal()
-
-p2 <- training_hist %>%
-  ggplot(aes(x = episode, y = epsilon)) +
-  geom_line(color = "#F18F01", linewidth = 1) +
-  labs(title = "Exploration Rate (Epsilon) Decay",
-       x = "Episode", y = "Epsilon") +
-  theme_minimal()
-
-p3 <- training_hist %>%
-  filter(loss > 0) %>%
-  ggplot(aes(x = episode, y = loss)) +
-  geom_line(color = "#C73E1D", linewidth = 1) +
-  geom_smooth(method = "loess", se = TRUE, color = "#6A4C93", fill = "#6A4C93", alpha = 0.2) +
-  labs(title = "Training Loss",
-       x = "Episode", y = "MSE Loss") +
-  theme_minimal()
-
-# Combine plots
-gridExtra::grid.arrange(p1, p2, p3, ncol = 2)
+# Get training history from Python with error handling
+tryCatch({
+  training_hist <- py$training_history_df
+  
+  if (is.null(training_hist) || nrow(training_hist) == 0) {
+    stop("Training history is empty or NULL")
+  }
+  
+  # Plot training metrics
+  p1 <- training_hist %>%
+    ggplot(aes(x = episode, y = reward)) +
+    geom_line(color = "#2E86AB", linewidth = 1) +
+    geom_smooth(method = "loess", se = TRUE, color = "#A23B72", fill = "#A23B72", alpha = 0.2) +
+    labs(title = "Episode Rewards During Training",
+         x = "Episode", y = "Total Reward") +
+    theme_minimal()
+  
+  p2 <- training_hist %>%
+    ggplot(aes(x = episode, y = epsilon)) +
+    geom_line(color = "#F18F01", linewidth = 1) +
+    labs(title = "Exploration Rate (Epsilon) Decay",
+         x = "Episode", y = "Epsilon") +
+    theme_minimal()
+  
+  p3 <- training_hist %>%
+    filter(loss > 0) %>%
+    ggplot(aes(x = episode, y = loss)) +
+    geom_line(color = "#C73E1D", linewidth = 1) +
+    geom_smooth(method = "loess", se = TRUE, color = "#6A4C93", fill = "#6A4C93", alpha = 0.2) +
+    labs(title = "Training Loss",
+         x = "Episode", y = "MSE Loss") +
+    theme_minimal()
+  
+  # Combine plots
+  gridExtra::grid.arrange(p1, p2, p3, ncol = 2)
+  
+}, error = function(e) {
+  cat("⚠️ Could not retrieve training history from Python.\n")
+  cat("   Error:", conditionMessage(e), "\n")
+  cat("   This may happen when using cached results.\n")
+  cat("   Try re-rendering with: quarto render --cache-refresh\n")
+})
 ```
 
 ## Backtesting and Evaluation
@@ -871,7 +883,15 @@ print(f"   Volatility (Daily): {benchmark_std*100:.4f}%")
 print(f"   Sharpe Ratio (Annualized): {benchmark_sharpe:.4f}")
 
 # Add benchmark to test results for comparison
-test_results_df['benchmark_value'] = benchmark_values[1:]
+test_results_df['benchmark_value'] = benchmark_values[1:len(test_results_df)+1]
+
+# Store benchmark metrics for R access
+benchmark_metrics = {
+    'total_return': benchmark_total_return,
+    'avg_return': benchmark_avg_return,
+    'std': benchmark_std,
+    'sharpe': benchmark_sharpe
+}
 ```
 
 ### Results Visualization
@@ -881,71 +901,82 @@ test_results_df['benchmark_value'] = benchmark_values[1:]
 #| fig-width: 12
 #| fig-height: 10
 
-# Get test results from Python
-test_results <- py$test_results_df
-
-# Add date column
-test_dates <- tail(r$prices_data$date, nrow(test_results))
-test_results$date <- test_dates
-
-# Portfolio value comparison
-p1 <- test_results %>%
-  select(date, DQN = portfolio_value, Benchmark = benchmark_value) %>%
-  pivot_longer(-date, names_to = "strategy", values_to = "value") %>%
-  ggplot(aes(x = date, y = value, color = strategy)) +
-  geom_line(linewidth = 1.2) +
-  scale_color_manual(values = c("DQN" = "#2E86AB", "Benchmark" = "#A23B72")) +
-  labs(title = "Portfolio Value: DQN vs Equal-Weight Benchmark",
-       x = "Date", y = "Portfolio Value (USD)",
-       color = "Strategy") +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-# Cumulative returns
-test_results_cum <- test_results %>%
-  mutate(
-    dqn_cumret = (portfolio_value / 100000 - 1) * 100,
-    benchmark_cumret = (benchmark_value / 100000 - 1) * 100
-  )
-
-p2 <- test_results_cum %>%
-  select(date, DQN = dqn_cumret, Benchmark = benchmark_cumret) %>%
-  pivot_longer(-date, names_to = "strategy", values_to = "cumulative_return") %>%
-  ggplot(aes(x = date, y = cumulative_return, color = strategy)) +
-  geom_line(linewidth = 1.2) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
-  scale_color_manual(values = c("DQN" = "#2E86AB", "Benchmark" = "#A23B72")) +
-  labs(title = "Cumulative Returns Comparison",
-       x = "Date", y = "Cumulative Return (%)",
-       color = "Strategy") +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-# Portfolio weights over time
-p3 <- test_results %>%
-  select(date, Corn = weights_0, Wheat = weights_1, Soybean = weights_2) %>%
-  pivot_longer(-date, names_to = "commodity", values_to = "weight") %>%
-  ggplot(aes(x = date, y = weight, fill = commodity)) +
-  geom_area(alpha = 0.7) +
-  scale_fill_brewer(palette = "Set2") +
-  labs(title = "DQN Portfolio Allocation Over Time",
-       x = "Date", y = "Portfolio Weight",
-       fill = "Commodity") +
-  scale_y_continuous(labels = scales::percent_format()) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-# Action distribution
-p4 <- test_results %>%
-  ggplot(aes(x = factor(action))) +
-  geom_bar(fill = "#F18F01", alpha = 0.8) +
-  labs(title = "Action Selection Distribution",
-       x = "Action Index", y = "Frequency") +
-  theme_minimal()
-
-# Combine plots
-gridExtra::grid.arrange(p1, p2, p3, p4, ncol = 2)
+# Get test results from Python with error handling
+tryCatch({
+  test_results <- py$test_results_df
+  benchmark_metrics <- py$benchmark_metrics
+  
+  if (is.null(test_results) || nrow(test_results) == 0) {
+    stop("Test results are empty or NULL")
+  }
+  
+  # Add date column
+  test_dates <- tail(prices_data$date, nrow(test_results))
+  test_results$date <- test_dates
+  
+  # Portfolio value comparison
+  p1 <- test_results %>%
+    select(date, DQN = portfolio_value, Benchmark = benchmark_value) %>%
+    pivot_longer(-date, names_to = "strategy", values_to = "value") %>%
+    ggplot(aes(x = date, y = value, color = strategy)) +
+    geom_line(linewidth = 1.2) +
+    scale_color_manual(values = c("DQN" = "#2E86AB", "Benchmark" = "#A23B72")) +
+    labs(title = "Portfolio Value: DQN vs Equal-Weight Benchmark",
+         x = "Date", y = "Portfolio Value (USD)",
+         color = "Strategy") +
+    scale_y_continuous(labels = scales::dollar_format()) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+  
+  # Cumulative returns
+  test_results_cum <- test_results %>%
+    mutate(
+      dqn_cumret = (portfolio_value / 100000 - 1) * 100,
+      benchmark_cumret = (benchmark_value / 100000 - 1) * 100
+    )
+  
+  p2 <- test_results_cum %>%
+    select(date, DQN = dqn_cumret, Benchmark = benchmark_cumret) %>%
+    pivot_longer(-date, names_to = "strategy", values_to = "cumulative_return") %>%
+    ggplot(aes(x = date, y = cumulative_return, color = strategy)) +
+    geom_line(linewidth = 1.2) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+    scale_color_manual(values = c("DQN" = "#2E86AB", "Benchmark" = "#A23B72")) +
+    labs(title = "Cumulative Returns Comparison",
+         x = "Date", y = "Cumulative Return (%)",
+         color = "Strategy") +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+  
+  # Portfolio weights over time
+  p3 <- test_results %>%
+    select(date, Corn = weights_0, Wheat = weights_1, Soybean = weights_2) %>%
+    pivot_longer(-date, names_to = "commodity", values_to = "weight") %>%
+    ggplot(aes(x = date, y = weight, fill = commodity)) +
+    geom_area(alpha = 0.7) +
+    scale_fill_brewer(palette = "Set2") +
+    labs(title = "DQN Portfolio Allocation Over Time",
+         x = "Date", y = "Portfolio Weight",
+         fill = "Commodity") +
+    scale_y_continuous(labels = scales::percent_format()) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+  
+  # Action distribution
+  p4 <- test_results %>%
+    ggplot(aes(x = factor(action))) +
+    geom_bar(fill = "#F18F01", alpha = 0.8) +
+    labs(title = "Action Selection Distribution",
+         x = "Action Index", y = "Frequency") +
+    theme_minimal()
+  
+  # Combine plots
+  gridExtra::grid.arrange(p1, p2, p3, p4, ncol = 2)
+  
+}, error = function(e) {
+  cat("⚠️ Could not retrieve test results from Python.\n")
+  cat("   Error:", conditionMessage(e), "\n")
+})
 ```
 
 ### Performance Summary Table
@@ -953,46 +984,55 @@ gridExtra::grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```{r performance-table}
 #| label: performance-summary
 
-# Create performance comparison table
-performance_summary <- tibble(
-  Metric = c("Total Return (%)", "Avg. Daily Return (%)", 
-             "Daily Volatility (%)", "Sharpe Ratio (Annual)",
-             "Final Value (USD)"),
-  DQN = c(
-    sprintf("%.2f", (tail(test_results$portfolio_value, 1) / 100000 - 1) * 100),
-    sprintf("%.4f", mean(test_results$returns) * 100),
-    sprintf("%.4f", sd(test_results$returns) * 100),
-    sprintf("%.4f", (mean(test_results$returns) / sd(test_results$returns)) * sqrt(252)),
-    scales::dollar(tail(test_results$portfolio_value, 1))
-  ),
-  Benchmark = c(
-    sprintf("%.2f", (tail(test_results$benchmark_value, 1) / 100000 - 1) * 100),
-    sprintf("%.4f", py$benchmark_avg_return * 100),
-    sprintf("%.4f", py$benchmark_std * 100),
-    sprintf("%.4f", py$benchmark_sharpe),
-    scales::dollar(tail(test_results$benchmark_value, 1))
+# Create performance comparison table with error handling
+tryCatch({
+  test_results <- py$test_results_df
+  benchmark_metrics <- py$benchmark_metrics
+  
+  performance_summary <- tibble(
+    Metric = c("Total Return (%)", "Avg. Daily Return (%)", 
+               "Daily Volatility (%)", "Sharpe Ratio (Annual)",
+               "Final Value (USD)"),
+    DQN = c(
+      sprintf("%.2f", (tail(test_results$portfolio_value, 1) / 100000 - 1) * 100),
+      sprintf("%.4f", mean(test_results$returns) * 100),
+      sprintf("%.4f", sd(test_results$returns) * 100),
+      sprintf("%.4f", (mean(test_results$returns) / sd(test_results$returns)) * sqrt(252)),
+      scales::dollar(tail(test_results$portfolio_value, 1))
+    ),
+    Benchmark = c(
+      sprintf("%.2f", benchmark_metrics$total_return),
+      sprintf("%.4f", benchmark_metrics$avg_return * 100),
+      sprintf("%.4f", benchmark_metrics$std * 100),
+      sprintf("%.4f", benchmark_metrics$sharpe),
+      scales::dollar(tail(test_results$benchmark_value, 1))
+    )
   )
-)
-
-# Display as formatted table
-performance_summary %>%
-  gt() %>%
-  tab_header(
-    title = "Performance Comparison",
-    subtitle = "DQN Agent vs Equal-Weight Benchmark"
-  ) %>%
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_column_labels()
-  ) %>%
-  tab_style(
-    style = cell_fill(color = "#E8F4F8"),
-    locations = cells_body(columns = DQN)
-  ) %>%
-  tab_style(
-    style = cell_fill(color = "#FCE4EC"),
-    locations = cells_body(columns = Benchmark)
-  )
+  
+  # Display as formatted table
+  performance_summary %>%
+    gt() %>%
+    tab_header(
+      title = "Performance Comparison",
+      subtitle = "DQN Agent vs Equal-Weight Benchmark"
+    ) %>%
+    tab_style(
+      style = cell_text(weight = "bold"),
+      locations = cells_column_labels()
+    ) %>%
+    tab_style(
+      style = cell_fill(color = "#E8F4F8"),
+      locations = cells_body(columns = DQN)
+    ) %>%
+    tab_style(
+      style = cell_fill(color = "#FCE4EC"),
+      locations = cells_body(columns = Benchmark)
+    )
+    
+}, error = function(e) {
+  cat("⚠️ Could not create performance table.\n")
+  cat("   Error:", conditionMessage(e), "\n")
+})
 ```
 
 # Discussion
@@ -1034,6 +1074,8 @@ This implementation demonstrates Deep Q-Learning for agricultural commodity port
 
 ---
 
-*PAIC Econometrics | FAE Business School*
+::: {.fae-brand-bar}
+**PAIC - Programa de Apoio à Iniciação Científica** | FAE Business School | Curitiba, Paraná, Brazil
+:::
 
 *Contact: rodrigo.ozon@fae.edu | GitHub: @PAICEconometrics*
