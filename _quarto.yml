@@ -93,6 +93,8 @@ website:
         contents:
           - text: "Multi-Objective Framework"
             href: optimization.qmd
+          - text: "Evolutionary Dynamics in Commodities Markets"  
+            href: evolutionary_abm.qmd
           - text: "Portfolio Algorithms"
             href: multiperiod_multiobjective_portfolio_optimization.qmd
           - text: "Scenario Simulation"

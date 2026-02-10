@@ -1,0 +1,226 @@
+---
+title: "Evolutionary Dynamics in Commodity Markets"
+subtitle: "An Agent-Based Simulation with Heterogeneous Agents and Replicator Dynamics"
+author:
+  - name: Rodrigo Hermont Ozon
+    affiliations:
+      - name: PUCPR — Graduate Program in Production and Systems Engineering
+      - name: FAE Business School
+date: today
+lang: en
+abstract: |
+  We present an artificial commodity market model based on heterogeneous agents (ABM)
+  where four trading strategies — fundamentalist, momentum, mean reversion, and noise —
+  compete under replicator dynamics with mutation. Prices emerge endogenously from agent
+  interactions. We demonstrate that (i) momentum agent dominance generates endogenous
+  bubbles, (ii) selection intensity controls the transition between strategic diversity
+  and winner-takes-all regimes, and (iii) polymorphic equilibria emerge when mutation
+  rates are sufficiently high. An interactive swarm intelligence-style simulation is
+  provided for result exploration.
+keywords:
+  - agent-based modeling
+  - evolutionary game theory
+  - replicator dynamics
+  - commodity markets
+  - bounded rationality
+bibliography: references_abm.bib
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    number-sections: true
+    fig-cap-location: bottom
+---
+
+<style>
+.app-container {
+  border: 1px solid rgba(100, 120, 150, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+.app-container iframe {
+  display: block;
+  border: none;
+  width: 100%;
+}
+.strategy-card {
+  background: rgba(0, 50, 100, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 3px solid;
+  margin-bottom: 0.8rem;
+}
+.strategy-card.fund { border-left-color: #38b6ff; }
+.strategy-card.mom { border-left-color: #ff4b4b; }
+.strategy-card.rev { border-left-color: #34d399; }
+.strategy-card.noise { border-left-color: #a878ff; }
+.equation-box {
+  background: rgba(0, 50, 100, 0.04);
+  border: 1px solid rgba(0, 50, 100, 0.1);
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin: 1rem 0;
+}
+</style>
+
+
+## Introduction {#sec-intro}
+
+Orthodox economic theory models financial markets under the assumption of representative agents with rational expectations. In this paradigm, prices reflect all available information and deviations from fundamental value are transitory [@fama1970efficient]. However, the persistence of speculative bubbles, volatility clustering, and fat tails in return distributions systematically challenges these predictions [@mandelbrot1963variation; @lux1999scaling].
+
+Agent-based modeling (ABM) offers a constructive alternative. Rather than deriving analytical equilibria under perfect rationality, ABMs allow macroeconomic patterns to *emerge* from the interactions of heterogeneous agents with bounded rationality [@tesfatsion2006handbook]. This approach is particularly fruitful when combined with evolutionary game theory, where natural selection of strategies replaces the hypothesis of individual optimization [@weibull1995evolutionary].
+
+This work integrates three theoretical traditions:
+
+1. **Heterogeneous agent models** in the tradition of @brockHommes1998, where fundamentalist and chartist traders coexist and generate complex endogenous dynamics.
+
+2. **Evolutionary game theory** with replicator dynamics [@taylor1978evolutionary], where the proportion of each agent type evolves according to its relative market success.
+
+3. **Complexity economics** from the Santa Fe Institute [@arthur1997economy], recognizing that markets are complex adaptive systems.
+
+
+## Literature Review {#sec-lit}
+
+### Heterogeneous Agent Models
+
+The seminal model of @brockHommes1998 demonstrated that the interaction between fundamentalists and chartists is sufficient to generate complex dynamics replicating stylized facts of financial markets. @lux1999scaling proposed a model where optimistic and pessimistic traders switch strategies through imitation, generating return distributions with heavy tails.
+
+@hommes2006heterogeneous shows that expectation heterogeneity is a necessary ingredient to explain stylized facts such as volatility clustering, excess kurtosis, and long memory in returns.
+
+### Evolutionary Dynamics in Markets
+
+The application of evolutionary dynamics to financial markets gained traction with @blume1992evolution on portfolio rule selection. @evstigneev2006evolutionary formalized an evolutionary theory where strategies compete for wealth as a scarce resource, in direct analogy with ecological competition.
+
+@bowles2004microeconomics integrated evolutionary games with institutional analysis, showing that norms and preferences co-evolve with the economic environment.
+
+### ABM in Commodities
+
+Agricultural commodity markets present characteristics that make ABM particularly relevant: stochastic supply shocks, participation of hedgers and speculators with different horizons, and strong influence from geopolitical factors [@irwin2009devil]. @ghoddusi2019machine document the growing application of computational techniques to commodity market analysis.
+
+
+## The Model {#sec-model}
+
+### Agents and Strategies
+
+The model defines four agent types, each representing an empirically observed decision heuristic.
+
+::: {.strategy-card .fund}
+**Fundamentalist** — Trades toward convergence with fundamental value: $d_i^F(t) = \alpha \cdot \frac{P_t^* - P_t}{P_t^*}$, where $\alpha$ is agent sensitivity.
+:::
+
+::: {.strategy-card .mom}
+**Momentum (Trend-follower)** — Extrapolates recent price trends: $d_i^M(t) = \alpha \cdot \frac{P_t - P_{t-\tau}}{\tau \cdot P_{t-\tau}}$, with lookback window $\tau = 5$.
+:::
+
+::: {.strategy-card .rev}
+**Mean Reversion** — Bets on price convergence to the moving average: $d_i^R(t) = \alpha \cdot \frac{\bar{P}_{t,20} - P_t}{\bar{P}_{t,20}}$.
+:::
+
+::: {.strategy-card .noise}
+**Noise Trader** — Stochastic demand: $d_i^N(t) \sim \mathcal{N}(0, \sigma_N^2)$. Serves as a behavioral benchmark and uninformed liquidity provider.
+:::
+
+
+### Price Formation
+
+The market price is determined by the population-weighted aggregate demand:
+
+::: {.equation-box}
+$$
+P_{t+1} = P_t \cdot \left(1 + \sum_{s \in S} x_s(t) \cdot d_s(t) + \varepsilon_t \right), \quad \varepsilon_t \sim \mathcal{N}(0, \sigma^2)
+$$ {#eq-price}
+:::
+
+where $x_s(t)$ is the fraction of type-$s$ agents, $d_s(t)$ is the aggregate demand from type $s$, and $\varepsilon_t$ is a stochastic market shock.
+
+The fundamental price follows a random walk with drift:
+
+$$
+P_t^* = P_{t-1}^* \cdot (1 + \mu + \eta_t), \quad \eta_t \sim \mathcal{N}(0, \sigma_f^2)
+$$ {#eq-fundamental}
+
+
+### Replicator Dynamics with Mutation
+
+The proportion of each type evolves according to the modified replicator equation:
+
+::: {.equation-box}
+$$
+x_s(t+1) = (1 - \mu) \cdot x_s(t) \cdot \frac{f(\pi_s(t))}{\sum_{j \in S} x_j(t) \cdot f(\pi_j(t))} + \frac{\mu}{|S|}
+$$ {#eq-replicator}
+:::
+
+where $f(\pi_s) = \exp(\beta \cdot \pi_s)$ is the fitness function, $\beta$ is the selection intensity, $\mu$ is the mutation rate, and $|S| = 4$.
+
+When $\beta \to 0$, selection is neutral. When $\beta \to \infty$, the system tends toward winner-takes-all. The mutation rate $\mu$ prevents fixation and sustains diversity, generating **polymorphic equilibria**.
+
+
+### Wealth and Fitness
+
+$$
+W_s(t+1) = W_s(t) \cdot (1 + d_s(t) \cdot r_t)
+$$ {#eq-wealth}
+
+where $r_t = (P_{t+1} - P_t) / P_t$ is the market return.
+
+
+## Interactive Simulation {#sec-sim}
+
+The simulation below implements the model as a swarm visualization, where each particle represents an agent. Horizontal position encodes demand (bearish on the left, bullish on the right), and color identifies the strategy.
+
+**Controls:**
+
+- **PLAY/PAUSE** — Start or pause the simulation
+- **⚡ SHOCK** — Introduce an exogenous supply/demand shock
+- **Click on the field** — Create a local shock wave that disperses agents
+- **Sliders** — Adjust β, μ, sensitivity, and volatility in real time
+
+::: {.app-container}
+<iframe src="apps/commodity-abm/index.html" height="700"></iframe>
+:::
+
+::: {.callout-tip title="Suggested experiments"}
+1. **Bubble formation**: Increase β to 8+ → momentum dominates → price diverges → collapse.
+2. **Forced diversity**: Increase μ to 0.08+ → four strategies coexist in polymorphic equilibrium.
+3. **Supply shock**: Click ⚡ SHOCK → observe how each strategy responds.
+4. **Low volatility**: Reduce σ to 0.005 → fundamentalists dominate.
+:::
+
+
+## Results and Discussion {#sec-results}
+
+### Emergent Market Regimes
+
+The model produces three qualitatively distinct regimes:
+
+**Regime 1 — Fundamentalist efficiency** (low $\beta$, low $\sigma$): Price tracks the fundamental. Fundamentalists dominate. This corresponds to the efficient markets hypothesis.
+
+**Regime 2 — Bubble-crash cycle** (high $\beta$, moderate $\sigma$): Momentum traders temporarily dominate, generating persistent deviations. When the bubble becomes extreme, fundamentalists regain market share, triggering an abrupt correction. Consistent with @brockHommes1998.
+
+**Regime 3 — Polymorphic coexistence** (high $\mu$): High mutation maintains all four strategies in fluctuating proportions. No strategy dominates in a sustained manner.
+
+### Implications for Portfolio Management
+
+The **optimal strategy composition is regime-dependent**. In markets with clear trends (e.g., soybean rally after a crop failure), momentum generates alpha. In range-bound markets, mean reversion dominates.
+
+**Reflexivity is real**: the mass adoption of a strategy alters the conditions that made it profitable. When everyone adopts momentum, the resulting bubble creates the conditions for its own destruction.
+
+**Strategic diversity functions as an implicit hedge**, similar to the minimum variance portfolio of @markowitz1952portfolio, but in strategy space rather than asset space.
+
+### Connections to Multi-Objective Optimization
+
+The choice of parameters ($\beta$, $\mu$, $\alpha$, $\sigma$) can be formalized as a multi-objective optimization problem where maximizing returns and minimizing bubble probability generates a Pareto frontier mapping the trade-off between efficiency and stability — connecting this work with multi-criteria decision-making frameworks [@reynoso2020controller].
+
+
+## Concluding Remarks {#sec-conclusion}
+
+A model with four agent types and elementary heuristics, competing under replicator dynamics, generates phenomena that replicate empirical characteristics of commodity markets: endogenous bubbles, volatility clustering, regime switching, and strategy coexistence.
+
+**Future extensions**: (i) social influence networks among agents, (ii) multiple commodities with cross-correlation, (iii) empirical calibration using B3 futures data, and (iv) multi-objective formulation for market regulation design.
+
+
+## References {.unnumbered}
