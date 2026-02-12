@@ -3,7 +3,7 @@ PAIC Econometrics - Weekly Paper Agent Orchestrator (Dream Version)
 ====================================================================
 Pipeline completo com 4 agentes:
 
-  1. Researcher Agent  (Opus 4.6 + web search)
+  1. Researcher Agent  (Sonnet 4.5 + web search)
      → Busca papers recentes em bases científicas
      → Identifica tendências e gaps na literatura
      → Propõe tema original alinhado à tese
@@ -27,7 +27,7 @@ Uso:
   python orchestrator.py publish <issue>  # Publica paper aprovado
 
 Requer:
-  - ANTHROPIC_API_KEY (Opus 4.6 + Sonnet 4.5)
+  - ANTHROPIC_API_KEY (Sonnet 4.5)
   - GITHUB_TOKEN (issues + push)
 
 Custo estimado: ~$0.45/semana (~R$12/mês)
@@ -131,103 +131,149 @@ def call_anthropic(
 
     logger.info(
         f"API call [{model}]: {response.usage.input_tokens} in / "
-        f"{response.usage.output_tokens} out"
+        f"{response.usage.output_tokens} out / stop={response.stop_reason}"
     )
+
+    if response.stop_reason == "max_tokens":
+        logger.warning(
+            f"⚠️ Resposta truncada (max_tokens atingido). "
+            f"JSON pode estar incompleto."
+        )
 
     return full_text
 
 
 def parse_json_response(text: str) -> dict:
-    """Extrai JSON de uma resposta que pode ter markdown fences."""
+    """Extrai JSON de uma resposta que pode ter markdown fences ou estar truncada."""
     text = text.strip()
     # Tentar extrair JSON de dentro de code fences
     json_match = re.search(r"```(?:json)?\s*\n?(.*?)\n?```", text, re.DOTALL)
     if json_match:
         text = json_match.group(1).strip()
-    return json.loads(text)
+
+    # Tentar parse direto
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        logger.warning("⚠️ JSON inválido, tentando reparar...")
+
+    # Reparar JSON truncado
+    # 1. Fechar strings abertas
+    repaired = text
+    # Contar aspas — se ímpar, adicionar uma
+    if repaired.count('"') % 2 != 0:
+        repaired += '"'
+    # 2. Fechar arrays/objetos abertos
+    open_braces = repaired.count("{") - repaired.count("}")
+    open_brackets = repaired.count("[") - repaired.count("]")
+    repaired += "]" * max(0, open_brackets)
+    repaired += "}" * max(0, open_braces)
+
+    try:
+        return json.loads(repaired)
+    except json.JSONDecodeError:
+        logger.warning("⚠️ Reparo simples falhou, tentando extração parcial...")
+
+    # 3. Último recurso: extrair campos individualmente via regex
+    result = {}
+    for key in [
+        "outline", "qmd_content", "bib_content",
+        "estimated_runtime_minutes", "required_packages_r",
+        "required_packages_python", "data_sources",
+    ]:
+        # Tenta capturar valor de string
+        match = re.search(
+            rf'"{key}"\s*:\s*"((?:[^"\\]|\\.)*)(?:"|$)',
+            text, re.DOTALL,
+        )
+        if match:
+            result[key] = match.group(1).replace('\\"', '"').replace("\\n", "\n")
+            continue
+        # Tenta capturar valor de array
+        match = re.search(
+            rf'"{key}"\s*:\s*\[(.*?)(?:\]|$)',
+            text, re.DOTALL,
+        )
+        if match:
+            try:
+                result[key] = json.loads(f"[{match.group(1)}]")
+            except json.JSONDecodeError:
+                items = re.findall(r'"([^"]*)"', match.group(1))
+                result[key] = items
+            continue
+        # Tenta capturar valor numérico
+        match = re.search(rf'"{key}"\s*:\s*(\d+)', text)
+        if match:
+            result[key] = int(match.group(1))
+
+    if result:
+        logger.info(f"✅ Extraídos {len(result)} campos via regex")
+        return result
+
+    raise ValueError("Não foi possível extrair JSON da resposta")
 
 
 # ---------------------------------------------------------------------------
-# Agent 1: RESEARCHER (Opus 4.6 + Web Search)
+# Agent 1: RESEARCHER (Sonnet 4.5 + Web Search)
 # ---------------------------------------------------------------------------
 
 def run_researcher(config: dict, axis: dict) -> dict:
     """
-    Agente Pesquisador com Opus 4.6 + web search.
+    Agente Pesquisador com Sonnet 4.5 + web search.
     Busca papers recentes, identifica gaps e propõe tema original.
+    
+    Otimizado: Sonnet em vez de Opus (40% mais barato no input).
+    Limitado a NO MÁXIMO 3 buscas web para controlar custo.
     """
-    logger.info(f"🔍 [RESEARCHER] Iniciando com Opus 4.6 — Eixo: {axis['name']}")
+    logger.info(f"🔍 [RESEARCHER] Iniciando com Sonnet 4.5 — Eixo: {axis['name']}")
 
     keywords_str = ", ".join(axis["keywords"])
     r_pkgs = ", ".join(axis.get("r_packages", []))
     py_pkgs = ", ".join(axis.get("python_packages", []))
     tickers_str = ", ".join(axis.get("tickers", TICKERS))
 
-    system_prompt = """Você é um pesquisador acadêmico sênior especializado em finanças quantitativas,
-econometria e computação evolucionária. Você está auxiliando um doutorando da PUCPR
-(orientado por Gilberto Reynoso Meza) que pesquisa otimização multiobjetivo aplicada
-a commodities agrícolas.
+    system_prompt = """Você é um pesquisador acadêmico em finanças quantitativas e econometria.
+Auxilia um doutorando da PUCPR (orientador: Gilberto Reynoso Meza) que pesquisa
+otimização multiobjetivo aplicada a commodities agrícolas.
 
-SUA TAREFA:
-1. Usar web search para buscar papers RECENTES (últimos 6-12 meses) no eixo temático indicado
-2. Identificar 3-5 tendências emergentes na literatura
-3. Encontrar uma LACUNA específica que pode ser preenchida
-4. Propor um tema ORIGINAL e ESPECÍFICO para um paper
+TAREFA: Buscar papers recentes, identificar gaps e propor tema original.
 
-INSTRUÇÕES DE BUSCA:
-- Busque em Google Scholar, arXiv, SSRN, IEEE Xplore, Scopus
-- Priorize papers de 2024-2026
-- Foque em papers que combinem o eixo temático com commodities agrícolas
-- Identifique autores-chave e grupos de pesquisa ativos
+REGRA CRÍTICA DE CUSTO: Faça NO MÁXIMO 2-3 buscas web focadas.
+Combine termos na mesma busca em vez de fazer muitas buscas separadas.
+Exemplo: "GARCH commodity futures multi-objective optimization 2024 2025"
 
-Responda EXCLUSIVAMENTE em JSON válido:
+Responda EXCLUSIVAMENTE em JSON válido (sem markdown fences):
 {
-  "search_summary": "Resumo do que encontrou nas buscas (2-3 frases)",
+  "search_summary": "Resumo das buscas (2-3 frases)",
   "recent_papers": [
-    {
-      "title": "Título do paper encontrado",
-      "authors": "Autores principais",
-      "year": 2025,
-      "source": "Nome do journal/conferência",
-      "relevance": "Por que é relevante (1 frase)"
-    }
+    {"title": "...", "authors": "...", "year": 2025, "source": "...", "relevance": "..."}
   ],
   "trends": ["tendência 1", "tendência 2", "tendência 3"],
-  "identified_gap": "Lacuna específica na literatura que o paper preencheria",
-  "theme_title": "Título proposto do paper (em inglês acadêmico)",
+  "identified_gap": "Lacuna específica",
+  "theme_title": "Título em inglês acadêmico",
   "theme_title_pt": "Título em português",
-  "motivation": "Por que este tema é relevante agora (2-3 frases)",
-  "suggested_approach": "Abordagem metodológica sugerida (2-3 frases)",
+  "motivation": "Relevância (2-3 frases)",
+  "suggested_approach": "Metodologia (2-3 frases)",
   "novelty_score": 8,
   "feasibility_score": 8,
-  "key_references": ["referência 1 em formato APA", "referência 2"]
+  "key_references": ["ref APA 1", "ref APA 2"]
 }"""
 
-    user_prompt = f"""Pesquise o estado da arte RECENTE no seguinte eixo temático:
+    user_prompt = f"""Eixo: {axis['name']} — {axis['description']}
+Keywords: {keywords_str}
+Tickers: {tickers_str}
+Pacotes R: {r_pkgs} | Python: {py_pkgs}
+Data: {datetime.now().strftime('%Y-%m-%d')}
 
-**Eixo:** {axis['name']}
-**Descrição:** {axis['description']}
-**Keywords:** {keywords_str}
+Faça 2-3 buscas web FOCADAS e proponha um tema ORIGINAL e ESPECÍFICO.
+O tema deve ser implementável com dados públicos de futuros agrícolas."""
 
-**Contexto da pesquisa do doutorando:**
-- Portfólio de commodities agrícolas: {tickers_str}
-- Ferramentas R: {r_pkgs}
-- Ferramentas Python: {py_pkgs}
-- Tese sobre otimização multiobjetivo aplicada a mercados de commodities
-- Orientador especialista em MCDM e otimização evolucionária
-
-**Data atual:** {datetime.now().strftime('%Y-%m-%d')}
-
-Busque papers recentes e proponha um tema ORIGINAL e ESPECÍFICO.
-O tema deve ser implementável com dados públicos de futuros agrícolas.
-Não proponha algo genérico — seja específico sobre a contribuição científica."""
-
-    # Chamar Opus com web search habilitado
+    # Chamar Sonnet com web search (mais barato que Opus, mesma qualidade para busca)
     text = call_anthropic(
-        model=OPUS_MODEL,
+        model=SONNET_MODEL,
         system=system_prompt,
         user_message=user_prompt,
-        max_tokens=6000,
+        max_tokens=4096,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
     )
 
@@ -345,7 +391,7 @@ Priorize visualizações ricas e interpretações dos resultados."""
         model=SONNET_MODEL,
         system=system_prompt,
         user_message=user_prompt,
-        max_tokens=16000,
+        max_tokens=32000,
     )
 
     proposal = parse_json_response(text)
@@ -536,7 +582,7 @@ O draft `.qmd` e `references.bib` estão no branch `paper/{week_id}`.
 
 ---
 *🤖 Gerado por PAIC Paper Agents em {datetime.now().strftime('%Y-%m-%d %H:%M')}*
-*Agentes: Researcher (Opus 4.6) → Proposer (Sonnet 4.5) → Journal Finder (Sonnet 4.5)*
+*Agentes: Researcher (Sonnet 4.5) → Proposer (Sonnet 4.5) → Journal Finder (Sonnet 4.5)*
 """
 
     headers = {
@@ -751,7 +797,7 @@ def main():
         # 1. Determinar eixo da semana
         axis = get_current_axis(config)
 
-        # 2. Researcher Agent (Opus 4.6 + web search)
+        # 2. Researcher Agent (Sonnet 4.5 + web search)
         logger.info("-" * 70)
         findings = run_researcher(config, axis)
 
