@@ -1,0 +1,64 @@
+# =============================================================================
+# PAIC Paper Agent (Dream Version) — Proposta Semanal
+# =============================================================================
+# Opus 4.6 (pesquisa profunda) + Sonnet 4.5 (geração + journals)
+# Custo: ~$0.45/semana
+# =============================================================================
+
+name: "📝 Weekly Paper Proposal"
+
+on:
+  schedule:
+    - cron: "0 12 * * 5"  # Sexta 09:00 BRT
+
+  workflow_dispatch:
+    inputs:
+      force_axis:
+        description: "Forçar eixo temático (vazio = rotação automática)"
+        required: false
+        type: choice
+        options:
+          - ""
+          - "moea_portfolio"
+          - "garch_volatility"
+          - "abm_commodities"
+          - "mcdm_decision"
+          - "evolutionary_games"
+          - "time_series_econometrics"
+
+permissions:
+  issues: write
+  contents: write
+
+jobs:
+  propose-paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dependencies
+        run: pip install anthropic requests pyyaml
+
+      - name: 🤖 Run Full Agent Pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd paic-agents
+          python agents/orchestrator.py propose
+
+      - name: 📊 Summary
+        if: always()
+        run: |
+          echo "### 📝 Weekly Paper Proposal (Dream Version)" >> $GITHUB_STEP_SUMMARY
+          echo "**Agents:** Researcher (Opus 4.6) → Proposer (Sonnet 4.5) → Journal Finder (Sonnet 4.5)" >> $GITHUB_STEP_SUMMARY
+          echo "**Week:** $(date +%Y-W%V)" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
