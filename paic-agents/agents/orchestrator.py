@@ -103,6 +103,7 @@ def call_anthropic(
 ) -> str:
     """
     Chama a API da Anthropic e retorna o texto da resposta.
+    Usa streaming para requests com max_tokens alto (>8192).
     Suporta web_search tool para buscas em tempo real.
     """
     import anthropic
@@ -119,22 +120,47 @@ def call_anthropic(
     if tools:
         kwargs["tools"] = tools
 
-    response = client.messages.create(**kwargs)
+    use_streaming = max_tokens > 8192
 
-    # Extrair texto de todos os blocos (pode ter tool_use + text)
-    text_parts = []
-    for block in response.content:
-        if hasattr(block, "text"):
-            text_parts.append(block.text)
+    if use_streaming:
+        logger.info(f"📡 Usando streaming (max_tokens={max_tokens})")
+        text_parts = []
+        input_tokens = 0
+        output_tokens = 0
+        stop_reason = None
 
-    full_text = "\n".join(text_parts)
+        with client.messages.stream(**kwargs) as stream:
+            for event in stream:
+                pass  # consume stream
+            response = stream.get_final_message()
+
+        for block in response.content:
+            if hasattr(block, "text"):
+                text_parts.append(block.text)
+
+        full_text = "\n".join(text_parts)
+        input_tokens = response.usage.input_tokens
+        output_tokens = response.usage.output_tokens
+        stop_reason = response.stop_reason
+    else:
+        response = client.messages.create(**kwargs)
+
+        text_parts = []
+        for block in response.content:
+            if hasattr(block, "text"):
+                text_parts.append(block.text)
+
+        full_text = "\n".join(text_parts)
+        input_tokens = response.usage.input_tokens
+        output_tokens = response.usage.output_tokens
+        stop_reason = response.stop_reason
 
     logger.info(
-        f"API call [{model}]: {response.usage.input_tokens} in / "
-        f"{response.usage.output_tokens} out / stop={response.stop_reason}"
+        f"API call [{model}]: {input_tokens} in / "
+        f"{output_tokens} out / stop={stop_reason}"
     )
 
-    if response.stop_reason == "max_tokens":
+    if stop_reason == "max_tokens":
         logger.warning(
             f"⚠️ Resposta truncada (max_tokens atingido). "
             f"JSON pode estar incompleto."
