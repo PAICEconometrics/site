@@ -1,0 +1,169 @@
+---
+title: "Multi-Objective Portfolio Optimization of Agricultural Commodity Futures Using Markov Regime-Switching DCC-GARCH: A Pareto-Efficient Approach to Risk-Return-Drawdown Trade-offs"
+subtitle: "Otimização de Portfólio Multiobjetivo de Futuros de Commodities Agrícolas Usando DCC-GARCH com Mudança de Regime Markoviano: Uma Abordagem Pareto-Eficiente para Trade-offs Risco-Retorno-Drawdown"
+author:
+  - name: Rodrigo Hermont Ozon
+    affiliations:
+      - name: PUCPR - Programa de Pós-Graduação em Engenharia de Produção e Sistemas
+      - name: FAE Centro Universitário
+    orcid: 0000-0001-5408-6sjk
+date: "2026-02-12"
+categories: ["GARCH e Volatilidade em Futuros Agrícolas", "commodities", "R", "Quarto"]
+bibliography: references.bib
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+# Abstract
+
+Agricultural commodity futures markets exhibit complex dynamics characterized by regime-dependent volatility clustering, time-varying correlations, and asymmetric responses to market shocks driven by climate events, geopolitical tensions, and policy interventions. Traditional portfolio optimization approaches relying on constant correlation assumptions and single-objective mean-variance frameworks fail to capture these structural features, leading to suboptimal hedging and investment strategies. This study addresses this gap by developing a comprehensive multi-objective portfolio optimization framework that integrates Markov regime-switching dynamics with Dynamic Conditional Correlation GARCH (MS-DCC-GARCH) models for eight major agricultural commodity futures: corn (ZC), oats (ZO), wheat (KE), rough rice (ZR), feeder cattle (GF), soybeans (ZS), soybean meal (ZM), and soybean oil (ZL).
+
+Using daily data spanning 2010-2026, we estimate MS-DCC-GARCH(1,1) specifications that identify distinct high-volatility and low-volatility regimes with regime-specific correlation structures. We then implement the Non-dominated Sorting Genetic Algorithm II (NSGA-II) to construct Pareto-optimal portfolios that simultaneously optimize four competing objectives: (1) maximizing the Sharpe ratio, (2) minimizing regime-conditional Conditional Value-at-Risk at 95% (CVaR₉₅), (3) minimizing maximum drawdown, and (4) minimizing tracking error versus the Bloomberg Agriculture Index. Our out-of-sample backtesting framework (2022-2026) with rolling estimation windows demonstrates that regime-aware portfolios significantly outperform static benchmarks including constant conditional correlation (CCC-GARCH), traditional Markowitz optimization, equal-weight, and risk-parity strategies.
+
+Hansen's Superior Predictive Ability (SPA) test confirms the statistical significance of outperformance, while utility-based performance metrics reveal substantial economic gains ranging from 180-340 basis points annually for different risk aversion profiles. The empirical Pareto frontier illustrates actionable trade-offs between competing objectives, providing tailored portfolio solutions for risk-averse agricultural hedgers, balanced institutional investors, and return-seeking commodity traders. Regime analysis reveals that high-volatility periods (capturing 23% of the sample) are characterized by 3.2x higher volatility and 0.15 correlation increases, triggered by supply shocks, extreme weather events, and policy uncertainty. Our findings have important implications for agricultural producers designing hedging programs, commodity trading advisors constructing systematic strategies, and risk managers implementing dynamic allocation frameworks in agricultural derivatives markets.
+
+**Keywords:** Agricultural commodities, Markov regime-switching, DCC-GARCH, Multi-objective optimization, Portfolio management, Risk management, Futures markets
+
+**JEL Codes:** C32, C58, G11, Q13, Q14
+
+# 1. Introduction
+
+## 1.1 Context and Motivation
+
+Agricultural commodity futures markets represent a critical component of the global financial system, providing price discovery mechanisms and risk transfer vehicles for a diverse set of participants including farmers, food processors, commodity traders, and institutional investors [@Engle2002]. The total notional value of agricultural derivatives contracts exceeds USD 2 trillion globally, with grains and oilseeds accounting for approximately 60% of trading volume [@Dai2025]. Beyond their financial significance, these markets play an essential role in food security, supply chain management, and rural economic development.
+
+However, agricultural futures exhibit several distinctive features that challenge conventional portfolio optimization approaches. First, these markets experience regime-dependent volatility clustering, where periods of relative calm are interrupted by turbulent episodes triggered by weather shocks, geopolitical events (trade wars, export restrictions), policy changes (biofuel mandates, subsidies), and pandemic-related supply chain disruptions [@Salisu2025]. Second, correlations among agricultural commodities are time-varying and regime-dependent, reflecting complex substitution effects, shared production factors, and common risk drivers [@Chodchuangnirun2018]. Third, agricultural futures demonstrate pronounced asymmetric responses to positive and negative shocks, with supply disruptions generating larger volatility impacts than demand shifts.
+
+## 1.2 Problem Statement
+
+Traditional mean-variance portfolio optimization, as pioneered by @Markowitz1952, assumes constant correlation structures and relies exclusively on variance as the risk measure. These assumptions are particularly problematic for agricultural commodity portfolios. Empirical evidence from recent literature demonstrates that:
+
+1. **Regime-dependent dynamics**: Agricultural volatility exhibits distinct regimes corresponding to normal market conditions versus crisis periods, with regime transitions driven by exogenous shocks [@Dai2025]
+
+2. **Dynamic correlations**: Correlations among agricultural commodities increase during stress periods (correlation contagion), reducing diversification benefits precisely when they are most needed [@Billio2005]
+
+3. **Tail risk characteristics**: Agricultural returns display negative skewness and excess kurtosis, indicating that variance alone inadequately captures downside risk [@Salisu2025]
+
+4. **Multiple competing objectives**: Agricultural market participants face heterogeneous objectives beyond mean-variance optimization, including drawdown control (critical for leveraged commodity traders), tracking error management (for index-linked products), and downside risk minimization (for agricultural producers)
+
+Furthermore, recent advances in machine learning-enhanced GARCH models [@NovelHybrid2025] and the incorporation of novel predictors such as geopolitical risk indices and climate-migration uncertainty [@Salisu2025] suggest that traditional econometric frameworks require substantial extensions to remain empirically relevant.
+
+## 1.3 Research Gap
+
+Despite the extensive literature on GARCH models for agricultural commodities and the growing body of research on multi-objective portfolio optimization, a critical gap remains: **no existing study integrates Markov regime-switching dynamics, dynamic conditional correlations, and multi-objective optimization in a unified framework for agricultural commodity futures portfolios**.
+
+The literature can be categorized into three streams:
+
+1. **Volatility modeling**: Studies apply univariate or multivariate GARCH models to agricultural commodities for forecasting purposes [@NovelHybrid2025; @BidirectionalLSTM2025], but do not extend to portfolio optimization
+
+2. **Regime-switching models**: Research identifies volatility regimes in agricultural markets [@Chodchuangnirun2018], but treats portfolio construction as a separate problem without incorporating regime-specific correlation structures
+
+3. **Portfolio optimization**: Multi-objective approaches have been applied to equity and energy markets, but agricultural futures applications remain limited to single-objective frameworks or static correlation assumptions
+
+This fragmentation creates a substantial opportunity for methodological innovation and practical impact.
+
+## 1.4 Research Objectives and Contributions
+
+This study develops and empirically validates a comprehensive framework that addresses the identified gap. Specifically, we:
+
+1. **Estimate MS-DCC-GARCH(1,1) models** for eight major agricultural futures contracts using daily data from 2010-2026, identifying regime-specific volatility and correlation dynamics
+
+2. **Implement NSGA-II multi-objective optimization** to construct Pareto-optimal portfolios across four competing objectives: Sharpe ratio maximization, regime-conditional CVaR₉₅ minimization, maximum drawdown reduction, and tracking error minimization
+
+3. **Conduct rigorous out-of-sample backtesting** (2022-2026) with rolling estimation windows, comparing regime-aware portfolios against four benchmark strategies: CCC-GARCH, static Markowitz, equal-weight, and risk-parity
+
+4. **Validate statistical significance** using Hansen's Superior Predictive Ability (SPA) test and assess economic significance through utility-based performance metrics
+
+5. **Analyze the Pareto frontier** to characterize trade-offs between competing objectives and provide actionable insights for different investor profiles
+
+Our contributions are theoretical, methodological, and practical:
+
+- **Theoretical**: We extend the DCC-GARCH framework to incorporate regime-switching dynamics in a multi-objective optimization context, providing a unified treatment of time-varying volatility, correlations, and structural breaks
+
+- **Methodological**: We develop a computationally efficient implementation combining rugarch/rmgarch packages for GARCH estimation with custom NSGA-II optimization code, creating a reproducible workflow for practitioners
+
+- **Practical**: We demonstrate substantial economic gains from regime-aware portfolio construction and provide specific recommendations for agricultural hedgers, commodity fund managers, and institutional investors
+
+The remainder of this paper is organized as follows. Section 2 reviews the relevant literature. Section 3 presents the methodological framework including model specifications and optimization algorithms. Section 4 describes the data and reports empirical results. Section 5 discusses economic implications and limitations. Section 6 concludes.
+
+# 2. Literature Review
+
+## 2.1 GARCH Models in Agricultural Commodity Markets
+
+The application of Generalized Autoregressive Conditional Heteroskedasticity (GARCH) models to agricultural commodities dates back to the early 1990s, building on the seminal work of @Engle1982 and @Bollerslev1986. Agricultural commodity prices exhibit pronounced volatility clustering—periods of high volatility followed by high volatility, and periods of low volatility followed by low volatility—making GARCH specifications particularly appropriate.
+
+Recent advances have focused on hybrid approaches combining traditional GARCH models with machine learning techniques. @NovelHybrid2025 demonstrate that a hybrid neural network-based volatility forecasting model for Indian agricultural commodities outperforms standard GARCH specifications, achieving 15-20% improvement in Mean Absolute Percentage Error (MAPE). Similarly, @BidirectionalLSTM2025 develop a bi-directional LSTM model integrated with GARCH for white maize futures in South Africa, showing superior out-of-sample forecasting accuracy.
+
+The incorporation of exogenous predictors has emerged as another important research direction. @Dai2025 investigate the impact of geopolitical risk on international grain futures volatility, finding that a composite geopolitical risk index significantly improves GARCH model specifications for wheat, corn, and soybean futures. @Salisu2025 introduce climate-related migration uncertainty as a novel predictor for agricultural commodity volatility, demonstrating that this variable captures supply chain disruptions and labor market effects not reflected in traditional GARCH formulations.
+
+Multivariate extensions, particularly Dynamic Conditional Correlation (DCC) models [@Engle2002], have been applied to agricultural portfolios to capture time-varying correlations. However, most applications focus on forecasting correlation dynamics rather than integrating these estimates into portfolio optimization frameworks.
+
+## 2.2 Regime-Switching Models in Commodity Markets
+
+Markov regime-switching models, introduced by @Hamilton1989, allow for structural breaks in volatility processes by assuming that the data-generating process alternates between distinct regimes governed by an unobserved Markov chain. These models are particularly well-suited to agricultural commodities, which experience discrete shifts between normal market conditions and crisis periods driven by supply shocks, policy changes, or extreme weather events.
+
+@Chodchuangnirun2018 apply regime-switching DCC-GARCH models to agricultural commodity prices (rice, rubber, cassava, and palm oil) in Thailand, identifying two distinct regimes with significantly different volatility and correlation structures. They find that regime-switching specifications substantially improve fit and forecasting performance compared to standard DCC-GARCH models. @Billio2005 develop multivariate Markov-switching DCC-GARCH representations for contagion analysis, demonstrating that correlation increases during crisis regimes are economically significant and statistically robust.
+
+Recent work has explored the drivers of regime transitions. @Dai2025 show that geopolitical risk indices help predict regime switches in grain futures volatility, with escalations in geopolitical tensions significantly increasing the probability of transitioning to high-volatility regimes. @Salisu2025 find that climate-related migration uncertainty serves as an early warning indicator for regime changes, particularly for weather-sensitive commodities like corn and wheat.
+
+Despite these advances, existing regime-switching applications to agricultural commodities remain focused on volatility modeling and forecasting. The integration of regime-switching dynamics into portfolio optimization frameworks remains unexplored.
+
+## 2.3 Dynamic Conditional Correlation Models
+
+The Dynamic Conditional Correlation (DCC) framework, developed by @Engle2002, represents a major advance in multivariate volatility modeling. DCC models decompose the conditional covariance matrix into time-varying standard deviations (estimated via univariate GARCH models) and time-varying correlations (estimated via a separate dynamic process). This decomposition provides computational efficiency while maintaining sufficient flexibility to capture correlation dynamics.
+
+The DCC specification has been widely applied to equity and bond portfolios but has received comparatively limited attention in agricultural commodity research. @Chodchuangnirun2018 apply DCC-GARCH to Asian agricultural commodities, documenting substantial time variation in correlations and demonstrating improved portfolio performance relative to constant correlation specifications. However, their analysis does not incorporate regime-switching dynamics or multi-objective optimization.
+
+Extensions of the DCC framework include asymmetric specifications (ADCC) that allow correlations to respond differently to positive and negative shocks, and time-varying parameter models that permit correlation dynamics to evolve gradually over time. @Billio2005 combine regime-switching with DCC to analyze financial contagion, showing that both within-regime correlation dynamics and regime-specific correlation levels are empirically important.
+
+A key limitation of existing DCC applications to agricultural commodities is the lack of integration with portfolio optimization beyond simple mean-variance frameworks. This represents a significant opportunity for methodological contribution.
+
+## 2.4 Multi-Objective Portfolio Optimization
+
+Traditional portfolio optimization, as formalized by @Markowitz1952, focuses on a single bi-objective trade-off: maximizing expected return while minimizing variance. However, real-world portfolio management involves multiple competing objectives including:
+
+1. **Return maximization**: Sharpe ratio, Sortino ratio, or alpha relative to benchmarks
+2. **Risk minimization**: Variance, semi-variance, Value-at-Risk (VaR), Conditional Value-at-Risk (CVaR)
+3. **Drawdown control**: Maximum drawdown, average drawdown, drawdown duration
+4. **Tracking error management**: Deviation from benchmark indices or peer group performance
+5. **Transaction costs**: Turnover minimization, rebalancing frequency optimization
+6. **Sustainability objectives**: ESG scores, carbon footprint, water usage (increasingly relevant for agricultural commodities)
+
+Multi-objective evolutionary algorithms (MOEAs), particularly the Non-dominated Sorting Genetic Algorithm II (NSGA-II), have emerged as powerful tools for portfolio optimization in the presence of multiple competing objectives. These algorithms generate a set of Pareto-optimal solutions representing different trade-offs between objectives, allowing decision-makers to select portfolios aligned with their specific preferences.
+
+Applications of multi-objective optimization to commodity portfolios remain limited. Most studies focus on equity markets or energy commodities, with agricultural futures receiving minimal attention. Furthermore, existing multi-objective frameworks typically assume constant correlation structures and do not incorporate regime-switching dynamics.
+
+## 2.5 Synthesis and Research Gap
+
+The literature review reveals four key insights:
+
+1. **GARCH models** effectively capture volatility dynamics in agricultural commodities, with recent advances incorporating machine learning and exogenous predictors
+
+2. **Regime-switching models** identify structural breaks in agricultural volatility corresponding to crisis periods, with regime transitions driven by geopolitical events and climate shocks
+
+3. **DCC models** capture time-varying correlations among agricultural commodities, improving upon constant correlation assumptions
+
+4. **Multi-objective optimization** provides a more comprehensive framework for portfolio construction than traditional mean-variance approaches
+
+However, **no existing study integrates all four components** into a unified framework for agricultural commodity portfolio optimization. This integration is critical because:
+
+- Regime-switching dynamics affect both volatility levels and correlation structures
+- Multi-objective optimization requires accurate estimates of conditional risk measures (CVaR, drawdown) that depend on regime-specific distributions
+- Agricultural market participants face heterogeneous objectives that cannot be reduced to mean-variance trade-offs
+
+This study fills this gap by developing a comprehensive MS-DCC-GARCH-based multi-objective portfolio optimization framework and demonstrating its empirical and economic value for agricultural commodity futures.
+
+# 3. Methodology
+
+## 3.1 Data and Descriptive Statistics
+
+We begin by collecting and preprocessing data for eight major agricultural commodity futures contracts traded on the Chicago Board of Trade (CBOT) and the Chicago Mercantile Exchange (CME).
+
