@@ -1,0 +1,122 @@
+# =============================================================================
+# PAIC Econometrics - Weekly Paper Agent Configuration
+# =============================================================================
+# Este arquivo configura os agentes que propõem papers semanais para o site
+# do PAIC Econometrics (https://paiceconometrics.github.io/site/)
+# =============================================================================
+
+# Eixos temáticos da tese - rotação semanal automática
+thematic_axes:
+  - id: moea_portfolio
+    name: "Otimização Multiobjetivo de Portfólios"
+    description: "Aplicação de MOEAs (NSGA-II, NSGA-III, MOEA/D, SPEA2) à otimização de portfólios de commodities agrícolas com múltiplos objetivos (retorno, risco, CVaR, drawdown)"
+    keywords:
+      - "multi-objective portfolio optimization"
+      - "NSGA-II portfolio"
+      - "evolutionary algorithm commodity futures"
+      - "Pareto optimal portfolio"
+    r_packages: ["PortfolioAnalytics", "DEoptim", "mco", "ecr", "nsga2R"]
+    python_packages: ["pymoo", "deap", "platypus", "scipy.optimize"]
+    tickers: ["ZC=F", "ZO=F", "KE=F", "ZR=F", "GF=F", "ZS=F", "ZM=F", "ZL=F"]
+
+  - id: garch_volatility
+    name: "GARCH e Volatilidade em Futuros Agrícolas"
+    description: "Modelagem de volatilidade condicional em commodities agrícolas usando GARCH, EGARCH, GJR-GARCH, DCC-GARCH e modelos de regime switching"
+    keywords:
+      - "GARCH agricultural commodity"
+      - "volatility modeling futures"
+      - "DCC-GARCH commodity portfolio"
+      - "regime switching volatility"
+    r_packages: ["rugarch", "rmgarch", "MSwM", "vars", "tseries"]
+    python_packages: ["arch", "statsmodels", "hmmlearn"]
+    tickers: ["ZC=F", "ZO=F", "KE=F", "ZR=F", "GF=F", "ZS=F", "ZM=F", "ZL=F"]
+
+  - id: abm_commodities
+    name: "Agent-Based Modeling para Commodities"
+    description: "Modelos baseados em agentes para simulação de mercados de commodities, incluindo agentes fundamentalistas, chartistas e noise traders"
+    keywords:
+      - "agent-based model commodity market"
+      - "ABM financial market simulation"
+      - "heterogeneous agents commodity"
+      - "artificial stock market"
+    r_packages: ["RNetLogo", "simecol"]
+    python_packages: ["mesa", "agentpy", "numpy", "matplotlib"]
+    tickers: ["ZC=F", "ZO=F", "ZS=F"]
+
+  - id: mcdm_decision
+    name: "MCDM e Decision Support"
+    description: "Multi-Criteria Decision Making aplicado à seleção e alocação de portfólios, integrando métodos como TOPSIS, PROMETHEE, AHP com otimização evolucionária"
+    keywords:
+      - "MCDM portfolio selection"
+      - "TOPSIS investment decision"
+      - "PROMETHEE financial"
+      - "multi-criteria decision support commodity"
+    r_packages: ["MCDA", "MCDM", "ahpsurvey", "FuzzyMCDM"]
+    python_packages: ["scikit-criteria", "pyDecision"]
+    tickers: ["ZC=F", "ZO=F", "KE=F", "ZR=F", "GF=F", "ZS=F", "ZM=F", "ZL=F"]
+
+  - id: evolutionary_games
+    name: "Jogos Dinâmicos Evolucionários"
+    description: "Teoria dos jogos evolucionários aplicada a dinâmicas de mercado de commodities, estratégias de hedging e interação entre participantes de mercado"
+    keywords:
+      - "evolutionary game theory financial markets"
+      - "replicator dynamics commodity"
+      - "evolutionary stable strategy trading"
+      - "dynamic games hedging"
+    r_packages: ["EvolutionaryGames", "Rsolnp", "deSolve"]
+    python_packages: ["nashpy", "axelrod", "egttools", "scipy.integrate"]
+    tickers: ["ZC=F", "ZS=F", "ZL=F"]
+
+  - id: time_series_econometrics
+    name: "Econometria de Séries Temporais"
+    description: "Análise econométrica avançada de séries temporais de commodities: cointegração, causalidade de Granger, VAR/VECM, wavelets e machine learning para previsão"
+    keywords:
+      - "time series econometrics commodity"
+      - "cointegration agricultural futures"
+      - "VAR model commodity prices"
+      - "machine learning time series forecasting"
+    r_packages: ["forecast", "vars", "urca", "tsDyn", "WaveletComp", "tidymodels"]
+    python_packages: ["statsmodels", "sktime", "prophet", "neuralprophet"]
+    tickers: ["ZC=F", "ZO=F", "KE=F", "ZR=F", "GF=F", "ZS=F", "ZM=F", "ZL=F"]
+
+# Configuração do site
+site:
+  repo: "PAICEconometrics/site"
+  branch: "main"
+  posts_dir: "posts"  # diretório onde ficam os artigos .qmd
+  base_url: "https://paiceconometrics.github.io/site/"
+
+# Configuração dos agentes
+agents:
+  researcher:
+    model: "claude-sonnet-4-20250514"
+    max_tokens: 4096
+    search_recent_days: 90  # buscar papers dos últimos 90 dias
+
+  proposer:
+    model: "claude-sonnet-4-20250514"
+    max_tokens: 8192
+
+  publisher:
+    model: "claude-sonnet-4-20250514"
+    max_tokens: 16384
+
+# Configuração de rotação
+rotation:
+  strategy: "round_robin"  # round_robin | random | weighted
+  # A cada sexta, avança para o próximo eixo temático
+  # Semana 1: moea_portfolio
+  # Semana 2: garch_volatility
+  # Semana 3: abm_commodities
+  # Semana 4: mcdm_decision
+  # Semana 5: evolutionary_games
+  # Semana 6: time_series_econometrics
+  # Semana 7: volta ao início
+
+# Labels para GitHub Issues
+github_labels:
+  proposal: "📝 paper-proposal"
+  approved: "✅ approved"
+  rejected: "❌ rejected"
+  published: "🚀 published"
+  in_progress: "🔄 in-progress"

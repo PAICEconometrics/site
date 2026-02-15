@@ -8,9 +8,8 @@
 name: "📝 Weekly Paper Proposal"
 
 on:
-  # schedule:
-  #   - cron: '0 12 * * 5'
-  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 5"  # Sexta 09:00 BRT
 
   workflow_dispatch:
     inputs:
@@ -60,6 +59,6 @@ jobs:
         if: always()
         run: |
           echo "### 📝 Weekly Paper Proposal (Dream Version)" >> $GITHUB_STEP_SUMMARY
-          echo "**Agents:** Researcher (Sonnet 4.5) → Proposer (Sonnet 4.5) → Journal Finder (Sonnet 4.5)" >> $GITHUB_STEP_SUMMARY
+          echo "**Agents:** Researcher (Opus 4.6) → Proposer (Sonnet 4.5) → Journal Finder (Sonnet 4.5)" >> $GITHUB_STEP_SUMMARY
           echo "**Week:** $(date +%Y-W%V)" >> $GITHUB_STEP_SUMMARY
           echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
