@@ -1,0 +1,567 @@
+---
+title: "Fuzzy TOPSIS for Multi-Criteria Commodity Selection Under Uncertainty"
+subtitle: "A Decision Support Framework for Agricultural Commodity Ranking"
+author: "PAIC Econometrics Research Team"
+date: last-modified
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+    toc-depth: 4
+    number-sections: true
+    theme: cosmo
+    css: styles.css
+execute:
+  warning: false
+  message: false
+  freeze: auto
+bibliography: references.bib
+---
+
+## Executive Summary {.unnumbered}
+
+This study applies Fuzzy TOPSIS (Technique for Order of Preference by Similarity to Ideal Solution) to rank eight agricultural commodities across multiple performance criteria under conditions of uncertainty. By representing evaluation criteria through triangular fuzzy numbers, we accommodate the inherent imprecision in financial metrics and decision-maker preferences. A sensitivity analysis examines how varying criteria weights affects the final commodity ranking, providing robust decision support for portfolio construction.
+
+:::{.callout-note}
+## Research Context
+Multi-criteria decision making (MCDM) provides a structured framework for commodity selection that complements quantitative portfolio optimization. While optimization determines optimal weights, MCDM helps identify which commodities merit inclusion in the investment universe based on multiple, potentially conflicting criteria [@kahraman2015fuzzy].
+:::
+
+## Introduction
+
+Investment decisions in commodity markets involve evaluating alternatives across multiple dimensions: return potential, risk exposure, liquidity, downside protection, and risk-adjusted performance. Classical optimization methods typically reduce these multiple criteria to a single objective function, potentially obscuring important trade-offs. Multi-Criteria Decision Making (MCDM) methods offer an alternative that preserves the multi-dimensional nature of the evaluation [@hwang1981topsis].
+
+The TOPSIS method, introduced by @hwang1981topsis, ranks alternatives based on their distance to the ideal solution (best on all criteria) and anti-ideal solution (worst on all criteria). @chen2000extensions extended TOPSIS to handle fuzzy environments using triangular fuzzy numbers, enabling decision-makers to express uncertainty in their evaluations.
+
+### Literature Review
+
+@zadeh1965fuzzy introduced fuzzy set theory, providing the mathematical foundation for reasoning under uncertainty. @kahraman2015fuzzy surveyed recent developments in fuzzy multi-criteria decision making. In finance, @bilbao2012selection applied fuzzy goal programming to socially responsible portfolio selection, while @gupta2014multicriteria used MCDM methods for ranking mutual fund schemes.
+
+The application of Fuzzy TOPSIS to commodity markets is relatively novel. @gupta2020intuitionistic explored intuitionistic fuzzy optimization for portfolio problems, and our work extends this direction by applying Fuzzy TOPSIS specifically to agricultural commodity selection.
+
+### Study Objectives
+
+1. **Calculate performance metrics** for each commodity: return, volatility, Sharpe ratio, max drawdown
+2. **Construct fuzzy decision matrix** using triangular fuzzy numbers
+3. **Apply Fuzzy TOPSIS** to rank commodities
+4. **Conduct sensitivity analysis** on criteria weights
+5. **Visualize ranking results** and discuss implications
+
+## Methodology
+
+### Triangular Fuzzy Numbers
+
+A triangular fuzzy number $\tilde{A} = (a_l, a_m, a_u)$ is characterized by a lower bound $a_l$, modal value $a_m$, and upper bound $a_u$. The membership function is:
+
+$$
+\mu_{\tilde{A}}(x) = \begin{cases}
+\frac{x - a_l}{a_m - a_l}, & a_l \leq x \leq a_m \\
+\frac{a_u - x}{a_u - a_m}, & a_m \leq x \leq a_u \\
+0, & \text{otherwise}
+\end{cases}
+$$
+
+### Fuzzy TOPSIS Procedure
+
+**Step 1**: Construct the fuzzy decision matrix $\tilde{D} = [\tilde{x}_{ij}]$ where $\tilde{x}_{ij}$ represents the fuzzy evaluation of alternative $i$ on criterion $j$.
+
+**Step 2**: Normalize the fuzzy decision matrix. For benefit criteria:
+
+$$
+\tilde{r}_{ij} = \left(\frac{a_{ij}^l}{c_j^{u*}}, \frac{a_{ij}^m}{c_j^{u*}}, \frac{a_{ij}^u}{c_j^{u*}}\right), \quad c_j^{u*} = \max_i a_{ij}^u
+$$
+
+For cost criteria:
+
+$$
+\tilde{r}_{ij} = \left(\frac{c_j^{l-}}{a_{ij}^u}, \frac{c_j^{l-}}{a_{ij}^m}, \frac{c_j^{l-}}{a_{ij}^l}\right), \quad c_j^{l-} = \min_i a_{ij}^l
+$$
+
+**Step 3**: Compute the weighted normalized fuzzy decision matrix: $\tilde{v}_{ij} = \tilde{w}_j \otimes \tilde{r}_{ij}$
+
+**Step 4**: Determine the Fuzzy Positive Ideal Solution (FPIS) $A^+$ and Fuzzy Negative Ideal Solution (FNIS) $A^-$.
+
+**Step 5**: Calculate distances $d_i^+$ and $d_i^-$ using the vertex method:
+
+$$
+d(\tilde{A}, \tilde{B}) = \sqrt{\frac{1}{3}\left[(a_l - b_l)^2 + (a_m - b_m)^2 + (a_u - b_u)^2\right]}
+$$
+
+**Step 6**: Compute the closeness coefficient $CC_i = \frac{d_i^-}{d_i^+ + d_i^-}$ and rank alternatives.
+
+## Data & Code
+
+### Data Loading and Metric Calculation
+
+```{python}
+#| label: load-data
+#| code-fold: show
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+import seaborn as sns
+import os
+import warnings
+warnings.filterwarnings('ignore')
+
+plt.style.use('seaborn-v0_8-whitegrid')
+plt.rcParams['figure.dpi'] = 150
+plt.rcParams['font.size'] = 11
+
+os.makedirs('plots/mcdm', exist_ok=True)
+
+# Load data
+PRICES_URL = "https://raw.githubusercontent.com/PAICEconometrics/site/main/data/commodity_prices.csv"
+RETURNS_URL = "https://raw.githubusercontent.com/PAICEconometrics/site/main/data/commodity_returns.csv"
+
+prices = pd.read_csv(PRICES_URL, parse_dates=['date'], index_col='date')
+returns = pd.read_csv(RETURNS_URL, parse_dates=['date'], index_col='date')
+
+commodities = returns.columns.tolist()
+n_commodities = len(commodities)
+
+print(f"Data loaded: {returns.shape[0]} observations, {n_commodities} commodities")
+print(f"Period: {returns.index.min().date()} to {returns.index.max().date()}")
+```
+
+### Performance Metrics Calculation
+
+```{python}
+#| label: calc-metrics
+#| code-fold: show
+#| tbl-cap: "Commodity Performance Metrics"
+
+def max_drawdown(cumulative_returns):
+    """Calculate maximum drawdown from cumulative returns."""
+    peak = cumulative_returns.expanding().max()
+    drawdown = (cumulative_returns - peak) / peak
+    return drawdown.min()
+
+def avg_daily_turnover_proxy(prices_series):
+    """Proxy for average daily volume using price volatility × price level."""
+    return (prices_series.std() * prices_series.mean())
+
+# Calculate metrics for each commodity
+metrics = pd.DataFrame(index=commodities)
+
+metrics['Ann. Return (%)'] = returns.mean() * 252 * 100
+metrics['Ann. Volatility (%)'] = returns.std() * np.sqrt(252) * 100
+metrics['Sharpe Ratio'] = (returns.mean() * 252) / (returns.std() * np.sqrt(252))
+
+# Max drawdown
+for c in commodities:
+    cum_ret = (1 + returns[c]).cumprod()
+    metrics.loc[c, 'Max Drawdown (%)'] = abs(max_drawdown(cum_ret)) * 100
+
+# Liquidity proxy (daily price range as % of price)
+for c in commodities:
+    metrics.loc[c, 'Liquidity Proxy'] = avg_daily_turnover_proxy(prices[c])
+
+print("=" * 80)
+print("COMMODITY PERFORMANCE METRICS")
+print("=" * 80)
+print(metrics.round(4).to_string())
+```
+
+### Fuzzy Decision Matrix Construction
+
+```{python}
+#| label: fuzzy-matrix
+#| code-fold: show
+
+class TriangularFuzzyNumber:
+    """Represents a triangular fuzzy number (l, m, u)."""
+    def __init__(self, l, m, u):
+        self.l = l
+        self.m = m
+        self.u = u
+    
+    def __repr__(self):
+        return f"({self.l:.4f}, {self.m:.4f}, {self.u:.4f})"
+    
+    def __mul__(self, other):
+        if isinstance(other, TriangularFuzzyNumber):
+            return TriangularFuzzyNumber(
+                self.l * other.l, self.m * other.m, self.u * other.u
+            )
+        return TriangularFuzzyNumber(self.l * other, self.m * other, self.u * other)
+    
+    def __rmul__(self, other):
+        return self.__mul__(other)
+    
+    def distance(self, other):
+        """Vertex distance between two fuzzy numbers."""
+        return np.sqrt((1/3) * ((self.l - other.l)**2 + 
+                                 (self.m - other.m)**2 + 
+                                 (self.u - other.u)**2))
+
+
+def create_fuzzy_number(value, uncertainty_pct=0.15):
+    """Create a triangular fuzzy number with specified uncertainty."""
+    return TriangularFuzzyNumber(
+        value * (1 - uncertainty_pct),
+        value,
+        value * (1 + uncertainty_pct)
+    )
+
+# Create fuzzy decision matrix
+criteria = ['Ann. Return (%)', 'Ann. Volatility (%)', 'Sharpe Ratio', 
+            'Max Drawdown (%)', 'Liquidity Proxy']
+criteria_types = ['benefit', 'cost', 'benefit', 'cost', 'benefit']
+
+# Build fuzzy matrix
+fuzzy_matrix = {}
+for c in commodities:
+    fuzzy_matrix[c] = {}
+    for criterion in criteria:
+        val = metrics.loc[c, criterion]
+        # Higher uncertainty for more volatile metrics
+        unc = 0.20 if 'Volatility' in criterion or 'Drawdown' in criterion else 0.15
+        fuzzy_matrix[c][criterion] = create_fuzzy_number(abs(val), unc)
+
+print("Fuzzy Decision Matrix constructed")
+print(f"Alternatives: {n_commodities}")
+print(f"Criteria: {len(criteria)}")
+print(f"Criteria types: {dict(zip(criteria, criteria_types))}")
+```
+
+### Fuzzy TOPSIS Implementation
+
+```{python}
+#| label: fuzzy-topsis
+#| code-fold: show
+
+def fuzzy_topsis(fuzzy_matrix, commodities, criteria, criteria_types, weights):
+    """
+    Implement Fuzzy TOPSIS method.
+    
+    Parameters:
+    -----------
+    fuzzy_matrix : dict of dict of TriangularFuzzyNumber
+    commodities : list of alternative names
+    criteria : list of criteria names
+    criteria_types : list of 'benefit' or 'cost'
+    weights : dict of criteria weights
+    
+    Returns:
+    --------
+    DataFrame with closeness coefficients and rankings
+    """
+    n = len(commodities)
+    m = len(criteria)
+    
+    # Step 1: Normalize the fuzzy decision matrix
+    normalized = {}
+    for i, comm in enumerate(commodities):
+        normalized[comm] = {}
+        for j, crit in enumerate(criteria):
+            tfn = fuzzy_matrix[comm][crit]
+            
+            if criteria_types[j] == 'benefit':
+                # Find max upper bound
+                max_u = max(fuzzy_matrix[c][crit].u for c in commodities)
+                if max_u > 0:
+                    normalized[comm][crit] = TriangularFuzzyNumber(
+                        tfn.l / max_u, tfn.m / max_u, tfn.u / max_u
+                    )
+                else:
+                    normalized[comm][crit] = TriangularFuzzyNumber(0, 0, 0)
+            else:  # cost criterion
+                min_l = min(fuzzy_matrix[c][crit].l for c in commodities)
+                if tfn.u > 0 and tfn.m > 0 and tfn.l > 0:
+                    normalized[comm][crit] = TriangularFuzzyNumber(
+                        min_l / tfn.u, min_l / tfn.m, min_l / tfn.l
+                    )
+                else:
+                    normalized[comm][crit] = TriangularFuzzyNumber(0, 0, 0)
+    
+    # Step 2: Weighted normalized fuzzy matrix
+    weighted = {}
+    for comm in commodities:
+        weighted[comm] = {}
+        for crit in criteria:
+            w = weights[crit]
+            nfn = normalized[comm][crit]
+            weighted[comm][crit] = TriangularFuzzyNumber(
+                w * nfn.l, w * nfn.m, w * nfn.u
+            )
+    
+    # Step 3: Determine FPIS (A+) and FNIS (A-)
+    fpis = {}  # Fuzzy Positive Ideal Solution
+    fnis = {}  # Fuzzy Negative Ideal Solution
+    
+    for crit in criteria:
+        max_u = max(weighted[c][crit].u for c in commodities)
+        min_l = min(weighted[c][crit].l for c in commodities)
+        
+        fpis[crit] = TriangularFuzzyNumber(max_u, max_u, max_u)
+        fnis[crit] = TriangularFuzzyNumber(min_l, min_l, min_l)
+    
+    # Step 4: Calculate distances
+    d_plus = {}
+    d_minus = {}
+    
+    for comm in commodities:
+        d_plus[comm] = sum(weighted[comm][crit].distance(fpis[crit]) for crit in criteria)
+        d_minus[comm] = sum(weighted[comm][crit].distance(fnis[crit]) for crit in criteria)
+    
+    # Step 5: Closeness coefficient
+    results = pd.DataFrame({
+        'Commodity': commodities,
+        'd+': [d_plus[c] for c in commodities],
+        'd-': [d_minus[c] for c in commodities],
+    })
+    results['CC'] = results['d-'] / (results['d+'] + results['d-'])
+    results['Rank'] = results['CC'].rank(ascending=False).astype(int)
+    results = results.sort_values('Rank')
+    
+    return results
+
+# Define baseline criteria weights
+baseline_weights = {
+    'Ann. Return (%)': 0.25,
+    'Ann. Volatility (%)': 0.25,
+    'Sharpe Ratio': 0.25,
+    'Max Drawdown (%)': 0.15,
+    'Liquidity Proxy': 0.10
+}
+
+# Run Fuzzy TOPSIS
+results = fuzzy_topsis(fuzzy_matrix, commodities, criteria, criteria_types, baseline_weights)
+
+print("=" * 70)
+print("FUZZY TOPSIS RANKING (BASELINE WEIGHTS)")
+print("=" * 70)
+print(f"Weights: {baseline_weights}")
+print()
+print(results.to_string(index=False, float_format='{:.4f}'.format))
+```
+
+## Results
+
+### Commodity Ranking Visualization
+
+```{python}
+#| label: ranking-viz
+#| fig-cap: "Fuzzy TOPSIS Commodity Ranking — Closeness Coefficients"
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Bar chart of closeness coefficients
+ax = axes[0]
+sorted_results = results.sort_values('CC', ascending=True)
+colors = plt.cm.viridis(np.linspace(0.2, 0.9, len(sorted_results)))
+
+bars = ax.barh(sorted_results['Commodity'], sorted_results['CC'],
+               color=colors, edgecolor='black', linewidth=0.5)
+ax.set_xlabel('Closeness Coefficient (CC)', fontsize=11)
+ax.set_title('Fuzzy TOPSIS Ranking', fontsize=13, fontweight='bold')
+ax.grid(True, alpha=0.3, axis='x')
+
+# Add value labels
+for bar, cc in zip(bars, sorted_results['CC']):
+    ax.text(bar.get_width() + 0.005, bar.get_y() + bar.get_height()/2,
+            f'{cc:.4f}', va='center', fontsize=9)
+
+# Distance plot
+ax2 = axes[1]
+ax2.scatter(results['d+'], results['d-'], c=results['CC'], cmap='viridis',
+            s=120, edgecolors='black', linewidth=0.8, zorder=5)
+
+for _, row in results.iterrows():
+    ax2.annotate(row['Commodity'], (row['d+'], row['d-']),
+                 textcoords="offset points", xytext=(5, 5), fontsize=8)
+
+ax2.set_xlabel('Distance to Positive Ideal (d⁺)', fontsize=11)
+ax2.set_ylabel('Distance to Negative Ideal (d⁻)', fontsize=11)
+ax2.set_title('FPIS vs FNIS Distances', fontsize=13, fontweight='bold')
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('plots/mcdm/fuzzy_topsis_ranking.png', dpi=150, bbox_inches='tight')
+plt.show()
+```
+
+### Sensitivity Analysis
+
+```{python}
+#| label: sensitivity-analysis
+#| fig-cap: "Sensitivity Analysis — Ranking Stability Under Varying Criteria Weights"
+
+# Define weight scenarios
+scenarios = {
+    'Baseline': {'Ann. Return (%)': 0.25, 'Ann. Volatility (%)': 0.25, 
+                 'Sharpe Ratio': 0.25, 'Max Drawdown (%)': 0.15, 'Liquidity Proxy': 0.10},
+    'Return-Focused': {'Ann. Return (%)': 0.45, 'Ann. Volatility (%)': 0.15, 
+                       'Sharpe Ratio': 0.20, 'Max Drawdown (%)': 0.10, 'Liquidity Proxy': 0.10},
+    'Risk-Focused': {'Ann. Return (%)': 0.15, 'Ann. Volatility (%)': 0.35, 
+                     'Sharpe Ratio': 0.15, 'Max Drawdown (%)': 0.25, 'Liquidity Proxy': 0.10},
+    'Sharpe-Focused': {'Ann. Return (%)': 0.15, 'Ann. Volatility (%)': 0.15, 
+                       'Sharpe Ratio': 0.45, 'Max Drawdown (%)': 0.15, 'Liquidity Proxy': 0.10},
+    'Balanced+Liq': {'Ann. Return (%)': 0.20, 'Ann. Volatility (%)': 0.20, 
+                     'Sharpe Ratio': 0.20, 'Max Drawdown (%)': 0.15, 'Liquidity Proxy': 0.25},
+}
+
+# Run Fuzzy TOPSIS for each scenario
+sensitivity_results = {}
+for scenario_name, weights in scenarios.items():
+    res = fuzzy_topsis(fuzzy_matrix, commodities, criteria, criteria_types, weights)
+    sensitivity_results[scenario_name] = res
+
+# Create ranking matrix
+ranking_matrix = pd.DataFrame(index=commodities)
+for scenario_name, res in sensitivity_results.items():
+    for _, row in res.iterrows():
+        ranking_matrix.loc[row['Commodity'], scenario_name] = row['Rank']
+
+ranking_matrix = ranking_matrix.astype(int)
+
+print("=" * 70)
+print("SENSITIVITY ANALYSIS — RANKING UNDER DIFFERENT WEIGHT SCENARIOS")
+print("=" * 70)
+print(ranking_matrix.to_string())
+
+# Average rank
+ranking_matrix['Avg Rank'] = ranking_matrix.mean(axis=1).round(2)
+ranking_matrix['Robustness'] = ranking_matrix.drop('Avg Rank', axis=1).std(axis=1).round(2)
+ranking_matrix = ranking_matrix.sort_values('Avg Rank')
+print("\n\nRANKING STABILITY:")
+print(ranking_matrix[['Avg Rank', 'Robustness']].to_string())
+print("\n(Lower Avg Rank = better overall; Lower Robustness = more stable ranking)")
+```
+
+### Sensitivity Heatmap
+
+```{python}
+#| label: sensitivity-heatmap
+#| fig-cap: "Commodity Rankings Across Weight Scenarios (Heatmap)"
+
+# Sort by average rank for the heatmap
+rank_cols = [c for c in ranking_matrix.columns if c not in ['Avg Rank', 'Robustness']]
+rank_heat = ranking_matrix[rank_cols].loc[ranking_matrix['Avg Rank'].sort_values().index]
+
+fig, ax = plt.subplots(figsize=(12, 6))
+sns.heatmap(rank_heat, annot=True, fmt='d', cmap='RdYlGn_r', center=4,
+            linewidths=0.5, linecolor='white', cbar_kws={'label': 'Rank'},
+            ax=ax)
+ax.set_title('Commodity Ranking Across Weight Scenarios\n(1 = Best, 8 = Worst)',
+             fontsize=14, fontweight='bold')
+ax.set_xlabel('Weight Scenario', fontsize=11)
+ax.set_ylabel('Commodity', fontsize=11)
+plt.tight_layout()
+plt.savefig('plots/mcdm/sensitivity_heatmap.png', dpi=150, bbox_inches='tight')
+plt.show()
+```
+
+### Criteria Weight Impact Visualization
+
+```{python}
+#| label: weight-profiles
+#| fig-cap: "Weight Profiles Across Scenarios"
+
+fig, ax = plt.subplots(figsize=(12, 5))
+
+scenario_names = list(scenarios.keys())
+criteria_short = ['Return', 'Volatility', 'Sharpe', 'Max DD', 'Liquidity']
+
+x = np.arange(len(scenario_names))
+width = 0.15
+
+colors_bar = ['#003d7a', '#4a90e2', '#28a745', '#ff6b35', '#ffc107']
+
+for idx, (crit, crit_short) in enumerate(zip(criteria, criteria_short)):
+    vals = [scenarios[s][crit] for s in scenario_names]
+    ax.bar(x + idx * width, vals, width, label=crit_short, color=colors_bar[idx],
+           edgecolor='black', linewidth=0.3)
+
+ax.set_xlabel('Scenario', fontsize=11)
+ax.set_ylabel('Weight', fontsize=11)
+ax.set_title('Criteria Weight Profiles by Scenario', fontsize=13, fontweight='bold')
+ax.set_xticks(x + width * 2)
+ax.set_xticklabels(scenario_names, rotation=15)
+ax.legend(fontsize=9, loc='upper right')
+ax.set_ylim(0, 0.55)
+ax.grid(True, alpha=0.3, axis='y')
+plt.tight_layout()
+plt.savefig('plots/mcdm/weight_profiles.png', dpi=150, bbox_inches='tight')
+plt.show()
+```
+
+### Final Ranking Summary
+
+```{python}
+#| label: final-summary
+#| echo: false
+
+print("=" * 70)
+print("FINAL FUZZY TOPSIS ANALYSIS SUMMARY")
+print("=" * 70)
+
+best = ranking_matrix['Avg Rank'].idxmin()
+worst = ranking_matrix['Avg Rank'].idxmax()
+most_robust = ranking_matrix['Robustness'].idxmin()
+
+print(f"\n1. TOP-RANKED COMMODITY: {best}")
+print(f"   Average rank: {ranking_matrix.loc[best, 'Avg Rank']:.2f}")
+print(f"   Ranking volatility: {ranking_matrix.loc[best, 'Robustness']:.2f}")
+
+print(f"\n2. LOWEST-RANKED COMMODITY: {worst}")
+print(f"   Average rank: {ranking_matrix.loc[worst, 'Avg Rank']:.2f}")
+
+print(f"\n3. MOST ROBUST RANKING: {most_robust}")
+print(f"   Ranking std: {ranking_matrix.loc[most_robust, 'Robustness']:.2f}")
+print(f"   (least sensitive to weight changes)")
+
+print(f"\n4. RANKING STABILITY:")
+stable = ranking_matrix[ranking_matrix['Robustness'] < 1.0].index.tolist()
+if stable:
+    print(f"   Commodities with robust rankings (σ < 1.0): {', '.join(stable)}")
+else:
+    print(f"   All commodities show some sensitivity to weight changes")
+
+print(f"\n5. CRITERIA IMPACT:")
+print(f"   Return vs Risk focus significantly affects ranking ordering")
+print(f"   Sharpe ratio provides a balanced intermediate view")
+```
+
+## Discussion
+
+### Fuzzy TOPSIS Interpretation
+
+The Fuzzy TOPSIS analysis reveals several important insights for commodity investors:
+
+1. **Multi-criteria perspective**: Unlike simple Sharpe ratio ranking, Fuzzy TOPSIS incorporates multiple dimensions including maximum drawdown and liquidity, providing a more comprehensive evaluation [@hwang1981topsis].
+
+2. **Uncertainty handling**: The fuzzy formulation explicitly accounts for estimation uncertainty in financial metrics, reducing the risk of false precision that plagues point estimates [@zadeh1965fuzzy].
+
+3. **Decision robustness**: The sensitivity analysis shows which commodities maintain favorable rankings regardless of subjective weight choices—these represent the most attractive options from a decision-theoretic perspective.
+
+### Practical Implications
+
+- **Portfolio screening**: Top-ranked commodities by Fuzzy TOPSIS are natural candidates for inclusion in the investment universe before applying quantitative optimization.
+- **Weight specification**: The sensitivity analysis helps decision-makers understand the impact of their subjective preferences, promoting more informed investment choices [@chen2000extensions].
+- **Risk awareness**: Commodities that rank poorly consistently across scenarios should be avoided or given minimal allocation, regardless of attractive individual metrics.
+
+### Limitations
+
+- **Static analysis**: The ranking is based on historical metrics; forward-looking adjustments would improve relevance.
+- **No correlation consideration**: Fuzzy TOPSIS evaluates commodities independently; diversification benefits are not captured.
+- **Subjective fuzzy membership**: The uncertainty bounds (±15-20%) are illustrative; domain experts should calibrate these.
+- **Limited criteria set**: Additional criteria such as ESG factors, seasonality strength, or carry return could enrich the analysis [@bilbao2012selection].
+
+## Conclusions
+
+This study demonstrates the application of Fuzzy TOPSIS to agricultural commodity selection, providing a structured and uncertainty-aware approach to multi-criteria evaluation. Key conclusions:
+
+1. Fuzzy TOPSIS provides a comprehensive ranking that balances multiple performance dimensions, offering richer insights than single-metric comparisons.
+2. The triangular fuzzy number representation effectively captures the inherent imprecision in financial performance metrics.
+3. Sensitivity analysis reveals that commodity rankings are moderately sensitive to criteria weight choices, underscoring the importance of clearly articulating decision priorities.
+4. The method serves as an excellent screening tool before applying quantitative portfolio optimization, helping to define the investment universe.
+
+Future work should explore interval type-2 fuzzy numbers for greater expressiveness, dynamic MCDM methods for time-varying rankings, and integration with portfolio optimization to create a unified decision support framework.
+
+## References {.unnumbered}

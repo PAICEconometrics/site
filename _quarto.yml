@@ -77,6 +77,10 @@ website:
         contents:
           - text: "Time Series Portfolio"
             href: time_series_portfolio.qmd
+          - text: "Volatility Dynamics (GARCH)"
+            href: commodity_volatility_analysis.qmd
+          - text: "ML vs Econometrics Forecasting"
+            href: commodity_forecasting_ml.qmd
           - text: "GARCH-Hawkes Models"
             href: garch_hawkes_simmodel.qmd
           - text: "Bayesian Time Series"
@@ -93,8 +97,14 @@ website:
         contents:
           - text: "Multi-Objective Framework"
             href: optimization.qmd
+          - text: "NSGA-II Portfolio Optimization"
+            href: commodity_portfolio_optimization.qmd
           - text: "Evolutionary Dynamics in Commodities Markets"  
             href: evolutionary_abm.qmd
+          - text: "Agent-Based Modeling (ABM)"
+            href: commodity_abm_simulation.qmd
+          - text: "Fuzzy TOPSIS Commodity Selection"
+            href: commodity_fuzzy_mcdm.qmd
           - text: "Portfolio Algorithms"
             href: multiperiod_multiobjective_portfolio_optimization.qmd
           - text: "Scenario Simulation"
