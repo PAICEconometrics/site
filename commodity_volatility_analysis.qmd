@@ -3,19 +3,6 @@ title: "Volatility Dynamics in Agricultural Commodity Markets"
 subtitle: "A GARCH Approach to Modeling Time-Varying Volatility"
 author: "PAIC Econometrics Research Team"
 date: last-modified
-format:
-  html:
-    code-fold: true
-    code-tools: true
-    toc: true
-    toc-depth: 4
-    number-sections: true
-    theme: cosmo
-    css: styles.css
-execute:
-  warning: false
-  message: false
-  freeze: auto
 bibliography: references.bib
 ---
 

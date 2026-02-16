@@ -3,19 +3,6 @@ title: "Agent-Based Modeling of Heterogeneous Traders in Commodity Markets"
 subtitle: "Fundamentalists, Chartists, and Noise Traders in Soybean Futures"
 author: "PAIC Econometrics Research Team"
 date: last-modified
-format:
-  html:
-    code-fold: true
-    code-tools: true
-    toc: true
-    toc-depth: 4
-    number-sections: true
-    theme: cosmo
-    css: styles.css
-execute:
-  warning: false
-  message: false
-  freeze: auto
 bibliography: references.bib
 ---
 
