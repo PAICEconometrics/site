@@ -108,8 +108,8 @@ os.makedirs('plots/volatility', exist_ok=True)
 PRICES_URL = "https://raw.githubusercontent.com/PAICEconometrics/site/main/data/commodity_prices.csv"
 RETURNS_URL = "https://raw.githubusercontent.com/PAICEconometrics/site/main/data/commodity_returns.csv"
 
-prices = pd.read_csv(PRICES_URL, parse_dates=['date'], index_col='date')
-returns = pd.read_csv(RETURNS_URL, parse_dates=['date'], index_col='date')
+prices = pd.read_csv(PRICES_URL, parse_dates=['Date'], index_col='Date')
+returns = pd.read_csv(RETURNS_URL, parse_dates=['Date'], index_col='Date')
 
 commodities = prices.columns.tolist()
 

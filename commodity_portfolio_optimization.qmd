@@ -97,7 +97,7 @@ os.makedirs('plots/portfolio', exist_ok=True)
 
 # Load returns data
 RETURNS_URL = "https://raw.githubusercontent.com/PAICEconometrics/site/main/data/commodity_returns.csv"
-returns = pd.read_csv(RETURNS_URL, parse_dates=['date'], index_col='date')
+returns = pd.read_csv(RETURNS_URL, parse_dates=['Date'], index_col='Date')
 
 commodities = returns.columns.tolist()
 n_assets = len(commodities)
