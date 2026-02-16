@@ -8,6 +8,7 @@
 $ProjectDir = "C:\Users\rodri\OneDrive - Grupo Marista\FAE Business School\PAIC 2025-26\Site_PAIC"
 $RscriptPath = "C:\Program Files\R\R-4.4.1\bin\Rscript.exe"
 $RScript = "$ProjectDir\download_commodities.R"
+$EnvFile = "$ProjectDir\scripts\.env"
 $LogDir = "$ProjectDir\scripts\logs"
 $Timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
 $LogFile = "$LogDir\update_$Timestamp.log"
@@ -28,6 +29,22 @@ Write-Host "PAIC Daily Commodity Update Agent"
 Write-Host "Time: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
 Write-Host "=============================================="
 
+# --- Load PAT from .env file ------------------------------------------------
+if (-not (Test-Path $EnvFile)) {
+    Write-Host "ERROR: .env file not found at $EnvFile"
+    Write-Host "Create it with: GITHUB_PAT=github_pat_..."
+    Stop-Transcript
+    exit 1
+}
+
+$pat = (Get-Content $EnvFile | Where-Object { $_ -match "^GITHUB_PAT=" }) -replace "^GITHUB_PAT=", ""
+if ([string]::IsNullOrWhiteSpace($pat)) {
+    Write-Host "ERROR: GITHUB_PAT not found in .env file"
+    Stop-Transcript
+    exit 1
+}
+Write-Host "[OK] GitHub PAT loaded from .env"
+
 # --- Step 1: Run R script to download commodity data -------------------------
 Write-Host "`n[1/3] Running download_commodities.R ..."
 
@@ -42,7 +59,8 @@ try {
         exit 1
     }
     Write-Host "[OK] R script completed successfully."
-} catch {
+}
+catch {
     Write-Host "ERROR: Failed to execute R script: $_"
     Stop-Transcript
     exit 1
@@ -61,22 +79,25 @@ if ([string]::IsNullOrWhiteSpace($gitStatus)) {
 Write-Host "Changes detected:"
 Write-Host $gitStatus
 
-# --- Step 3: Git add, commit, and push ---------------------------------------
+# --- Step 3: Git add, commit, and push with PAT -----------------------------
 Write-Host "`n[3/3] Committing and pushing to GitHub ..."
 
 $today = Get-Date -Format "yyyy-MM-dd"
+$pushUrl = "https://x-access-token:$pat@github.com/PAICEconometrics/site.git"
 
 try {
     & git add data/commodity_prices.csv data/commodity_prices_long.csv data/commodity_returns.csv
     & git commit -m "data: daily commodity update $today"
-    & git push origin main
+    & git push $pushUrl main
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "[OK] Push successful!"
-    } else {
+    }
+    else {
         Write-Host "WARNING: Git push may have failed (exit code: $LASTEXITCODE)"
     }
-} catch {
+}
+catch {
     Write-Host "ERROR: Git operations failed: $_"
     Stop-Transcript
     exit 1
@@ -88,7 +109,7 @@ Write-Host "=============================================="
 
 # Clean up old logs (keep last 30 days)
 Get-ChildItem -Path $LogDir -Filter "update_*.log" |
-    Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } |
-    Remove-Item -Force
+Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } |
+Remove-Item -Force
 
 Stop-Transcript
