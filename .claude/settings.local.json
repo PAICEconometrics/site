@@ -36,7 +36,9 @@
       "Bash(python -m pip install:*)",
       "Bash(python -m jupyter:*)",
       "Bash(\"C:/Python314/python.exe\":*)",
-      "Bash(~/.virtualenvs/r-reticulate/Scripts/pip.exe install:*)"
+      "Bash(~/.virtualenvs/r-reticulate/Scripts/pip.exe install:*)",
+      "Bash(QUARTO_PYTHON=\"C:/Python314/python.exe\" PATH=\"/c/Program Files/R/R-4.4.1/bin:$PATH\" \"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render:*)",
+      "Bash(\"/c/Program Files/R/R-4.4.1/bin/Rscript.exe\" -e \"cat\\(Sys.getenv\\(''RETICULATE_PYTHON''\\), ''\\\\n''\\); cat\\(Sys.getenv\\(''RETICULATE_PYTHON_ENV''\\), ''\\\\n''\\)\")"
     ]
   },
   "enableAllProjectMcpServers": true,

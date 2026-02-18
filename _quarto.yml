@@ -3,7 +3,7 @@ project:
   output-dir: "."
 
 execute:
-  freeze: auto  # ou 'true' para forçar uso de cache local
+  freeze: true  # usar cache local, não re-executar notebooks
   
 website:
   title: "PAIC Econometrics | FAE"
