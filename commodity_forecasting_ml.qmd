@@ -130,10 +130,10 @@ os.makedirs('plots/forecasting', exist_ok=True)
 
 # Load price data
 PRICES_URL = "https://raw.githubusercontent.com/PAICEconometrics/site/main/data/commodity_prices.csv"
-prices = pd.read_csv(PRICES_URL, parse_dates=['Date'], index_col='Date')
+prices = pd.read_csv(PRICES_URL, parse_dates=['date'], index_col='date')
 
 # Focus on Soybean
-soybean = prices['Soybeans'].dropna()
+soybean = prices['Soybean'].dropna()
 
 print(f"Soybean price series: {len(soybean)} observations")
 print(f"Period: {soybean.index.min().date()} to {soybean.index.max().date()}")

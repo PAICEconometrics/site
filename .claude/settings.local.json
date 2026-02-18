@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__scientific-skills__list_skills",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__scientific-skills__find_helpful_skills",
+      "mcp__claude_ai_Hugging_Face__paper_search",
+      "WebSearch",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:papers.ssrn.com)",
+      "Bash(quarto render:*)",
+      "Bash(cmd.exe /c \"where quarto\")",
+      "Bash(powershell.exe -Command \"Get-Command quarto -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -Command:*)",
+      "Bash(\"C:/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render structural-breaks.qmd)",
+      "Bash(echo:*)",
+      "Bash(printenv:*)",
+      "Bash(set)",
+      "Bash(env:*)",
+      "Bash(COMSPEC=\"C:/Windows/System32/cmd.exe\" PATH=\"/c/Windows/System32:/c/Program Files/R/R-4.4.1/bin/x64:/c/Program Files/RStudio/resources/app/bin/quarto/bin:$PATH\" \"C:/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render:*)",
+      "Bash(COMSPEC=\"C:/Windows/System32/cmd.exe\" PATH=\"/c/Windows/System32:/c/Program Files/R/R-4.4.1/bin/x64:/c/Program Files/RStudio/resources/app/bin/quarto/bin:/c/Python314:$PATH\" \"C:/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render:*)",
+      "Bash(COMSPEC=\"C:/Windows/System32/cmd.exe\" PATH=\"/c/Windows/System32:/c/Program Files/R/R-4.4.1/bin/x64:/c/Program Files/RStudio/resources/app/bin/quarto/bin:/c/Python314:$PATH\" \"C:/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render \"C:/Users/rodri/OneDrive - Grupo Marista/FAE Business School/PAIC 2025-26/Site_PAIC/structural-breaks.qmd\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(COMSPEC=\"C:/Windows/System32/cmd.exe\" PATH=\"/c/Windows/System32:/c/Program Files/R/R-4.4.1/bin/x64:/c/Program Files/RStudio/resources/app/bin/quarto/bin:/c/Python314:$PATH\" \"C:/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render \"C:/Users/rodri/OneDrive - Grupo Marista/FAE Business School/PAIC 2025-26/Site_PAIC\")",
+      "Bash(COMSPEC=\"C:/Windows/System32/cmd.exe\" PATH=\"/c/Windows/System32:/c/Program Files/R/R-4.4.1/bin/x64:/c/Program Files/RStudio/resources/app/bin/quarto/bin:/c/Python314:/c/Users/rodri/AppData/Local/Programs/Python/Python312:$PATH\" \"C:/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render:*)",
+      "Bash(COMSPEC=\"C:/Windows/System32/cmd.exe\" NODE_OPTIONS=\"--max-old-space-size=8192\" quarto render:*)",
+      "Bash(where:*)",
+      "Bash(\"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render commodity_abm_simulation.qmd)",
+      "Bash(COMSPEC=\"C:/Windows/System32/cmd.exe\" PATH=\"/c/Windows/System32:/c/Program Files/R/R-4.4.1/bin/x64:/c/Program Files/RStudio/resources/app/bin/quarto/bin:/c/Users/rodri/AppData/Local/Programs/Python/Python312:/c/Users/rodri/AppData/Local/Programs/Python/Python312/Scripts:$PATH\" \"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render:*)",
+      "Bash(quarto check:*)",
+      "Bash(\"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render commodity_forecasting_ml.qmd --to html)",
+      "Bash(QUARTO_PYTHON=\"C:/Python314/python.exe\" \"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" check:*)",
+      "Bash(QUARTO_PYTHON=\"C:/Python314/python.exe\" \"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(python -m jupyter:*)",
+      "Bash(\"C:/Python314/python.exe\":*)",
+      "Bash(~/.virtualenvs/r-reticulate/Scripts/pip.exe install:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "scientific-skills"
+  ]
+}
