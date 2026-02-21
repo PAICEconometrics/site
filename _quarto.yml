@@ -72,7 +72,11 @@ website:
           - text: "AI Agent -- PaperHunter"
             href: openAI_agent.qmd
           - text: "RAG Research Assistant"
-            href: rag_research_assistant.qmd     
+            href: rag_research_assistant.qmd
+          - text: "Call for Papers Agent Chatbot"
+          - href: cfp_agent_chatbot.qmd
+          - text: "Call for Papers Search Hub"
+          - href: cfp_search_hub.qmd        
       - section: "📊 Predictive Modeling"
         contents:
           - text: "Time Series Portfolio"

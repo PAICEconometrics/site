@@ -1,0 +1,303 @@
+---
+title: "CFP Finder – AI Agent"
+subtitle: "AI-Powered Search for Calls for Papers, Special Issues & Conferences"
+---
+
+::: {.callout-tip}
+### How It Works
+
+This agent uses **Google Gemini** (free tier) with **live web search** to find open CFPs relevant to our research.
+Paste your free API key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey){target="_blank"} — it stays in your browser only, nothing is stored.
+:::
+
+```{=html}
+<style>
+  /* ===== Chat shell — sits inside the Quarto page layout ===== */
+  .cfp-chat-shell {
+    display: flex; flex-direction: column;
+    height: 70vh; min-height: 480px;
+    border: 1px solid var(--bs-border-color, #333);
+    border-radius: 12px; overflow: hidden;
+    background: var(--bs-body-bg, #222);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ===== Key bar ===== */
+  .cfp-key-bar {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--bs-border-color, #333);
+    background: rgba(0,0,0,.15);
+  }
+  .cfp-key-bar input {
+    background: transparent; border: 1px solid var(--bs-border-color, #444);
+    color: var(--bs-body-color, #ddd); border-radius: 6px;
+    font-family: monospace; font-size: 12px; padding: 5px 10px;
+    width: 240px; outline: none;
+  }
+  .cfp-key-bar input:focus { border-color: #003d7a; }
+  .cfp-key-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .cfp-key-dot.off { background: #dc3545; }
+  .cfp-key-dot.on  { background: #28a745; box-shadow: 0 0 6px #28a74560; }
+  .cfp-key-link { font-size: 11px; color: #4a90e2; text-decoration: none; }
+  .cfp-key-link:hover { text-decoration: underline; }
+
+  /* ===== Quick-topic chips ===== */
+  .cfp-topics { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid var(--bs-border-color, #333); }
+  .cfp-topic-chip {
+    padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--bs-border-color, #444);
+    background: transparent; color: var(--bs-body-color, #bbb);
+    cursor: pointer; transition: all .2s;
+  }
+  .cfp-topic-chip:hover { border-color: #003d7a; color: #4a90e2; }
+
+  /* ===== Chat messages ===== */
+  .cfp-chat-area {
+    flex: 1; overflow-y: auto; padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .cfp-msg { display: flex; gap: 10px; animation: cfpFadeIn .3s ease; }
+  .cfp-msg.user { flex-direction: row-reverse; }
+  @keyframes cfpFadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .cfp-avatar {
+    width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  .cfp-msg.bot .cfp-avatar { background: #003d7a; }
+  .cfp-msg.user .cfp-avatar { background: #ff6b35; }
+
+  .cfp-bubble {
+    padding: 12px 16px; border-radius: 12px; max-width: 85%;
+    font-size: 14px; line-height: 1.7; word-wrap: break-word;
+  }
+  .cfp-msg.bot .cfp-bubble {
+    background: rgba(0,61,122,.12); border: 1px solid rgba(0,61,122,.25);
+    border-top-left-radius: 3px;
+  }
+  .cfp-msg.user .cfp-bubble {
+    background: rgba(255,107,53,.15); border: 1px solid rgba(255,107,53,.25);
+    border-top-right-radius: 3px;
+  }
+  .cfp-bubble a { color: #4a90e2; }
+  .cfp-bubble strong { color: var(--bs-body-color, #eee); }
+
+  /* Grounding source chips */
+  .cfp-sources { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .cfp-src-chip {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 3px 8px; border-radius: 5px; font-size: 11px;
+    background: rgba(0,61,122,.1); border: 1px solid rgba(0,61,122,.2);
+    color: #4a90e2; text-decoration: none; transition: background .2s;
+  }
+  .cfp-src-chip:hover { background: rgba(0,61,122,.2); }
+
+  /* Typing dots */
+  .cfp-typing { display: flex; gap: 4px; padding: 6px 0; }
+  .cfp-typing span {
+    width: 7px; height: 7px; border-radius: 50%; background: #666;
+    animation: cfpBlink 1.4s infinite both;
+  }
+  .cfp-typing span:nth-child(2) { animation-delay:.2s; }
+  .cfp-typing span:nth-child(3) { animation-delay:.4s; }
+  @keyframes cfpBlink { 0%,80%,100%{opacity:.3} 40%{opacity:1} }
+
+  /* Welcome screen */
+  .cfp-welcome { text-align:center; padding: 30px 16px; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; }
+  .cfp-welcome h3 { margin:0; font-size:20px; }
+  .cfp-welcome p { color: var(--bs-secondary-color, #999); font-size:13px; margin:0; max-width:460px; }
+  .cfp-example-btn {
+    padding: 10px 16px; border-radius: 8px; font-size: 13px;
+    border: 1px solid var(--bs-border-color, #444);
+    background: transparent; color: var(--bs-body-color, #bbb);
+    cursor: pointer; transition: all .2s; text-align: left; width: 100%; max-width: 460px;
+  }
+  .cfp-example-btn:hover { border-color: #003d7a; color: #4a90e2; }
+
+  /* ===== Input bar ===== */
+  .cfp-input-bar {
+    display: flex; gap: 8px; padding: 12px 16px;
+    border-top: 1px solid var(--bs-border-color, #333);
+    background: rgba(0,0,0,.1);
+  }
+  .cfp-input-bar textarea {
+    flex: 1; padding: 10px 14px; border-radius: 8px;
+    border: 1px solid var(--bs-border-color, #444);
+    background: transparent; color: var(--bs-body-color, #ddd);
+    font-size: 14px; outline: none; resize: none;
+    min-height: 40px; max-height: 100px;
+  }
+  .cfp-input-bar textarea:focus { border-color: #003d7a; }
+  .cfp-send-btn {
+    width: 40px; height: 40px; border-radius: 8px; border: none;
+    background: #003d7a; color: #fff; font-size: 16px;
+    cursor: pointer; transition: all .2s; flex-shrink: 0;
+  }
+  .cfp-send-btn:hover { background: #00509e; }
+  .cfp-send-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .cfp-footer { text-align:center; font-size:11px; color:#777; padding: 6px; }
+  .cfp-footer a { color: #4a90e2; }
+</style>
+
+<!-- ===== APP SHELL ===== -->
+<div class="cfp-chat-shell">
+
+  <!-- Key bar -->
+  <div class="cfp-key-bar">
+    <span class="cfp-key-dot off" id="kDot"></span>
+    <input type="password" id="gKey" placeholder="Paste Gemini API key..." oninput="cfpCheckKey()" autocomplete="off">
+    <a class="cfp-key-link" href="https://aistudio.google.com/apikey" target="_blank">Get free key &#8599;</a>
+  </div>
+
+  <!-- Quick topics -->
+  <div class="cfp-topics">
+    <button class="cfp-topic-chip" onclick="cfpAskTopic('GAMLSS MSGARCH volatility regime switching')">&#128202; GAMLSS / MSGARCH</button>
+    <button class="cfp-topic-chip" onclick="cfpAskTopic('multi-objective portfolio optimization NSGA-II evolutionary')">&#127919; Multi-Obj. Optimization</button>
+    <button class="cfp-topic-chip" onclick="cfpAskTopic('reinforcement learning finance portfolio Q-learning')">&#129302; RL in Finance</button>
+    <button class="cfp-topic-chip" onclick="cfpAskTopic('agricultural commodity markets futures grain')">&#127806; Commodities</button>
+    <button class="cfp-topic-chip" onclick="cfpAskTopic('financial econometrics GARCH Bayesian time series')">&#128200; Econometrics</button>
+    <button class="cfp-topic-chip" onclick="cfpAskTopic('computational intelligence metaheuristic optimization')">&#9889; Comp. Intelligence</button>
+  </div>
+
+  <!-- Chat area -->
+  <div class="cfp-chat-area" id="cfpChat">
+    <div class="cfp-welcome" id="cfpWelcome">
+      <div style="font-size:40px">&#128300;</div>
+      <h3>CFP Research Agent</h3>
+      <p>I search the web in real time for open calls for papers, special issues, conferences, and journal opportunities relevant to PAIC research. Ask me anything!</p>
+      <button class="cfp-example-btn" onclick="cfpAskEx(this)">&#128269; Find open CFPs for multi-objective portfolio optimization with evolutionary algorithms</button>
+      <button class="cfp-example-btn" onclick="cfpAskEx(this)">&#128197; What IEEE conferences in 2026 accept papers on computational intelligence in finance?</button>
+      <button class="cfp-example-btn" onclick="cfpAskEx(this)">&#128240; Are there any special issues on GARCH, regime switching, or volatility modeling open now?</button>
+      <button class="cfp-example-btn" onclick="cfpAskEx(this)">&#127806; Find journal CFPs related to agricultural commodity risk management and futures markets</button>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="cfp-input-bar">
+    <textarea id="cfpInput" rows="1" placeholder="Ask about calls for papers, deadlines, conferences..."
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();cfpSend()}"
+              oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+    <button class="cfp-send-btn" id="cfpSendBtn" onclick="cfpSend()" disabled>&#10148;</button>
+  </div>
+
+  <div class="cfp-footer">
+    Powered by <a href="https://ai.google.dev" target="_blank">Google Gemini</a> with live web search &#8226; 100% client-side &#8226; No data stored
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var hist=[], busy=false;
+
+  var SYS = [
+    "You are an expert academic research assistant specialized in finding open Calls for Papers (CFPs).",
+    "Your primary task is to search the web and find currently open or upcoming CFPs, special issues,",
+    "conference submissions, and journal submission opportunities.",
+    "",
+    "The user is part of PAIC Econometrics at FAE Business School, researching:",
+    "- GAMLSS and MSGARCH models for volatility and distributional analysis of agricultural commodity returns",
+    "- Multi-objective portfolio optimization using evolutionary algorithms (NSGA-II, DEoptim)",
+    "- Reinforcement Learning (Q-Learning, K-Bandit) for dynamic multi-period portfolio allocation",
+    "- Agricultural commodity markets (corn, soybean, wheat futures)",
+    "- Financial econometrics, regime switching, Bayesian methods",
+    "",
+    "For each CFP found, provide: **Name**, **Type** (journal/conference/workshop/special issue),",
+    "**Deadline**, **URL**, and a brief description. Search IEEE (CEC, WCCI, SSCI), ACM, INFORMS,",
+    "Elsevier (EJOR, Expert Systems), Springer, MDPI, Wiley, Taylor & Francis, and specialized venues.",
+    "Prioritize opportunities with upcoming deadlines in 2025-2026. Always include URLs.",
+    "Respond in English."
+  ].join("\n");
+
+  function $(id){return document.getElementById(id)}
+
+  window.cfpCheckKey=function(){
+    var k=$("gKey").value.trim();
+    $("kDot").className="cfp-key-dot "+(k.length>10?"on":"off");
+    $("cfpSendBtn").disabled=k.length<=10;
+  };
+
+  function addMsg(role,html,sources){
+    var w=$("cfpWelcome"); if(w) w.style.display="none";
+    var area=$("cfpChat"), d=document.createElement("div");
+    d.className="cfp-msg "+role;
+    var av='<div class="cfp-avatar">'+(role==="user"?"&#128100;":"&#129302;")+'</div>';
+    var src="";
+    if(sources&&sources.length){
+      src='<div class="cfp-sources">';
+      sources.forEach(function(s){
+        var dom=""; try{dom=new URL(s.uri).hostname.replace("www.","")}catch(e){dom=s.uri}
+        src+='<a class="cfp-src-chip" href="'+s.uri+'" target="_blank" rel="noopener">&#128279; '+(s.title||dom)+'</a>';
+      });
+      src+='</div>';
+    }
+    d.innerHTML=av+'<div class="cfp-bubble">'+html+src+'</div>';
+    area.appendChild(d); area.scrollTop=area.scrollHeight;
+  }
+
+  function addTyping(){
+    var d=document.createElement("div"); d.className="cfp-msg bot"; d.id="cfpTyping";
+    d.innerHTML='<div class="cfp-avatar">&#129302;</div><div class="cfp-bubble"><div class="cfp-typing"><span></span><span></span><span></span></div></div>';
+    $("cfpChat").appendChild(d); $("cfpChat").scrollTop=$("cfpChat").scrollHeight;
+  }
+
+  function renderMd(t){
+    return t
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
+      .replace(/(^|[\s(])(https?:\/\/[^\s)<]+)/g,'$1<a href="$2" target="_blank">$2</a>')
+      .replace(/\n/g,'<br>');
+  }
+
+  window.cfpSend=function(){
+    if(busy) return;
+    var key=$("gKey").value.trim(), inp=$("cfpInput"), txt=inp.value.trim();
+    if(!txt||!key) return;
+    inp.value=""; inp.style.height="auto";
+    addMsg("user", txt.replace(/&/g,"&amp;").replace(/</g,"&lt;"));
+    hist.push({role:"user",parts:[{text:txt}]});
+    busy=true; $("cfpSendBtn").disabled=true; addTyping();
+
+    fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+key,{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        system_instruction:{parts:[{text:SYS}]},
+        contents:hist,
+        tools:[{google_search:{}}],
+        generationConfig:{temperature:0.7,maxOutputTokens:4096}
+      })
+    })
+    .then(function(r){ return r.ok ? r.json() : r.json().then(function(e){throw new Error(e.error?e.error.message:"API error")}); })
+    .then(function(res){
+      var el=$("cfpTyping"); if(el) el.remove();
+      busy=false; $("cfpSendBtn").disabled=false;
+      var txt="", src=[];
+      if(res.candidates&&res.candidates[0]){
+        var c=res.candidates[0];
+        if(c.content&&c.content.parts) c.content.parts.forEach(function(p){if(p.text) txt+=p.text;});
+        if(c.groundingMetadata&&c.groundingMetadata.groundingChunks)
+          c.groundingMetadata.groundingChunks.forEach(function(ch){if(ch.web) src.push({uri:ch.web.uri,title:ch.web.title||""});});
+      }
+      if(!txt) txt="No response received. Please try again.";
+      hist.push({role:"model",parts:[{text:txt}]});
+      addMsg("bot",renderMd(txt),src);
+    })
+    .catch(function(err){
+      var el=$("cfpTyping"); if(el) el.remove();
+      busy=false; $("cfpSendBtn").disabled=false;
+      addMsg("bot",'<strong style="color:#dc3545">Error:</strong> '+(err.message||err)+
+        '<br><br>Check your Gemini API key. <a href="https://aistudio.google.com/apikey" target="_blank">Get a free key here</a>.');
+    });
+  };
+
+  window.cfpAskTopic=function(kw){ $("cfpInput").value="Find open calls for papers related to: "+kw; cfpSend(); };
+  window.cfpAskEx=function(btn){ $("cfpInput").value=(btn.textContent||btn.innerText).replace(/^[\s\S]?\s/,"").trim(); cfpSend(); };
+})();
+</script>
+```
+
+

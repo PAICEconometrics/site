@@ -1,0 +1,183 @@
+---
+title: "CFP Finder – Search Hub"
+subtitle: "Quick-Search Portal Across 12+ Academic Databases & Publishers"
+---
+
+::: {.callout-note}
+### No API Key Required
+
+This tool runs **100% in your browser** — select your topics, click search, and each source opens in a new tab with a tailored query. Zero cost, zero accounts needed.
+:::
+
+```{=html}
+<style>
+  .cfps-section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; margin: 24px 0 10px; color: var(--bs-secondary-color, #888);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cfps-section-label::after { content:''; flex:1; height:1px; background: var(--bs-border-color, #333); }
+
+  .cfps-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .cfps-chip {
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    border: 1px solid var(--bs-border-color, #444);
+    background: transparent; color: var(--bs-body-color, #bbb);
+    cursor: pointer; transition: all .2s;
+  }
+  .cfps-chip:hover { border-color: #003d7a; color: #4a90e2; }
+  .cfps-chip.on { background: #003d7a; border-color: #003d7a; color: #fff; }
+
+  .cfps-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .cfps-pill {
+    padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--bs-border-color, #444);
+    background: transparent; color: var(--bs-body-color, #bbb);
+    cursor: pointer; transition: all .2s;
+  }
+  .cfps-pill:hover { border-color: #ff6b35; color: #ff6b35; }
+  .cfps-pill.on { background: rgba(255,107,53,.15); border-color: #ff6b35; color: #ff6b35; }
+
+  .cfps-input {
+    width: 100%; padding: 10px 14px; border-radius: 8px;
+    border: 1px solid var(--bs-border-color, #444);
+    background: transparent; color: var(--bs-body-color, #ddd);
+    font-size: 14px; outline: none; margin-bottom: 20px;
+  }
+  .cfps-input:focus { border-color: #003d7a; }
+
+  .cfps-go {
+    padding: 10px 28px; border-radius: 8px; border: none;
+    background: #003d7a; color: #fff; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .2s; margin-bottom: 28px;
+  }
+  .cfps-go:hover { background: #00509e; }
+
+  .cfps-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px; margin-bottom: 24px;
+  }
+
+  @keyframes cfpsCardIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .cfps-card {
+    border: 1px solid var(--bs-border-color, #333);
+    border-radius: 10px; padding: 18px; transition: all .2s;
+    display: flex; flex-direction: column; gap: 10px;
+    animation: cfpsCardIn .35s ease both;
+  }
+  .cfps-card:hover { border-color: #003d7a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+
+  .cfps-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; width: fit-content;
+  }
+  .cfps-badge-aggregator { background: rgba(0,61,122,.12); color: #4a90e2; border: 1px solid rgba(0,61,122,.2); }
+  .cfps-badge-publisher  { background: rgba(255,107,53,.1); color: #ff6b35; border: 1px solid rgba(255,107,53,.2); }
+  .cfps-badge-society    { background: rgba(40,167,69,.1); color: #28a745; border: 1px solid rgba(40,167,69,.2); }
+  .cfps-badge-database   { background: rgba(74,144,226,.1); color: #4a90e2; border: 1px solid rgba(74,144,226,.2); }
+
+  .cfps-card h4 { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .cfps-card .cfps-desc { font-size: 12px; line-height: 1.5; color: var(--bs-secondary-color, #999); margin: 0; flex: 1; }
+  .cfps-card-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: #4a90e2; font-size: 12px; font-weight: 600;
+    text-decoration: none; padding: 6px 12px; border-radius: 6px;
+    background: rgba(0,61,122,.08); border: 1px solid rgba(0,61,122,.15);
+    transition: background .2s; width: fit-content;
+  }
+  .cfps-card-link:hover { background: rgba(0,61,122,.15); }
+</style>
+
+<div class="cfps-section-label">Research Topics — click to select</div>
+<div class="cfps-chips" id="sChips"></div>
+
+<div class="cfps-section-label">Venue Type</div>
+<div class="cfps-pills" id="sPills"></div>
+
+<div class="cfps-section-label">Additional Keywords (optional)</div>
+<input class="cfps-input" id="sCustom" placeholder="e.g. Bayesian estimation, deep RL, Pareto front, risk parity...">
+
+<button class="cfps-go" onclick="sSearch()">&#128269; Search Across All Sources</button>
+
+<div id="sResults"></div>
+
+<script>
+(function(){
+  "use strict";
+  var TOPICS=[
+    {id:"gamlss",icon:"&#128202;",label:"GAMLSS &amp; MSGARCH",kw:["GAMLSS","MSGARCH","regime switching","volatility modeling"]},
+    {id:"moo",icon:"&#127919;",label:"Multi-Objective Optimization",kw:["multi-objective optimization","NSGA-II","Pareto","evolutionary algorithm","portfolio optimization"]},
+    {id:"rl",icon:"&#129302;",label:"Reinforcement Learning in Finance",kw:["reinforcement learning","Q-learning","bandit","dynamic portfolio"]},
+    {id:"commodity",icon:"&#127806;",label:"Agricultural Commodity Markets",kw:["agricultural commodity","commodity futures","commodity volatility","grain markets"]},
+    {id:"econom",icon:"&#128200;",label:"Financial Econometrics",kw:["financial econometrics","GARCH","Bayesian","time series","risk management"]},
+    {id:"ml",icon:"&#9889;",label:"ML &amp; Computational Intelligence",kw:["machine learning","computational intelligence","metaheuristic","deep learning finance"]}
+  ];
+  var VENUES=[{id:"all",label:"All"},{id:"journal",label:"Journals"},{id:"conf",label:"Conferences"},{id:"special",label:"Special Issues"}];
+  var SOURCES=[
+    {name:"WikiCFP",badge:"aggregator",desc:"Largest CFP wiki — conferences, workshops, and journal special issues.",fn:function(q){return "http://www.wikicfp.com/cfp/servlet/tool.search?q="+e(q)+"&year=f";}},
+    {name:"CFPList",badge:"aggregator",desc:"Curated CFP list with deadline tracking and email alerts.",fn:function(q){return "https://www.cfplist.com/?q="+e(q);}},
+    {name:"CORE Conference Rankings",badge:"database",desc:"Search CORE-ranked conferences — filter by ERA ranking (A*, A, B, C).",fn:function(q){return "https://portal.core.edu.au/conf-ranks/?search="+e(q)+"&by=all";}},
+    {name:"Elsevier — Call for Papers",badge:"publisher",desc:"Special issues in EJOR, Expert Systems, Energy Economics, J. of Commodity Markets.",fn:function(q){return "https://www.google.com/search?q=site:elsevier.com+%22call+for+papers%22+"+e(q)+"+2025+OR+2026";}},
+    {name:"Springer Nature — Open CFPs",badge:"publisher",desc:"CFPs across Springer journals — OR Spectrum, Computational Economics, Annals of OR.",fn:function(q){return "https://www.google.com/search?q=site:springer.com+%22call+for+papers%22+"+e(q)+"+2025+OR+2026";}},
+    {name:"MDPI — Special Issues",badge:"publisher",desc:"Open-access special issues in Mathematics, Algorithms, JRFM, Economies, Entropy.",fn:function(q){return "https://www.mdpi.com/special_issues?q="+e(q);}},
+    {name:"IEEE Xplore — Conferences",badge:"society",desc:"IEEE conferences: CEC, WCCI, SSCI, CIFER, and CI venues.",fn:function(q){return "https://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&queryText="+e(q+" call for papers");}},
+    {name:"IEEE CIS — Events Calendar",badge:"society",desc:"Computational Intelligence Society events — evolutionary computation, neural networks.",fn:function(){return "https://cis.ieee.org/conferences";}},
+    {name:"Google Scholar — CFP Search",badge:"database",desc:"Broad search — find special issue editorials that announce CFPs.",fn:function(q){return "https://scholar.google.com/scholar?q=%22call+for+papers%22+"+e(q)+"&as_ylo=2025";}},
+    {name:"SSRN — Related Papers",badge:"database",desc:"Social Science Research Network — find papers and associated CFPs.",fn:function(q){return "https://www.google.com/search?q=site:ssrn.com+%22call+for+papers%22+"+e(q);}},
+    {name:"INFORMS — Conferences",badge:"society",desc:"Operations Research &amp; Management Science — Management Science, OR, MSOM.",fn:function(q){return "https://www.google.com/search?q=site:informs.org+%22call+for+papers%22+"+e(q)+"+2025+OR+2026";}},
+    {name:"Econometric Society",badge:"society",desc:"World Congress, regional meetings, and symposia in econometrics.",fn:function(q){return "https://www.google.com/search?q=%22econometric+society%22+%22call+for+papers%22+"+e(q)+"+2025+OR+2026";}}
+  ];
+
+  function e(s){return encodeURIComponent(s)}
+  var sel={}, venue="all";
+
+  function renderChips(){
+    var g=document.getElementById("sChips"); g.innerHTML="";
+    TOPICS.forEach(function(t){
+      var b=document.createElement("button"); b.className="cfps-chip"+(sel[t.id]?" on":"");
+      b.innerHTML=t.icon+" "+t.label;
+      b.onclick=function(){sel[t.id]=!sel[t.id];renderChips();}; g.appendChild(b);
+    });
+  }
+  function renderPills(){
+    var r=document.getElementById("sPills"); r.innerHTML="";
+    VENUES.forEach(function(v){
+      var b=document.createElement("button"); b.className="cfps-pill"+(venue===v.id?" on":"");
+      b.textContent=v.label; b.onclick=function(){venue=v.id;renderPills();}; r.appendChild(b);
+    });
+  }
+  function buildQ(){
+    var p=[];
+    TOPICS.forEach(function(t){if(sel[t.id]){p.push(t.kw[0]);if(t.kw[1])p.push(t.kw[1]);}});
+    if(!p.length) p=["multi-objective portfolio optimization","MSGARCH","reinforcement learning","agricultural commodity"];
+    var vt=venue==="journal"?"journal":venue==="conf"?"conference":venue==="special"?"special issue":"";
+    var c=document.getElementById("sCustom").value.trim();
+    if(c) p.push(c); if(vt) p.push(vt);
+    return p.join(" ");
+  }
+
+  window.sSearch=function(){
+    var q=buildQ(), area=document.getElementById("sResults");
+    var dq=q.length>80?q.substring(0,80)+"...":q;
+    var cards=SOURCES.map(function(s,i){
+      return '<div class="cfps-card" style="animation-delay:'+(i*.05)+'s">'+
+        '<span class="cfps-badge cfps-badge-'+s.badge+'">'+s.badge+'</span>'+
+        '<h4>'+s.name+'</h4>'+
+        '<p class="cfps-desc">'+s.desc+'</p>'+
+        '<a class="cfps-card-link" href="'+s.fn(q)+'" target="_blank" rel="noopener">&#128279; Search now &#8594;</a></div>';
+    });
+    area.innerHTML='<p style="font-size:13px;color:var(--bs-secondary-color,#888);margin-bottom:14px"><strong>'+SOURCES.length+' sources ready</strong> &#8212; Query: <code>'+dq+'</code></p>'+
+      '<div class="cfps-grid">'+cards.join("")+'</div>';
+  };
+
+  renderChips(); renderPills();
+})();
+</script>
+```
+
+::: {.callout-tip}
+### Pro Tips
+
+Set **Google Scholar alerts** for your keywords to get notified automatically of new CFPs. For **Special Issues**, search directly on MDPI and Elsevier portals — they update frequently. Check **WikiCFP** weekly for the latest deadlines.
+:::
