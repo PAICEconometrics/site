@@ -1748,6 +1748,18 @@
     ]
   },
   {
+    "objectID": "cfp_search_hub.html",
+    "href": "cfp_search_hub.html",
+    "title": "CFP Finder – Search Hub",
+    "section": "",
+    "text": "NoteNo API Key Required\n\n\n\nThis tool runs 100% in your browser — select your topics, click search, and each source opens in a new tab with a tailored query. Zero cost, zero accounts needed.\n\n\n\n\nResearch Topics — click to select\n\n\nVenue Type\n\n\nAdditional Keywords (optional)\n\n\n🔍 Search Across All Sources\n\n\n\n\n\n\n\n\n\n\nTipPro Tips\n\n\n\nSet Google Scholar alerts for your keywords to get notified automatically of new CFPs. For Special Issues, search directly on MDPI and Elsevier portals — they update frequently. Check WikiCFP weekly for the latest deadlines.",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "CFP Finder – Search Hub"
+    ]
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About the Project",
@@ -1877,6 +1889,18 @@
       "Home",
       "📘 Introduction",
       "About the Team"
+    ]
+  },
+  {
+    "objectID": "cfp_agent_chatbot.html",
+    "href": "cfp_agent_chatbot.html",
+    "title": "CFP Finder – AI Agent",
+    "section": "",
+    "text": "TipHow It Works\n\n\n\nThis agent uses Google Gemini (free tier) with live web search to find open CFPs relevant to our research. Paste your free API key from aistudio.google.com/apikey — it stays in your browser only, nothing is stored.\n\n\n\n\n\n\n\n  \n  \n    \n    \n    Get free key ↗\n  \n\n  \n  \n    📊 GAMLSS / MSGARCH\n    🎯 Multi-Obj. Optimization\n    🤖 RL in Finance\n    🌾 Commodities\n    📈 Econometrics\n    ⚡ Comp. Intelligence\n  \n\n  \n  \n    \n      🔬\n      CFP Research Agent\n      I search the web in real time for open calls for papers, special issues, conferences, and journal opportunities relevant to PAIC research. Ask me anything!\n      🔍 Find open CFPs for multi-objective portfolio optimization with evolutionary algorithms\n      📅 What IEEE conferences in 2026 accept papers on computational intelligence in finance?\n      📰 Are there any special issues on GARCH, regime switching, or volatility modeling open now?\n      🌾 Find journal CFPs related to agricultural commodity risk management and futures markets\n    \n  \n\n  \n  \n    \n    ➤\n  \n\n  \n    Powered by Google Gemini with live web search • 100% client-side • No data stored",
+    "crumbs": [
+      "Home",
+      "📰 Market Intelligence",
+      "CFP Finder – AI Agent"
     ]
   },
   {

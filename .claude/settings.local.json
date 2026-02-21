@@ -38,7 +38,12 @@
       "Bash(\"C:/Python314/python.exe\":*)",
       "Bash(~/.virtualenvs/r-reticulate/Scripts/pip.exe install:*)",
       "Bash(QUARTO_PYTHON=\"C:/Python314/python.exe\" PATH=\"/c/Program Files/R/R-4.4.1/bin:$PATH\" \"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render:*)",
-      "Bash(\"/c/Program Files/R/R-4.4.1/bin/Rscript.exe\" -e \"cat\\(Sys.getenv\\(''RETICULATE_PYTHON''\\), ''\\\\n''\\); cat\\(Sys.getenv\\(''RETICULATE_PYTHON_ENV''\\), ''\\\\n''\\)\")"
+      "Bash(\"/c/Program Files/R/R-4.4.1/bin/Rscript.exe\" -e \"cat\\(Sys.getenv\\(''RETICULATE_PYTHON''\\), ''\\\\n''\\); cat\\(Sys.getenv\\(''RETICULATE_PYTHON_ENV''\\), ''\\\\n''\\)\")",
+      "WebFetch(domain:fae.edu)",
+      "Bash(git -C \"/c/Users/rodri/OneDrive - Grupo Marista/FAE Business School/PAIC 2025-26/Site_PAIC\" log --oneline -10)",
+      "Bash(rsync:*)",
+      "Bash(find:*)",
+      "Bash(\"/c/Program Files/RStudio/resources/app/bin/quarto/bin/quarto.exe\" render \"/c/Users/rodri/OneDrive - Grupo Marista/FAE Business School/PAIC 2025-26/Site_PAIC_FAE/index.qmd\")"
     ]
   },
   "enableAllProjectMcpServers": true,
