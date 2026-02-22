@@ -96,6 +96,8 @@ website:
             href: econometrics_model_sel.qmd
           - text: "Structural Break Detection"
             href: structural-breaks.qmd
+          - text: "Commodity Breaks Paper (PDF)"
+            href: commodity_breaks_paper.qmd
           - text: "Paper Draft"
             href: paper-draft.qmd
       - section: "🎯 Optimization"

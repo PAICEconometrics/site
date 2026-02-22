@@ -3902,5 +3902,65 @@
       "📰 Market Intelligence",
       "Commodities News"
     ]
+  },
+  {
+    "objectID": "commodity_breaks_paper.html",
+    "href": "commodity_breaks_paper.html",
+    "title": "From Detection to Prediction: Structural Break Forecasting in Commodity Prices",
+    "section": "",
+    "text": "This working paper addresses a critical gap in the applied time series literature: the distinction between retrospective detection and prospective prediction of structural breaks in commodity prices.\n\n\n\nComprehensive walk-forward comparison of 16 models spanning classical changepoint methods, regime-switching/EVT approaches, and emerging ML/topological techniques\nExplicit quantification of the detection-prediction gap — most changepoint methods that work in full-sample fail entirely at prospective prediction\nMulti-commodity, multi-event evaluation across 8 agricultural commodities and 3 event types (structural breaks, peaks, valleys)\n\n\n\n\n\n\n\n\n\n\n\nFinding\nDetail\n\n\n\n\nDetection ≠ Prediction\n9/16 models produce zero signals in walk-forward\n\n\nBest for Valleys\nEVT (F1 ≈ 0.28, lead time ≈ 15 days)\n\n\nBest for Peaks\nConformal Prediction (F1 ≈ 0.28, high recall)\n\n\nBest for Breaks\nWBS (F1 ≈ 0.26, but FAR &gt; 80%)\n\n\nF1 Ceiling\nNo model exceeds F1 = 0.50\n\n\nActionable Lead Times\n8–22 days advance warning achievable\n\n\n\n\n\n\n\n\n\n\n\n\nNoteFull Model Universe (16 models, 3 tiers)\n\n\n\n\n\nTier 1 — Classical Changepoint (9 models): Bai-Perron, PELT, Binary Segmentation, CUSUM/ICSS, BCP, E-Divisive, WBS, BOCPD, tsoutliers\nTier 2 — Regime-Switching & EVT (4 models): Markov Switching, HMM, PLR+GBM, Extreme Value Theory\nTier 3 — Emerging Methods (4 models): TDA Persistent Homology, EEMD+LSTM, Conformal Prediction, Matrix Profile/FLUSS",
+    "crumbs": [
+      "Home",
+      "📊 Predictive Modeling",
+      "Commodity Breaks Paper (PDF)"
+    ]
+  },
+  {
+    "objectID": "commodity_breaks_paper.html#paper-overview",
+    "href": "commodity_breaks_paper.html#paper-overview",
+    "title": "From Detection to Prediction: Structural Break Forecasting in Commodity Prices",
+    "section": "",
+    "text": "This working paper addresses a critical gap in the applied time series literature: the distinction between retrospective detection and prospective prediction of structural breaks in commodity prices.\n\n\n\nComprehensive walk-forward comparison of 16 models spanning classical changepoint methods, regime-switching/EVT approaches, and emerging ML/topological techniques\nExplicit quantification of the detection-prediction gap — most changepoint methods that work in full-sample fail entirely at prospective prediction\nMulti-commodity, multi-event evaluation across 8 agricultural commodities and 3 event types (structural breaks, peaks, valleys)\n\n\n\n\n\n\n\n\n\n\n\nFinding\nDetail\n\n\n\n\nDetection ≠ Prediction\n9/16 models produce zero signals in walk-forward\n\n\nBest for Valleys\nEVT (F1 ≈ 0.28, lead time ≈ 15 days)\n\n\nBest for Peaks\nConformal Prediction (F1 ≈ 0.28, high recall)\n\n\nBest for Breaks\nWBS (F1 ≈ 0.26, but FAR &gt; 80%)\n\n\nF1 Ceiling\nNo model exceeds F1 = 0.50\n\n\nActionable Lead Times\n8–22 days advance warning achievable\n\n\n\n\n\n\n\n\n\n\n\n\nNoteFull Model Universe (16 models, 3 tiers)\n\n\n\n\n\nTier 1 — Classical Changepoint (9 models): Bai-Perron, PELT, Binary Segmentation, CUSUM/ICSS, BCP, E-Divisive, WBS, BOCPD, tsoutliers\nTier 2 — Regime-Switching & EVT (4 models): Markov Switching, HMM, PLR+GBM, Extreme Value Theory\nTier 3 — Emerging Methods (4 models): TDA Persistent Homology, EEMD+LSTM, Conformal Prediction, Matrix Profile/FLUSS",
+    "crumbs": [
+      "Home",
+      "📊 Predictive Modeling",
+      "Commodity Breaks Paper (PDF)"
+    ]
+  },
+  {
+    "objectID": "commodity_breaks_paper.html#full-paper-pdf",
+    "href": "commodity_breaks_paper.html#full-paper-pdf",
+    "title": "From Detection to Prediction: Structural Break Forecasting in Commodity Prices",
+    "section": "Full Paper (PDF)",
+    "text": "Full Paper (PDF)\nThe embedded PDF below contains the complete working paper formatted for the International Journal of Forecasting (Elsevier preprint style).\n\n  \n    \n      Your browser does not support embedded PDFs.\n      \n        📄 Download the paper (PDF)\n      \n    \n  \n\n\n\n\n\n\n\nTipDownload\n\n\n\nYou can also download the PDF directly for offline reading.",
+    "crumbs": [
+      "Home",
+      "📊 Predictive Modeling",
+      "Commodity Breaks Paper (PDF)"
+    ]
+  },
+  {
+    "objectID": "commodity_breaks_paper.html#companion-resources",
+    "href": "commodity_breaks_paper.html#companion-resources",
+    "title": "From Detection to Prediction: Structural Break Forecasting in Commodity Prices",
+    "section": "Companion Resources",
+    "text": "Companion Resources\n\nInteractive Report: The full interactive HTML report with Plotly charts is available in the Structural Break Detection page\nSource Code: All R and Python scripts are available at the PAIC Econometrics GitHub\nData: Daily commodity prices (2019–2026) for Cattle, Cocoa, Coffee, Corn, Cotton, Soybean, Sugar, and Wheat",
+    "crumbs": [
+      "Home",
+      "📊 Predictive Modeling",
+      "Commodity Breaks Paper (PDF)"
+    ]
+  },
+  {
+    "objectID": "commodity_breaks_paper.html#citation",
+    "href": "commodity_breaks_paper.html#citation",
+    "title": "From Detection to Prediction: Structural Break Forecasting in Commodity Prices",
+    "section": "Citation",
+    "text": "Citation\nIf you use this work, please cite:\n@techreport{ozon2025detection,\n  title={From Detection to Prediction: A Comparative Assessment of 16 Models\n         for Structural Break, Peak, and Valley Forecasting in Agricultural\n         Commodity Prices},\n  author={Ozon, Rodrigo Hermont},\n  year={2025},\n  institution={FAE Business School — PAIC},\n  type={Working Paper}\n}",
+    "crumbs": [
+      "Home",
+      "📊 Predictive Modeling",
+      "Commodity Breaks Paper (PDF)"
+    ]
   }
 ]

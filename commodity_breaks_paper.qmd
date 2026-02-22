@@ -1,0 +1,111 @@
+---
+title: "From Detection to Prediction: Structural Break Forecasting in Commodity Prices"
+subtitle: "Working Paper — Walk-Forward Comparison of 16 Models"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: false
+    theme: cosmo
+    code-fold: true
+    css: styles.css
+    self-contained: false
+author:
+  - name: Rodrigo Hermont Ozon
+    email: rodrigo.ozon@fae.edu
+    affiliations:
+      - name: "FAE Business School — PAIC"
+date: 2025-02-22
+abstract: |
+  This page hosts the working paper *"From Detection to Prediction: A Comparative Assessment of 16 Models for Structural Break, Peak, and Valley Forecasting in Agricultural Commodity Prices"*. The paper evaluates 16 models across three methodological tiers using a strict walk-forward backtesting protocol on daily data for eight agricultural commodities (2019–2026). Key finding: 9 of 16 models produce zero predictive signals, demonstrating that retrospective detection does not imply predictive power. EVT, Conformal Prediction, and EEMD+LSTM emerge as the most promising tools for early warning systems.
+---
+
+## Paper Overview
+
+This working paper addresses a critical gap in the applied time series literature: **the distinction between retrospective detection and prospective prediction of structural breaks in commodity prices.**
+
+### Key Contributions
+
+1. **Comprehensive walk-forward comparison** of 16 models spanning classical changepoint methods, regime-switching/EVT approaches, and emerging ML/topological techniques
+2. **Explicit quantification** of the detection-prediction gap — most changepoint methods that work in full-sample fail entirely at prospective prediction
+3. **Multi-commodity, multi-event evaluation** across 8 agricultural commodities and 3 event types (structural breaks, peaks, valleys)
+
+### Main Findings
+
+| Finding | Detail |
+|---------|--------|
+| **Detection ≠ Prediction** | 9/16 models produce zero signals in walk-forward |
+| **Best for Valleys** | EVT (F1 ≈ 0.28, lead time ≈ 15 days) |
+| **Best for Peaks** | Conformal Prediction (F1 ≈ 0.28, high recall) |
+| **Best for Breaks** | WBS (F1 ≈ 0.26, but FAR > 80%) |
+| **F1 Ceiling** | No model exceeds F1 = 0.50 |
+| **Actionable Lead Times** | 8–22 days advance warning achievable |
+
+### Models Evaluated
+
+::: {.callout-note collapse="true"}
+## Full Model Universe (16 models, 3 tiers)
+
+**Tier 1 — Classical Changepoint (9 models):** Bai-Perron, PELT, Binary Segmentation, CUSUM/ICSS, BCP, E-Divisive, WBS, BOCPD, tsoutliers
+
+**Tier 2 — Regime-Switching & EVT (4 models):** Markov Switching, HMM, PLR+GBM, Extreme Value Theory
+
+**Tier 3 — Emerging Methods (4 models):** TDA Persistent Homology, EEMD+LSTM, Conformal Prediction, Matrix Profile/FLUSS
+:::
+
+---
+
+## Full Paper (PDF)
+
+The embedded PDF below contains the complete working paper formatted for the *International Journal of Forecasting* (Elsevier preprint style).
+
+```{=html}
+<div style="width: 100%; margin: 1em auto;">
+  <object
+    data="commodity_breaks_paper.pdf"
+    type="application/pdf"
+    width="100%"
+    height="900px"
+    style="border: 1px solid #ddd; border-radius: 4px;">
+    <p style="text-align: center; padding: 2em;">
+      Your browser does not support embedded PDFs.
+      <a href="commodity_breaks_paper.pdf" target="_blank"
+         style="font-weight: bold; color: #0066cc;">
+        📄 Download the paper (PDF)
+      </a>
+    </p>
+  </object>
+</div>
+```
+
+::: {.callout-tip}
+## Download
+You can also [download the PDF directly](commodity_breaks_paper.pdf){target="_blank"} for offline reading.
+:::
+
+---
+
+## Companion Resources
+
+- **Interactive Report**: The full interactive HTML report with Plotly charts is available in the [Structural Break Detection](structural-breaks.qmd) page
+- **Source Code**: All R and Python scripts are available at the [PAIC Econometrics GitHub](https://github.com/PAICEconometrics/site)
+- **Data**: Daily commodity prices (2019–2026) for Cattle, Cocoa, Coffee, Corn, Cotton, Soybean, Sugar, and Wheat
+
+---
+
+## Citation
+
+If you use this work, please cite:
+
+```bibtex
+@techreport{ozon2025detection,
+  title={From Detection to Prediction: A Comparative Assessment of 16 Models
+         for Structural Break, Peak, and Valley Forecasting in Agricultural
+         Commodity Prices},
+  author={Ozon, Rodrigo Hermont},
+  year={2025},
+  institution={FAE Business School — PAIC},
+  type={Working Paper}
+}
+```
