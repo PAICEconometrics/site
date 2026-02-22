@@ -27,7 +27,8 @@ execute:
 ```{r setup}
 
 pkgs <- c("tidyRSS", "httr2", "dplyr", "purrr", "glue",
-          "lubridate", "stringr", "readr", "jsonlite", "htmltools", "tidyr")
+          "lubridate", "stringr", "readr", "jsonlite",
+          "htmltools", "tidyr", "quantmod", "blastula")
 
 invisible(lapply(pkgs, function(p) {
   if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
@@ -41,6 +42,14 @@ NEWSAPI_KEY <- Sys.getenv("NEWSAPI_KEY")
 GROQ_KEY    <- Sys.getenv("GROQ_API_KEY")
 GROQ_MODEL  <- "llama-3.3-70b-versatile"
 
+# Email config — adicione estas variaveis de ambiente no Windows:
+# SMTP_USER  = seu email Gmail
+# SMTP_PASS  = app password do Gmail (nao a senha normal)
+# EMAIL_TO   = destinatario(s) separados por virgula
+SMTP_USER  <- Sys.getenv("SMTP_USER")
+SMTP_PASS  <- Sys.getenv("SMTP_PASS")
+EMAIL_TO   <- Sys.getenv("EMAIL_TO")
+
 if (!dir.exists(OUTPUT_DIR)) dir.create(OUTPUT_DIR, recursive = TRUE)
 
 ticker_map <- tibble::tribble(
@@ -53,6 +62,17 @@ ticker_map <- tibble::tribble(
   "ZS=F",   "Soybeans",       "soybean futures commodities market",   "soybean futures",
   "ZM=F",   "Soybean Meal",   "soybean meal futures market",          "soybean meal futures",
   "ZL=F",   "Soybean Oil",    "soybean oil futures market",           "soybean oil futures"
+)
+
+# ── Blacklist de palavras irrelevantes por ticker ─────────────────────────────
+# Noticias cujo titulo conter qualquer palavra desta lista serao removidas
+news_blacklist <- list(
+  global  = c("bitcoin", "crypto", "ethereum", "nft", "blockchain", "dogecoin",
+              "poker", "casino", "lottery", "horoscope"),
+  "ZC=F"  = c("popcorn", "candy corn", "corn maze", "corn dog"),
+  "ZO=F"  = c("oat milk brand", "oatly"),
+  "GF=F"  = c("feeder fund", "venture", "startup", "hedge fund"),
+  "ZR=F"  = c("rough cut", "rough draft", "rough rider")
 )
 
 empty_news <- function() {
@@ -69,9 +89,87 @@ empty_news <- function() {
 
 ```
 
+```{r fetch_prices}
+# ── Busca precos e sparklines via quantmod / Yahoo Finance ────────────────────
+
+make_sparkline_svg <- function(prices, width = 80, height = 28, color = "#2c5f2e") {
+  if (length(prices) < 2) return("")
+  prices <- as.numeric(prices)
+  prices <- prices[!is.na(prices)]
+  if (length(prices) < 2) return("")
+
+  mn <- min(prices); mx <- max(prices)
+  rng <- mx - mn
+  if (rng == 0) rng <- 1
+
+  xs <- round((seq_along(prices) - 1) / (length(prices) - 1) * width, 2)
+  ys <- round((1 - (prices - mn) / rng) * height, 2)
+  points <- paste(xs, ys, sep = ",", collapse = " ")
+
+  last_color <- if (tail(prices, 1) >= prices[1]) "#2c5f2e" else "#dc2626"
+
+  glue(
+    '<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" ',
+    'xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">',
+    '<polyline points="{points}" fill="none" stroke="{last_color}" stroke-width="1.5" ',
+    'stroke-linejoin="round" stroke-linecap="round"/>',
+    '</svg>'
+  )
+}
+
+fetch_prices <- function(tickers, days_back = 30) {
+  map_dfr(tickers, function(tk) {
+    tryCatch({
+      getSymbols(tk, src = "yahoo", auto.assign = FALSE,
+                 from = Sys.Date() - days_back - 5,
+                 to   = Sys.Date()) -> raw
+
+      cls   <- as.numeric(Cl(raw))
+      dates <- index(raw)
+
+      # Filtra apenas dias uteis com dados
+      cls   <- cls[!is.na(cls)]
+      n     <- length(cls)
+      if (n < 2) return(tibble(ticker = tk, price = NA_real_, weekly_chg = NA_real_, sparkline = ""))
+
+      price      <- tail(cls, 1)
+      price_1w   <- if (n >= 6) cls[n - 5] else cls[1]
+      weekly_chg <- round((price / price_1w - 1) * 100, 2)
+      sparkline  <- make_sparkline_svg(cls)
+
+      tibble(ticker = tk, price = round(price, 2), weekly_chg = weekly_chg, sparkline = sparkline)
+    }, error = function(e) {
+      message(glue("[Prices] Error {tk}: {conditionMessage(e)}"))
+      tibble(ticker = tk, price = NA_real_, weekly_chg = NA_real_, sparkline = "")
+    })
+  })
+}
+
+prices_df <- fetch_prices(ticker_map$ticker)
+```
+
+```{r filter_functions}
+# ── Filtra noticias irrelevantes via blacklist ─────────────────────────────────
+
+filter_news <- function(df, ticker_key) {
+  if (nrow(df) == 0) return(df)
+
+  # Palavras globais + especificas do ticker
+  words <- c(
+    news_blacklist[["global"]],
+    if (!is.null(news_blacklist[[ticker_key]])) news_blacklist[[ticker_key]] else character()
+  )
+
+  if (length(words) == 0) return(df)
+
+  pattern <- paste(words, collapse = "|")
+
+  df |>
+    filter(!grepl(pattern, tolower(titulo), fixed = FALSE))
+}
+```
 
 ```{r fetch_functions}
-
 fetch_google_news <- function(ticker, nome, query_google, days_back = DAYS_BACK, ...) {
   url <- glue("https://news.google.com/rss/search?q={URLencode(query_google)}&hl=en-US&gl=US&ceid=US:en")
   tryCatch({
@@ -130,6 +228,7 @@ fetch_all_news <- function(days_back = DAYS_BACK) {
         combined <- combined |>
           filter(!is.na(titulo), titulo != "") |>
           distinct(titulo, .keep_all = TRUE) |>
+          filter_news(ticker_key = ticker) |>   # <-- filtro aqui
           arrange(desc(publicado))
       }
       combined
@@ -144,20 +243,15 @@ readr::write_csv(news_df, file.path(OUTPUT_DIR, glue("commodity_news_{Sys.Date()
 total_news <- nrow(news_df |> filter(!is.na(titulo), titulo != ""))
 period     <- glue("{format(Sys.Date() - DAYS_BACK, '%m/%d')} to {format(Sys.Date(), '%m/%d/%Y')}")
 
-# Contagem por ticker para o painel
 ticker_counts <- ticker_map |>
   left_join(
     news_df |> filter(!is.na(titulo), titulo != "") |> count(ticker, name = "n"),
     by = "ticker"
   ) |>
   mutate(n = ifelse(is.na(n), 0L, n))
-
 ```
 
-
-
 ```{r groq_functions}
-
 groq_summarize <- function(headlines_text, commodity_name, model = GROQ_MODEL) {
   if (is.na(GROQ_KEY) || GROQ_KEY == "") return(NULL)
   prompt <- paste0(
@@ -212,23 +306,15 @@ generate_all_summaries <- function(df) {
 
 summaries_df <- generate_all_summaries(news_df)
 
-# Garante todos os tickers no sumario, mesmo sem noticias
 summaries_df <- ticker_map |>
   select(ticker, nome) |>
   left_join(summaries_df, by = c("ticker", "nome")) |>
-  mutate(summary = replace_na(summary, "No news found for this commodity this week."))
+  mutate(summary = ifelse(is.na(summary), "No news found for this commodity this week.", summary))
 
 readr::write_csv(summaries_df, file.path(OUTPUT_DIR, glue("summaries_{Sys.Date()}.csv")))
-
 ```
 
-
-
-
 ```{r groq_portfolio}
-
-# Resumo global do portfolio via Groq
-
 groq_portfolio_summary <- function(summaries_df) {
   if (is.na(GROQ_KEY) || GROQ_KEY == "") return(NULL)
 
@@ -274,7 +360,6 @@ groq_portfolio_summary <- function(summaries_df) {
 }
 
 portfolio_summary <- groq_portfolio_summary(summaries_df)
-
 ```
 
 ---
@@ -288,33 +373,64 @@ portfolio_summary <- groq_portfolio_summary(summaries_df)
 ## Portfolio Overview
 
 ```{r portfolio_overview}
+# ── Tabela de precos + sparklines ─────────────────────────────────────────────
+price_table <- ticker_map |>
+  left_join(prices_df,      by = "ticker") |>
+  left_join(ticker_counts |> select(ticker, n), by = "ticker")
 
-# ── Painel de contagem de noticias por ticker ─────────────────────────────────
-count_cards <- ticker_counts |>
-  pmap(function(ticker, nome, n, ...) {
-    bar_width <- if (max(ticker_counts$n) > 0) round((n / max(ticker_counts$n)) * 100) else 0
+rows <- price_table |>
+  pmap(function(ticker, nome, price, weekly_chg, sparkline, n, ...) {
+
+    # Variacao semanal formatada
+    chg_color <- if (is.na(weekly_chg)) "#6b7280" else if (weekly_chg >= 0) "#16a34a" else "#dc2626"
+    chg_arrow <- if (is.na(weekly_chg)) "" else if (weekly_chg >= 0) "▲" else "▼"
+    chg_txt   <- if (is.na(weekly_chg)) "N/A" else paste0(chg_arrow, " ", abs(weekly_chg), "%")
+    price_txt <- if (is.na(price)) "N/A" else formatC(price, format = "f", digits = 2, big.mark = ",")
+
+    # Barra de artigos
+    max_n     <- max(price_table$n, 1)
+    bar_w     <- round((n / max_n) * 60)
     bar_color <- if (n == 0) "#e5e7eb" else if (n >= 5) "#2c5f2e" else "#86b48a"
-    div(style = "display:flex; align-items:center; gap:.8rem; margin-bottom:.5rem;",
-      tags$span(style = "width:110px; font-size:.85rem; font-weight:600; color:#374151;", nome),
-      tags$code(style = "font-size:.72rem; color:#6b7280; width:55px;", ticker),
-      div(style = glue("height:14px; width:{bar_width}%; min-width:4px; background:{bar_color}; border-radius:4px; flex-shrink:0;"),
-          " "),
-      tags$span(style = "font-size:.82rem; color:#6b7280;", paste(n, "articles"))
+
+    tags$tr(
+      tags$td(style = "font-weight:600; color:#1a1a2e;", nome),
+      tags$td(tags$code(style = "font-size:.75rem; color:#6b7280;", ticker)),
+      tags$td(style = "font-family:monospace; text-align:right;", price_txt),
+      tags$td(style = glue("color:{chg_color}; font-weight:600; text-align:right;"), chg_txt),
+      tags$td(HTML(sparkline)),
+      tags$td(
+        div(style = "display:flex; align-items:center; gap:.4rem;",
+          div(style = glue("height:10px; width:{bar_w}px; min-width:3px; background:{bar_color}; border-radius:3px;")),
+          tags$span(style = "font-size:.75rem; color:#9ca3af;", n)
+        )
+      )
     )
   })
 
 div(class = "portfolio-panel",
-  div(style = "margin-bottom:1rem;",
-    tagList(count_cards)
+  tags$table(
+    style = "width:100%; border-collapse:collapse;",
+    tags$thead(
+      tags$tr(
+        lapply(c("Commodity", "Ticker", "Price", "7d Change", "30d Chart", "Articles"),
+               function(h) tags$th(style = "text-align:left; padding:.4rem .6rem; font-size:.78rem;
+                                            color:#6b7280; border-bottom:2px solid #e5e7eb;
+                                            font-weight:600; text-transform:uppercase;", h))
+      )
+    ),
+    tags$tbody(
+      lapply(rows, function(r) {
+        htmltools::tagAppendAttributes(r,
+          style = "border-bottom:1px solid #f3f4f6;")
+      })
+    )
   )
 )
-
 ```
 
 ## Portfolio AI Brief
 
 ```{r portfolio_brief}
-
 if (is.null(portfolio_summary) || is.na(GROQ_KEY) || GROQ_KEY == "") {
   div(class = "callout callout-warning",
     p("Portfolio AI brief unavailable. Configure GROQ_API_KEY to enable.")
@@ -329,7 +445,6 @@ if (is.null(portfolio_summary) || is.na(GROQ_KEY) || GROQ_KEY == "") {
     div(class = "brief-body", portfolio_summary)
   )
 }
-
 ```
 
 ---
@@ -406,7 +521,6 @@ render_ticker_section <- function(ticker_key, df_ticker) {
   )
 }
 
-# Garante que TODOS os tickers aparecem, mesmo sem noticias
 sections <- ticker_map |>
   pmap(function(ticker, nome, ...) {
     df_ticker <- news_df |> filter(ticker == !!ticker)
@@ -420,6 +534,101 @@ sections <- ticker_map |>
   })
 
 tagList(sections)
+```
+
+---
+
+```{r send_email}
+# ── Envio do brief por email via blastula + Gmail ─────────────────────────────
+
+send_weekly_email <- function() {
+
+  if (any(c(SMTP_USER, SMTP_PASS, EMAIL_TO) == "")) {
+    message("[Email] SMTP_USER, SMTP_PASS ou EMAIL_TO nao configurados — pulando envio.")
+    return(invisible(NULL))
+  }
+
+  if (is.null(portfolio_summary)) {
+    message("[Email] Portfolio summary nao disponivel — pulando envio.")
+    return(invisible(NULL))
+  }
+
+  # Monta tabela de precos para o email
+  price_rows_html <- price_table |>
+    pmap_chr(function(ticker, nome, price, weekly_chg, n, ...) {
+      chg_color <- if (is.na(weekly_chg)) "#6b7280" else if (weekly_chg >= 0) "#16a34a" else "#dc2626"
+      chg_arrow <- if (is.na(weekly_chg)) "" else if (weekly_chg >= 0) "▲" else "▼"
+      chg_txt   <- if (is.na(weekly_chg)) "N/A" else paste0(chg_arrow, abs(weekly_chg), "%")
+      price_txt <- if (is.na(price)) "N/A" else formatC(price, format = "f", digits = 2, big.mark = ",")
+      glue('<tr>
+        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; font-weight:600;">{nome}</td>
+        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; font-family:monospace; color:#6b7280;">{ticker}</td>
+        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; text-align:right; font-family:monospace;">{price_txt}</td>
+        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; text-align:right; color:{chg_color}; font-weight:600;">{chg_txt}</td>
+        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; text-align:center; color:#6b7280;">{n} art.</td>
+      </tr>')
+    }) |>
+    paste(collapse = "\n")
+
+  recipients <- strsplit(EMAIL_TO, ",")[[1]] |> trimws()
+
+  email <- compose_email(
+    body = blocks(
+      block_title("Commodity News Monitor"),
+      block_text(glue("Weekly brief — {period}")),
+      block_spacer(),
+
+      block_text("<strong style='font-size:1.1rem;'>Portfolio Brief (AI)</strong>"),
+      block_text(portfolio_summary),
+      block_spacer(),
+
+      block_text("<strong style='font-size:1.1rem;'>Price Summary</strong>"),
+      block_text(glue(
+        '<table style="width:100%; border-collapse:collapse; font-size:.9rem;">
+          <thead>
+            <tr style="background:#f9fafb;">
+              <th style="padding:6px 10px; text-align:left; color:#6b7280;">Commodity</th>
+              <th style="padding:6px 10px; text-align:left; color:#6b7280;">Ticker</th>
+              <th style="padding:6px 10px; text-align:right; color:#6b7280;">Price</th>
+              <th style="padding:6px 10px; text-align:right; color:#6b7280;">7d</th>
+              <th style="padding:6px 10px; text-align:center; color:#6b7280;">News</th>
+            </tr>
+          </thead>
+          <tbody>{price_rows_html}</tbody>
+        </table>'
+      )),
+      block_spacer(),
+
+      block_text(glue(
+        '<p style="font-size:.8rem; color:#9ca3af;">',
+        'Generated automatically every Friday | PAIC Econometrics / FAE Business School<br>',
+        'Full report: <a href="https://paiceconometrics.github.io/site/news.html">View online</a>',
+        '</p>'
+      ))
+    )
+  )
+
+  tryCatch({
+    smtp_send(
+      email,
+      to      = recipients,
+      from    = SMTP_USER,
+      subject = glue("Commodity Weekly Brief — {format(Sys.Date(), '%b %d, %Y')}"),
+      credentials = creds_envvar(
+        user     = "SMTP_USER",
+        pass_envvar = "SMTP_PASS",
+        host     = "smtp.gmail.com",
+        port     = 465,
+        use_ssl  = TRUE
+      )
+    )
+    message(glue("[Email] Sent successfully to: {EMAIL_TO}"))
+  }, error = function(e) {
+    message(glue("[Email] Error: {conditionMessage(e)}"))
+  })
+}
+
+send_weekly_email()
 ```
 
 ---
