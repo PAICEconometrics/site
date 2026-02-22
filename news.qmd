@@ -25,7 +25,6 @@ execute:
 ---
 
 ```{r setup}
-
 pkgs <- c("tidyRSS", "httr2", "dplyr", "purrr", "glue",
           "lubridate", "stringr", "readr", "jsonlite",
           "htmltools", "tidyr", "quantmod", "blastula")
@@ -35,20 +34,19 @@ invisible(lapply(pkgs, function(p) {
   library(p, character.only = TRUE)
 }))
 
+# quantmod/xts/zoo mascaram dplyr::filter e select — forcamos de volta
+filter <- dplyr::filter
+select <- dplyr::select
+
 DAYS_BACK   <- 7
 SLEEP_SEC   <- 1.5
 OUTPUT_DIR  <- "data"
 NEWSAPI_KEY <- Sys.getenv("NEWSAPI_KEY")
 GROQ_KEY    <- Sys.getenv("GROQ_API_KEY")
 GROQ_MODEL  <- "llama-3.3-70b-versatile"
-
-# Email config — adicione estas variaveis de ambiente no Windows:
-# SMTP_USER  = seu email Gmail
-# SMTP_PASS  = app password do Gmail (nao a senha normal)
-# EMAIL_TO   = destinatario(s) separados por virgula
-SMTP_USER  <- Sys.getenv("SMTP_USER")
-SMTP_PASS  <- Sys.getenv("SMTP_PASS")
-EMAIL_TO   <- Sys.getenv("EMAIL_TO")
+SMTP_USER   <- Sys.getenv("SMTP_USER")
+SMTP_PASS   <- Sys.getenv("SMTP_PASS")
+EMAIL_TO    <- Sys.getenv("EMAIL_TO")
 
 if (!dir.exists(OUTPUT_DIR)) dir.create(OUTPUT_DIR, recursive = TRUE)
 
@@ -64,8 +62,6 @@ ticker_map <- tibble::tribble(
   "ZL=F",   "Soybean Oil",    "soybean oil futures market",           "soybean oil futures"
 )
 
-# ── Blacklist de palavras irrelevantes por ticker ─────────────────────────────
-# Noticias cujo titulo conter qualquer palavra desta lista serao removidas
 news_blacklist <- list(
   global  = c("bitcoin", "crypto", "ethereum", "nft", "blockchain", "dogecoin",
               "poker", "casino", "lottery", "horoscope"),
@@ -75,73 +71,45 @@ news_blacklist <- list(
   "ZR=F"  = c("rough cut", "rough draft", "rough rider")
 )
 
+# Schema inclui snippet (description/primeiro paragrafo)
 empty_news <- function() {
   tibble(
-    ticker    = character(),
-    nome      = character(),
-    fonte     = character(),
-    titulo    = character(),
-    link      = character(),
-    veiculo   = character(),
-    publicado = as.POSIXct(character())
+    ticker    = character(), nome      = character(), fonte     = character(),
+    titulo    = character(), snippet   = character(), link      = character(),
+    veiculo   = character(), publicado = as.POSIXct(character())
   )
 }
-
 ```
 
 ```{r fetch_prices}
-# ── Busca precos e sparklines via quantmod / Yahoo Finance ────────────────────
-
-make_sparkline_svg <- function(prices, width = 80, height = 28, color = "#2c5f2e") {
+make_sparkline_svg <- function(prices, width = 80, height = 28) {
+  prices <- as.numeric(prices[!is.na(prices)])
   if (length(prices) < 2) return("")
-  prices <- as.numeric(prices)
-  prices <- prices[!is.na(prices)]
-  if (length(prices) < 2) return("")
-
-  mn <- min(prices); mx <- max(prices)
-  rng <- mx - mn
-  if (rng == 0) rng <- 1
-
-  xs <- round((seq_along(prices) - 1) / (length(prices) - 1) * width, 2)
-  ys <- round((1 - (prices - mn) / rng) * height, 2)
-  points <- paste(xs, ys, sep = ",", collapse = " ")
-
-  last_color <- if (tail(prices, 1) >= prices[1]) "#2c5f2e" else "#dc2626"
-
-  glue(
-    '<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" ',
-    'xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">',
-    '<polyline points="{points}" fill="none" stroke="{last_color}" stroke-width="1.5" ',
-    'stroke-linejoin="round" stroke-linecap="round"/>',
-    '</svg>'
-  )
+  mn <- min(prices); mx <- max(prices); rng <- ifelse(mx == mn, 1, mx - mn)
+  xs  <- round((seq_along(prices) - 1) / (length(prices) - 1) * width, 2)
+  ys  <- round((1 - (prices - mn) / rng) * height, 2)
+  pts <- paste(xs, ys, sep = ",", collapse = " ")
+  color <- if (tail(prices, 1) >= prices[1]) "#16a34a" else "#dc2626"
+  glue('<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" ',
+       'xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">',
+       '<polyline points="{pts}" fill="none" stroke="{color}" stroke-width="1.5" ',
+       'stroke-linejoin="round" stroke-linecap="round"/></svg>')
 }
 
 fetch_prices <- function(tickers, days_back = 30) {
-  map_dfr(tickers, function(tk) {
+  purrr::map_dfr(tickers, function(tk) {
     tryCatch({
-      getSymbols(tk, src = "yahoo", auto.assign = FALSE,
-                 from = Sys.Date() - days_back - 5,
-                 to   = Sys.Date()) -> raw
-
-      cls   <- as.numeric(Cl(raw))
-      dates <- index(raw)
-
-      # Filtra apenas dias uteis com dados
-      cls   <- cls[!is.na(cls)]
-      n     <- length(cls)
-      if (n < 2) return(tibble(ticker = tk, price = NA_real_, weekly_chg = NA_real_, sparkline = ""))
-
+      raw <- getSymbols(tk, src = "yahoo", auto.assign = FALSE,
+                        from = Sys.Date() - days_back - 5, to = Sys.Date())
+      cls <- as.numeric(Cl(raw)); cls <- cls[!is.na(cls)]; n <- length(cls)
+      if (n < 2) return(tibble(ticker=tk, price=NA_real_, weekly_chg=NA_real_, sparkline=""))
       price      <- tail(cls, 1)
       price_1w   <- if (n >= 6) cls[n - 5] else cls[1]
       weekly_chg <- round((price / price_1w - 1) * 100, 2)
-      sparkline  <- make_sparkline_svg(cls)
-
-      tibble(ticker = tk, price = round(price, 2), weekly_chg = weekly_chg, sparkline = sparkline)
-    }, error = function(e) {
-      message(glue("[Prices] Error {tk}: {conditionMessage(e)}"))
-      tibble(ticker = tk, price = NA_real_, weekly_chg = NA_real_, sparkline = "")
-    })
+      tibble(ticker = tk, price = round(price, 2),
+             weekly_chg = weekly_chg, sparkline = make_sparkline_svg(cls))
+    }, error = function(e)
+      tibble(ticker = tk, price = NA_real_, weekly_chg = NA_real_, sparkline = ""))
   })
 }
 
@@ -149,23 +117,12 @@ prices_df <- fetch_prices(ticker_map$ticker)
 ```
 
 ```{r filter_functions}
-# ── Filtra noticias irrelevantes via blacklist ─────────────────────────────────
-
 filter_news <- function(df, ticker_key) {
   if (nrow(df) == 0) return(df)
-
-  # Palavras globais + especificas do ticker
-  words <- c(
-    news_blacklist[["global"]],
-    if (!is.null(news_blacklist[[ticker_key]])) news_blacklist[[ticker_key]] else character()
-  )
-
+  words <- c(news_blacklist[["global"]], news_blacklist[[ticker_key]] %||% character())
   if (length(words) == 0) return(df)
-
   pattern <- paste(words, collapse = "|")
-
-  df |>
-    filter(!grepl(pattern, tolower(titulo), fixed = FALSE))
+  dplyr::filter(df, !grepl(pattern, tolower(titulo), fixed = FALSE))
 }
 ```
 
@@ -175,17 +132,25 @@ fetch_google_news <- function(ticker, nome, query_google, days_back = DAYS_BACK,
   tryCatch({
     feed <- tidyRSS::tidyfeed(url, clean_tags = TRUE)
     if (is.null(feed) || nrow(feed) == 0) return(empty_news())
+    veiculo_col <- if ("item_feed_title" %in% names(feed)) feed$item_feed_title
+                   else if ("feed_title"  %in% names(feed)) feed$feed_title
+                   else rep("Google News", nrow(feed))
+    # item_description = primeiro paragrafo / snippet do artigo
+    snippet_col <- if ("item_description" %in% names(feed))
+                     stringr::str_trunc(feed$item_description, 300) else rep(NA_character_, nrow(feed))
     result <- feed |>
-      mutate(ticker = ticker, nome = nome, fonte = "Google News",
-             publicado = as.POSIXct(item_pub_date, tz = "America/Sao_Paulo")) |>
-      filter(publicado >= Sys.time() - days(days_back)) |>
-      select(ticker, nome, fonte,
-             titulo = item_title, link = item_link,
-             veiculo = item_feed_title, publicado)
+      dplyr::mutate(
+        ticker    = ticker, nome = nome, fonte = "Google News",
+        publicado = with_tz(item_pub_date, "America/Sao_Paulo"),
+        veiculo   = veiculo_col,
+        snippet   = snippet_col
+      ) |>
+      dplyr::filter(publicado >= Sys.time() - days(days_back)) |>
+      dplyr::select(ticker, nome, fonte, titulo = item_title, snippet,
+                    link = item_link, veiculo, publicado)
     if (nrow(result) == 0) empty_news() else result
   }, error = function(e) {
-    message(glue("[Google] Error {ticker}: {conditionMessage(e)}"))
-    empty_news()
+    message(glue("[Google] Error {ticker}: {conditionMessage(e)}")); empty_news()
   })
 }
 
@@ -193,8 +158,7 @@ fetch_newsapi <- function(ticker, nome, query_newsapi, days_back = DAYS_BACK, ..
   if (is.na(NEWSAPI_KEY) || NEWSAPI_KEY == "") return(empty_news())
   tryCatch({
     resp <- request("https://newsapi.org/v2/everything") |>
-      req_url_query(q = query_newsapi,
-                    from = format(Sys.Date() - days_back, "%Y-%m-%d"),
+      req_url_query(q = query_newsapi, from = format(Sys.Date() - days_back, "%Y-%m-%d"),
                     sortBy = "publishedAt", language = "en",
                     pageSize = 10, apiKey = NEWSAPI_KEY) |>
       req_perform() |> resp_body_json(simplifyVector = TRUE)
@@ -203,22 +167,26 @@ fetch_newsapi <- function(ticker, nome, query_newsapi, days_back = DAYS_BACK, ..
     arts <- as_tibble(arts)
     if (nrow(arts) == 0) return(empty_news())
     result <- arts |>
-      mutate(ticker = ticker, nome = nome, fonte = "NewsAPI",
-             publicado = as.POSIXct(publishedAt, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC") |>
-               with_tz("America/Sao_Paulo"),
-             veiculo = if (is.data.frame(source)) source$name else as.character(source)) |>
-      filter(publicado >= Sys.time() - days(days_back)) |>
-      select(ticker, nome, fonte, titulo = title, link = url, veiculo, publicado)
+      dplyr::mutate(
+        ticker    = ticker, nome = nome, fonte = "NewsAPI",
+        publicado = as.POSIXct(publishedAt, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC") |>
+                    with_tz("America/Sao_Paulo"),
+        veiculo   = if (is.data.frame(source)) source$name else as.character(source),
+        # NewsAPI retorna description = snippet de ~150-200 chars do corpo
+        snippet   = stringr::str_trunc(description %||% NA_character_, 300)
+      ) |>
+      dplyr::filter(publicado >= Sys.time() - days(days_back)) |>
+      dplyr::select(ticker, nome, fonte, titulo = title, snippet,
+                    link = url, veiculo, publicado)
     if (nrow(result) == 0) empty_news() else result
   }, error = function(e) {
-    message(glue("[NewsAPI] Error {ticker}: {conditionMessage(e)}"))
-    empty_news()
+    message(glue("[NewsAPI] Error {ticker}: {conditionMessage(e)}")); empty_news()
   })
 }
 
 fetch_all_news <- function(days_back = DAYS_BACK) {
   ticker_map |>
-    pmap_dfr(function(ticker, nome, query_google, query_newsapi) {
+    purrr::pmap_dfr(function(ticker, nome, query_google, query_newsapi) {
       message(glue("  Fetching: {nome} ({ticker})"))
       g <- fetch_google_news(ticker, nome, query_google, days_back)
       Sys.sleep(SLEEP_SEC)
@@ -226,10 +194,10 @@ fetch_all_news <- function(days_back = DAYS_BACK) {
       combined <- bind_rows(g, n)
       if (nrow(combined) > 0 && any(!is.na(combined$titulo) & combined$titulo != "")) {
         combined <- combined |>
-          filter(!is.na(titulo), titulo != "") |>
-          distinct(titulo, .keep_all = TRUE) |>
-          filter_news(ticker_key = ticker) |>   # <-- filtro aqui
-          arrange(desc(publicado))
+          dplyr::filter(!is.na(titulo), titulo != "") |>
+          dplyr::distinct(titulo, .keep_all = TRUE) |>
+          filter_news(ticker_key = ticker) |>
+          dplyr::arrange(desc(publicado))
       }
       combined
     })
@@ -240,76 +208,81 @@ fetch_all_news <- function(days_back = DAYS_BACK) {
 news_df <- fetch_all_news()
 readr::write_csv(news_df, file.path(OUTPUT_DIR, glue("commodity_news_{Sys.Date()}.csv")))
 
-total_news <- nrow(news_df |> filter(!is.na(titulo), titulo != ""))
+total_news <- nrow(dplyr::filter(news_df, !is.na(titulo), titulo != ""))
 period     <- glue("{format(Sys.Date() - DAYS_BACK, '%m/%d')} to {format(Sys.Date(), '%m/%d/%Y')}")
 
 ticker_counts <- ticker_map |>
-  left_join(
-    news_df |> filter(!is.na(titulo), titulo != "") |> count(ticker, name = "n"),
+  dplyr::left_join(
+    dplyr::filter(news_df, !is.na(titulo), titulo != "") |> dplyr::count(ticker, name = "n"),
     by = "ticker"
   ) |>
-  mutate(n = ifelse(is.na(n), 0L, n))
+  dplyr::mutate(n = ifelse(is.na(n), 0L, n))
+
+# Texto enriquecido para o Groq: titulo + snippet quando disponivel
+headlines_by_ticker <- news_df |>
+  dplyr::filter(!is.na(titulo), titulo != "") |>
+  dplyr::group_by(ticker, nome) |>
+  dplyr::summarise(
+    headlines_rich = paste(
+      ifelse(
+        !is.na(snippet) & snippet != "",
+        paste0(titulo, "\n  > ", snippet),   # titulo + snippet indentado
+        titulo                                # so titulo se snippet ausente
+      ),
+      collapse = "\n\n"
+    ),
+    n_articles = dplyr::n(),
+    .groups = "drop"
+  )
 ```
 
 ```{r groq_functions}
 groq_summarize <- function(headlines_text, commodity_name, model = GROQ_MODEL) {
   if (is.na(GROQ_KEY) || GROQ_KEY == "") return(NULL)
   prompt <- paste0(
-    "You are a commodity market analyst. Below are news headlines from the past week ",
-    "about ", commodity_name, " futures markets.\n\n",
-    "Headlines:\n", headlines_text, "\n\n",
+    "You are a commodity market analyst. Below are news headlines and article snippets ",
+    "from the past week about ", commodity_name, " futures markets.\n\n",
+    "Headlines & Snippets:\n", headlines_text, "\n\n",
     "Write a concise market summary (3-5 sentences) covering:\n",
     "1. The main price drivers or trends mentioned\n",
     "2. Key supply/demand factors\n",
     "3. Any relevant geopolitical or weather events\n",
     "4. Overall market sentiment (bullish/bearish/neutral)\n\n",
-    "Be direct and analytical. Do not repeat headlines verbatim."
+    "Use details from the snippets when available. Be direct and analytical.",
+    "Do not repeat headlines verbatim."
   )
   tryCatch({
     resp <- request("https://api.groq.com/openai/v1/chat/completions") |>
-      req_headers("Authorization" = paste("Bearer", GROQ_KEY),
-                  "Content-Type"  = "application/json") |>
-      req_body_json(list(
-        model    = model,
+      req_headers("Authorization" = paste("Bearer", GROQ_KEY), "Content-Type" = "application/json") |>
+      req_body_json(list(model = model,
         messages = list(
           list(role = "system", content = "You are a concise commodity market analyst. Always respond in English."),
           list(role = "user",   content = prompt)
-        ),
-        temperature = 0.3,
-        max_tokens  = 300
-      )) |>
-      req_timeout(30) |>
-      req_perform() |>
-      resp_body_json()
+        ), temperature = 0.3, max_tokens = 350)) |>
+      req_timeout(30) |> req_perform() |> resp_body_json()
     resp$choices[[1]]$message$content
-  }, error = function(e) {
-    message(glue("[Groq] Error for {commodity_name}: {conditionMessage(e)}"))
-    NULL
-  })
+  }, error = function(e) NULL)
 }
 
-generate_all_summaries <- function(df) {
-  if (is.na(GROQ_KEY) || GROQ_KEY == "") {
+generate_all_summaries <- function(df_rich) {
+  if (is.na(GROQ_KEY) || GROQ_KEY == "")
     return(tibble(ticker = character(), nome = character(), summary = character()))
-  }
-  df |>
-    filter(!is.na(titulo), titulo != "") |>
-    group_by(ticker, nome) |>
-    summarise(headlines = paste(titulo, collapse = "\n- "), n = n(), .groups = "drop") |>
-    mutate(summary = map2_chr(headlines, nome, function(h, name) {
+  df_rich |>
+    dplyr::mutate(summary = purrr::map2_chr(headlines_rich, nome, function(h, name) {
       Sys.sleep(0.5)
       result <- groq_summarize(h, name)
       if (is.null(result)) "No news available this week." else result
     })) |>
-    select(ticker, nome, summary)
+    dplyr::select(ticker, nome, summary)
 }
 
-summaries_df <- generate_all_summaries(news_df)
+summaries_df <- generate_all_summaries(headlines_by_ticker)
 
 summaries_df <- ticker_map |>
-  select(ticker, nome) |>
-  left_join(summaries_df, by = c("ticker", "nome")) |>
-  mutate(summary = ifelse(is.na(summary), "No news found for this commodity this week.", summary))
+  dplyr::select(ticker, nome) |>
+  dplyr::left_join(summaries_df, by = c("ticker", "nome")) |>
+  dplyr::mutate(summary = ifelse(is.na(summary),
+                                 "No news found for this commodity this week.", summary))
 
 readr::write_csv(summaries_df, file.path(OUTPUT_DIR, glue("summaries_{Sys.Date()}.csv")))
 ```
@@ -317,16 +290,12 @@ readr::write_csv(summaries_df, file.path(OUTPUT_DIR, glue("summaries_{Sys.Date()
 ```{r groq_portfolio}
 groq_portfolio_summary <- function(summaries_df) {
   if (is.na(GROQ_KEY) || GROQ_KEY == "") return(NULL)
-
   all_summaries <- summaries_df |>
-    mutate(block = glue("{nome} ({ticker}): {summary}")) |>
-    pull(block) |>
-    paste(collapse = "\n\n")
-
+    dplyr::mutate(block = glue("{nome} ({ticker}): {summary}")) |>
+    dplyr::pull(block) |> paste(collapse = "\n\n")
   prompt <- paste0(
     "You are a senior commodity portfolio analyst. Below are individual weekly summaries ",
-    "for each commodity in an agricultural futures portfolio.\n\n",
-    all_summaries, "\n\n",
+    "for each commodity in an agricultural futures portfolio.\n\n", all_summaries, "\n\n",
     "Write a comprehensive portfolio-level market brief (5-7 sentences) that:\n",
     "1. Identifies the dominant macro theme across the portfolio this week\n",
     "2. Highlights the top 2-3 commodities with the most significant moves or news\n",
@@ -335,31 +304,52 @@ groq_portfolio_summary <- function(summaries_df) {
     "5. Flags any key events or reports to watch next week\n\n",
     "Be direct, analytical, and concise. Write as a professional market brief."
   )
-
   tryCatch({
     resp <- request("https://api.groq.com/openai/v1/chat/completions") |>
-      req_headers("Authorization" = paste("Bearer", GROQ_KEY),
-                  "Content-Type"  = "application/json") |>
-      req_body_json(list(
-        model    = GROQ_MODEL,
+      req_headers("Authorization" = paste("Bearer", GROQ_KEY), "Content-Type" = "application/json") |>
+      req_body_json(list(model = GROQ_MODEL,
         messages = list(
           list(role = "system", content = "You are a senior commodity portfolio analyst. Always respond in English."),
           list(role = "user",   content = prompt)
-        ),
-        temperature = 0.3,
-        max_tokens  = 500
-      )) |>
-      req_timeout(40) |>
-      req_perform() |>
-      resp_body_json()
+        ), temperature = 0.3, max_tokens = 500)) |>
+      req_timeout(40) |> req_perform() |> resp_body_json()
     resp$choices[[1]]$message$content
-  }, error = function(e) {
-    message(glue("[Groq] Portfolio summary error: {conditionMessage(e)}"))
-    NULL
-  })
+  }, error = function(e) NULL)
+}
+
+groq_price_outlook <- function(ticker, nome, headlines_text) {
+  if (is.na(GROQ_KEY) || GROQ_KEY == "" || nchar(headlines_text) < 10) return(NULL)
+  prompt <- paste0(
+    "Based on these news headlines and snippets about ", nome, " (", ticker, ") futures:\n\n",
+    headlines_text, "\n\n",
+    "Return ONLY a JSON object (no markdown, no explanation) with exactly these fields:\n",
+    '{"horizon_days": <7 or 30 or 90>, ',
+    '"expectation": "<bullish|bearish|neutral>", ',
+    '"confidence": "<high|medium|low>", ',
+    '"key_factor": "<one sentence max>"}'
+  )
+  tryCatch({
+    resp <- request("https://api.groq.com/openai/v1/chat/completions") |>
+      req_headers("Authorization" = paste("Bearer", GROQ_KEY), "Content-Type" = "application/json") |>
+      req_body_json(list(model = GROQ_MODEL,
+        messages = list(
+          list(role = "system", content = "You are a commodity analyst. Return only valid JSON, no markdown, no backticks."),
+          list(role = "user",   content = prompt)
+        ), temperature = 0.1, max_tokens = 150)) |>
+      req_timeout(20) |> req_perform() |> resp_body_json()
+    raw <- gsub("```json|```", "", resp$choices[[1]]$message$content) |> trimws()
+    jsonlite::fromJSON(raw)
+  }, error = function(e) NULL)
 }
 
 portfolio_summary <- groq_portfolio_summary(summaries_df)
+
+outlook_list <- headlines_by_ticker |>
+  dplyr::mutate(outlook = purrr::map2(ticker, nome, function(tk, nm) {
+    h <- headlines_by_ticker$headlines_rich[headlines_by_ticker$ticker == tk]
+    Sys.sleep(0.3)
+    groq_price_outlook(tk, nm, h)
+  }))
 ```
 
 ---
@@ -373,32 +363,27 @@ portfolio_summary <- groq_portfolio_summary(summaries_df)
 ## Portfolio Overview
 
 ```{r portfolio_overview}
-# ── Tabela de precos + sparklines ─────────────────────────────────────────────
 price_table <- ticker_map |>
-  left_join(prices_df,      by = "ticker") |>
-  left_join(ticker_counts |> select(ticker, n), by = "ticker")
+  dplyr::left_join(prices_df, by = "ticker") |>
+  dplyr::left_join(dplyr::select(ticker_counts, ticker, n), by = "ticker")
 
 rows <- price_table |>
-  pmap(function(ticker, nome, price, weekly_chg, sparkline, n, ...) {
-
-    # Variacao semanal formatada
+  purrr::pmap(function(ticker, nome, price, weekly_chg, sparkline, n, ...) {
     chg_color <- if (is.na(weekly_chg)) "#6b7280" else if (weekly_chg >= 0) "#16a34a" else "#dc2626"
-    chg_arrow <- if (is.na(weekly_chg)) "" else if (weekly_chg >= 0) "▲" else "▼"
+    chg_arrow <- if (is.na(weekly_chg)) "" else if (weekly_chg >= 0) "\u25b2" else "\u25bc"
     chg_txt   <- if (is.na(weekly_chg)) "N/A" else paste0(chg_arrow, " ", abs(weekly_chg), "%")
     price_txt <- if (is.na(price)) "N/A" else formatC(price, format = "f", digits = 2, big.mark = ",")
-
-    # Barra de artigos
     max_n     <- max(price_table$n, 1)
     bar_w     <- round((n / max_n) * 60)
     bar_color <- if (n == 0) "#e5e7eb" else if (n >= 5) "#2c5f2e" else "#86b48a"
-
     tags$tr(
-      tags$td(style = "font-weight:600; color:#1a1a2e;", nome),
-      tags$td(tags$code(style = "font-size:.75rem; color:#6b7280;", ticker)),
-      tags$td(style = "font-family:monospace; text-align:right;", price_txt),
-      tags$td(style = glue("color:{chg_color}; font-weight:600; text-align:right;"), chg_txt),
-      tags$td(HTML(sparkline)),
-      tags$td(
+      tags$td(style = "font-weight:600; color:#1a1a2e; padding:.45rem .6rem;", nome),
+      tags$td(style = "padding:.45rem .6rem;",
+              tags$code(style = "font-size:.75rem; color:#6b7280;", ticker)),
+      tags$td(style = "font-family:monospace; text-align:right; padding:.45rem .6rem;", price_txt),
+      tags$td(style = glue("color:{chg_color}; font-weight:600; text-align:right; padding:.45rem .6rem;"), chg_txt),
+      tags$td(style = "padding:.45rem .6rem;", HTML(sparkline)),
+      tags$td(style = "padding:.45rem .6rem;",
         div(style = "display:flex; align-items:center; gap:.4rem;",
           div(style = glue("height:10px; width:{bar_w}px; min-width:3px; background:{bar_color}; border-radius:3px;")),
           tags$span(style = "font-size:.75rem; color:#9ca3af;", n)
@@ -408,22 +393,15 @@ rows <- price_table |>
   })
 
 div(class = "portfolio-panel",
-  tags$table(
-    style = "width:100%; border-collapse:collapse;",
-    tags$thead(
-      tags$tr(
-        lapply(c("Commodity", "Ticker", "Price", "7d Change", "30d Chart", "Articles"),
-               function(h) tags$th(style = "text-align:left; padding:.4rem .6rem; font-size:.78rem;
-                                            color:#6b7280; border-bottom:2px solid #e5e7eb;
-                                            font-weight:600; text-transform:uppercase;", h))
-      )
-    ),
-    tags$tbody(
-      lapply(rows, function(r) {
-        htmltools::tagAppendAttributes(r,
-          style = "border-bottom:1px solid #f3f4f6;")
-      })
-    )
+  tags$table(style = "width:100%; border-collapse:collapse;",
+    tags$thead(tags$tr(
+      lapply(c("Commodity","Ticker","Price","7d Change","30d Chart","Articles"),
+             function(h) tags$th(style = "text-align:left; padding:.4rem .6rem; font-size:.78rem;
+                                          color:#6b7280; border-bottom:2px solid #e5e7eb;
+                                          font-weight:600; text-transform:uppercase;", h))
+    )),
+    tags$tbody(lapply(rows, function(r)
+      htmltools::tagAppendAttributes(r, style = "border-bottom:1px solid #f3f4f6;")))
   )
 )
 ```
@@ -433,16 +411,60 @@ div(class = "portfolio-panel",
 ```{r portfolio_brief}
 if (is.null(portfolio_summary) || is.na(GROQ_KEY) || GROQ_KEY == "") {
   div(class = "callout callout-warning",
-    p("Portfolio AI brief unavailable. Configure GROQ_API_KEY to enable.")
-  )
+      p("Portfolio AI brief unavailable. Configure GROQ_API_KEY to enable."))
 } else {
+
+  outlook_rows <- outlook_list |>
+    dplyr::filter(!purrr::map_lgl(outlook, is.null)) |>
+    purrr::pmap(function(ticker, nome, outlook, ...) {
+      exp   <- outlook$expectation  %||% "neutral"
+      conf  <- outlook$confidence   %||% "low"
+      horiz <- outlook$horizon_days %||% 7
+      key   <- outlook$key_factor   %||% ""
+      exp_color  <- switch(exp,  bullish = "#16a34a", bearish = "#dc2626", "#d97706")
+      conf_color <- switch(conf, high = "#1e40af", medium = "#7c3aed", "#6b7280")
+      arrow      <- switch(exp,  bullish = "\u25b2", bearish = "\u25bc", "\u25cf")
+      exp_bg     <- switch(exp,  bullish = "#f0fdf4", bearish = "#fef2f2", "#fffbeb")
+      tags$tr(
+        tags$td(style = "padding:5px 10px; font-weight:600; color:#1a1a2e;", nome),
+        tags$td(style = "padding:5px 10px;",
+                tags$code(style = "font-size:.72rem; color:#6b7280;", ticker)),
+        tags$td(style = "padding:5px 10px; text-align:center; color:#6b7280;",
+                paste0(horiz, "d")),
+        tags$td(style = glue("padding:5px 10px; text-align:center; background:{exp_bg}; border-radius:4px;"),
+          tags$span(style = glue("color:{exp_color}; font-weight:700; font-size:.85rem;"),
+                    paste(arrow, exp))),
+        tags$td(style = glue("padding:5px 10px; text-align:center; color:{conf_color};
+                               font-size:.8rem; font-weight:600;"), conf),
+        tags$td(style = "padding:5px 10px; font-size:.82rem; color:#4b5563;", key)
+      )
+    })
+
+  outlook_table <- if (length(outlook_rows) > 0) {
+    div(style = "margin-top:1.4rem; border-top:1px solid #dbeafe; padding-top:1rem;",
+      tags$p(style = "font-size:.75rem; font-weight:700; color:#6b7280;
+                      text-transform:uppercase; letter-spacing:.05em; margin-bottom:.6rem;",
+             "\U0001f4ca Price Outlook by Commodity"),
+      tags$table(style = "width:100%; border-collapse:collapse; font-size:.84rem;",
+        tags$thead(tags$tr(style = "border-bottom:2px solid #e5e7eb;",
+          lapply(c("Commodity","Ticker","Horizon","Expectation","Confidence","Key Factor"),
+                 function(h) tags$th(style = "padding:4px 10px; text-align:left; color:#9ca3af;
+                                              font-size:.73rem; font-weight:600; text-transform:uppercase;", h))
+        )),
+        tags$tbody(lapply(outlook_rows, function(r)
+          htmltools::tagAppendAttributes(r, style = "border-bottom:1px solid #f3f4f6;")))
+      )
+    )
+  } else NULL
+
   div(class = "portfolio-brief",
     div(class = "brief-header",
       tags$span(class = "brief-icon", "AI"),
       tags$span(class = "brief-title", "Weekly Portfolio Brief"),
       tags$span(class = "brief-model", glue("Groq / {GROQ_MODEL}"))
     ),
-    div(class = "brief-body", portfolio_summary)
+    div(class = "brief-body", portfolio_summary),
+    outlook_table
   )
 }
 ```
@@ -455,25 +477,35 @@ if (is.null(portfolio_summary) || is.na(GROQ_KEY) || GROQ_KEY == "") {
 sentiment_badge <- function(summary_text) {
   kw_bull <- c("rally","surge","gain","rise","high","strong","bull","upward","demand","support")
   kw_bear <- c("drop","fall","decline","weak","low","bear","downward","surplus","pressure","loss")
-  s <- tolower(summary_text)
+  s  <- tolower(summary_text)
   b  <- sum(sapply(kw_bull, grepl, x = s))
   br <- sum(sapply(kw_bear, grepl, x = s))
-  if (b > br)       tags$span(class = "sentiment bullish", "Bullish")
-  else if (br > b)  tags$span(class = "sentiment bearish", "Bearish")
-  else              tags$span(class = "sentiment neutral",  "Neutral")
+  if (b > br)      tags$span(class = "sentiment bullish", "Bullish")
+  else if (br > b) tags$span(class = "sentiment bearish", "Bearish")
+  else             tags$span(class = "sentiment neutral",  "Neutral")
 }
 
 cards <- summaries_df |>
-  left_join(ticker_counts |> select(ticker, n), by = "ticker") |>
-  pmap(function(ticker, nome, summary, n, ...) {
+  dplyr::left_join(dplyr::select(ticker_counts, ticker, n), by = "ticker") |>
+  purrr::pmap(function(ticker, nome, summary, n, ...) {
+    has_news  <- n > 0
     div(class = "summary-card",
-      div(class = "summary-header",
-        tags$span(class = "summary-name",   nome),
-        tags$code(class = "summary-ticker", ticker),
+      tags$h3(
+        style = paste0(
+          "margin:0 0 .6rem 0; padding-bottom:.5rem; ",
+          "border-bottom:2px solid ", if (has_news) "#2c5f2e" else "#e5e7eb", "; ",
+          "display:flex; align-items:center; gap:.6rem; flex-wrap:wrap;"
+        ),
+        tags$span(style = "font-size:1.1rem; font-weight:800; color:#1a1a2e; letter-spacing:-.01em;", nome),
+        tags$code(style = "font-size:.72rem; color:#6b7280; font-weight:400;
+                            background:#f3f4f6; padding:2px 6px; border-radius:4px;", ticker),
         sentiment_badge(summary),
-        tags$span(class = "summary-count",  paste(n, "articles"))
+        tags$span(style = "margin-left:auto; font-size:.78rem; color:#9ca3af; font-weight:400;",
+                  paste(n, "articles"))
       ),
-      div(class = "summary-body", summary)
+      div(class = "summary-body",
+          style = if (!has_news) "color:#9ca3af; font-style:italic;" else "",
+          summary)
     )
   })
 
@@ -485,50 +517,49 @@ tagList(cards)
 ## News by Commodity
 
 ```{r render_cards}
-make_news_card <- function(titulo, link, veiculo, publicado, fonte, ...) {
-  badge_color <- if (fonte == "Google News") "#4285F4" else "#E84393"
+make_news_card <- function(titulo, link, veiculo, publicado, fonte, snippet, ...) {
+  badge_color <- if (!is.na(fonte) && fonte == "Google News") "#4285F4" else "#E84393"
   div(class = "news-card",
     div(class = "news-meta",
       tags$span(class = "badge", style = paste0("background:", badge_color), fonte),
       tags$span(class = "veiculo", veiculo),
       tags$span(class = "data", format(publicado, "%m/%d %H:%M"))
     ),
-    a(href = link, target = "_blank", class = "news-titulo", titulo)
+    a(href = link, target = "_blank", class = "news-titulo", titulo),
+    if (!is.na(snippet) && nchar(trimws(snippet)) > 0)
+      tags$p(style = "font-size:.78rem; color:#6b7280; margin:.3rem 0 0 0; line-height:1.4;",
+             stringr::str_trunc(snippet, 180))
+    else NULL
   )
 }
 
 render_ticker_section <- function(ticker_key, df_ticker) {
   nome_display <- unique(df_ticker$nome)[1]
-  df_valid     <- df_ticker |> filter(!is.na(titulo), titulo != "")
+  df_valid     <- dplyr::filter(df_ticker, !is.na(titulo), titulo != "")
   n_articles   <- nrow(df_valid)
-
   cards <- if (n_articles == 0) {
-    tags$blockquote(
-      style = "color:#9ca3af; border-left:3px solid #e5e7eb; padding-left:1rem;",
-      "No articles found for this ticker in the selected period."
-    )
+    tags$blockquote(style = "color:#9ca3af; border-left:3px solid #e5e7eb; padding-left:1rem;",
+                    "No articles found for this ticker in the selected period.")
   } else {
-    df_valid |> arrange(desc(publicado)) |> pmap(make_news_card) |> tagList()
+    df_valid |> dplyr::arrange(desc(publicado)) |> purrr::pmap(make_news_card) |> tagList()
   }
-
   tagList(
-    tags$h2(
-      tags$span(nome_display),
-      tags$code(style = "margin-left:.5rem; font-size:.75em; color:#6b7280;", ticker_key)
-    ),
+    tags$h2(tags$span(nome_display),
+            tags$code(style = "margin-left:.5rem; font-size:.75em; color:#6b7280;", ticker_key)),
     tags$p(tags$em(paste0(n_articles, " article(s) found in the last ", DAYS_BACK, " days"))),
     cards
   )
 }
 
 sections <- ticker_map |>
-  pmap(function(ticker, nome, ...) {
-    df_ticker <- news_df |> filter(ticker == !!ticker)
+  purrr::pmap(function(ticker, nome, ...) {
+    df_ticker <- dplyr::filter(news_df, ticker == !!ticker)
     if (nrow(df_ticker) == 0) {
       df_ticker <- empty_news() |>
-        add_row(ticker = ticker, nome = nome, fonte = NA_character_,
-                titulo = NA_character_, link = NA_character_,
-                veiculo = NA_character_, publicado = as.POSIXct(NA))
+        tibble::add_row(ticker = ticker, nome = nome, fonte = NA_character_,
+                        titulo = NA_character_, snippet = NA_character_,
+                        link = NA_character_, veiculo = NA_character_,
+                        publicado = as.POSIXct(NA))
     }
     render_ticker_section(ticker, df_ticker)
   })
@@ -539,93 +570,64 @@ tagList(sections)
 ---
 
 ```{r send_email}
-# ── Envio do brief por email via blastula + Gmail ─────────────────────────────
-
 send_weekly_email <- function() {
-
   if (any(c(SMTP_USER, SMTP_PASS, EMAIL_TO) == "")) {
-    message("[Email] SMTP_USER, SMTP_PASS ou EMAIL_TO nao configurados — pulando envio.")
-    return(invisible(NULL))
+    message("[Email] Credenciais nao configuradas — pulando."); return(invisible(NULL))
   }
-
   if (is.null(portfolio_summary)) {
-    message("[Email] Portfolio summary nao disponivel — pulando envio.")
-    return(invisible(NULL))
+    message("[Email] Portfolio summary indisponivel — pulando."); return(invisible(NULL))
   }
-
-  # Monta tabela de precos para o email
   price_rows_html <- price_table |>
-    pmap_chr(function(ticker, nome, price, weekly_chg, n, ...) {
+    purrr::pmap_chr(function(ticker, nome, price, weekly_chg, n, ...) {
       chg_color <- if (is.na(weekly_chg)) "#6b7280" else if (weekly_chg >= 0) "#16a34a" else "#dc2626"
-      chg_arrow <- if (is.na(weekly_chg)) "" else if (weekly_chg >= 0) "▲" else "▼"
+      chg_arrow <- if (is.na(weekly_chg)) "" else if (weekly_chg >= 0) "\u25b2" else "\u25bc"
       chg_txt   <- if (is.na(weekly_chg)) "N/A" else paste0(chg_arrow, abs(weekly_chg), "%")
-      price_txt <- if (is.na(price)) "N/A" else formatC(price, format = "f", digits = 2, big.mark = ",")
+      price_txt <- if (is.na(price)) "N/A" else formatC(price, format="f", digits=2, big.mark=",")
       glue('<tr>
-        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; font-weight:600;">{nome}</td>
-        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; font-family:monospace; color:#6b7280;">{ticker}</td>
-        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; text-align:right; font-family:monospace;">{price_txt}</td>
-        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; text-align:right; color:{chg_color}; font-weight:600;">{chg_txt}</td>
-        <td style="padding:6px 10px; border-bottom:1px solid #f3f4f6; text-align:center; color:#6b7280;">{n} art.</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;font-weight:600;">{nome}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;color:#6b7280;">{ticker}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;text-align:right;">{price_txt}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;text-align:right;color:{chg_color};font-weight:600;">{chg_txt}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;text-align:center;color:#6b7280;">{n} art.</td>
       </tr>')
-    }) |>
-    paste(collapse = "\n")
+    }) |> paste(collapse = "\n")
 
-  recipients <- strsplit(EMAIL_TO, ",")[[1]] |> trimws()
-
-  email <- compose_email(
-    body = blocks(
-      block_title("Commodity News Monitor"),
-      block_text(glue("Weekly brief — {period}")),
-      block_spacer(),
-
-      block_text("<strong style='font-size:1.1rem;'>Portfolio Brief (AI)</strong>"),
-      block_text(portfolio_summary),
-      block_spacer(),
-
-      block_text("<strong style='font-size:1.1rem;'>Price Summary</strong>"),
-      block_text(glue(
-        '<table style="width:100%; border-collapse:collapse; font-size:.9rem;">
-          <thead>
-            <tr style="background:#f9fafb;">
-              <th style="padding:6px 10px; text-align:left; color:#6b7280;">Commodity</th>
-              <th style="padding:6px 10px; text-align:left; color:#6b7280;">Ticker</th>
-              <th style="padding:6px 10px; text-align:right; color:#6b7280;">Price</th>
-              <th style="padding:6px 10px; text-align:right; color:#6b7280;">7d</th>
-              <th style="padding:6px 10px; text-align:center; color:#6b7280;">News</th>
-            </tr>
-          </thead>
-          <tbody>{price_rows_html}</tbody>
-        </table>'
-      )),
-      block_spacer(),
-
-      block_text(glue(
-        '<p style="font-size:.8rem; color:#9ca3af;">',
-        'Generated automatically every Friday | PAIC Econometrics / FAE Business School<br>',
-        'Full report: <a href="https://paiceconometrics.github.io/site/news.html">View online</a>',
-        '</p>'
-      ))
-    )
-  )
+  email <- compose_email(body = blocks(
+    block_title("Commodity News Monitor"),
+    block_text(glue("Weekly brief — {period}")),
+    block_spacer(),
+    block_text("<strong>Portfolio Brief (AI)</strong>"),
+    block_text(portfolio_summary),
+    block_spacer(),
+    block_text("<strong>Price Summary</strong>"),
+    block_text(glue(
+      '<table style="width:100%;border-collapse:collapse;font-size:.9rem;">
+        <thead><tr style="background:#f9fafb;">
+          <th style="padding:6px 10px;text-align:left;color:#6b7280;">Commodity</th>
+          <th style="padding:6px 10px;text-align:left;color:#6b7280;">Ticker</th>
+          <th style="padding:6px 10px;text-align:right;color:#6b7280;">Price</th>
+          <th style="padding:6px 10px;text-align:right;color:#6b7280;">7d</th>
+          <th style="padding:6px 10px;text-align:center;color:#6b7280;">News</th>
+        </tr></thead>
+        <tbody>{price_rows_html}</tbody>
+      </table>'
+    )),
+    block_spacer(),
+    block_text(glue(
+      '<p style="font-size:.8rem;color:#9ca3af;">Auto-generated every Friday | PAIC Econometrics / FAE<br>',
+      'Full report: <a href="https://paiceconometrics.github.io/site/news.html">View online</a></p>'
+    ))
+  ))
 
   tryCatch({
-    smtp_send(
-      email,
-      to      = recipients,
-      from    = SMTP_USER,
+    smtp_send(email,
+      to = strsplit(EMAIL_TO, ",")[[1]] |> trimws(),
+      from = SMTP_USER,
       subject = glue("Commodity Weekly Brief — {format(Sys.Date(), '%b %d, %Y')}"),
-      credentials = creds_envvar(
-        user     = "SMTP_USER",
-        pass_envvar = "SMTP_PASS",
-        host     = "smtp.gmail.com",
-        port     = 465,
-        use_ssl  = TRUE
-      )
-    )
-    message(glue("[Email] Sent successfully to: {EMAIL_TO}"))
-  }, error = function(e) {
-    message(glue("[Email] Error: {conditionMessage(e)}"))
-  })
+      credentials = creds_envvar(user = "SMTP_USER", pass_envvar = "SMTP_PASS",
+                                 host = "smtp.gmail.com", port = 465, use_ssl = TRUE))
+    message(glue("[Email] Enviado para: {EMAIL_TO}"))
+  }, error = function(e) message(glue("[Email] Erro: {conditionMessage(e)}")))
 }
 
 send_weekly_email()
