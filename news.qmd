@@ -1,0 +1,427 @@
+---
+title: "Commodity News Monitor"
+subtitle: "Weekly Monitoring, PAIC Commodities Portfolio"
+date: today
+date-format: "DD/MM/YYYY"
+author: "Rodrigo Hermont Ozon - FAE"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Navigation"
+    toc-location: left
+    toc-depth: 2
+    number-sections: false
+    self-contained: true
+    code-fold: true
+    code-tools: true
+    code-summary: "Show Code"
+    df-print: paged
+    css: news_styles.css
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+
+pkgs <- c("tidyRSS", "httr2", "dplyr", "purrr", "glue",
+          "lubridate", "stringr", "readr", "jsonlite", "htmltools", "tidyr")
+
+invisible(lapply(pkgs, function(p) {
+  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
+  library(p, character.only = TRUE)
+}))
+
+DAYS_BACK   <- 7
+SLEEP_SEC   <- 1.5
+OUTPUT_DIR  <- "data"
+NEWSAPI_KEY <- Sys.getenv("NEWSAPI_KEY")
+GROQ_KEY    <- Sys.getenv("GROQ_API_KEY")
+GROQ_MODEL  <- "llama-3.3-70b-versatile"
+
+if (!dir.exists(OUTPUT_DIR)) dir.create(OUTPUT_DIR, recursive = TRUE)
+
+ticker_map <- tibble::tribble(
+  ~ticker,  ~nome,            ~query_google,                         ~query_newsapi,
+  "ZC=F",   "Corn",           "corn futures commodities market",      "corn futures",
+  "ZO=F",   "Oat",            "oat grain futures market price",       "oat futures grain",
+  "KE=F",   "HRW Wheat",      "wheat futures Kansas HRW grain",       "wheat futures grain market",
+  "ZR=F",   "Rough Rice",     "rice futures commodity market price",  "rice futures commodity",
+  "GF=F",   "Feeder Cattle",  "cattle futures livestock market",      "cattle futures livestock",
+  "ZS=F",   "Soybeans",       "soybean futures commodities market",   "soybean futures",
+  "ZM=F",   "Soybean Meal",   "soybean meal futures market",          "soybean meal futures",
+  "ZL=F",   "Soybean Oil",    "soybean oil futures market",           "soybean oil futures"
+)
+
+empty_news <- function() {
+  tibble(
+    ticker    = character(),
+    nome      = character(),
+    fonte     = character(),
+    titulo    = character(),
+    link      = character(),
+    veiculo   = character(),
+    publicado = as.POSIXct(character())
+  )
+}
+
+```
+
+
+```{r fetch_functions}
+
+fetch_google_news <- function(ticker, nome, query_google, days_back = DAYS_BACK, ...) {
+  url <- glue("https://news.google.com/rss/search?q={URLencode(query_google)}&hl=en-US&gl=US&ceid=US:en")
+  tryCatch({
+    feed <- tidyRSS::tidyfeed(url, clean_tags = TRUE)
+    if (is.null(feed) || nrow(feed) == 0) return(empty_news())
+    result <- feed |>
+      mutate(ticker = ticker, nome = nome, fonte = "Google News",
+             publicado = as.POSIXct(item_pub_date, tz = "America/Sao_Paulo")) |>
+      filter(publicado >= Sys.time() - days(days_back)) |>
+      select(ticker, nome, fonte,
+             titulo = item_title, link = item_link,
+             veiculo = item_feed_title, publicado)
+    if (nrow(result) == 0) empty_news() else result
+  }, error = function(e) {
+    message(glue("[Google] Error {ticker}: {conditionMessage(e)}"))
+    empty_news()
+  })
+}
+
+fetch_newsapi <- function(ticker, nome, query_newsapi, days_back = DAYS_BACK, ...) {
+  if (is.na(NEWSAPI_KEY) || NEWSAPI_KEY == "") return(empty_news())
+  tryCatch({
+    resp <- request("https://newsapi.org/v2/everything") |>
+      req_url_query(q = query_newsapi,
+                    from = format(Sys.Date() - days_back, "%Y-%m-%d"),
+                    sortBy = "publishedAt", language = "en",
+                    pageSize = 10, apiKey = NEWSAPI_KEY) |>
+      req_perform() |> resp_body_json(simplifyVector = TRUE)
+    arts <- resp$articles
+    if (is.null(arts) || length(arts) == 0) return(empty_news())
+    arts <- as_tibble(arts)
+    if (nrow(arts) == 0) return(empty_news())
+    result <- arts |>
+      mutate(ticker = ticker, nome = nome, fonte = "NewsAPI",
+             publicado = as.POSIXct(publishedAt, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC") |>
+               with_tz("America/Sao_Paulo"),
+             veiculo = if (is.data.frame(source)) source$name else as.character(source)) |>
+      filter(publicado >= Sys.time() - days(days_back)) |>
+      select(ticker, nome, fonte, titulo = title, link = url, veiculo, publicado)
+    if (nrow(result) == 0) empty_news() else result
+  }, error = function(e) {
+    message(glue("[NewsAPI] Error {ticker}: {conditionMessage(e)}"))
+    empty_news()
+  })
+}
+
+fetch_all_news <- function(days_back = DAYS_BACK) {
+  ticker_map |>
+    pmap_dfr(function(ticker, nome, query_google, query_newsapi) {
+      message(glue("  Fetching: {nome} ({ticker})"))
+      g <- fetch_google_news(ticker, nome, query_google, days_back)
+      Sys.sleep(SLEEP_SEC)
+      n <- fetch_newsapi(ticker, nome, query_newsapi, days_back)
+      combined <- bind_rows(g, n)
+      if (nrow(combined) > 0 && any(!is.na(combined$titulo) & combined$titulo != "")) {
+        combined <- combined |>
+          filter(!is.na(titulo), titulo != "") |>
+          distinct(titulo, .keep_all = TRUE) |>
+          arrange(desc(publicado))
+      }
+      combined
+    })
+}
+```
+
+```{r load_news}
+news_df <- fetch_all_news()
+readr::write_csv(news_df, file.path(OUTPUT_DIR, glue("commodity_news_{Sys.Date()}.csv")))
+
+total_news <- nrow(news_df |> filter(!is.na(titulo), titulo != ""))
+period     <- glue("{format(Sys.Date() - DAYS_BACK, '%m/%d')} to {format(Sys.Date(), '%m/%d/%Y')}")
+
+# Contagem por ticker para o painel
+ticker_counts <- ticker_map |>
+  left_join(
+    news_df |> filter(!is.na(titulo), titulo != "") |> count(ticker, name = "n"),
+    by = "ticker"
+  ) |>
+  mutate(n = ifelse(is.na(n), 0L, n))
+
+```
+
+
+
+```{r groq_functions}
+
+groq_summarize <- function(headlines_text, commodity_name, model = GROQ_MODEL) {
+  if (is.na(GROQ_KEY) || GROQ_KEY == "") return(NULL)
+  prompt <- paste0(
+    "You are a commodity market analyst. Below are news headlines from the past week ",
+    "about ", commodity_name, " futures markets.\n\n",
+    "Headlines:\n", headlines_text, "\n\n",
+    "Write a concise market summary (3-5 sentences) covering:\n",
+    "1. The main price drivers or trends mentioned\n",
+    "2. Key supply/demand factors\n",
+    "3. Any relevant geopolitical or weather events\n",
+    "4. Overall market sentiment (bullish/bearish/neutral)\n\n",
+    "Be direct and analytical. Do not repeat headlines verbatim."
+  )
+  tryCatch({
+    resp <- request("https://api.groq.com/openai/v1/chat/completions") |>
+      req_headers("Authorization" = paste("Bearer", GROQ_KEY),
+                  "Content-Type"  = "application/json") |>
+      req_body_json(list(
+        model    = model,
+        messages = list(
+          list(role = "system", content = "You are a concise commodity market analyst. Always respond in English."),
+          list(role = "user",   content = prompt)
+        ),
+        temperature = 0.3,
+        max_tokens  = 300
+      )) |>
+      req_timeout(30) |>
+      req_perform() |>
+      resp_body_json()
+    resp$choices[[1]]$message$content
+  }, error = function(e) {
+    message(glue("[Groq] Error for {commodity_name}: {conditionMessage(e)}"))
+    NULL
+  })
+}
+
+generate_all_summaries <- function(df) {
+  if (is.na(GROQ_KEY) || GROQ_KEY == "") {
+    return(tibble(ticker = character(), nome = character(), summary = character()))
+  }
+  df |>
+    filter(!is.na(titulo), titulo != "") |>
+    group_by(ticker, nome) |>
+    summarise(headlines = paste(titulo, collapse = "\n- "), n = n(), .groups = "drop") |>
+    mutate(summary = map2_chr(headlines, nome, function(h, name) {
+      Sys.sleep(0.5)
+      result <- groq_summarize(h, name)
+      if (is.null(result)) "No news available this week." else result
+    })) |>
+    select(ticker, nome, summary)
+}
+
+summaries_df <- generate_all_summaries(news_df)
+
+# Garante todos os tickers no sumario, mesmo sem noticias
+summaries_df <- ticker_map |>
+  select(ticker, nome) |>
+  left_join(summaries_df, by = c("ticker", "nome")) |>
+  mutate(summary = replace_na(summary, "No news found for this commodity this week."))
+
+readr::write_csv(summaries_df, file.path(OUTPUT_DIR, glue("summaries_{Sys.Date()}.csv")))
+
+```
+
+
+
+
+```{r groq_portfolio}
+
+# Resumo global do portfolio via Groq
+
+groq_portfolio_summary <- function(summaries_df) {
+  if (is.na(GROQ_KEY) || GROQ_KEY == "") return(NULL)
+
+  all_summaries <- summaries_df |>
+    mutate(block = glue("{nome} ({ticker}): {summary}")) |>
+    pull(block) |>
+    paste(collapse = "\n\n")
+
+  prompt <- paste0(
+    "You are a senior commodity portfolio analyst. Below are individual weekly summaries ",
+    "for each commodity in an agricultural futures portfolio.\n\n",
+    all_summaries, "\n\n",
+    "Write a comprehensive portfolio-level market brief (5-7 sentences) that:\n",
+    "1. Identifies the dominant macro theme across the portfolio this week\n",
+    "2. Highlights the top 2-3 commodities with the most significant moves or news\n",
+    "3. Notes any cross-commodity correlations or common drivers (weather, USD, energy)\n",
+    "4. Gives an overall portfolio sentiment (risk-on / risk-off / mixed)\n",
+    "5. Flags any key events or reports to watch next week\n\n",
+    "Be direct, analytical, and concise. Write as a professional market brief."
+  )
+
+  tryCatch({
+    resp <- request("https://api.groq.com/openai/v1/chat/completions") |>
+      req_headers("Authorization" = paste("Bearer", GROQ_KEY),
+                  "Content-Type"  = "application/json") |>
+      req_body_json(list(
+        model    = GROQ_MODEL,
+        messages = list(
+          list(role = "system", content = "You are a senior commodity portfolio analyst. Always respond in English."),
+          list(role = "user",   content = prompt)
+        ),
+        temperature = 0.3,
+        max_tokens  = 500
+      )) |>
+      req_timeout(40) |>
+      req_perform() |>
+      resp_body_json()
+    resp$choices[[1]]$message$content
+  }, error = function(e) {
+    message(glue("[Groq] Portfolio summary error: {conditionMessage(e)}"))
+    NULL
+  })
+}
+
+portfolio_summary <- groq_portfolio_summary(summaries_df)
+
+```
+
+---
+
+::: {.callout-note}
+**Period covered:** `r period` &nbsp;|&nbsp; **Total articles:** `r total_news` &nbsp;|&nbsp; **Sources:** Google News RSS + NewsAPI.org &nbsp;|&nbsp; **AI:** Groq / llama-3.3-70b
+:::
+
+---
+
+## Portfolio Overview
+
+```{r portfolio_overview}
+
+# ── Painel de contagem de noticias por ticker ─────────────────────────────────
+count_cards <- ticker_counts |>
+  pmap(function(ticker, nome, n, ...) {
+    bar_width <- if (max(ticker_counts$n) > 0) round((n / max(ticker_counts$n)) * 100) else 0
+    bar_color <- if (n == 0) "#e5e7eb" else if (n >= 5) "#2c5f2e" else "#86b48a"
+    div(style = "display:flex; align-items:center; gap:.8rem; margin-bottom:.5rem;",
+      tags$span(style = "width:110px; font-size:.85rem; font-weight:600; color:#374151;", nome),
+      tags$code(style = "font-size:.72rem; color:#6b7280; width:55px;", ticker),
+      div(style = glue("height:14px; width:{bar_width}%; min-width:4px; background:{bar_color}; border-radius:4px; flex-shrink:0;"),
+          " "),
+      tags$span(style = "font-size:.82rem; color:#6b7280;", paste(n, "articles"))
+    )
+  })
+
+div(class = "portfolio-panel",
+  div(style = "margin-bottom:1rem;",
+    tagList(count_cards)
+  )
+)
+
+```
+
+## Portfolio AI Brief
+
+```{r portfolio_brief}
+
+if (is.null(portfolio_summary) || is.na(GROQ_KEY) || GROQ_KEY == "") {
+  div(class = "callout callout-warning",
+    p("Portfolio AI brief unavailable. Configure GROQ_API_KEY to enable.")
+  )
+} else {
+  div(class = "portfolio-brief",
+    div(class = "brief-header",
+      tags$span(class = "brief-icon", "AI"),
+      tags$span(class = "brief-title", "Weekly Portfolio Brief"),
+      tags$span(class = "brief-model", glue("Groq / {GROQ_MODEL}"))
+    ),
+    div(class = "brief-body", portfolio_summary)
+  )
+}
+
+```
+
+---
+
+## Weekly AI Summary
+
+```{r weekly_overview}
+sentiment_badge <- function(summary_text) {
+  kw_bull <- c("rally","surge","gain","rise","high","strong","bull","upward","demand","support")
+  kw_bear <- c("drop","fall","decline","weak","low","bear","downward","surplus","pressure","loss")
+  s <- tolower(summary_text)
+  b  <- sum(sapply(kw_bull, grepl, x = s))
+  br <- sum(sapply(kw_bear, grepl, x = s))
+  if (b > br)       tags$span(class = "sentiment bullish", "Bullish")
+  else if (br > b)  tags$span(class = "sentiment bearish", "Bearish")
+  else              tags$span(class = "sentiment neutral",  "Neutral")
+}
+
+cards <- summaries_df |>
+  left_join(ticker_counts |> select(ticker, n), by = "ticker") |>
+  pmap(function(ticker, nome, summary, n, ...) {
+    div(class = "summary-card",
+      div(class = "summary-header",
+        tags$span(class = "summary-name",   nome),
+        tags$code(class = "summary-ticker", ticker),
+        sentiment_badge(summary),
+        tags$span(class = "summary-count",  paste(n, "articles"))
+      ),
+      div(class = "summary-body", summary)
+    )
+  })
+
+tagList(cards)
+```
+
+---
+
+## News by Commodity
+
+```{r render_cards}
+make_news_card <- function(titulo, link, veiculo, publicado, fonte, ...) {
+  badge_color <- if (fonte == "Google News") "#4285F4" else "#E84393"
+  div(class = "news-card",
+    div(class = "news-meta",
+      tags$span(class = "badge", style = paste0("background:", badge_color), fonte),
+      tags$span(class = "veiculo", veiculo),
+      tags$span(class = "data", format(publicado, "%m/%d %H:%M"))
+    ),
+    a(href = link, target = "_blank", class = "news-titulo", titulo)
+  )
+}
+
+render_ticker_section <- function(ticker_key, df_ticker) {
+  nome_display <- unique(df_ticker$nome)[1]
+  df_valid     <- df_ticker |> filter(!is.na(titulo), titulo != "")
+  n_articles   <- nrow(df_valid)
+
+  cards <- if (n_articles == 0) {
+    tags$blockquote(
+      style = "color:#9ca3af; border-left:3px solid #e5e7eb; padding-left:1rem;",
+      "No articles found for this ticker in the selected period."
+    )
+  } else {
+    df_valid |> arrange(desc(publicado)) |> pmap(make_news_card) |> tagList()
+  }
+
+  tagList(
+    tags$h2(
+      tags$span(nome_display),
+      tags$code(style = "margin-left:.5rem; font-size:.75em; color:#6b7280;", ticker_key)
+    ),
+    tags$p(tags$em(paste0(n_articles, " article(s) found in the last ", DAYS_BACK, " days"))),
+    cards
+  )
+}
+
+# Garante que TODOS os tickers aparecem, mesmo sem noticias
+sections <- ticker_map |>
+  pmap(function(ticker, nome, ...) {
+    df_ticker <- news_df |> filter(ticker == !!ticker)
+    if (nrow(df_ticker) == 0) {
+      df_ticker <- empty_news() |>
+        add_row(ticker = ticker, nome = nome, fonte = NA_character_,
+                titulo = NA_character_, link = NA_character_,
+                veiculo = NA_character_, publicado = as.POSIXct(NA))
+    }
+    render_ticker_section(ticker, df_ticker)
+  })
+
+tagList(sections)
+```
+
+---
+
+*Auto-report scheduled every Friday at 07:00 AM BRT | PAIC Econometrics / FAE Business School*
