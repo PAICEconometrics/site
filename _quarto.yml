@@ -68,7 +68,7 @@ website:
           - text: "Data Exploration & Analysis"
             href: data-exploration.qmd
           - text: "Commodities News"
-            href: news.qmd
+            href: news.html
           - text: "AI Agent -- PaperHunter"
             href: openAI_agent.qmd
           - text: "RAG Research Assistant"
