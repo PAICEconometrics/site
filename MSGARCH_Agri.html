@@ -1198,134 +1198,262 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Modelling Volatility in Agricultural Commodities Using Markov-Switching GARCH Models"</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "A replication of the Master Thesis 'Modelling Volatility Using Markov-Switching GARCH Models' applied to an Agricultural Commodities portfolio."</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Interactive Analysis: Volatility in Agricultural Commodities with MS-GARCH Models"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "A high-performance replication of the Master Thesis 'Modelling Volatility Using Markov-Switching GARCH Models' featuring interactive visualizations and deep econometric diagnostics."</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Rodrigo Hermont Ozon"</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-02-23"</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [Finance, R, MSGARCH, Commodities, Volatility, Risk Management]</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [Finance, R, MSGARCH, Commodities, Interactive, Risk Management]</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 4</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-summary: "Show the code"</span></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: cosmo</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># 1. Introduction</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>Modelling financial time-series has been a central topic in financial econometrics for decades. In the Master thesis *"Modelling Volatility Using Markov-Switching GARCH Models"* (Gluud &amp; Jacobsen, 2021), the authors thoroughly examined whether the introduction of **Markov-Switching (MS) regimes** to the classic Generalized Autoregressive Conditional Heteroscedasticity (GARCH) framework improves in-sample modelling and out-of-sample risk forecasting for the S&amp;P 500 index.</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>In this post, we replicate the essence of this thesis, but we pivot our focus towards an **Equally Weighted Portfolio of Agricultural Commodities**. Using R, we download historical data, build the GARCH and MS-GARCH models, and evaluate their abilities to measure risk via Value at Risk (VaR) and Expected Shortfall (ES).</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>The selected commodities: <span class="sc">\*</span> Corn (<span class="in">`ZC=F`</span>), Wheat (<span class="in">`ZO=F`</span>), KC HRW Wheat (<span class="in">`KE=F`</span>), Rough Rice (<span class="in">`ZR=F`</span>), Feeder Cattle (<span class="in">`GF=F`</span>), Soybean Meal (<span class="in">`ZS=F`</span>), Soybean Oil (<span class="in">`ZM=F`</span>), and Soybeans (<span class="in">`ZL=F`</span>).</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="fu"># 2. Data Preparation and Exploratory Data Analysis (EDA)</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-and-data</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantmod)</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MSGARCH)</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PerformanceAnalytics)</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">    self-contained: true</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu"># 1. Introduction</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>Modelling financial time-series has for decades been subject to extensive research. In the Master thesis *"Modelling Volatility Using Markov-Switching GARCH Models"* (Gluud &amp; Jacobsen, 2021), the authors thoroughly examined whether the introduction of **Markov-Switching (MS) regimes** to the classic Generalized Autoregressive Conditional Heteroscedasticity (GARCH) framework improves in-sample modelling and out-of-sample risk forecasting for the S&amp;P 500 index. </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>This post replicates and expands that research, applying it to an **Equally Weighted Portfolio of Agricultural Commodities**. We leverage **interactive visualizations** to better understand the volatility dynamics and the transition between market regimes.</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="fu"># 2. Data Preparation and Stylized Facts</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-and-data</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantmod)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MSGARCH)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PerformanceAnalytics)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>tickers <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ZC=F"</span>, <span class="st">"ZO=F"</span>, <span class="st">"KE=F"</span>, <span class="st">"ZR=F"</span>, <span class="st">"GF=F"</span>, <span class="st">"ZS=F"</span>, <span class="st">"ZM=F"</span>, <span class="st">"ZL=F"</span>)</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="fu">getSymbols</span>(tickers, <span class="at">from =</span> <span class="st">"2015-01-01"</span>, <span class="at">to =</span> <span class="st">"2023-12-31"</span>, <span class="at">warnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>prices <span class="ot">&lt;-</span> <span class="fu">do.call</span>(merge, <span class="fu">lapply</span>(tickers, <span class="cf">function</span>(x) <span class="fu">Ad</span>(<span class="fu">get</span>(x))))</span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>prices <span class="ot">&lt;-</span> <span class="fu">na.locf</span>(prices)</span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>returns <span class="ot">&lt;-</span> <span class="fu">Return.calculate</span>(prices, <span class="at">method =</span> <span class="st">"log"</span>)[<span class="sc">-</span><span class="dv">1</span>]</span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>port_returns <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(returns, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>port_returns_xts <span class="ot">&lt;-</span> <span class="fu">xts</span>(port_returns, <span class="at">order.by =</span> <span class="fu">index</span>(returns))</span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>ret_vec <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(port_returns)</span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eda-plot</span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily Returns of the Agricultural Commodities Portfolio (2015-2023)"</span></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.zoo</span>(port_returns_xts, <span class="at">main =</span> <span class="st">"Portfolio Returns"</span>, <span class="at">col =</span> <span class="st">"#2c3e50"</span>, <span class="at">lwd =</span> <span class="dv">1</span>)</span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="fu"># 3. Model Specification</span></span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>We test four models: 1. **GARCH-Norm**: Single-Regime GARCH(1,1) with Normal distribution. 2. **GARCH-Std**: Single-Regime GARCH(1,1) with Student-*t* distribution. 3. **MS-GARCH-Norm**: Markov-Switching GARCH(1,1) (2 regimes) with Normal distribution. 4. **MS-GARCH-Std**: Markov-Switching GARCH(1,1) (2 regimes) with Student-*t* distribution.</span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model-fitting</span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>spec_gn <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="st">"sGARCH"</span>), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="st">"norm"</span>))</span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>spec_gs <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="st">"sGARCH"</span>), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="st">"std"</span>))</span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>spec_mn <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"sGARCH"</span>, <span class="st">"sGARCH"</span>)), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="fu">c</span>(<span class="st">"norm"</span>, <span class="st">"norm"</span>)))</span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>spec_ms <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"sGARCH"</span>, <span class="st">"sGARCH"</span>)), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="fu">c</span>(<span class="st">"std"</span>, <span class="st">"std"</span>)))</span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>fit_gn <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_gn, <span class="at">data =</span> ret_vec)</span>
-<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>fit_gs <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_gs, <span class="at">data =</span> ret_vec)</span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>fit_mn <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_mn, <span class="at">data =</span> ret_vec)</span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>fit_ms <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_ms, <span class="at">data =</span> ret_vec)</span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch data</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>tickers <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ZC=F"</span>, <span class="st">"ZO=F"</span>, <span class="st">"KE=F"</span>, <span class="st">"ZR=F"</span>, <span class="st">"GF=F"</span>, <span class="st">"ZS=F"</span>, <span class="st">"ZM=F"</span>, <span class="st">"ZL=F"</span>)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="fu">getSymbols</span>(tickers, <span class="at">from =</span> <span class="st">"2015-01-01"</span>, <span class="at">to =</span> <span class="st">"2023-12-31"</span>, <span class="at">warnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>prices <span class="ot">&lt;-</span> <span class="fu">do.call</span>(merge, <span class="fu">lapply</span>(tickers, <span class="cf">function</span>(x) <span class="fu">Ad</span>(<span class="fu">get</span>(x))))</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>prices <span class="ot">&lt;-</span> <span class="fu">na.locf</span>(prices)</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>returns <span class="ot">&lt;-</span> <span class="fu">Return.calculate</span>(prices, <span class="at">method =</span> <span class="st">"log"</span>)[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Equally weighted portfolio</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>port_returns <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(returns, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>df_plot <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Date =</span> <span class="fu">index</span>(returns), <span class="at">Returns =</span> <span class="fu">as.numeric</span>(port_returns))</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>ret_vec <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(port_returns)</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.1. Interactive Volatility Clustering</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>Volatility clustering is visually evident. Use the range slider below to zoom into specific market events.</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eda-returns-plotly</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Interactive Portfolio Returns and Squared Returns"</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">plot_ly</span>(df_plot, <span class="at">x =</span> <span class="sc">~</span>Date, <span class="at">y =</span> <span class="sc">~</span>Returns, <span class="at">type =</span> <span class="st">'scatter'</span>, <span class="at">mode =</span> <span class="st">'lines'</span>, </span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>              <span class="at">name =</span> <span class="st">'Returns (%)'</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#2c3e50'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Returns (%)"</span>), <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">rangeslider =</span> <span class="fu">list</span>(<span class="at">visible =</span> T)))</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">plot_ly</span>(df_plot, <span class="at">x =</span> <span class="sc">~</span>Date, <span class="at">y =</span> <span class="sc">~</span>Returns<span class="sc">^</span><span class="dv">2</span>, <span class="at">type =</span> <span class="st">'scatter'</span>, <span class="at">mode =</span> <span class="st">'lines'</span>, </span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>              <span class="at">name =</span> <span class="st">'Sq. Returns'</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#c0392b'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Squared Returns"</span>))</span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="fu">subplot</span>(p1, p2, <span class="at">nrows =</span> <span class="dv">2</span>, <span class="at">shareX =</span> <span class="cn">TRUE</span>, <span class="at">titleY =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">showlegend =</span> <span class="cn">FALSE</span>, <span class="at">title =</span> <span class="st">"Agricultural Commodities Portfolio: Clustering Visualization"</span>)</span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.2. Non-Normality: Histogram &amp; Density</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>The commodities portfolio exhibits significant **leptokurtosis** (kurtosis &gt; 3).</span>
 <span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="fu"># 4. In-Sample Results and Diagnostics</span></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4.1. Information Criteria</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eda-distribution-plotly</span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Distribution Analysis: Empirical vs Normal"</span></span>
 <span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Model             <span class="pp">|</span> Log-Likelihood <span class="pp">|</span>   AIC    <span class="pp">|</span>     BIC      <span class="pp">|</span></span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="pp">|:------------------|:--------------:|:--------:|:------------:|</span></span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **GARCH-Norm**    <span class="pp">|</span>   -2,971.98    <span class="pp">|</span> 5,949.95 <span class="pp">|</span>   5,967.12   <span class="pp">|</span></span>
-<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **GARCH-Std**     |   -2,924.68    | 5,857.36 | **5,880.26** <span class="pp">|</span></span>
-<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **MS-GARCH-Norm** <span class="pp">|</span>   -2,938.06    <span class="pp">|</span> 5,892.12 <span class="pp">|</span>   5,937.92   <span class="pp">|</span></span>
-<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **MS-GARCH-Std**  | **-2,921.35**  <span class="pp">|</span> 5,862.70 <span class="pp">|</span>   5,919.95   <span class="pp">|</span></span>
-<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>**Analysis**: Consistent with the thesis, the **Student-*t* distribution** significantly improves the fit. While the **MS-GARCH-Std** has the highest Log-Likelihood, the **GARCH-Std** is the most parsimonious model according to BIC.</span>
-<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4.2. Volatility Regimes</span></span>
-<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: smoothed-prob-plot</span></span>
-<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Smoothed Probabilities of Regime 1 (High Volatility) - MS-tGARCH"</span></span>
-<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">State</span>(fit_ms)</span>
-<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">index</span>(returns), sp<span class="sc">$</span>SmoothProb[, <span class="dv">1</span>, <span class="dv">1</span>][<span class="sc">-</span><span class="dv">1</span>], <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"#c0392b"</span>, <span class="at">ylab =</span> <span class="st">"Prob"</span>, <span class="at">main =</span> <span class="st">"High Volatility Regime Probability"</span>)</span>
-<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="fu"># 5. Risk Forecasting: VaR &amp; Expected Shortfall (ES)</span></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare density data</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>dens <span class="ot">&lt;-</span> <span class="fu">density</span>(ret_vec)</span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>norm_dens <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(dens<span class="sc">$</span>x, <span class="at">mean =</span> <span class="fu">mean</span>(ret_vec), <span class="at">sd =</span> <span class="fu">sd</span>(ret_vec))</span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>fig_dist <span class="ot">&lt;-</span> <span class="fu">plot_ly</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_histogram</span>(<span class="at">x =</span> <span class="sc">~</span>ret_vec, <span class="at">name =</span> <span class="st">"Histogram"</span>, <span class="at">marker =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#bdc3c7'</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'white'</span>, <span class="at">width =</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_lines</span>(<span class="at">x =</span> dens<span class="sc">$</span>x, <span class="at">y =</span> dens<span class="sc">$</span>y, <span class="at">name =</span> <span class="st">"Empirical Density"</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#2c3e50'</span>, <span class="at">width =</span> <span class="dv">3</span>), <span class="at">yaxis =</span> <span class="st">"y2"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_lines</span>(<span class="at">x =</span> dens<span class="sc">$</span>x, <span class="at">y =</span> norm_dens, <span class="at">name =</span> <span class="st">"Normal Density"</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#c0392b'</span>, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">dash =</span> <span class="st">'dash'</span>), <span class="at">yaxis =</span> <span class="st">"y2"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(</span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Portfolio Return Distribution"</span>,</span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Returns (%)"</span>),</span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Frequency"</span>),</span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">yaxis2 =</span> <span class="fu">list</span>(<span class="at">overlaying =</span> <span class="st">"y"</span>, <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">title =</span> <span class="st">"Density"</span>, <span class="at">showgrid =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend =</span> <span class="fu">list</span>(<span class="at">orientation =</span> <span class="st">'h'</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.2</span>)</span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>fig_dist</span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Skewness:"</span>, <span class="fu">round</span>(<span class="fu">skewness</span>(ret_vec), <span class="dv">2</span>), <span class="st">"</span></span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Kurtosis:"</span>, <span class="fu">round</span>(<span class="fu">kurtosis</span>(ret_vec), <span class="dv">2</span>), <span class="st">"</span></span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>With **2,264 observations**, we expect approximately **113 violations** at the 5% alpha level.</span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.3. Autocorrelation (ACF) Diagnostics</span></span>
 <span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Model             <span class="pp">|</span> VaR Violations <span class="pp">|</span> VaR Hit Rate (%) <span class="pp">|</span> ES Violations <span class="pp">|</span></span>
-<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="pp">|:------------------|:--------------:|:----------------:|:-------------:|</span></span>
-<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **GARCH-Norm**    <span class="pp">|</span>      103       <span class="pp">|</span>      4.55%       <span class="pp">|</span>      48       <span class="pp">|</span></span>
-<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **GARCH-Std**     <span class="pp">|</span>      110       <span class="pp">|</span>      4.86%       <span class="pp">|</span>      37       <span class="pp">|</span></span>
-<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **MS-GARCH-Norm** <span class="pp">|</span>      114       <span class="pp">|</span>      5.04%       <span class="pp">|</span>      36       <span class="pp">|</span></span>
-<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **MS-GARCH-Std**  |      112       |      4.95%       |    **34**     <span class="pp">|</span></span>
-<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="fu">### Risk Analysis Conclusion:</span></span>
-<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**VaR Violations**: All models perform well in frequency (around 5%).</span>
-<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**ES Violations**: The Normal models fail to capture the severity of tail events (48 violations). The **MS-GARCH-Std** is the winner with only **34 violations**, proving that heavy-tailed distributions and regime switching together provide the most robust protection against extreme losses in commodities.</span>
-<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="fu"># 6. Final Thoughts</span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eda-acf-plotly</span></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Interactive ACF Plots"</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a>calc_acf_df <span class="ot">&lt;-</span> <span class="cf">function</span>(x, title) {</span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">acf</span>(x, <span class="at">plot =</span> <span class="cn">FALSE</span>, <span class="at">lag.max =</span> <span class="dv">20</span>)</span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Lag =</span> a<span class="sc">$</span>lag, <span class="at">ACF =</span> a<span class="sc">$</span>acf)</span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a>  conf <span class="ot">&lt;-</span> <span class="fu">qnorm</span>((<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.95</span>)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sqrt</span>(a<span class="sc">$</span>n.used)</span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">df =</span> df, <span class="at">conf =</span> conf, <span class="at">title =</span> title))</span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a>acf_ret <span class="ot">&lt;-</span> <span class="fu">calc_acf_df</span>(ret_vec, <span class="st">"Returns ACF"</span>)</span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a>acf_sq <span class="ot">&lt;-</span> <span class="fu">calc_acf_df</span>(ret_vec<span class="sc">^</span><span class="dv">2</span>, <span class="st">"Squared Returns ACF"</span>)</span>
 <span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a>Our replication confirms the thesis's main point: **Distribution is King**. For agricultural commodities, using a Student-*t* distribution is more critical than regime switching for overall parsimony, but combining both (MS-tGARCH) yields the most accurate risk metrics for extreme events.</span>
-<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a>*This analysis was executed programmatically in R using `quantmod` and `MSGARCH`.*</span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a>plot_acf <span class="ot">&lt;-</span> <span class="cf">function</span>(obj) {</span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_ly</span>(obj<span class="sc">$</span>df, <span class="at">x =</span> <span class="sc">~</span>Lag, <span class="at">y =</span> <span class="sc">~</span>ACF, <span class="at">type =</span> <span class="st">'bar'</span>, <span class="at">name =</span> obj<span class="sc">$</span>title, <span class="at">marker =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#34495e'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_segments</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">xend =</span> <span class="dv">20</span>, <span class="at">y =</span> obj<span class="sc">$</span>conf, <span class="at">yend =</span> obj<span class="sc">$</span>conf, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'red'</span>, <span class="at">dash =</span> <span class="st">'dash'</span>), <span class="at">name =</span> <span class="st">'95% CI'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_segments</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">xend =</span> <span class="dv">20</span>, <span class="at">y =</span> <span class="sc">-</span>obj<span class="sc">$</span>conf, <span class="at">yend =</span> <span class="sc">-</span>obj<span class="sc">$</span>conf, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'red'</span>, <span class="at">dash =</span> <span class="st">'dash'</span>), <span class="at">showlegend =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layout</span>(<span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="dv">1</span>)), <span class="at">title =</span> obj<span class="sc">$</span>title)</span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="fu">subplot</span>(<span class="fu">plot_acf</span>(acf_ret), <span class="fu">plot_acf</span>(acf_sq), <span class="at">nrows =</span> <span class="dv">1</span>, <span class="at">titleX =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="fu"># 3. Model Estimation</span></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model-fitting</span></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a>spec_gn <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="st">"sGARCH"</span>), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="st">"norm"</span>))</span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a>spec_gs <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="st">"sGARCH"</span>), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="st">"std"</span>))</span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a>spec_mn <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"sGARCH"</span>, <span class="st">"sGARCH"</span>)), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="fu">c</span>(<span class="st">"norm"</span>, <span class="st">"norm"</span>)))</span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a>spec_ms <span class="ot">&lt;-</span> <span class="fu">CreateSpec</span>(<span class="at">variance.spec =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"sGARCH"</span>, <span class="st">"sGARCH"</span>)), <span class="at">distribution.spec =</span> <span class="fu">list</span>(<span class="at">distribution =</span> <span class="fu">c</span>(<span class="st">"std"</span>, <span class="st">"std"</span>)))</span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a>fit_gn <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_gn, <span class="at">data =</span> ret_vec)</span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a>fit_gs <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_gs, <span class="at">data =</span> ret_vec)</span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a>fit_mn <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_mn, <span class="at">data =</span> ret_vec)</span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a>fit_ms <span class="ot">&lt;-</span> <span class="fu">FitML</span>(<span class="at">spec =</span> spec_ms, <span class="at">data =</span> ret_vec)</span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a><span class="fu"># 4. Results &amp; Diagnostics</span></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4.1. Information Criteria</span></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: in-sample-comparison</span></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"GARCH-Norm"</span>, <span class="st">"GARCH-Std"</span>, <span class="st">"MS-GARCH-Norm"</span>, <span class="st">"MS-GARCH-Std"</span>),</span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a>  <span class="at">LogLik =</span> <span class="fu">c</span>(fit_gn<span class="sc">$</span>loglik, fit_gs<span class="sc">$</span>loglik, fit_mn<span class="sc">$</span>loglik, fit_ms<span class="sc">$</span>loglik),</span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a>  <span class="at">AIC =</span> <span class="fu">c</span>(<span class="fu">AIC</span>(fit_gn), <span class="fu">AIC</span>(fit_gs), <span class="fu">AIC</span>(fit_mn), <span class="fu">AIC</span>(fit_ms)),</span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> <span class="fu">c</span>(<span class="fu">BIC</span>(fit_gn), <span class="fu">BIC</span>(fit_gs), <span class="fu">BIC</span>(fit_mn), <span class="fu">BIC</span>(fit_ms))</span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4.2. Latent Regimes &amp; Conditional Volatility</span></span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: smoothed-prob-plotly</span></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Dynamic Volatility and Regime Probabilities (MS-tGARCH)"</span></span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">State</span>(fit_ms)</span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a>df_ms <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">Date =</span> <span class="fu">index</span>(returns),</span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">Prob_High_Vol =</span> sp<span class="sc">$</span>SmoothProb[, <span class="dv">1</span>, <span class="dv">1</span>][<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">Volatility =</span> <span class="fu">Volatility</span>(fit_ms)</span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>fig_regime <span class="ot">&lt;-</span> <span class="fu">plot_ly</span>(df_ms, <span class="at">x =</span> <span class="sc">~</span>Date) <span class="sc">%&gt;%</span></span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_lines</span>(<span class="at">y =</span> <span class="sc">~</span>Volatility, <span class="at">name =</span> <span class="st">"Volatility"</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#2980b9'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_lines</span>(<span class="at">y =</span> <span class="sc">~</span>Prob_High_Vol, <span class="at">name =</span> <span class="st">"Prob. Regime 1 (High)"</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'#c0392b'</span>, <span class="at">width =</span> <span class="dv">1</span>), <span class="at">fill =</span> <span class="st">'tozeroy'</span>, <span class="at">yaxis =</span> <span class="st">"y2"</span>, <span class="at">opacity =</span> <span class="fl">0.3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(</span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Conditional Volatility vs. Regime Probability"</span>,</span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>    <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Volatility"</span>),</span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>    <span class="at">yaxis2 =</span> <span class="fu">list</span>(<span class="at">overlaying =</span> <span class="st">"y"</span>, <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">title =</span> <span class="st">"Probability"</span>, <span class="at">range =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)),</span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>    <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">rangeslider =</span> <span class="fu">list</span>(<span class="at">visible =</span> T))</span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a>fig_regime</span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4.3. Standardized Residual Analysis</span></span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: residual-plotly</span></span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Interactive QQ-Plot Comparison"</span></span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a>res_gn <span class="ot">&lt;-</span> ret_vec <span class="sc">/</span> <span class="fu">Volatility</span>(fit_gn)</span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>res_gs <span class="ot">&lt;-</span> ret_vec <span class="sc">/</span> <span class="fu">Volatility</span>(fit_gs)</span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a>qq_data <span class="ot">&lt;-</span> <span class="cf">function</span>(res, name) {</span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(res)</span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>    <span class="at">Theoretical =</span> <span class="fu">qnorm</span>(<span class="fu">ppoints</span>(n)),</span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>    <span class="at">Sample =</span> <span class="fu">sort</span>(res),</span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> name</span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a>df_qq <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">qq_data</span>(res_gn, <span class="st">"GARCH-Norm"</span>), <span class="fu">qq_data</span>(res_gs, <span class="st">"GARCH-Std"</span>))</span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(df_qq, <span class="at">x =</span> <span class="sc">~</span>Theoretical, <span class="at">y =</span> <span class="sc">~</span>Sample, <span class="at">color =</span> <span class="sc">~</span>Model, <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">'#7f8c8d'</span>, <span class="st">'#2c3e50'</span>), <span class="at">type =</span> <span class="st">'scatter'</span>, <span class="at">mode =</span> <span class="st">'markers'</span>, <span class="at">marker =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">4</span>, <span class="at">opacity =</span> <span class="fl">0.6</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_segments</span>(<span class="at">x =</span> <span class="sc">-</span><span class="dv">4</span>, <span class="at">xend =</span> <span class="dv">4</span>, <span class="at">y =</span> <span class="sc">-</span><span class="dv">4</span>, <span class="at">yend =</span> <span class="dv">4</span>, <span class="at">line =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'red'</span>, <span class="at">width =</span> <span class="dv">1</span>), <span class="at">showlegend =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title =</span> <span class="st">"QQ-Plot: Normal vs Student-t Residuals"</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Theoretical Quantiles"</span>), <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Sample Quantiles"</span>))</span>
+<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a><span class="fu"># 5. Risk Assessment (VaR &amp; Expected Shortfall)</span></span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: risk-evaluation-results</span></span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a>risk_gn <span class="ot">&lt;-</span> <span class="fu">Risk</span>(fit_gn, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">do.es =</span> <span class="cn">TRUE</span>, <span class="at">do.its =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a>risk_gs <span class="ot">&lt;-</span> <span class="fu">Risk</span>(fit_gs, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">do.es =</span> <span class="cn">TRUE</span>, <span class="at">do.its =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>risk_mn <span class="ot">&lt;-</span> <span class="fu">Risk</span>(fit_mn, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">do.es =</span> <span class="cn">TRUE</span>, <span class="at">do.its =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a>risk_ms <span class="ot">&lt;-</span> <span class="fu">Risk</span>(fit_ms, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">do.es =</span> <span class="cn">TRUE</span>, <span class="at">do.its =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a>calc_v <span class="ot">&lt;-</span> <span class="cf">function</span>(risk_obj, rets) {</span>
+<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a>  var_viol <span class="ot">&lt;-</span> <span class="fu">sum</span>(rets <span class="sc">&lt;</span> <span class="sc">-</span>risk_obj<span class="sc">$</span>VaR)</span>
+<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a>  es_viol <span class="ot">&lt;-</span> <span class="fu">sum</span>(rets <span class="sc">&lt;</span> <span class="sc">-</span>risk_obj<span class="sc">$</span>ES)</span>
+<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(var_viol, es_viol))</span>
+<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a>risk_matrix <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">calc_v</span>(risk_gn, ret_vec), <span class="fu">calc_v</span>(risk_gs, ret_vec), <span class="fu">calc_v</span>(risk_mn, ret_vec), <span class="fu">calc_v</span>(risk_ms, ret_vec))</span>
+<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(risk_matrix) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"GARCH-Norm"</span>, <span class="st">"GARCH-Std"</span>, <span class="st">"MS-GARCH-Norm"</span>, <span class="st">"MS-GARCH-Std"</span>)</span>
+<span id="cb7-263"><a href="#cb7-263" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(risk_matrix) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"VaR Violations"</span>, <span class="st">"ES Violations"</span>)</span>
+<span id="cb7-264"><a href="#cb7-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-265"><a href="#cb7-265" aria-hidden="true" tabindex="-1"></a>risk_matrix <span class="sc">|&gt;</span> <span class="fu">kable</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span>
+<span id="cb7-266"><a href="#cb7-266" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-267"><a href="#cb7-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-268"><a href="#cb7-268" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-269"><a href="#cb7-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-270"><a href="#cb7-270" aria-hidden="true" tabindex="-1"></a><span class="fu"># 6. Conclusion</span></span>
+<span id="cb7-271"><a href="#cb7-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-272"><a href="#cb7-272" aria-hidden="true" tabindex="-1"></a>By using **interactive Plotly visualizations**, we can see precisely where GARCH models with normal distributions fail to capture the "jumps" in agricultural markets. The **MS-GARCH-Std** model provides the most comprehensive framework for capturing both structural shifts and extreme tail risks.</span>
+<span id="cb7-273"><a href="#cb7-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-274"><a href="#cb7-274" aria-hidden="true" tabindex="-1"></a>***</span>
+<span id="cb7-275"><a href="#cb7-275" aria-hidden="true" tabindex="-1"></a>*Interactive Report generated via Quarto and Plotly.*</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
