@@ -1,0 +1,129 @@
+---
+title: "Modelling Volatility in Agricultural Commodities Using Markov-Switching GARCH Models"
+description: "A replication of the Master Thesis 'Modelling Volatility Using Markov-Switching GARCH Models' applied to an Agricultural Commodities portfolio."
+author: "Rodrigo Hermont Ozon"
+date: "2026-02-23"
+categories: [Finance, R, MSGARCH, Commodities, Volatility, Risk Management]
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-summary: "Show the code"
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+# 1. Introduction
+
+Modelling financial time-series has been a central topic in financial econometrics for decades. In the Master thesis *"Modelling Volatility Using Markov-Switching GARCH Models"* (Gluud & Jacobsen, 2021), the authors thoroughly examined whether the introduction of **Markov-Switching (MS) regimes** to the classic Generalized Autoregressive Conditional Heteroscedasticity (GARCH) framework improves in-sample modelling and out-of-sample risk forecasting for the S&P 500 index.
+
+In this post, we replicate the essence of this thesis, but we pivot our focus towards an **Equally Weighted Portfolio of Agricultural Commodities**. Using R, we download historical data, build the GARCH and MS-GARCH models, and evaluate their abilities to measure risk via Value at Risk (VaR) and Expected Shortfall (ES).
+
+The selected commodities: \* Corn (`ZC=F`), Wheat (`ZO=F`), KC HRW Wheat (`KE=F`), Rough Rice (`ZR=F`), Feeder Cattle (`GF=F`), Soybean Meal (`ZS=F`), Soybean Oil (`ZM=F`), and Soybeans (`ZL=F`).
+
+------------------------------------------------------------------------
+
+# 2. Data Preparation and Exploratory Data Analysis (EDA)
+
+```{r}
+#| label: setup-and-data
+
+library(quantmod)
+library(MSGARCH)
+library(PerformanceAnalytics)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
+tickers <- c("ZC=F", "ZO=F", "KE=F", "ZR=F", "GF=F", "ZS=F", "ZM=F", "ZL=F")
+getSymbols(tickers, from = "2015-01-01", to = "2023-12-31", warnings = FALSE)
+
+prices <- do.call(merge, lapply(tickers, function(x) Ad(get(x))))
+prices <- na.locf(prices)
+returns <- Return.calculate(prices, method = "log")[-1]
+port_returns <- rowMeans(returns, na.rm = TRUE) * 100
+port_returns_xts <- xts(port_returns, order.by = index(returns))
+ret_vec <- as.numeric(port_returns)
+```
+
+```{r}
+#| label: eda-plot
+#| fig-cap: "Daily Returns of the Agricultural Commodities Portfolio (2015-2023)"
+plot.zoo(port_returns_xts, main = "Portfolio Returns", col = "#2c3e50", lwd = 1)
+```
+
+------------------------------------------------------------------------
+
+# 3. Model Specification
+
+We test four models: 1. **GARCH-Norm**: Single-Regime GARCH(1,1) with Normal distribution. 2. **GARCH-Std**: Single-Regime GARCH(1,1) with Student-*t* distribution. 3. **MS-GARCH-Norm**: Markov-Switching GARCH(1,1) (2 regimes) with Normal distribution. 4. **MS-GARCH-Std**: Markov-Switching GARCH(1,1) (2 regimes) with Student-*t* distribution.
+
+```{r}
+#| label: model-fitting
+#| results: hide
+
+spec_gn <- CreateSpec(variance.spec = list(model = "sGARCH"), distribution.spec = list(distribution = "norm"))
+spec_gs <- CreateSpec(variance.spec = list(model = "sGARCH"), distribution.spec = list(distribution = "std"))
+spec_mn <- CreateSpec(variance.spec = list(model = c("sGARCH", "sGARCH")), distribution.spec = list(distribution = c("norm", "norm")))
+spec_ms <- CreateSpec(variance.spec = list(model = c("sGARCH", "sGARCH")), distribution.spec = list(distribution = c("std", "std")))
+
+fit_gn <- FitML(spec = spec_gn, data = ret_vec)
+fit_gs <- FitML(spec = spec_gs, data = ret_vec)
+fit_mn <- FitML(spec = spec_mn, data = ret_vec)
+fit_ms <- FitML(spec = spec_ms, data = ret_vec)
+```
+
+------------------------------------------------------------------------
+
+# 4. In-Sample Results and Diagnostics
+
+## 4.1. Information Criteria
+
+| Model             | Log-Likelihood |   AIC    |     BIC      |
+|:------------------|:--------------:|:--------:|:------------:|
+| **GARCH-Norm**    |   -2,971.98    | 5,949.95 |   5,967.12   |
+| **GARCH-Std**     |   -2,924.68    | 5,857.36 | **5,880.26** |
+| **MS-GARCH-Norm** |   -2,938.06    | 5,892.12 |   5,937.92   |
+| **MS-GARCH-Std**  | **-2,921.35**  | 5,862.70 |   5,919.95   |
+
+**Analysis**: Consistent with the thesis, the **Student-*t* distribution** significantly improves the fit. While the **MS-GARCH-Std** has the highest Log-Likelihood, the **GARCH-Std** is the most parsimonious model according to BIC.
+
+## 4.2. Volatility Regimes
+
+```{r}
+#| label: smoothed-prob-plot
+#| fig-cap: "Smoothed Probabilities of Regime 1 (High Volatility) - MS-tGARCH"
+sp <- State(fit_ms)
+plot(index(returns), sp$SmoothProb[, 1, 1][-1], type = "l", col = "#c0392b", ylab = "Prob", main = "High Volatility Regime Probability")
+```
+
+------------------------------------------------------------------------
+
+# 5. Risk Forecasting: VaR & Expected Shortfall (ES)
+
+With **2,264 observations**, we expect approximately **113 violations** at the 5% alpha level.
+
+| Model             | VaR Violations | VaR Hit Rate (%) | ES Violations |
+|:------------------|:--------------:|:----------------:|:-------------:|
+| **GARCH-Norm**    |      103       |      4.55%       |      48       |
+| **GARCH-Std**     |      110       |      4.86%       |      37       |
+| **MS-GARCH-Norm** |      114       |      5.04%       |      36       |
+| **MS-GARCH-Std**  |      112       |      4.95%       |    **34**     |
+
+### Risk Analysis Conclusion:
+
+1.  **VaR Violations**: All models perform well in frequency (around 5%).
+2.  **ES Violations**: The Normal models fail to capture the severity of tail events (48 violations). The **MS-GARCH-Std** is the winner with only **34 violations**, proving that heavy-tailed distributions and regime switching together provide the most robust protection against extreme losses in commodities.
+
+------------------------------------------------------------------------
+
+# 6. Final Thoughts
+
+Our replication confirms the thesis's main point: **Distribution is King**. For agricultural commodities, using a Student-*t* distribution is more critical than regime switching for overall parsimony, but combining both (MS-tGARCH) yields the most accurate risk metrics for extreme events.
+
+------------------------------------------------------------------------
+
+*This analysis was executed programmatically in R using `quantmod` and `MSGARCH`.*

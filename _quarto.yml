@@ -86,6 +86,8 @@ website:
             href: commodity_forecasting_ml.qmd
           - text: "GARCH-Hawkes Models"
             href: garch_hawkes_simmodel.qmd
+          - text: "MSGARCH x GARCH family models"
+            href: MSGARCH_Agri.qmd
           - text: "Bayesian Time Series"
             href: markovian_bayesian_timeseries.qmd
           - text: "Machine Learning"
