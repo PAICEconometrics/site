@@ -799,3 +799,392 @@ short-dated options during periods of price dislocation may be worth *more*
 (because the reversion creates predictable value).
 
 :::
+
+
+## Bayesian MCMC Engine
+
+Instead of computing a single "best" parameter estimate, Bayesian inference via
+Markov Chain Monte Carlo (MCMC) produces a **full posterior distribution** for
+each parameter. This captures the uncertainty in our estimates --- uncertainty
+that classical methods hide.
+
+We used **Stan's Hamiltonian Monte Carlo (HMC/NUTS)** sampler with 2 chains x
+1,500 post-warmup iterations per model-commodity pair, yielding **1,500
+posterior draws** for each parameter.
+
+```{ojs}
+//| label: load-posterior-data
+posteriorData = FileAttachment("data/ebfin/posterior_densities.json").json()
+```
+
+```{ojs}
+//| label: post-controls
+viewof postCommodity = Inputs.select(
+  ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"],
+  {value: "Corn", label: "Commodity"}
+)
+```
+
+```{ojs}
+//| label: post-model-control
+viewof postModel = Inputs.select(
+  new Map([["GBM", "gbm"], ["MRJ", "mrj"], ["MRS", "mrs"]]),
+  {value: "gbm", label: "Model"}
+)
+```
+
+```{ojs}
+//| label: post-helpers
+
+// Greek letter mapping for parameter names
+greekMap = ({
+  mu: "μ", sigma: "σ", kappa: "κ", theta: "θ",
+  lambda: "λ", mu_j: "μ_j", sigma_j: "σ_j",
+  alpha: "α", beta: "β", xi: "ξ", rho: "ρ"
+})
+
+// Get the posterior data for the selected commodity + model
+selectedPosterior = {
+  const cKey = postCommodity.toLowerCase().replace(/\s/g, "");
+  return posteriorData[cKey][postModel];
+}
+
+// Extract parameter names from the selected posterior
+posteriorParams = Object.keys(selectedPosterior)
+```
+
+```{ojs}
+//| label: post-density-plots
+
+// Build one density plot per parameter
+posteriorPlots = {
+  const params = posteriorParams;
+  const ncols = params.length <= 2 ? 2 : 3;
+
+  const plots = params.map(param => {
+    const d = selectedPosterior[param];
+    const greek = greekMap[param] || param;
+
+    // Build data arrays for the density curve
+    const densityData = d.x.map((xi, i) => ({x: xi, y: d.y[i]}));
+
+    // CI band data (filter density points within CI)
+    const ciData = densityData.filter(p => p.x >= d.q025 && p.x <= d.q975);
+
+    return Plot.plot({
+      width: 320,
+      height: 220,
+      marginTop: 30,
+      style: {fontSize: "12px", background: "transparent"},
+      title: `${greek}`,
+      x: {label: "Value", tickFormat: ".4f"},
+      y: {label: "Density", tickFormat: ".1f"},
+      marks: [
+        // Shaded CI band (area under curve within 95% CI)
+        Plot.areaY(ciData, {
+          x: "x", y: "y", fill: "#3b82f6", fillOpacity: 0.15,
+          curve: "basis"
+        }),
+        // Full density curve
+        Plot.areaY(densityData, {
+          x: "x", y: "y", fill: "#3b82f6", fillOpacity: 0.3,
+          stroke: "#2563eb", strokeWidth: 1.5,
+          curve: "basis"
+        }),
+        // Mean vertical line
+        Plot.ruleX([d.mean], {
+          stroke: "#dc2626", strokeWidth: 2, strokeDasharray: "6,3"
+        }),
+        // CI boundary lines
+        Plot.ruleX([d.q025, d.q975], {
+          stroke: "#6b7280", strokeWidth: 1, strokeDasharray: "3,3"
+        })
+      ]
+    });
+  });
+
+  // Arrange in a grid
+  const container = document.createElement("div");
+  container.style.display = "grid";
+  container.style.gridTemplateColumns = `repeat(${ncols}, 1fr)`;
+  container.style.gap = "16px";
+  container.style.justifyItems = "center";
+  plots.forEach(p => container.appendChild(p));
+  return container;
+}
+```
+
+```{ojs}
+//| label: post-diagnostics-table
+
+// Build convergence diagnostics table
+postDiagnostics = {
+  const params = posteriorParams;
+
+  const rows = params.map(param => {
+    const d = selectedPosterior[param];
+    const greek = greekMap[param] || param;
+
+    // Color-code Rhat
+    let rhatColor, rhatLabel;
+    if (d.rhat < 1.01) {
+      rhatColor = "#16a34a"; // green
+      rhatLabel = "Excellent";
+    } else if (d.rhat < 1.05) {
+      rhatColor = "#ca8a04"; // yellow/amber
+      rhatLabel = "Acceptable";
+    } else {
+      rhatColor = "#dc2626"; // red
+      rhatLabel = "Warning";
+    }
+
+    return {
+      Parameter: greek,
+      Mean: d.mean.toFixed(4),
+      "95% CI": `[${d.q025.toFixed(4)}, ${d.q975.toFixed(4)}]`,
+      "R-hat": d.rhat,
+      "R-hat Status": rhatLabel,
+      ESS: Math.round(d.ess)
+    };
+  });
+
+  // Build styled HTML table
+  const table = document.createElement("table");
+  table.style.width = "100%";
+  table.style.borderCollapse = "collapse";
+  table.style.fontSize = "14px";
+  table.style.fontFamily = "system-ui, sans-serif";
+
+  // Header
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  ["Parameter", "Mean", "95% CI", "R-hat", "Status", "ESS"].forEach(col => {
+    const th = document.createElement("th");
+    th.textContent = col;
+    th.style.padding = "10px 12px";
+    th.style.borderBottom = "2px solid #374151";
+    th.style.textAlign = col === "Parameter" ? "left" : "center";
+    th.style.fontWeight = "600";
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // Body
+  const tbody = document.createElement("tbody");
+  rows.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    tr.style.backgroundColor = i % 2 === 0 ? "#f9fafb" : "white";
+
+    // Parameter
+    const tdParam = document.createElement("td");
+    tdParam.textContent = row.Parameter;
+    tdParam.style.padding = "8px 12px";
+    tdParam.style.fontWeight = "500";
+    tdParam.style.borderBottom = "1px solid #e5e7eb";
+    tr.appendChild(tdParam);
+
+    // Mean
+    const tdMean = document.createElement("td");
+    tdMean.textContent = row.Mean;
+    tdMean.style.padding = "8px 12px";
+    tdMean.style.textAlign = "center";
+    tdMean.style.fontFamily = "monospace";
+    tdMean.style.borderBottom = "1px solid #e5e7eb";
+    tr.appendChild(tdMean);
+
+    // CI
+    const tdCI = document.createElement("td");
+    tdCI.textContent = row["95% CI"];
+    tdCI.style.padding = "8px 12px";
+    tdCI.style.textAlign = "center";
+    tdCI.style.fontFamily = "monospace";
+    tdCI.style.borderBottom = "1px solid #e5e7eb";
+    tr.appendChild(tdCI);
+
+    // Rhat value
+    const tdRhat = document.createElement("td");
+    tdRhat.textContent = row["R-hat"].toFixed(3);
+    tdRhat.style.padding = "8px 12px";
+    tdRhat.style.textAlign = "center";
+    tdRhat.style.fontFamily = "monospace";
+    tdRhat.style.borderBottom = "1px solid #e5e7eb";
+    tr.appendChild(tdRhat);
+
+    // Rhat status (colored badge)
+    const tdStatus = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.textContent = row["R-hat Status"];
+    badge.style.padding = "2px 8px";
+    badge.style.borderRadius = "12px";
+    badge.style.fontSize = "12px";
+    badge.style.fontWeight = "600";
+    if (row["R-hat Status"] === "Excellent") {
+      badge.style.backgroundColor = "#dcfce7";
+      badge.style.color = "#16a34a";
+    } else if (row["R-hat Status"] === "Acceptable") {
+      badge.style.backgroundColor = "#fef9c3";
+      badge.style.color = "#ca8a04";
+    } else {
+      badge.style.backgroundColor = "#fecaca";
+      badge.style.color = "#dc2626";
+    }
+    tdStatus.style.padding = "8px 12px";
+    tdStatus.style.textAlign = "center";
+    tdStatus.style.borderBottom = "1px solid #e5e7eb";
+    tdStatus.appendChild(badge);
+    tr.appendChild(tdStatus);
+
+    // ESS
+    const tdESS = document.createElement("td");
+    tdESS.textContent = row.ESS.toLocaleString();
+    tdESS.style.padding = "8px 12px";
+    tdESS.style.textAlign = "center";
+    tdESS.style.fontFamily = "monospace";
+    tdESS.style.borderBottom = "1px solid #e5e7eb";
+    tr.appendChild(tdESS);
+
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  return table;
+}
+```
+
+
+::: {.callout-tip collapse="true" title="Learn more: MLE vs Bayesian"}
+
+**Maximum Likelihood Estimation (MLE)** finds the single parameter value that
+maximizes the likelihood function --- the peak of the mountain. You get one
+number per parameter and a standard error.
+
+**Bayesian estimation** maps the *entire* landscape. You get a full probability
+distribution for each parameter, capturing asymmetries, multimodality, and
+correlations between parameters.
+
+**Visual analogy:** MLE is like finding the summit of a mountain and reporting
+its altitude. Bayesian is like producing a topographic map of the entire mountain
+range. With MLE, you know the peak; with Bayesian, you know the terrain ---
+where the ridges run, where the valleys dip, and how uncertain you should be
+about the summit's exact location.
+
+For real options, this distinction is critical: a single MLE estimate gives you a
+single option value, while Bayesian posteriors give you a *distribution* of
+option values that honestly reflects parameter uncertainty.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: What is MCMC?"}
+
+**Markov Chain Monte Carlo** is a family of algorithms for sampling from
+probability distributions that are too complex to compute analytically.
+
+The core idea: construct a random walk through parameter space where the
+probability of visiting any region is proportional to its posterior probability.
+After enough steps (the "burn-in" or warmup period), the chain converges to the
+target distribution and subsequent samples are draws from the posterior.
+
+**Analogy:** Imagine exploring a city by taking random walks. You'll naturally
+spend more time in popular, well-connected neighborhoods (high posterior
+probability) and less time in remote outskirts (low probability). After walking
+long enough, the fraction of time you spend in each neighborhood reflects its
+relative popularity.
+
+The "Markov" part means each step depends only on the current position, not the
+entire history. The "Monte Carlo" part means we use random sampling to
+approximate a complex calculation.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: HMC and NUTS"}
+
+**Hamiltonian Monte Carlo (HMC)** is an advanced MCMC algorithm that uses
+*gradient information* --- the slope of the posterior surface --- to propose
+moves. It borrows from physics: imagine a frictionless puck sliding on the
+posterior surface. The puck naturally rolls toward high-probability regions,
+exploring the space much more efficiently than a random walk.
+
+**NUTS (No-U-Turn Sampler)** is an extension by Hoffman and Gelman (2014) that
+automatically determines how far to simulate the trajectory. It stops when the
+puck would "turn around" --- hence "No U-Turn." This eliminates a finicky tuning
+parameter (trajectory length) that plagued standard HMC.
+
+**Why it matters:** Basic Metropolis-Hastings MCMC takes small, random steps and
+often gets stuck. HMC/NUTS takes long, directed leaps through parameter space,
+achieving much lower autocorrelation and higher effective sample sizes per
+iteration. This is why we can get reliable posteriors with just 1,500 iterations.
+
+Stan implements NUTS as its default sampler, and it is widely considered the
+state-of-the-art for continuous parameter models.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Prior specification"}
+
+In Bayesian statistics, **priors** encode our beliefs about parameters *before*
+seeing the data. We used **weakly informative priors** following recommendations
+from Gelman et al. (2017):
+
+- **Drift ($\mu$):** Normal(0, 0.5) --- centered at zero, allowing moderate
+  positive or negative drift.
+- **Volatility ($\sigma$):** Half-Normal(0, 1) --- positive by construction,
+  broad enough to accommodate both calm and volatile markets.
+- **Mean-reversion speed ($\kappa$):** Half-Normal(0, 2) --- weakly constrained
+  to positive values, allowing fast or slow reversion.
+- **Jump intensity ($\lambda$):** Exponential(0.5) --- mildly informative,
+  expecting a few jumps per year.
+
+These priors are broad enough to let the data speak (with ~1,000 weekly
+observations, the likelihood dominates) but constrained enough to keep parameters
+in physically sensible ranges (e.g., volatility cannot be negative).
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Convergence diagnostics"}
+
+How do we know MCMC has converged to the true posterior?
+
+- **$\hat{R}$ (R-hat):** Compares the variance *within* each chain to the
+  variance *between* chains. If chains have converged to the same distribution,
+  $\hat{R} \approx 1$. Values below 1.01 are excellent; below 1.05 is acceptable.
+  Values above 1.1 signal a problem.
+
+- **ESS (Effective Sample Size):** MCMC samples are autocorrelated --- each
+  sample is similar to its neighbors. ESS estimates how many *independent*
+  samples we effectively have. With 1,500 total draws, ESS > 400 is generally
+  good for reliable posterior summaries.
+
+**Rule of thumb:** If all parameters have $\hat{R} < 1.05$ and ESS > 100, the
+chains have likely converged. Our results show $\hat{R} < 1.01$ for most
+parameters, with ESS typically in the hundreds --- adequate for the posterior
+summaries and option valuations we compute.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Computational budget"}
+
+Our setup uses **2 chains x 1,500 iterations** (after 750 warmup iterations per
+chain), which we call the "lite" configuration. This is deliberate:
+
+- **Full configuration:** 4 chains x 4,000 post-warmup iterations = 16,000
+  draws. More robust but requires 4-10x more computation time per model.
+- **Lite configuration:** 2 chains x 750 post-warmup = 1,500 draws. Faster,
+  adequate when diagnostics confirm convergence.
+
+With 15 model-commodity pairs (3 models x 5 commodities), the full setup would
+require substantial computation. Our convergence diagnostics ($\hat{R}$ and ESS
+values shown above) confirm that the lite configuration provides adequate
+posterior exploration for all fitted models.
+
+**When would you need more?** Multimodal posteriors, highly correlated
+parameters, or models with many latent variables (like MRS with ~1,000+ latent
+volatility states) may benefit from longer chains. For our GBM and MRJ models,
+1,500 draws is more than sufficient.
+
+:::
