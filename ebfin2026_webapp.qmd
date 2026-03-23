@@ -1,0 +1,376 @@
+---
+title: "Real Options in Agricultural Commodities via Bayesian MCMC"
+subtitle: "Interactive Companion — XXVI Encontro Brasileiro de Finanças (EBFin 2026)"
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    smooth-scroll: true
+    css: css/ebfin.css
+    code-fold: true
+    code-tools: false
+    self-contained: false
+html-math-method: mathjax
+execute:
+  echo: false
+---
+
+<!-- ================================================================
+     SECTION 1 — Introduction & Motivation
+     ================================================================ -->
+
+::: {.hero-header}
+
+### Real Options in Agricultural Commodities via Bayesian MCMC
+
+**Rodrigo Hermont Ozon** | Pontifical Catholic University of Parana (PUCPR) | [ORCID](https://orcid.org/0000-0001-8003-4849){target="_blank"}
+
+**Jose Donizetti de Lima** | Federal Technological University of Parana (UTFPR) | [ORCID](https://orcid.org/0000-0001-5260-9035){target="_blank"}
+
+*XXVI Encontro Brasileiro de Financas (EBFin 2026) — Econometria Financeira*
+
+:::
+
+```{ojs}
+//| label: load-prices-sparkline
+sparkPrices = FileAttachment("data/ebfin/price_wide.csv").csv({typed: true})
+```
+
+```{ojs}
+//| label: sparkline-chart
+{
+  const commodities = ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"];
+  const labels = {Corn: "Corn", Soybean: "Soybean", Wheat: "Wheat",
+                  LiveCattle: "Live Cattle", SoybeanMeal: "Soybean Meal"};
+  const colors = {Corn: "#E69F00", Soybean: "#009E73", Wheat: "#D55E00",
+                  LiveCattle: "#CC79A7", SoybeanMeal: "#0072B2"};
+
+  const long = sparkPrices.flatMap(d =>
+    commodities.map(c => ({
+      date: new Date(d.Date),
+      commodity: labels[c],
+      price: d[c],
+      color: colors[c]
+    }))
+  );
+
+  return Plot.plot({
+    width: width,
+    height: 180,
+    marginLeft: 90,
+    marginRight: 20,
+    x: {label: null, tickFormat: ""},
+    y: {label: null, tickFormat: ""},
+    fy: {label: null, domain: commodities.map(c => labels[c])},
+    facet: {data: long, y: "commodity"},
+    marks: [
+      Plot.lineY(long, {x: "date", y: "price", stroke: "color", strokeWidth: 1.2, facet: "exclude"}),
+      Plot.lineY(long, {x: "date", y: "price", stroke: "color", strokeWidth: 1.2})
+    ]
+  });
+}
+```
+
+Traditional option pricing models rely on point estimates of parameters, ignoring the
+uncertainty inherent in parameter estimation. For agricultural commodities — where
+prices exhibit mean reversion, jumps, and stochastic volatility — this uncertainty is
+substantial. A small change in estimated volatility can shift an option value by tens
+of percent, yet classical methods provide no measure of that sensitivity. This paper
+develops a Bayesian MCMC framework that estimates three stochastic processes and
+propagates the full posterior uncertainty into real option values.
+
+We identify three research gaps at the intersection of commodity modeling and real
+options analysis. **Gap 1 — Choice of stochastic process:** Which model best captures
+commodity price dynamics — Geometric Brownian Motion (GBM), mean-reverting
+jump-diffusion (MRJ), or mean reversion with stochastic volatility (MRS)? **Gap 2 —
+Volatility estimation:** How should parameter uncertainty from volatility estimation
+propagate to option values, rather than collapsing into a single plug-in number?
+**Gap 3 — Bayesian--real options intersection:** What happens when we use full posterior
+distributions instead of point estimates? Our framework answers all three by delivering
+complete distributions of option values — not point estimates — enabling
+decision-makers to assess risk across the entire parameter space.
+
+
+::: {.callout-tip collapse="true" title="Learn more: Why agricultural commodities?"}
+
+Agricultural commodities sit at the nexus of food security, global trade, and
+financial markets. Price volatility in corn, soybeans, wheat, live cattle, and
+soybean meal directly affects farmers' planting decisions, processors' hedging
+strategies, and governments' food-security policies. Unlike equities, commodity
+prices are driven by weather shocks, crop cycles, storage costs, and geopolitical
+disruptions — all of which create the non-Gaussian, fat-tailed dynamics that
+standard models struggle to capture. Understanding and pricing the optionality
+embedded in commodity investments (when to plant, harvest, store, or abandon) is
+therefore both economically significant and methodologically challenging.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: What are Real Options?"}
+
+A **real option** is the right — but not the obligation — to make an investment
+decision about a real (non-financial) asset. Just as a financial call option gives
+you the right to buy a stock at a preset price, a **timing option** gives a farmer or
+trader the right to *wait* before investing, capturing upside if prices rise. An
+**abandonment option** is the analogous put: the right to *walk away* from a project if
+prices fall below a threshold, limiting downside losses.
+
+Real options theory recognizes that flexibility has value. The ability to *delay*,
+*expand*, *contract*, or *abandon* a project in response to new information is worth
+something — and that value is missed by traditional net-present-value (NPV)
+analysis, which assumes a now-or-never decision. In this paper, we value timing and
+abandonment options for five CBOT-traded agricultural commodities.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Why Bayesian?"}
+
+The **frequentist** approach produces a single point estimate of each model parameter
+(e.g., volatility $\sigma = 0.25$). Decisions based on that number ignore the fact
+that the estimate is uncertain — it could plausibly be 0.20 or 0.30, and the
+resulting option value would differ substantially.
+
+The **Bayesian** approach, by contrast, produces a *posterior distribution* for each
+parameter. Instead of one $\sigma$, you get thousands of plausible $\sigma$ values
+drawn via Markov Chain Monte Carlo (MCMC). When you simulate option payoffs using
+each draw, you obtain a *distribution* of option values — complete with credible
+intervals, tail risks, and probability statements. This gives decision-makers a
+full picture of the uncertainty they face, rather than a false sense of precision.
+
+:::
+
+
+<!-- ================================================================
+     SECTION 2 — Data Explorer
+     ================================================================ -->
+
+## Data Explorer
+
+Explore 20 years of weekly futures data (2005--2025) for five agricultural
+commodities traded on the Chicago Board of Trade (CBOT). Use the controls below to
+select commodities and toggle between price levels and log-returns.
+
+```{ojs}
+//| label: load-data
+prices = FileAttachment("data/ebfin/price_wide.csv").csv({typed: true})
+returns = FileAttachment("data/ebfin/return_wide.csv").csv({typed: true})
+descStats = FileAttachment("data/ebfin/descriptive_stats.json").json()
+```
+
+```{ojs}
+//| label: controls
+viewof selectedCommodities = Inputs.checkbox(
+  ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"],
+  {value: ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"],
+   label: "Commodities",
+   format: x => ({Corn: "Corn", Soybean: "Soybean", Wheat: "Wheat",
+                   LiveCattle: "Live Cattle", SoybeanMeal: "Soybean Meal"})[x]}
+)
+```
+
+```{ojs}
+//| label: view-toggle
+viewof dataView = Inputs.radio(["Prices", "Log-Returns"], {value: "Prices", label: "View"})
+```
+
+```{ojs}
+//| label: color-map
+COLORS = ({Corn: "#E69F00", Soybean: "#009E73", Wheat: "#D55E00",
+           LiveCattle: "#CC79A7", SoybeanMeal: "#0072B2"})
+```
+
+```{ojs}
+//| label: commodity-labels
+LABELS = ({Corn: "Corn", Soybean: "Soybean", Wheat: "Wheat",
+           LiveCattle: "Live Cattle", SoybeanMeal: "Soybean Meal"})
+```
+
+```{ojs}
+//| label: time-series-chart
+{
+  const src = dataView === "Prices" ? prices : returns;
+  const yLabel = dataView === "Prices" ? "Price (USD)" : "Log-Return";
+
+  const long = src.flatMap(d =>
+    selectedCommodities.map(c => ({
+      date: new Date(d.Date),
+      value: d[c],
+      commodity: LABELS[c],
+      color: COLORS[c]
+    }))
+  ).filter(d => d.value != null);
+
+  return Plot.plot({
+    width: width,
+    height: 400,
+    marginLeft: 60,
+    x: {label: "Date", type: "time"},
+    y: {label: yLabel, grid: true},
+    color: {
+      domain: selectedCommodities.map(c => LABELS[c]),
+      range: selectedCommodities.map(c => COLORS[c]),
+      legend: true
+    },
+    marks: [
+      Plot.ruleY([0], {stroke: "#ccc", strokeDasharray: "4,3"}),
+      Plot.lineY(long, {
+        x: "date", y: "value", stroke: "commodity",
+        strokeWidth: 1.5, tip: true,
+        channels: {Date: "date", Value: "value", Commodity: "commodity"}
+      })
+    ]
+  });
+}
+```
+
+### Return Distributions
+
+```{ojs}
+//| label: return-distribution-chart
+{
+  const long = returns.flatMap(d =>
+    selectedCommodities.map(c => ({
+      value: d[c] * 100,
+      commodity: LABELS[c],
+      color: COLORS[c]
+    }))
+  ).filter(d => d.value != null);
+
+  return Plot.plot({
+    width: width,
+    height: 350,
+    marginLeft: 50,
+    x: {label: "Weekly Log-Return (%)", domain: [-30, 30]},
+    y: {label: "Count", grid: true},
+    color: {
+      domain: selectedCommodities.map(c => LABELS[c]),
+      range: selectedCommodities.map(c => COLORS[c]),
+      legend: true
+    },
+    facet: {data: long, x: "commodity", label: null},
+    marks: [
+      Plot.rectY(long, Plot.binX({y: "count"},
+        {x: "value", fill: "commodity", fillOpacity: 0.6, thresholds: 40}
+      )),
+      Plot.ruleY([0])
+    ]
+  });
+}
+```
+
+
+### Descriptive Statistics
+
+```{ojs}
+//| label: descriptive-table
+{
+  const labels = {Corn: "Corn", Soybean: "Soybean", Wheat: "Wheat",
+                  LiveCattle: "Live Cattle", SoybeanMeal: "Soybean Meal"};
+
+  const filtered = descStats
+    .filter(d => selectedCommodities.includes(d.Commodity))
+    .map(d => ({
+      Commodity: labels[d.Commodity] || d.Commodity,
+      N: d.N,
+      "Mean (%)": d.Mean.toFixed(4),
+      "SD (%)": d.Std.toFixed(4),
+      Skewness: d.Skew.toFixed(4),
+      Kurtosis: d.Kurt.toFixed(4),
+      "JB stat": d.JB_stat.toFixed(2),
+      "ADF stat": d.ADF_stat.toFixed(4)
+    }));
+
+  return Inputs.table(filtered, {
+    columns: ["Commodity", "N", "Mean (%)", "SD (%)", "Skewness", "Kurtosis", "JB stat", "ADF stat"],
+    width: {Commodity: 120},
+    layout: "auto"
+  });
+}
+```
+
+
+::: {.callout-tip collapse="true" title="Learn more: What are log-returns?"}
+
+The **log-return** (or continuously compounded return) is defined as
+
+$$r_t = \ln\!\left(\frac{P_t}{P_{t-1}}\right)$$
+
+where $P_t$ is the price at time $t$. Log-returns are preferred over simple returns
+$(P_t - P_{t-1})/P_{t-1}$ for two key reasons:
+
+1. **Time additivity.** Multi-period log-returns are the *sum* of single-period
+   log-returns: $r_{[t,t+k]} = r_t + r_{t+1} + \cdots + r_{t+k}$. This makes
+   aggregation across weeks trivial.
+2. **Symmetry.** A +5% log-return followed by a --5% log-return returns you to
+   exactly the original price. Simple returns do not have this property.
+
+For small values, log-returns and simple returns are nearly identical, but the
+mathematical convenience of log-returns is indispensable in stochastic calculus and
+time-series modeling.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Why test for normality?"}
+
+The **Jarque-Bera (JB) test** jointly tests whether a distribution's skewness
+equals zero and its kurtosis equals three (the normal-distribution values). Under
+the null hypothesis of normality:
+
+$$JB = \frac{n}{6}\left(S^2 + \frac{(K-3)^2}{4}\right) \sim \chi^2(2)$$
+
+For all five commodities in our sample, the JB statistic exceeds critical values
+by orders of magnitude (all $p < 0.001$), decisively rejecting normality. This
+means the standard Black-Scholes assumption of log-normal prices fails — returns
+are fatter-tailed and more skewed than a Gaussian distribution predicts. This
+motivates the use of flexible stochastic models (MRJ with jumps, MRS with
+stochastic volatility) that can capture these features.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: What does the ADF test measure?"}
+
+The **Augmented Dickey-Fuller (ADF) test** tests the null hypothesis that a time
+series contains a *unit root* — i.e., it is non-stationary, with shocks having
+permanent effects. If the ADF test statistic is sufficiently negative, we reject
+the null and conclude the series is stationary.
+
+For our commodity log-returns, ADF statistics range from --8.8 to --12.1, all
+well below the 1% critical value of approximately --3.43. This confirms that
+log-returns are stationary, even though price *levels* are not. Stationary returns
+are a prerequisite for estimating mean-reverting stochastic processes (such as the
+Schwartz Model 1 used in our MRJ specification) and for standard MCMC inference to
+produce valid posterior distributions.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Fat tails and skewness"}
+
+**Kurtosis** measures how heavy the tails of a distribution are relative to the
+normal distribution, which has kurtosis = 3. Values above 3 indicate
+**leptokurtosis** (fat tails): extreme price moves occur more frequently than a
+Gaussian model would predict. In our data, kurtosis ranges from 5.7 (Soybean Meal)
+to 13.4 (Wheat), meaning extreme weekly swings are far more common than normal
+theory suggests.
+
+**Skewness** measures asymmetry. Four of our five commodities display negative
+skewness (ranging from --0.51 to --0.78), indicating a longer left tail — large
+*drops* are more common than large *gains*. Wheat is the exception with positive
+skew (0.91), driven by occasional price spikes from supply disruptions.
+
+For option pricing, both features matter:
+
+- **Fat tails** increase the probability of extreme payoffs, making options worth
+  more than Black-Scholes implies.
+- **Negative skewness** makes put options (e.g., abandonment options) particularly
+  valuable, as large downside moves are more likely than a symmetric model
+  predicts.
+
+These stylized facts underpin our choice to go beyond GBM and include
+jump-diffusion and stochastic-volatility specifications.
+
+:::
