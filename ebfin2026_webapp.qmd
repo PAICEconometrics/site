@@ -374,3 +374,428 @@ These stylized facts underpin our choice to go beyond GBM and include
 jump-diffusion and stochastic-volatility specifications.
 
 :::
+
+
+<!-- ================================================================
+     SECTION 3 — Stochastic Models + Monte Carlo Simulation
+     ================================================================ -->
+
+## Stochastic Models
+
+Three stochastic differential equations (SDEs) capture different aspects of
+commodity price dynamics. Each model makes different assumptions about drift,
+mean reversion, jumps, and volatility.
+
+:::{.model-cards}
+
+:::{.model-card}
+
+### GBM — Geometric Brownian Motion
+
+$$dS = \mu S\,dt + \sigma S\,dW$$
+
+**Intuition:** Random walk with drift. No memory, no gravity. Prices can wander
+anywhere.
+
+| Parameter | Meaning |
+|-----------|---------|
+| $\mu$ | Drift (annualized expected return) |
+| $\sigma$ | Volatility (annualized standard deviation) |
+
+: {.parameter-table}
+
+:::
+
+:::{.model-card}
+
+### MRJ — Mean-Reverting Jump-Diffusion
+
+$$d\ln S = \kappa(\theta - \ln S)\,dt + \sigma\,dW + J\,dN$$
+
+**Intuition:** Pulled back to equilibrium, with occasional shocks. Prices revert
+to a long-run level but can jump suddenly.
+
+| Parameter | Meaning |
+|-----------|---------|
+| $\kappa$ | Reversion speed |
+| $\theta$ | Long-run equilibrium (log-price) |
+| $\sigma$ | Diffusion volatility |
+| $\lambda$ | Jump intensity (jumps per year) |
+| $\mu_J$ | Mean jump size |
+| $\sigma_J$ | Jump size std. deviation |
+
+: {.parameter-table}
+
+:::
+
+:::{.model-card}
+
+### MRS — Mean-Reverting + Stochastic Volatility
+
+$$d\ln S = \kappa(\theta - \ln S)\,dt + e^{h_t/2}\,dW_1$$
+
+$$dh_t = \alpha(\beta - h_t)\,dt + \xi\,dW_2, \quad \text{Corr}(dW_1, dW_2) = \rho$$
+
+**Intuition:** Mean reversion with breathing volatility. The market's nervousness
+itself fluctuates over time.
+
+| Parameter | Meaning |
+|-----------|---------|
+| $\kappa$ | Price reversion speed |
+| $\theta$ | Price equilibrium (log-price) |
+| $\alpha$ | Volatility reversion speed |
+| $\beta$ | Long-run log-variance |
+| $\xi$ | Vol-of-vol |
+| $\rho$ | Price-vol correlation (leverage) |
+
+: {.parameter-table}
+
+:::
+
+:::
+
+
+### Live Monte Carlo Simulation
+
+Select a commodity and click **Simulate** to generate 50 sample price paths for
+each model, using the posterior mean parameters estimated via Bayesian MCMC. Each
+click draws a fresh set of random paths.
+
+```{ojs}
+//| label: load-sim-params
+simParams = FileAttachment("data/ebfin/simulation_params.json").json()
+```
+
+```{ojs}
+//| label: sim-controls
+viewof simCommodity = Inputs.select(
+  ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"],
+  {value: "Corn", label: "Commodity"}
+)
+```
+
+```{ojs}
+//| label: sim-button
+viewof simTrigger = Inputs.button("Simulate 50 paths")
+```
+
+```{ojs}
+//| label: sim-helpers
+
+// Box-Muller transform for standard normal random numbers
+function randn() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+// Map display name to JSON key
+function commodityKey(name) {
+  return name.toLowerCase().replace(/\s/g, "");
+}
+```
+
+```{ojs}
+//| label: sim-gbm
+
+simGBM = {
+  simTrigger;                              // react to button
+  const key = commodityKey(simCommodity);  // react to dropdown
+  const p = simParams[key];
+  const {mu, sigma} = p.gbm;
+  const S0 = p.S0;
+  const nPaths = 50, nWeeks = 52, dt = 1 / 52;
+  const paths = [];
+  for (let i = 0; i < nPaths; i++) {
+    let logS = Math.log(S0);
+    paths.push({week: 0, price: S0, path: i});
+    for (let t = 1; t <= nWeeks; t++) {
+      logS += (mu - 0.5 * sigma * sigma) * dt + sigma * Math.sqrt(dt) * randn();
+      paths.push({week: t, price: Math.exp(logS), path: i});
+    }
+  }
+  return paths;
+}
+```
+
+```{ojs}
+//| label: sim-mrj
+
+simMRJ = {
+  simTrigger;
+  const key = commodityKey(simCommodity);
+  const p = simParams[key];
+  const {kappa, theta, sigma, lambda, mu_j, sigma_j} = p.mrj;
+  const S0 = p.S0;
+  const nPaths = 50, nWeeks = 52, dt = 1 / 52;
+  const paths = [];
+  for (let i = 0; i < nPaths; i++) {
+    let logS = Math.log(S0);
+    paths.push({week: 0, price: S0, path: i});
+    for (let t = 1; t <= nWeeks; t++) {
+      // Mean-reversion in log-space
+      logS += kappa * (theta - logS) * dt + sigma * Math.sqrt(dt) * randn();
+      // Poisson jump (probability lambda*dt per step)
+      if (Math.random() < lambda * dt) {
+        logS += mu_j + sigma_j * randn();
+      }
+      paths.push({week: t, price: Math.exp(logS), path: i});
+    }
+  }
+  return paths;
+}
+```
+
+```{ojs}
+//| label: sim-mrs
+
+simMRS = {
+  simTrigger;
+  const key = commodityKey(simCommodity);
+  const p = simParams[key];
+  const {kappa, theta, alpha, beta, xi, rho} = p.mrs;
+  const S0 = p.S0;
+  const nPaths = 50, nWeeks = 52, dt = 1 / 52;
+  const paths = [];
+  for (let i = 0; i < nPaths; i++) {
+    let logS = Math.log(S0);
+    let h = beta;  // initialize log-variance at long-run level
+    paths.push({week: 0, price: S0, path: i});
+    for (let t = 1; t <= nWeeks; t++) {
+      const eps1 = randn();
+      // Correlated noise via Cholesky decomposition
+      const eps2 = rho * eps1 + Math.sqrt(1 - rho * rho) * randn();
+      const volNow = Math.exp(h / 2);
+      // Price equation
+      logS += kappa * (theta - logS) * dt + volNow * Math.sqrt(dt) * eps1;
+      // Log-variance equation
+      h += alpha * (beta - h) * dt + xi * Math.sqrt(dt) * eps2;
+      paths.push({week: t, price: Math.exp(logS), path: i});
+    }
+  }
+  return paths;
+}
+```
+
+```{ojs}
+//| label: sim-S0
+simS0 = simParams[commodityKey(simCommodity)].S0
+```
+
+::: {.panel-tabset}
+
+### GBM
+
+```{ojs}
+//| label: plot-gbm
+Plot.plot({
+  width: 720,
+  height: 400,
+  x: {label: "Week"},
+  y: {label: "Price (USD)", grid: true},
+  color: {legend: false},
+  marks: [
+    Plot.ruleY([simS0], {stroke: "#e15759", strokeDasharray: "6,3", strokeWidth: 1.5}),
+    Plot.lineY(simGBM, {x: "week", y: "price", z: "path", stroke: "#4e79a7", strokeOpacity: 0.2, strokeWidth: 0.8}),
+    Plot.text([{x: 1, y: simS0}], {x: "x", y: "y", text: d => `S₀ = ${simS0.toFixed(1)}`, dy: -10, fill: "#e15759", fontSize: 11, fontWeight: "bold"})
+  ]
+})
+```
+
+### MRJ
+
+```{ojs}
+//| label: plot-mrj
+Plot.plot({
+  width: 720,
+  height: 400,
+  x: {label: "Week"},
+  y: {label: "Price (USD)", grid: true},
+  color: {legend: false},
+  marks: [
+    Plot.ruleY([simS0], {stroke: "#e15759", strokeDasharray: "6,3", strokeWidth: 1.5}),
+    Plot.lineY(simMRJ, {x: "week", y: "price", z: "path", stroke: "#59a14f", strokeOpacity: 0.2, strokeWidth: 0.8}),
+    Plot.text([{x: 1, y: simS0}], {x: "x", y: "y", text: d => `S₀ = ${simS0.toFixed(1)}`, dy: -10, fill: "#e15759", fontSize: 11, fontWeight: "bold"})
+  ]
+})
+```
+
+### MRS
+
+```{ojs}
+//| label: plot-mrs
+Plot.plot({
+  width: 720,
+  height: 400,
+  x: {label: "Week"},
+  y: {label: "Price (USD)", grid: true},
+  color: {legend: false},
+  marks: [
+    Plot.ruleY([simS0], {stroke: "#e15759", strokeDasharray: "6,3", strokeWidth: 1.5}),
+    Plot.lineY(simMRS, {x: "week", y: "price", z: "path", stroke: "#b07aa1", strokeOpacity: 0.2, strokeWidth: 0.8}),
+    Plot.text([{x: 1, y: simS0}], {x: "x", y: "y", text: d => `S₀ = ${simS0.toFixed(1)}`, dy: -10, fill: "#e15759", fontSize: 11, fontWeight: "bold"})
+  ]
+})
+```
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: SDE derivations"}
+
+**GBM — from SDE to log-normal solution**
+
+Starting from $dS = \mu S\,dt + \sigma S\,dW$, apply **Ito's lemma** to
+$f(S) = \ln S$:
+
+$$d\ln S = \left(\mu - \tfrac{\sigma^2}{2}\right)dt + \sigma\,dW$$
+
+Integrating from $0$ to $T$:
+
+$$\ln S_T = \ln S_0 + \left(\mu - \tfrac{\sigma^2}{2}\right)T + \sigma W_T$$
+
+Since $W_T \sim \mathcal{N}(0, T)$, $\ln S_T$ is normally distributed, so
+$S_T$ is **log-normal**. This is the exact solution — no discretization needed.
+
+**MRJ** — The log-price follows an Ornstein-Uhlenbeck (OU) process with
+superimposed compound Poisson jumps. No closed-form solution exists for the
+transition density, so simulation uses Euler-Maruyama discretization with jumps
+drawn from $\mathcal{N}(\mu_J, \sigma_J^2)$ at Poisson-random times.
+
+**MRS** — This is a two-dimensional system (log-price + log-variance). Both
+components are simulated via Euler-Maruyama. The correlation between the two
+Brownian motions is induced through Cholesky decomposition:
+$\varepsilon_2 = \rho\,\varepsilon_1 + \sqrt{1-\rho^2}\,\varepsilon_2^*$
+where $\varepsilon_1, \varepsilon_2^* \sim \mathcal{N}(0,1)$ are independent.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Why GBM fails for commodities"}
+
+GBM assumes prices follow a random walk with drift — there is no tendency to
+return to any particular level. For financial assets like stocks, this can be
+reasonable. For **commodities**, three features make GBM inadequate:
+
+1. **No mean reversion.** Commodity prices are anchored by production costs and
+   storage economics. When prices are far above marginal cost, supply increases
+   and prices fall; when prices are below cost, supply contracts. GBM misses
+   this gravitational pull entirely.
+
+2. **Prices can drift to infinity (or zero).** Under GBM, the expected price
+   grows exponentially: $\mathbb{E}[S_T] = S_0 e^{\mu T}$. In 20 years of corn
+   data, we see prices oscillating in a range, not trending to infinity.
+
+3. **The Samuelson effect.** Futures price volatility increases as the contract
+   approaches maturity — a pattern documented by Samuelson (1965). GBM has
+   constant volatility by construction.
+
+Additionally, commodities have **storage costs** and **convenience yields** that
+create a term structure absent from simple GBM. The Schwartz (1997) one-factor
+model explicitly incorporates mean reversion to address these issues.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: What are Poisson jumps?"}
+
+In the MRJ model, the term $J\,dN$ represents **jump risk**: discrete, sudden
+price movements that cannot be captured by continuous diffusion alone.
+
+$dN$ is a **Poisson counting process** with intensity $\lambda$ (jumps per
+year). In any small interval $dt$:
+
+- Probability of one jump: $\lambda\,dt$
+- Probability of no jump: $1 - \lambda\,dt$
+- Jump size $J \sim \mathcal{N}(\mu_J, \sigma_J^2)$ — drawn from a normal
+  distribution
+
+For our commodities, estimated $\lambda$ values range from 0.03 (Wheat — rare
+but large jumps) to 0.23 (Corn — more frequent smaller jumps). In simulation,
+each weekly time step has probability $\lambda / 52$ of experiencing a jump.
+
+**Real-world examples of commodity jumps:**
+
+- **2012 US Drought:** Corn prices surged 60% in 8 weeks
+- **2020 COVID lockdowns:** Live Cattle dropped 30% in 3 weeks
+- **2022 Ukraine invasion:** Wheat spiked 70% in 2 weeks
+- **Frost events in Brazil:** Coffee can jump 20-30% overnight
+
+These discrete shocks are fundamentally different from the smooth, continuous
+price changes that GBM assumes. Jump-diffusion models capture both the "normal"
+and "extreme" components of price dynamics.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Stochastic volatility"}
+
+In financial markets, volatility is not constant — it **clusters**. Periods of
+high volatility tend to be followed by more high volatility, and calm periods
+tend to persist. This phenomenon, first documented by Mandelbrot (1963), is
+visible in any commodity return series.
+
+**ARCH/GARCH effects:** The ARCH test (Engle, 1982) and GARCH models
+(Bollerslev, 1986) capture conditional heteroskedasticity — the variance of
+returns depends on past returns. All five commodities in our study show
+significant ARCH effects.
+
+**The MRS approach:** Rather than modeling volatility as a function of past
+returns (backward-looking), the MRS model lets volatility follow its own
+**mean-reverting stochastic process**:
+
+$$dh_t = \alpha(\beta - h_t)\,dt + \xi\,dW_2$$
+
+where $h_t$ is log-variance. This is forward-looking and allows volatility to
+evolve independently of returns (modulated by correlation $\rho$).
+
+**Key parameters:**
+
+- $\alpha$ (vol reversion speed): How quickly volatility returns to "normal."
+  Higher $\alpha$ means volatility spikes are short-lived.
+- $\beta$ (long-run log-variance): The "normal" level of volatility.
+  $e^{\beta/2}$ gives the steady-state annualized volatility.
+- $\xi$ (vol-of-vol): How much volatility itself fluctuates. Higher $\xi$
+  means more volatile volatility — wider uncertainty bands.
+- $\rho$ (leverage): Correlation between price shocks and volatility shocks.
+  For equities, $\rho < 0$ (prices drop → vol rises). For commodities, $\rho$
+  is often near zero.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: The Schwartz (1997) one-factor model"}
+
+Our MRJ specification is based on **Schwartz's (1997)** seminal "Model 1" for
+commodity pricing. Eduardo Schwartz proposed three increasingly complex models
+for commodity futures prices; the one-factor model has become a benchmark in the
+literature.
+
+**The core idea:** The logarithm of the commodity spot price follows an
+**Ornstein-Uhlenbeck (OU)** process:
+
+$$d\ln S = \kappa(\theta - \ln S)\,dt + \sigma\,dW$$
+
+This is the continuous-time analogue of a first-order autoregressive (AR(1))
+process. The parameter $\kappa$ controls the **speed of mean reversion**: how
+strongly prices are pulled back to the long-run equilibrium level $e^\theta$.
+
+**Half-life of shocks:** A useful interpretation is the half-life
+$t_{1/2} = \ln(2)/\kappa$. For corn ($\kappa = 0.24$), shocks take about
+2.9 years to decay by half. For wheat ($\kappa = 0.73$), the half-life is only
+0.95 years — wheat prices revert much faster.
+
+**Our extension:** We add compound Poisson jumps to Schwartz's base model,
+yielding the MRJ specification. This captures both the gravitational pull toward
+equilibrium and the sudden supply/demand shocks characteristic of agricultural
+markets. The jump component was not in Schwartz's original formulation but has
+been incorporated by subsequent authors (e.g., Hilliard and Reis, 1998).
+
+**Why it matters for real options:** Mean reversion fundamentally changes option
+values compared to GBM. Under mean reversion, long-dated options are worth
+*less* than GBM predicts (because extreme prices are pulled back), while
+short-dated options during periods of price dislocation may be worth *more*
+(because the reversion creates predictable value).
+
+:::
