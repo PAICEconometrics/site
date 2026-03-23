@@ -1,0 +1,203 @@
+/* ==========================================================================
+   EBFin 2026 Interactive Webapp — Custom Styles
+   Real Options via Bayesian MCMC
+   ==========================================================================
+   UI accent color: #2c3e50 (dark blue-gray)
+   Used for borders, buttons, headings, and structural elements.
+
+   Commodity data colors (Wong colorblind-safe palette) — used ONLY in OJS charts:
+     Corn:        #E69F00 (amber)
+     Soybean:     #009E73 (teal green)
+     Wheat:       #D55E00 (vermillion)
+     LiveCattle:  #CC79A7 (rose)
+     SoybeanMeal: #0072B2 (blue)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Section spacing
+   -------------------------------------------------------------------------- */
+.ebfin-section {
+  margin-bottom: 4rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* --------------------------------------------------------------------------
+   Model cards — 3-column grid for GBM / MRJ / MRS
+   -------------------------------------------------------------------------- */
+.model-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.model-card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  background: #fafafa;
+}
+
+.model-card h4 {
+  margin-top: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #2c3e50;
+  color: #333;
+}
+
+.model-card .sde {
+  text-align: center;
+  background: #f0f4f8;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+}
+
+.model-card .intuition {
+  font-style: italic;
+  color: #555;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Takeaway cards — 2x2 grid for summary insights
+   -------------------------------------------------------------------------- */
+.takeaway-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.takeaway-card {
+  border-left: 4px solid #2c3e50;
+  background: #f8f9fa;
+  padding: 1rem 1.25rem;
+  border-radius: 0 6px 6px 0;
+}
+
+/* --------------------------------------------------------------------------
+   Metric cards — inline stat display
+   -------------------------------------------------------------------------- */
+.metric-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  text-align: center;
+  padding: 1rem 1.5rem;
+  min-width: 120px;
+}
+
+.metric-card .value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1.2;
+}
+
+.metric-card .label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Hero header
+   -------------------------------------------------------------------------- */
+.hero-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid #2c3e50;
+  margin-bottom: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   Download area and buttons
+   -------------------------------------------------------------------------- */
+.download-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.download-btn {
+  display: inline-block;
+  background: #2c3e50;
+  color: #fff;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.download-btn:hover {
+  background: #1a252f;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   BibTeX citation block
+   -------------------------------------------------------------------------- */
+.bibtex-block {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  background: #f5f5f5;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Chart container — minimum height for OJS plots
+   -------------------------------------------------------------------------- */
+.chart-container {
+  min-height: 300px;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Color legend for charts
+   -------------------------------------------------------------------------- */
+.color-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.color-legend .color-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
