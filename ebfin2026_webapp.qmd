@@ -1188,3 +1188,273 @@ volatility states) may benefit from longer chains. For our GBM and MRJ models,
 1,500 draws is more than sufficient.
 
 :::
+
+
+<!-- ================================================================
+     SECTION 5 — Model Comparison (LOO-CV)
+     ================================================================ -->
+
+## Model Comparison
+
+Which model best captures commodity price dynamics? We use **Leave-One-Out
+Cross-Validation (LOO-CV)** to compare predictive accuracy. Lower LOO-IC
+indicates better out-of-sample predictive performance.
+
+```{ojs}
+//| label: load-looic-data
+looicData = FileAttachment("data/ebfin/looic_comparison.json").json()
+```
+
+```{ojs}
+//| label: loo-commodity-control
+viewof looCommodity = Inputs.select(
+  ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"],
+  {value: "Corn", label: "Commodity"}
+)
+```
+
+```{ojs}
+//| label: loo-selected-data
+selectedLOO = {
+  const key = looCommodity.toLowerCase().replace(/\s/g, "");
+  const data = looicData[key];
+  return ["gbm", "mrj", "mrs"].map(m => ({
+    model: m.toUpperCase(),
+    looic: data[m].looic,
+    se: data[m].se
+  }));
+}
+```
+
+### LOO-IC by Model
+
+```{ojs}
+//| label: loo-bar-chart
+{
+  const best = selectedLOO.reduce((a, b) => a.looic < b.looic ? a : b);
+
+  return Plot.plot({
+    width: width,
+    height: 200,
+    marginLeft: 55,
+    marginRight: 80,
+    x: {label: "LOO-IC (lower is better)", grid: true},
+    y: {label: null, domain: selectedLOO.map(d => d.model), padding: 0.3},
+    marks: [
+      // Error bars (LOO-IC +/- SE)
+      Plot.ruleX(selectedLOO, {
+        x1: d => d.looic - d.se,
+        x2: d => d.looic + d.se,
+        y: "model",
+        stroke: "#999",
+        strokeWidth: 1.5
+      }),
+      // Bars
+      Plot.barX(selectedLOO, {
+        x: "looic",
+        y: "model",
+        fill: d => d.model === best.model ? "#009E73" : "#0072B2",
+        fillOpacity: 0.8,
+        tip: true,
+        channels: {
+          "LOO-IC": "looic",
+          "SE": "se",
+          "Model": "model"
+        }
+      }),
+      // Value labels
+      Plot.text(selectedLOO, {
+        x: d => d.looic - d.se - 10,
+        y: "model",
+        text: d => d.looic.toFixed(1),
+        textAnchor: "end",
+        fontSize: 12,
+        fontWeight: "bold",
+        fill: "#333"
+      }),
+      // Best model annotation
+      Plot.text([best], {
+        x: d => d.looic + d.se + 10,
+        y: "model",
+        text: d => "Best",
+        textAnchor: "start",
+        fontSize: 11,
+        fontWeight: "bold",
+        fill: "#009E73"
+      })
+    ]
+  });
+}
+```
+
+### Pairwise Differences
+
+```{ojs}
+//| label: loo-delta-table
+{
+  const gbm = selectedLOO.find(d => d.model === "GBM");
+  const mrj = selectedLOO.find(d => d.model === "MRJ");
+  const mrs = selectedLOO.find(d => d.model === "MRS");
+
+  function interpret(delta) {
+    const abs = Math.abs(delta);
+    if (abs > 10) return "Strong preference";
+    if (abs >= 4) return "Moderate preference";
+    return "Weak / indistinguishable";
+  }
+
+  function preferred(delta, nameA, nameB) {
+    if (Math.abs(delta) < 4) return "---";
+    return delta > 0 ? nameB : nameA;
+  }
+
+  const pairs = [
+    {
+      comparison: "GBM vs MRJ",
+      delta: gbm.looic - mrj.looic,
+      favors: preferred(gbm.looic - mrj.looic, "GBM", "MRJ"),
+      strength: interpret(gbm.looic - mrj.looic)
+    },
+    {
+      comparison: "GBM vs MRS",
+      delta: gbm.looic - mrs.looic,
+      favors: preferred(gbm.looic - mrs.looic, "GBM", "MRS"),
+      strength: interpret(gbm.looic - mrs.looic)
+    },
+    {
+      comparison: "MRJ vs MRS",
+      delta: mrj.looic - mrs.looic,
+      favors: preferred(mrj.looic - mrs.looic, "MRJ", "MRS"),
+      strength: interpret(mrj.looic - mrs.looic)
+    }
+  ];
+
+  function strengthBadge(s) {
+    if (s === "Strong preference") return `<span style="background:#009E73;color:white;padding:2px 8px;border-radius:4px;font-size:0.85em;">Strong</span>`;
+    if (s === "Moderate preference") return `<span style="background:#E69F00;color:white;padding:2px 8px;border-radius:4px;font-size:0.85em;">Moderate</span>`;
+    return `<span style="background:#999;color:white;padding:2px 8px;border-radius:4px;font-size:0.85em;">Weak</span>`;
+  }
+
+  const rows = pairs.map(p => `
+    <tr>
+      <td style="padding:8px 12px;font-weight:600;">${p.comparison}</td>
+      <td style="padding:8px 12px;text-align:right;font-family:monospace;">${p.delta.toFixed(1)}</td>
+      <td style="padding:8px 12px;text-align:center;">${p.favors}</td>
+      <td style="padding:8px 12px;text-align:center;">${strengthBadge(p.strength)}</td>
+    </tr>
+  `).join("");
+
+  return html`
+    <table style="width:100%;border-collapse:collapse;margin-top:0.5em;font-size:0.95em;">
+      <thead>
+        <tr style="border-bottom:2px solid #333;">
+          <th style="padding:8px 12px;text-align:left;">Comparison</th>
+          <th style="padding:8px 12px;text-align:right;">&Delta;LOO-IC</th>
+          <th style="padding:8px 12px;text-align:center;">Favors</th>
+          <th style="padding:8px 12px;text-align:center;">Strength</th>
+        </tr>
+      </thead>
+      <tbody style="border-bottom:1px solid #ccc;">
+        ${rows}
+      </tbody>
+    </table>
+    <p style="font-size:0.82em;color:#666;margin-top:0.4em;">
+      &Delta;LOO-IC = LOO-IC<sub>A</sub> &minus; LOO-IC<sub>B</sub>.
+      Positive &Delta; means model B fits better.
+      |&Delta;| &gt; 10: strong; 4&ndash;10: moderate; &lt; 4: weak.
+    </p>
+  `;
+}
+```
+
+
+::: {.callout-tip collapse="true" title="Learn more: What is LOO-CV?"}
+
+Leave-one-out cross-validation estimates predictive accuracy by predicting each
+data point from the rest. For $N$ observations, we measure how well the model
+predicts observation $i$ when fitted to all observations *except* $i$.
+
+Doing this literally would require refitting the model $N$ times --- prohibitively
+expensive for MCMC. Instead, we use **Pareto-Smoothed Importance Sampling
+(PSIS-LOO)**, which approximates the leave-one-out predictive densities from a
+single model fit using importance weights. The result is the **LOO-IC** (LOO
+Information Criterion), computed as $-2 \sum_{i=1}^{N} \log p(y_i | y_{-i})$.
+
+Lower LOO-IC means better out-of-sample predictive performance.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: LOO-IC vs AIC vs BIC"}
+
+All three are model comparison criteria, but they differ fundamentally:
+
+- **AIC** (Akaike) and **BIC** (Bayesian) are *asymptotic approximations* based
+  on point estimates. They penalize complexity via the number of parameters.
+- **LOO-IC** directly estimates out-of-sample predictive accuracy by
+  approximating leave-one-out cross-validation.
+
+For Bayesian models with informative priors or hierarchical structure, AIC and
+BIC can be misleading because they don't account for the regularizing effect of
+priors. LOO-IC uses the full posterior predictive distribution, making it more
+reliable for our setting. It also handles models with different numbers of
+effective parameters (like our MRS with ~1,100 latent states) more gracefully
+than AIC's simple parameter count.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Pareto-k diagnostics"}
+
+Each LOO observation has a **Pareto-$k$ diagnostic** that measures how
+influential that observation is for the posterior. The thresholds are:
+
+| Pareto-$k$   | Interpretation                                    |
+|:-------------|:--------------------------------------------------|
+| $k < 0.5$    | Good --- reliable LOO estimate                    |
+| $0.5 \leq k < 0.7$ | OK --- still usable                        |
+| $k \geq 0.7$ | Problematic --- that observation is very influential |
+
+When $k$ is high, the importance sampling approximation breaks down for that
+point, and the LOO estimate may be unreliable. Our models mostly have $k < 0.5$,
+indicating that PSIS-LOO provides trustworthy model comparisons.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: The MRS caveat"}
+
+MRS (Mean-Reverting with Stochastic Volatility) has approximately **1,100 latent
+volatility parameters** --- one per observation. This gives the model enormous
+flexibility to fit the data, which is reflected in consistently lower (better)
+LOO-IC values across all commodities.
+
+The model genuinely captures volatility dynamics that GBM and MRJ miss. However,
+part of the LOO-IC improvement may come from this flexibility rather than true
+out-of-sample predictive power. In other words, MRS may be partially
+"overfitting" to the in-sample volatility pattern.
+
+**How to interpret this:** MRS is the best model by LOO-IC, but the gap between
+MRS and MRJ may overstate the true predictive advantage. For real options
+valuation, we report results for all three models to show how model choice
+affects option values.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: WAIC as alternative"}
+
+The **Widely Applicable Information Criterion (WAIC)** is another Bayesian model
+comparison metric. Like LOO-IC, it estimates out-of-sample predictive accuracy,
+but it does so by computing the log pointwise predictive density and subtracting
+a penalty for effective number of parameters.
+
+In our analysis, **WAIC and LOO-IC agree completely** on model rankings:
+MRS > MRJ > GBM for all five commodities. This concordance is reassuring --- the
+relative model ordering is robust to the choice of information criterion.
+
+When they disagree (which can happen with highly influential observations),
+LOO-IC with Pareto-$k$ diagnostics is generally preferred because it flags
+problematic observations explicitly.
+
+:::
