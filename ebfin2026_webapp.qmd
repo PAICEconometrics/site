@@ -1458,3 +1458,344 @@ LOO-IC with Pareto-$k$ diagnostics is generally preferred because it flags
 problematic observations explicitly.
 
 :::
+
+
+<!-- ================================================================
+     SECTION 6 — Real Options Valuation
+     ================================================================ -->
+
+## Real Options Valuation
+
+This is the core contribution: propagating full Bayesian posterior uncertainty
+into real option values. Instead of a single number, we obtain a complete
+distribution of what each option is worth --- revealing how much classical
+approaches understate the true range of investment value.
+
+```{ojs}
+//| label: load-option-data
+optionDist = FileAttachment("data/ebfin/option_distributions.json").json()
+optionSummary = FileAttachment("data/ebfin/option_values_summary.csv").csv({typed: true})
+```
+
+```{ojs}
+//| label: opt-commodity-select
+viewof optCommodity = Inputs.select(
+  ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"],
+  {value: "Corn", label: "Commodity",
+   format: x => ({Corn: "Corn", Soybean: "Soybean", Wheat: "Wheat",
+                   LiveCattle: "Live Cattle", SoybeanMeal: "Soybean Meal"})[x]}
+)
+```
+
+```{ojs}
+//| label: opt-model-select
+viewof optModel = Inputs.select(
+  new Map([["GBM", "gbm"], ["MRJ", "mrj"], ["MRS", "mrs"]]),
+  {value: "gbm", label: "Model"}
+)
+```
+
+```{ojs}
+//| label: opt-type-radio
+viewof optType = Inputs.radio(
+  ["Timing", "Abandonment"],
+  {value: "Timing", label: "Option type"}
+)
+```
+
+```{ojs}
+//| label: opt-selected-data
+selectedOption = {
+  const key = optCommodity.toLowerCase().replace(/\s/g, "");
+  const typeKey = optType === "Timing" ? "timing" : "abandon";
+  const dist = optionDist[key][optModel][typeKey];
+  const summaryRow = optionSummary.find(r =>
+    r.Commodity === optCommodity && r.Model === optModel.toUpperCase()
+  );
+  const bsValue = optType === "Timing" ? summaryRow.BS_Timing : summaryRow.BS_Abandon;
+  return {...dist, bs: bsValue, commodity: optCommodity, model: optModel.toUpperCase(),
+          type: optType};
+}
+```
+
+```{ojs}
+//| label: opt-density-plot
+{
+  const d = selectedOption;
+  const densityData = d.x.map((xi, i) => ({x: xi, y: d.y[i]}));
+
+  // Filter density data for 95% CI shaded region
+  const ciData = densityData.filter(pt => pt.x >= d.q025 && pt.x <= d.q975);
+
+  const labelCommodity = LABELS[d.commodity] || d.commodity;
+  const titleText = `${labelCommodity} — ${d.model} ${d.type} Option Value Distribution`;
+
+  return Plot.plot({
+    width: width,
+    height: 400,
+    marginLeft: 60,
+    marginRight: 30,
+    title: titleText,
+    x: {label: "Option Value (USD)", grid: true},
+    y: {label: "Density", grid: false},
+    marks: [
+      // Full density area (light fill)
+      Plot.areaY(densityData, {
+        x: "x", y: "y",
+        fill: "#0072B2", fillOpacity: 0.15,
+        stroke: "#0072B2", strokeWidth: 1.5
+      }),
+      // 95% CI shaded band (darker fill)
+      Plot.areaY(ciData, {
+        x: "x", y: "y",
+        fill: "#0072B2", fillOpacity: 0.4
+      }),
+      // Black-Scholes point estimate (vertical dashed red line)
+      Plot.ruleX([d.bs], {
+        stroke: "#D55E00", strokeWidth: 2, strokeDasharray: "6,4"
+      }),
+      // Bayesian mean (vertical solid blue line)
+      Plot.ruleX([d.mean], {
+        stroke: "#0072B2", strokeWidth: 2
+      }),
+      // BS label
+      Plot.text([{x: d.bs}], {
+        x: "x", y: null,
+        text: d => ["Black-Scholes"],
+        dy: -10, dx: 5,
+        fill: "#D55E00", fontSize: 11, fontWeight: "bold",
+        textAnchor: "start",
+        frameAnchor: "top"
+      }),
+      // Bayesian Mean label
+      Plot.text([{x: d.mean}], {
+        x: "x", y: null,
+        text: d => ["Bayesian Mean"],
+        dy: -25, dx: 5,
+        fill: "#0072B2", fontSize: 11, fontWeight: "bold",
+        textAnchor: "start",
+        frameAnchor: "top"
+      })
+    ]
+  });
+}
+```
+
+```{ojs}
+//| label: opt-ci-annotation
+{
+  const d = selectedOption;
+  const ciWidth = d.q975 - d.q025;
+  // BS "implicit range" — symmetric assumption around BS point estimate
+  const bsRange = 2 * d.bs;
+  const ratio = d.bs > 0 ? (ciWidth / bsRange).toFixed(1) : "N/A";
+
+  const card = htl.html`<div class="metric-cards">
+    <div class="metric-card" style="flex: 1 1 100%; background: linear-gradient(135deg, #fff3cd, #ffeeba); border-left: 4px solid #ffc107;">
+      <div class="value" style="font-size: 1.4rem; color: #856404;">
+        Bayesian 95% CI is ${ratio}x wider than Black-Scholes point estimate
+      </div>
+      <div class="label" style="color: #856404;">
+        CI width: $${ciWidth.toFixed(2)} &nbsp;|&nbsp; BS symmetric range: $${bsRange.toFixed(2)}
+      </div>
+    </div>
+  </div>`;
+  return card;
+}
+```
+
+```{ojs}
+//| label: opt-metric-cards
+{
+  const d = selectedOption;
+  const ciWidth = d.q975 - d.q025;
+  // Approximate SD from 95% CI (normal: CI ~ 3.92*SD)
+  const approxSD = (ciWidth / 3.92).toFixed(2);
+
+  return htl.html`<div class="metric-cards">
+    <div class="metric-card">
+      <div class="value">$${d.mean.toFixed(2)}</div>
+      <div class="label">Mean</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">$${d.median.toFixed(2)}</div>
+      <div class="label">Median</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">[$${d.q025.toFixed(2)}, $${d.q975.toFixed(2)}]</div>
+      <div class="label">95% Credible Interval</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">$${approxSD}</div>
+      <div class="label">SD (approx.)</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">$${d.bs.toFixed(2)}</div>
+      <div class="label">Black-Scholes Estimate</div>
+    </div>
+  </div>`;
+}
+```
+
+```{ojs}
+//| label: opt-comparative-bar
+{
+  const commodities = ["Corn", "Soybean", "Wheat", "LiveCattle", "SoybeanMeal"];
+  const typeKey = optType === "Timing" ? "timing" : "abandon";
+  const bsCol = optType === "Timing" ? "BS_Timing" : "BS_Abandon";
+
+  const barData = commodities.map(c => {
+    const key = c.toLowerCase().replace(/\s/g, "");
+    const dist = optionDist[key][optModel][typeKey];
+    const summaryRow = optionSummary.find(r =>
+      r.Commodity === c && r.Model === optModel.toUpperCase()
+    );
+    return {
+      commodity: LABELS[c] || c,
+      mean: dist.mean,
+      q025: dist.q025,
+      q975: dist.q975,
+      bs: +summaryRow[bsCol],
+      color: COLORS[c]
+    };
+  }).sort((a, b) => a.mean - b.mean);
+
+  const modelLabel = optModel.toUpperCase();
+
+  return Plot.plot({
+    width: width,
+    height: 350,
+    marginLeft: 100,
+    marginRight: 30,
+    title: `All Commodities — ${modelLabel} ${optType} Option`,
+    x: {label: "Option Value (USD)", grid: true},
+    y: {label: null, domain: barData.map(d => d.commodity)},
+    color: {
+      domain: barData.map(d => d.commodity),
+      range: barData.map(d => d.color)
+    },
+    marks: [
+      // CI error bars (horizontal lines from q025 to q975)
+      Plot.ruleX(barData, {
+        x1: "q025", x2: "q975", y: "commodity",
+        stroke: "#666", strokeWidth: 2
+      }),
+      // CI whisker caps (left)
+      Plot.tickX(barData, {
+        x: "q025", y: "commodity",
+        stroke: "#666", strokeWidth: 2
+      }),
+      // CI whisker caps (right)
+      Plot.tickX(barData, {
+        x: "q975", y: "commodity",
+        stroke: "#666", strokeWidth: 2
+      }),
+      // Bayesian mean (colored dot)
+      Plot.dot(barData, {
+        x: "mean", y: "commodity",
+        fill: "commodity", r: 8,
+        tip: true,
+        channels: {
+          Mean: d => `$${d.mean.toFixed(2)}`,
+          "95% CI": d => `[$${d.q025.toFixed(2)}, $${d.q975.toFixed(2)}]`,
+          "BS Estimate": d => `$${d.bs.toFixed(2)}`
+        }
+      }),
+      // BS point estimate (diamond overlay)
+      Plot.dot(barData, {
+        x: "bs", y: "commodity",
+        symbol: "diamond", r: 6,
+        fill: "#D55E00", stroke: "#fff", strokeWidth: 1
+      }),
+      // Legend annotation
+      Plot.text([{x: 0, y: barData[barData.length - 1].commodity}], {
+        text: d => ["● Bayesian Mean   ◆ Black-Scholes"],
+        dy: -25,
+        fontSize: 10, fill: "#666",
+        frameAnchor: "top-right"
+      })
+    ]
+  });
+}
+```
+
+
+:::{.callout-warning}
+## Important: Physical vs Risk-Neutral Pricing
+The Black-Scholes estimate uses risk-neutral (Q) pricing while the Bayesian
+estimates use the physical (P) measure. This comparison illustrates the impact of
+parametric uncertainty on option valuation, not arbitrage-free pricing
+differences. For a detailed discussion, see Section 5 of the paper.
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: What is a timing option?"}
+
+The right (but not obligation) to **delay an investment** until conditions
+improve. Analogy: a farmer deciding WHEN to plant --- the flexibility to wait has
+value. Strike = 110% of current price ($K = 1.10 \times S_0$). The option
+captures how much the ability to wait and observe price movements is worth before
+committing capital.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: What is an abandonment option?"}
+
+The right to **walk away from a project** and recover salvage value. Analogy: a
+farmer deciding to stop growing a crop and sell the land. Strike = 80% of current
+price ($K = 0.80 \times S_0$). It is insurance against catastrophic loss --- if
+the commodity price drops far enough, the option to exit and recover partial value
+becomes valuable.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Strike price rationale"}
+
+Timing option $K = 1.10 \times S_0$ means investing when price is 10% above
+current level. Abandonment $K = 0.80 \times S_0$ means salvaging at 80% of
+current price. These are representative thresholds used in the real options
+literature, not market-traded strike prices. They capture the intuition that
+timing requires a meaningful upside, and abandonment occurs when losses become
+substantial.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Physical measure P vs risk-neutral Q"}
+
+Black-Scholes uses the **risk-neutral measure Q** (replacing drift with the
+risk-free rate). Our Bayesian approach uses the **physical measure P** (actual
+market dynamics). Under P, we capture real-world uncertainty including the actual
+drift and volatility that commodity markets exhibit. This is appropriate for
+decision-making under uncertainty but cannot directly price traded derivatives.
+The comparison between BS and Bayesian values highlights how parametric
+uncertainty --- not the measure change --- widens the valuation range.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: European vs American options"}
+
+Our options are **European-style** (exercised only at maturity, $T = 1$ year).
+**American options** allow early exercise at any time and are more valuable
+because of this additional flexibility. We use European options because they
+make Monte Carlo computation tractable: we simply simulate paths to $T$ and
+evaluate the payoff, rather than solving a backward induction problem at every
+time step. This is a common simplification in the real options literature.
+
+:::
+
+
+::: {.callout-tip collapse="true" title="Learn more: Why Bayesian CIs matter"}
+
+A classical Black-Scholes estimate says "the timing option is worth \$53." Our
+Bayesian approach says "the timing option is worth \$53 on average, but could
+range from \$28 to \$93 with 95% probability." The difference matters because
+investment decisions depend on the full range of possible outcomes, not just a
+point estimate. A risk-averse investor might avoid a project whose option value
+has large downside uncertainty, even if the mean is favorable. Bayesian credible
+intervals make this risk visible.
+
+:::
