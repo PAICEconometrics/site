@@ -1,0 +1,72 @@
+[
+  {
+    "Commodity": "Corn",
+    "N": 1103,
+    "Mean": 0.0686,
+    "Std": 4.1401,
+    "Skew": -0.5583,
+    "Kurt": 7.2456,
+    "Min": -25.4272,
+    "Max": 20.2837,
+    "JB_stat": 885.6781,
+    "JB_pval": 0,
+    "ADF_stat": -9.6536,
+    "ADF_pval": 0.01
+  },
+  {
+    "Commodity": "LiveCattle",
+    "N": 1099,
+    "Mean": 0.0851,
+    "Std": 2.5378,
+    "Skew": -0.7774,
+    "Kurt": 6.4589,
+    "Min": -15.9993,
+    "Max": 9.8359,
+    "JB_stat": 658.5341,
+    "JB_pval": 0,
+    "ADF_stat": -9.9275,
+    "ADF_pval": 0.01
+  },
+  {
+    "Commodity": "Soybean",
+    "N": 1103,
+    "Mean": 0.058,
+    "Std": 3.5528,
+    "Skew": -0.6969,
+    "Kurt": 9.0376,
+    "Min": -26.4682,
+    "Max": 23.3262,
+    "JB_stat": 1764.5659,
+    "JB_pval": 0,
+    "ADF_stat": -8.8052,
+    "ADF_pval": 0.01
+  },
+  {
+    "Commodity": "SoybeanMeal",
+    "N": 1103,
+    "Mean": 0.0544,
+    "Std": 4.0455,
+    "Skew": -0.5102,
+    "Kurt": 5.6507,
+    "Min": -23.0215,
+    "Max": 15.0282,
+    "JB_stat": 370.7619,
+    "JB_pval": 0,
+    "ADF_stat": -10.0231,
+    "ADF_pval": 0.01
+  },
+  {
+    "Commodity": "Wheat",
+    "N": 1103,
+    "Mean": 0.0453,
+    "Std": 4.585,
+    "Skew": 0.9139,
+    "Kurt": 13.4242,
+    "Min": -21.2444,
+    "Max": 46.941,
+    "JB_stat": 5147.5981,
+    "JB_pval": 0,
+    "ADF_stat": -12.0966,
+    "ADF_pval": 0.01
+  }
+]
