@@ -102,6 +102,8 @@ website:
             href: commodity_breaks_paper.qmd
           - text: "Paper Draft"
             href: paper-draft.qmd
+          - text: "EBFin 2026: Real Options via Bayesian MCMC"
+            href: ebfin2026_webapp.qmd
       - section: "🎯 Optimization"
         contents:
           - text: "Multi-Objective Framework"

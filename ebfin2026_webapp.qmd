@@ -1799,3 +1799,63 @@ has large downside uncertainty, even if the mean is favorable. Bayesian credible
 intervals make this risk visible.
 
 :::
+
+
+## Key Takeaways
+
+:::{.takeaway-cards}
+
+:::{.takeaway-card}
+<div class="card-icon">&#x1F50D;</div>
+#### Uncertainty Matters
+Bayesian credible intervals are 2--5x wider than classical Black-Scholes point estimates. Investment decisions based on single numbers systematically understate risk.
+:::
+
+:::{.takeaway-card}
+<div class="card-icon">&#x2696;</div>
+#### Model Choice Matters
+GBM, MRJ, and MRS produce materially different option values for the same commodity. The choice of stochastic process is not a technical detail --- it directly impacts investment decisions.
+:::
+
+:::{.takeaway-card}
+<div class="card-icon">&#x1F3C6;</div>
+#### MRS Fits Best
+Mean-Reverting Stochastic Volatility (MRS) achieves the best LOO-IC across all five commodities. Stochastic volatility captures dynamics that simpler models miss.
+:::
+
+:::{.takeaway-card}
+<div class="card-icon">&#x26A0;</div>
+#### Classical Methods Understate Risk
+Point estimates hide the full picture. A timing option "worth $53" could range from $28 to $93 under Bayesian estimation. Decision-makers deserve this information.
+:::
+
+:::
+
+### Resources
+
+:::{.download-area}
+[Download Paper (PDF)](data/ebfin/main.pdf){.download-btn}
+:::
+
+<div class="bibtex-block">
+@inproceedings{ozon2026real,
+  title={Real Options in Agricultural Commodities via Bayesian MCMC},
+  author={Ozon, Rodrigo Hermont and de Lima, Jos{\'e} Donizetti},
+  booktitle={XXVI Encontro Brasileiro de Finan{\c{c}}as},
+  year={2026},
+  organization={SBFin}
+}
+</div>
+
+**Authors:**
+
+- Rodrigo Hermont Ozon --- [ORCID](https://orcid.org/0000-0001-8003-4849) | PUCPR
+- Jose Donizetti de Lima --- [ORCID](https://orcid.org/0000-0001-5260-9035) | UTFPR
+
+**Conference:** [XXVI Encontro Brasileiro de Financas (EBFin 2026)](https://doity.com.br/26ebfin)
+
+---
+
+<div style="text-align: center; font-size: 0.85em; color: #666; margin-top: 2em;">
+Built with [Quarto](https://quarto.org/) and [Observable JS](https://observablehq.com/). Data analysis in [R](https://www.r-project.org/) with [Stan](https://mc-stan.org/).
+</div>
